@@ -10,7 +10,7 @@ if [ ! -d ${NOAA_HOME} ]; then
 	mkdir -p ${NOAA_HOME}
 fi
 
-if [ ! -d ${NOAA_HOME}audio/ ]; then
+if [ ! -d ${NOAA_HOME}/audio/ ]; then
 	mkdir -p ${NOAA_HOME}/audio/
 fi
 
