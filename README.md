@@ -5,6 +5,7 @@ Most of the code and setup stolen from:  [Instructables](https://www.instructabl
   - Timestamp and satellite name over every image
   - WXToIMG configured to create several images (HVC,HVCT,MCIR, etc)
   - Pictures are posted to Twitter. See more at [argentinasat twitter account](https://twitter.com/argentinasat)
+  - [Wiki](https://github.com/reynico/raspberry-noaa/wiki) is updated!
 
 ### Manual work
   - sudo apt-get install imagemagick nginx predict libusb-1.0 cmake
