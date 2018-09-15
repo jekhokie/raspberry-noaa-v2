@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ## debug
-#set -x
+# set -x
 
 . ~/.noaa.conf
 
@@ -46,16 +46,24 @@ START_DATE=$(date '+%d-%m-%Y %H:%M')
 timeout "${6}" rtl_fm -f "${2}"M -s 60k -g 50 -p 55 -E wav -E deemp -F 9 - | sox -t raw -e signed -c 1 -b 16 -r 60000 - ${NOAA_OUTPUT}/audio/"${3}".wav rate 11025
 
 PASS_START=$(expr "$5" + 90)
-/usr/local/bin/wxmap -T "${1}" -H "${4}" -p 0 -l 0 -o "${PASS_START}" ${NOAA_HOME}/map/"${3}"-map.png
-for i in ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT; do
-	/usr/local/bin/wxtoimg -o -m ${NOAA_HOME}/map/"${3}"-map.png -e $i ${NOAA_OUTPUT}/audio/"${3}".wav ${NOAA_OUTPUT}/image/"${3}"-$i.png
-	/usr/bin/convert ${NOAA_OUTPUT}/image/"${3}"-$i.png -undercolor black -fill yellow -pointsize 18 -annotate +20+20 "${1} $i ${START_DATE}" ${NOAA_OUTPUT}/image/"${3}"-$i.png
-done
 
-ECLIPSED=$(identify -ping -format "%[fx:w]" /usr/share/html/image/$3-MSA.png)
-if [ "$ECLIPSED" -gt 1041 ]; then
-	python2 ${NOAA_HOME}/post.py "$1 ${START_DATE}" ${NOAA_OUTPUT}/image/$3-MCIR-precip.png ${NOAA_OUTPUT}/image/$3-MCIR.png 
+SUN_ELEV=$(python2 sun.py $PASS_START)
+
+if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
+	ENHANCEMENTS="ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT"
 else
-	python2 ${NOAA_HOME}/post.py "$1 ${START_DATE}" ${NOAA_OUTPUT}/image/$3-MCIR-precip.png ${NOAA_OUTPUT}/image/$3-MSA-precip.png ${NOAA_OUTPUT}/image/$3-HVC-precip.png ${NOAA_OUTPUT}/image/$3-HVCT.png 
+	ENHANCEMENTS="ZA MCIR MCIR-precip"
 fi
 
+/usr/local/bin/wxmap -T "${1}" -H "${4}" -p 0 -l 0 -o "${PASS_START}" ${NOAA_HOME}/map/"${3}"-map.png
+for i in $ENHANCEMENTS; do
+	/usr/local/bin/wxtoimg -o -m ${NOAA_HOME}/map/"${3}"-map.png -e $i ${NOAA_OUTPUT}/audio/"${3}".wav ${NOAA_OUTPUT}/image/"${3}"-$i.jpg
+	/usr/bin/convert -quality 90 -format jpg ${NOAA_OUTPUT}/image/"${3}"-$i.jpg -undercolor black -fill yellow -pointsize 18 -annotate +20+20 "${1} $i ${START_DATE}" ${NOAA_OUTPUT}/image/"${3}"-$i.jpg
+	/usr/bin/gdrive upload --parent 1gehY-0iYkNSkBU9RCDsSTexRaQ_ukN0A ${NOAA_OUTPUT}/image/"${3}"-$i.jpg
+done
+
+if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
+	python2 ${NOAA_HOME}/post.py "$1 ${START_DATE}" ${NOAA_OUTPUT}/image/$3-MCIR-precip.jpg ${NOAA_OUTPUT}/image/$3-MSA-precip.jpg ${NOAA_OUTPUT}/image/$3-HVC-precip.jpg ${NOAA_OUTPUT}/image/$3-HVCT.jpg 
+else
+	python2 ${NOAA_HOME}/post.py "$1 ${START_DATE}" ${NOAA_OUTPUT}/image/$3-MCIR-precip.jpg ${NOAA_OUTPUT}/image/$3-MCIR.jpg 
+fi
