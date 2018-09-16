@@ -43,7 +43,7 @@ fi
 # $6 = Time to capture
 
 START_DATE=$(date '+%d-%m-%Y %H:%M')
-timeout "${6}" rtl_fm -f "${2}"M -s 60k -g 50 -p 55 -E wav -E deemp -F 9 - | sox -t raw -e signed -c 1 -b 16 -r 60000 - ${NOAA_OUTPUT}/audio/"${3}".wav rate 11025
+timeout "${6}" /usr/local/bin/rtl_fm -f "${2}"M -s 60k -g 50 -p 55 -E wav -E deemp -F 9 - | sox -t raw -e signed -c 1 -b 16 -r 60000 - ${NOAA_OUTPUT}/audio/"${3}".wav rate 11025
 
 PASS_START=$(expr "$5" + 90)
 
