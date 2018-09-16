@@ -16,4 +16,4 @@ Most of the code and setup stolen from: [Instructables](https://www.instructable
   - Code was a bit updated on how it handles the UTC vs timezone times.
 
 ### To do
-  - Calculate sun elevation for each satellite pass to decide image enhancement.
+  - [Calculate sun elevation for each satellite pass to decide image enhancement](https://github.com/reynico/raspberry-noaa/commit/e21abc616b289a768129006863e48f0c815814b9) done.
