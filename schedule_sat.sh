@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ## debug
-#set -x
+# set -x
 
 . ~/.noaa.conf
 
@@ -27,7 +27,7 @@ while [ "$(date --date="@${var2}" +%D)" = "$(date +%D)" ]; do
 		SATNAME=$(echo "$1" | sed "s/ //g")
 		echo ${SATNAME} "${OUTDATE}" "$MAXELEV"
 		echo "${NOAA_HOME}/receive.sh \"${1}\" $2 ${SATNAME}${OUTDATE} "${NOAA_HOME}"/predict/weather.tle \
-${var1} ${TIMER}" | at "$(date --date="TZ=\"UTC\" ${START_TIME}" +"%H:%M %D")"
+${var1} ${TIMER} ${MAXELEV}" | at "$(date --date="TZ=\"UTC\" ${START_TIME}" +"%H:%M %D")"
 	fi
 	NEXTPREDICT=$(expr "${var2}" + 60)
 	PREDICTION_START=$(/usr/bin/predict -t "${NOAA_HOME}"/predict/weather.tle -p "${1}" "${NEXTPREDICT}" | head -1)
