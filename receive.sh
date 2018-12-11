@@ -14,8 +14,8 @@ if [ ! -d ${NOAA_OUTPUT} ]; then
 	mkdir -p ${NOAA_OUTPUT}
 fi
 
-if [ ! -d ${NOAA_OUTPUT}/audio/ ]; then
-	mkdir -p ${NOAA_OUTPUT}/audio/
+if [ ! -d ${NOAA_AUDIO}/audio/ ]; then
+	mkdir -p ${NOAA_AUDIO}/audio/
 fi
 
 if [ ! -d ${NOAA_OUTPUT}/image/ ]; then
@@ -45,7 +45,7 @@ fi
 
 START_DATE=$(date '+%d-%m-%Y %H:%M')
 FOLDER_DATE="$(date +%Y)/$(date +%m)/$(date +%d)"
-timeout "${6}" /usr/local/bin/rtl_fm -f "${2}"M -s 60k -g 50 -p 55 -E wav -E deemp -F 9 - | /usr/bin/sox -t raw -e signed -c 1 -b 16 -r 60000 - ${NOAA_OUTPUT}/audio/"${3}".wav rate 11025
+timeout "${6}" /usr/local/bin/rtl_fm -f "${2}"M -s 60k -g 50 -p 55 -E wav -E deemp -F 9 - | /usr/bin/sox -t raw -e signed -c 1 -b 16 -r 60000 - ${NOAA_AUDIO}/audio/"${3}".wav rate 11025
 
 PASS_START=$(expr "$5" + 90)
 SUN_ELEV=$(python2 sun.py $PASS_START)
@@ -62,7 +62,7 @@ fi
 
 /usr/local/bin/wxmap -T "${1}" -H "${4}" -p 0 -l 0 -o "${PASS_START}" ${NOAA_HOME}/map/"${3}"-map.png
 for i in $ENHANCEMENTS; do
-	/usr/local/bin/wxtoimg -o -m ${NOAA_HOME}/map/"${3}"-map.png -e $i ${NOAA_OUTPUT}/audio/"${3}".wav ${NOAA_OUTPUT}/image/${FOLDER_DATE}/"${3}"-$i.jpg
+	/usr/local/bin/wxtoimg -o -m ${NOAA_HOME}/map/"${3}"-map.png -e $i ${NOAA_AUDIO}/audio/"${3}".wav ${NOAA_OUTPUT}/image/${FOLDER_DATE}/"${3}"-$i.jpg
 	/usr/bin/convert -quality 90 -format jpg ${NOAA_OUTPUT}/image/${FOLDER_DATE}/"${3}"-$i.jpg -undercolor black -fill yellow -pointsize 18 -annotate +20+20 "${1} $i ${START_DATE}" ${NOAA_OUTPUT}/image/${FOLDER_DATE}/"${3}"-$i.jpg
 	/usr/bin/gdrive upload --parent 1gehY-0iYkNSkBU9RCDsSTexRaQ_ukN0A ${NOAA_OUTPUT}/image/${FOLDER_DATE}/"${3}"-$i.jpg
 done

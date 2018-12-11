@@ -1,0 +1,1 @@
+tmpfs                   /var/ramfs      tmpfs nodev,nosuid,size=100M 0 0
