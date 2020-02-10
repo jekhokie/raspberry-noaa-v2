@@ -6,29 +6,36 @@
 . ~/.noaa.conf
 
 ## sane checks
-if [ ! -d ${NOAA_HOME} ]; then
-	mkdir -p ${NOAA_HOME}
+if [ ! -d "${NOAA_HOME}" ]; then
+	mkdir -p "${NOAA_HOME}"
 fi
 
-if [ ! -d ${NOAA_OUTPUT} ]; then
-	mkdir -p ${NOAA_OUTPUT}
+if [ ! -d "${NOAA_OUTPUT}" ]; then
+	mkdir -p "${NOAA_OUTPUT}"
 fi
 
-if [ ! -d ${NOAA_AUDIO}/audio/ ]; then
-	mkdir -p ${NOAA_AUDIO}/audio/
+if [ ! -d "${NOAA_AUDIO}/audio/" ]; then
+	mkdir -p "${NOAA_AUDIO}/audio/"
 fi
 
-if [ ! -d ${NOAA_OUTPUT}/image/ ]; then
-	mkdir -p ${NOAA_OUTPUT}/image/
+if [ ! -d "${NOAA_OUTPUT}/image/" ]; then
+	mkdir -p "${NOAA_OUTPUT}/image/"
 fi
 
-if [ ! -d ${NOAA_HOME}/map/ ]; then
-	mkdir -p ${NOAA_HOME}/map/
+if [ ! -d "${NOAA_HOME}/map/" ]; then
+	mkdir -p "${NOAA_HOME}/map/"
 fi
 
-if [ ! -d ${NOAA_HOME}/predict/ ]; then
-	mkdir -p ${NOAA_HOME}/predict/
+if [ ! -d "${NOAA_HOME}/predict/" ]; then
+	mkdir -p "${NOAA_HOME}/predict/"
 fi
+
+#if pgrep "stream_fm" > /dev/null
+#then
+#	pkill -9 -f stream_fm
+#	pkill -9 -f rtl_fm
+#	pkill -9 -f socat
+#fi
 
 if pgrep "rtl_fm" > /dev/null
 then
@@ -45,13 +52,14 @@ fi
 
 START_DATE=$(date '+%d-%m-%Y %H:%M')
 FOLDER_DATE="$(date +%Y)/$(date +%m)/$(date +%d)"
-timeout "${6}" /usr/local/bin/rtl_fm -f "${2}"M -s 60k -g 50 -p 55 -E wav -E deemp -F 9 - | /usr/bin/sox -t raw -e signed -c 1 -b 16 -r 60000 - ${NOAA_AUDIO}/audio/"${3}".wav rate 11025
+timeout "${6}" /usr/local/bin/rtl_fm -f "${2}"M -s 60k -g 50 -p 55 -E wav -E deemp -F 9 - | /usr/bin/sox -t raw -e signed -c 1 -b 16 -r 60000 - "${NOAA_AUDIO}/audio/${3}.wav" rate 11025
 
+sudo renice -19 -p "$(pidof rtl_fm)"
 PASS_START=$(expr "$5" + 90)
-SUN_ELEV=$(python2 sun.py $PASS_START)
+SUN_ELEV=$(python3 sun.py "$PASS_START")
 
-if [ ! -d ${NOAA_OUTPUT}/image/${FOLDER_DATE} ]; then
-	mkdir -p ${NOAA_OUTPUT}/image/${FOLDER_DATE}
+if [ ! -d "{NOAA_OUTPUT}/image/${FOLDER_DATE}" ]; then
+	mkdir -p "${NOAA_OUTPUT}/image/${FOLDER_DATE}"
 fi
 
 if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
@@ -60,17 +68,16 @@ else
 	ENHANCEMENTS="ZA MCIR MCIR-precip"
 fi
 
-/usr/local/bin/wxmap -T "${1}" -H "${4}" -p 0 -l 0 -o "${PASS_START}" ${NOAA_HOME}/map/"${3}"-map.png
+/usr/local/bin/wxmap -T "${1}" -H "${4}" -p 0 -l 0 -o "${PASS_START}" "${NOAA_HOME}/map/${3}-map.png"
 for i in $ENHANCEMENTS; do
-	/usr/local/bin/wxtoimg -o -m ${NOAA_HOME}/map/"${3}"-map.png -e $i ${NOAA_AUDIO}/audio/"${3}".wav ${NOAA_OUTPUT}/image/${FOLDER_DATE}/"${3}"-$i.jpg
-	/usr/bin/convert -quality 90 -format jpg ${NOAA_OUTPUT}/image/${FOLDER_DATE}/"${3}"-$i.jpg -undercolor black -fill yellow -pointsize 18 -annotate +20+20 "${1} $i ${START_DATE}" ${NOAA_OUTPUT}/image/${FOLDER_DATE}/"${3}"-$i.jpg
-	/usr/bin/gdrive upload --parent 1gehY-0iYkNSkBU9RCDsSTexRaQ_ukN0A ${NOAA_OUTPUT}/image/${FOLDER_DATE}/"${3}"-$i.jpg
+	/usr/local/bin/wxtoimg -o -m "${NOAA_HOME}/map/${3}-map.png" -e "$i" "${NOAA_AUDIO}/audio/${3}.wav" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-$i.jpg"
+	/usr/bin/convert -quality 90 -format jpg "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-$i.jpg" -undercolor black -fill yellow -pointsize 18 -annotate +20+20 "${1} $i ${START_DATE}" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-$i.jpg"
 done
 
 if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
-	python2 ${NOAA_HOME}/post.py "$1 ${START_DATE}" "$7" ${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MCIR-precip.jpg ${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MSA-precip.jpg ${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-HVC-precip.jpg ${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-HVCT-precip.jpg 
+	python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE}" "$7" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MCIR-precip.jpg" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MSA-precip.jpg" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-HVC-precip.jpg" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-HVCT-precip.jpg" 
 else
-	python2 ${NOAA_HOME}/post.py "$1 ${START_DATE}" "$7" ${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MCIR-precip.jpg ${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MCIR.jpg 
+	python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE}" "$7" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MCIR-precip.jpg" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MCIR.jpg"
 fi
 
-rm ${NOAA_AUDIO}/audio/*
+rm "${NOAA_AUDIO}/audio/${3}.wav"
