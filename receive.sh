@@ -1,44 +1,17 @@
-#!/bin/sh
+#!/bin/bash
 
-## debug
-# set -x
 
-. ~/.noaa.conf
+## import common lib
+. ~/common.sh
 
-## sane checks
-if [ ! -d "${NOAA_HOME}" ]; then
-	mkdir -p "${NOAA_HOME}"
-fi
 
-if [ ! -d "${NOAA_OUTPUT}" ]; then
-	mkdir -p "${NOAA_OUTPUT}"
-fi
-
-if [ ! -d "${NOAA_AUDIO}/audio/" ]; then
-	mkdir -p "${NOAA_AUDIO}/audio/"
-fi
-
-if [ ! -d "${NOAA_OUTPUT}/image/" ]; then
-	mkdir -p "${NOAA_OUTPUT}/image/"
-fi
-
-if [ ! -d "${NOAA_HOME}/map/" ]; then
-	mkdir -p "${NOAA_HOME}/map/"
-fi
-
-if [ ! -d "${NOAA_HOME}/predict/" ]; then
-	mkdir -p "${NOAA_HOME}/predict/"
-fi
-
-#if pgrep "stream_fm" > /dev/null
-#then
-#	pkill -9 -f stream_fm
-#	pkill -9 -f rtl_fm
-#	pkill -9 -f socat
-#fi
+## pass start timestamp and sun elevation
+PASS_START=$(expr "$5" + 90)
+SUN_ELEV=$(python3 sun.py "$PASS_START")
 
 if pgrep "rtl_fm" > /dev/null
 then
+	log "There is an existing rtl_fm instance running, I quit" "ERROR"
 	exit 1
 fi
 
@@ -50,13 +23,7 @@ fi
 # $6 = Time to capture
 # $7 = Satellite max elevation
 
-START_DATE=$(date '+%d-%m-%Y %H:%M')
-FOLDER_DATE="$(date +%Y)/$(date +%m)/$(date +%d)"
 timeout "${6}" /usr/local/bin/rtl_fm -f "${2}"M -s 60k -g 50 -p 55 -E wav -E deemp -F 9 - | /usr/bin/sox -t raw -e signed -c 1 -b 16 -r 60000 - "${NOAA_AUDIO}/audio/${3}.wav" rate 11025
-
-sudo renice -19 -p "$(pidof rtl_fm)"
-PASS_START=$(expr "$5" + 90)
-SUN_ELEV=$(python3 sun.py "$PASS_START")
 
 if [ ! -d "{NOAA_OUTPUT}/image/${FOLDER_DATE}" ]; then
 	mkdir -p "${NOAA_OUTPUT}/image/${FOLDER_DATE}"

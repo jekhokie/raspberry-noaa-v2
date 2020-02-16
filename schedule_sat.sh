@@ -1,13 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 
-## debug
-# set -x
+## import common lib
+. ~/common.sh
 
-. ~/.noaa.conf
+# $1 = Satellite Name
+# $2 = Frequency
+# $3 = FileName base
+# $4 = TLE File
+# $5 = EPOC start time
+# $6 = Time to capture
+# $7 = Satellite max elevation
 
 PREDICTION_START=$(/usr/bin/predict -t "${NOAA_HOME}"/predict/weather.tle -p "${1}" | head -1)
 PREDICTION_END=$(/usr/bin/predict -t "${NOAA_HOME}"/predict/weather.tle -p "${1}" | tail -1)
-
 
 var2=$(echo "${PREDICTION_END}" | cut -d " " -f 1)
 
@@ -20,8 +25,7 @@ while [ "$(date --date="@${var2}" +%D)" = "$(date +%D)" ]; do
 	TIMER=$(expr "${var2}" - "${var1}" + "${var3}")
 	OUTDATE=$(date --date="TZ=\"UTC\" ${START_TIME}" +%Y%m%d-%H%M%S)
 
-	if [ "${MAXELEV}" -gt "${SAT_MIN_ELEV}" ]
-	then
+	if [ "${MAXELEV}" -gt "${SAT_MIN_ELEV}" ]; then
 		SATNAME=$(echo "$1" | sed "s/ //g")
 		echo "${SATNAME}" "${OUTDATE}" "$MAXELEV"
 		echo "${NOAA_HOME}/receive.sh \"${1}\" $2 ${SATNAME}${OUTDATE} "${NOAA_HOME}"/predict/weather.tle \
