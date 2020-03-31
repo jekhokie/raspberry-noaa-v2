@@ -10,8 +10,8 @@ Most of the code and setup stolen from: [Instructables](https://www.instructable
   - [Wiki](https://github.com/reynico/raspberry-noaa/wiki) is updated!
   - Audio files are stored on a RAMFS partition. Happen to had some glitches on image reception
 
-### Manual work
-  - See [Wiki's install and config page](https://github.com/reynico/raspberry-noaa/wiki/Initial-installation-and-configuration) for information
+### Install
+There's an [install.sh](install.sh) script that does everything at once. If in doubt, see the [Wiki's install and config page](https://github.com/reynico/raspberry-noaa/wiki/Initial-installation-and-configuration).
 
 ### Important notes
   - I tried to run this on a Raspberry PI Zero Wifi, no luck. Seems like it's too much load for the CPU. Running on a Raspberry PI 2+ is ok. See [Wiki's hardware notes page](https://github.com/reynico/raspberry-noaa/wiki/Hardware-notes).

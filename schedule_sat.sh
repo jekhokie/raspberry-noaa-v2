@@ -1,7 +1,8 @@
 #!/bin/bash
 
 ## import common lib
-. ~/common.sh
+. ~/.noaa.conf
+. "${NOAA_HOME}"/common.sh
 
 # $1 = Satellite Name
 # $2 = Frequency

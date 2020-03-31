@@ -4,6 +4,7 @@
 # set -x
 
 . ~/.noaa.conf
+. "${NOAA_HOME}"/common.sh
 SAT_MIN_ELEV=10
 
 PREDICTION_START=$(/usr/bin/predict -t "${NOAA_HOME}"/predict/amateur.tle -p "${1}" | head -1)

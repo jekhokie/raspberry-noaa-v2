@@ -4,6 +4,7 @@
 # set -x
 
 . ~/.noaa.conf
+. "${NOAA_HOME}"/common.sh
 
 declare -A levels=([DEBUG]=0 [INFO]=1 [WARN]=2 [ERROR]=3)
 log_level=${LOG_LEVEL}
