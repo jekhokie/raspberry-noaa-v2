@@ -2,7 +2,8 @@
 
 
 ## import common lib
-. ~/common.sh
+. ~/.noaa.conf
+. "${NOAA_HOME}"/common.sh
 
 
 ## pass start timestamp and sun elevation
