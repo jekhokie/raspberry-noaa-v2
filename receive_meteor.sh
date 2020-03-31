@@ -1,7 +1,8 @@
 #!/bin/bash
 
 ## import common lib
-. ~/common.sh
+. ~/.noaa.conf
+. "${NOAA_HOME}"/common.sh
 
 ## pass start timestamp and sun elevation
 PASS_START=$(expr "$5" + 90)
@@ -27,12 +28,12 @@ fi
 # $7 = Satellite max elevation
 
 log "Starting rtl_fm record" "INFO"
-timeout "${6}" /usr/local/bin/rtl_fm -M raw -f "${2}"M -s 288k -g 48 -p 1 | sox -t raw -r 288k -c 2 -b 16 -e s - -t wav "${NOAA_AUDIO}/audio/${3}.wav" rate 96k
+timeout "${6}" /usr/local/bin/rtl_fm -M raw -f "${2}"M -s 288k -g 48 -p 1 | sox -t raw -r 288k -c 2 -b 16 -e s - -t wav "${METEOR_OUTPUT}/audio/${3}.wav" rate 96k
 
 log "Normalization in progress" "INFO"
-sox "${NOAA_AUDIO}/audio/${3}.wav" "${METEOR_OUTPUT}/${3}.wav" gain -n
+sox "${METEOR_OUTPUT}/audio/${3}.wav" "${METEOR_OUTPUT}/${3}.wav" gain -n
 
-rm "${NOAA_AUDIO}/audio/${3}.wav"
+rm "${METEOR_OUTPUT}/audio/${3}.wav"
 
 log "Demodulation in progress (QPSK)" "INFO"
 meteor_demod -B -o "${METEOR_OUTPUT}/${3}.qpsk" "${METEOR_OUTPUT}/${3}.wav"
