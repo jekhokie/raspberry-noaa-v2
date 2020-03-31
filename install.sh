@@ -138,6 +138,7 @@ else
 fi
 
 ### Setup Nginx
+log_running "Setting up Nginx..."
 sudo cp nginx.cfg /etc/nginx/sites-enabled/default
 (
     sudo mkdir -p /var/www/wx
@@ -146,6 +147,8 @@ sudo cp nginx.cfg /etc/nginx/sites-enabled/default
     sudo chmod 775 /var/www/wx
 )
 sudo systemctl restart nginx
+cp index.html /var/www/wx/index.html
+log_done "Nginx configured"
 
 ### Setup ramFS
 cat /etc/fstab | grep -q "ramfs"
