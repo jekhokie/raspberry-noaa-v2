@@ -46,12 +46,13 @@ sudo apt install -yq predict \
                      nginx \
                      libncurses5-dev \
                      libncursesw5-dev \
+                     libatlas-base-dev \
                      python3-pip \
                      imagemagick \
                      libxft-dev \
                      libxft2
 
-sudo pip3 install numpy ephem tweepy
+sudo pip3 install numpy ephem tweepy Pillow
 log_done "Packages installed"
 
 ### Blacklist DVB modules
@@ -174,4 +175,5 @@ success "Install (almost) done! Let's do some configuration"
 echo "
     1. Edit $HOME/.noaa.conf 
     2. Edit $HOME/.predict/predict.qth and set lat/lon data
+    3. Edit sun.py and set lat/lon data
     "
