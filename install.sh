@@ -46,8 +46,12 @@ sudo apt install -yq predict \
                      nginx \
                      libncurses5-dev \
                      libncursesw5-dev \
-                     python3-pip
-sudo pip3 install numpy
+                     python3-pip \
+                     imagemagick \
+                     libxft-dev \
+                     libxft2
+
+sudo pip3 install numpy ephem tweepy
 log_done "Packages installed"
 
 ### Blacklist DVB modules
@@ -147,6 +151,9 @@ sudo cp nginx.cfg /etc/nginx/sites-enabled/default
     sudo chmod 775 /var/www/wx
 )
 sudo systemctl restart nginx
+if [ ! -e /var/www/wx/index.html ]; then
+    cp index.html /var/www/wx/index.html
+fi
 cp index.html /var/www/wx/index.html
 log_done "Nginx configured"
 
