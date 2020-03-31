@@ -154,7 +154,6 @@ sudo systemctl restart nginx
 if [ ! -e /var/www/wx/index.html ]; then
     cp index.html /var/www/wx/index.html
 fi
-cp index.html /var/www/wx/index.html
 log_done "Nginx configured"
 
 ### Setup ramFS
