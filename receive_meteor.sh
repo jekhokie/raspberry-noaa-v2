@@ -6,7 +6,7 @@
 
 ## pass start timestamp and sun elevation
 PASS_START=$(expr "$5" + 90)
-SUN_ELEV=$(python3 sun.py "$PASS_START")
+SUN_ELEV=$(python3 "$NOAA_HOME"/sun.py "$PASS_START")
 
 if [ "${SUN_ELEV}" -lt "${SUN_MIN_ELEV}" ]; then
 	log "Sun elev is too low. Meteor IR radiometers are not working" "INFO"

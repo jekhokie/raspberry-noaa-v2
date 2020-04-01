@@ -60,7 +60,7 @@ log_done "Packages installed"
 if [ -e /etc/modprobe.d/rtlsdr.conf ]; then
     log_done "DVB modules were already blacklisted"
 else
-    sudo cp modprobe.d/rtlsdr.conf /etc/modprobe.d/rtlsdr.conf
+    sudo cp templates/modprobe.d/rtlsdr.conf /etc/modprobe.d/rtlsdr.conf
     log_done "DVB modules are blacklisted now"
 fi
 
@@ -90,7 +90,7 @@ if [ -e /usr/local/bin/xwxtoimg ]; then
     log_done "WxToIMG was already installed"
 else
     log_running "Installing WxToIMG..."
-    sudo dpkg -i wxtoimg-armhf-2.11.2-beta.deb
+    sudo dpkg -i software/wxtoimg-armhf-2.11.2-beta.deb
     log_done "WxToIMG installed"
 fi
 
@@ -98,21 +98,21 @@ fi
 if [ -e "$HOME/.noaa.conf" ]; then
     log_done "$HOME/.noaa.conf already exists"
 else
-    cp "noaa.conf" "$HOME/.noaa.conf"
+    cp "templates/noaa.conf" "$HOME/.noaa.conf"
     log_done "$HOME/.noaa.conf installed"
 fi
 
 if [ -e "$HOME/.predict/predict.qth" ]; then
     log_done "$HOME/.predict/predict.qth already exists"
 else
-    cp "predict.qth" "$HOME/.predict/predict.qth"
+    cp "templates/predict.qth" "$HOME/.predict/predict.qth"
     log_done "$HOME/.predict/predict.qth installed"
 fi
 
 if [ -e "$HOME/.wxtoimgrc" ]; then
     log_done "$HOME/.wxtoimgrc already exists"
 else
-    cp "wxtoimgrc" "$HOME/.wxtoimgrc"
+    cp "templates/wxtoimgrc" "$HOME/.wxtoimgrc"
     log_done "$HOME/.wxtoimgrc installed"
 fi
 
@@ -136,7 +136,7 @@ if [ -e /usr/bin/medet_arm ]; then
     log_done "medet_arm was already installed"
 else
     log_running "Installing medet_arm..."
-    sudo cp medet_arm /usr/bin/medet_arm
+    sudo cp software/medet_arm /usr/bin/medet_arm
     sudo chmod +x /usr/bin/medet_arm
     log_done "medet_arm installed"
 fi
@@ -152,7 +152,7 @@ fi
 
 ### Setup Nginx
 log_running "Setting up Nginx..."
-sudo cp nginx.cfg /etc/nginx/sites-enabled/default
+sudo cp templates/nginx.cfg /etc/nginx/sites-enabled/default
 (
     sudo mkdir -p /var/www/wx
     sudo chown -R www-data:www-data /var/www/wx
@@ -161,7 +161,7 @@ sudo cp nginx.cfg /etc/nginx/sites-enabled/default
 )
 sudo systemctl restart nginx
 if [ ! -e /var/www/wx/index.html ]; then
-    cp index.html /var/www/wx/index.html
+    cp templates/index.html /var/www/wx/index.html
 fi
 log_done "Nginx configured"
 
@@ -171,7 +171,7 @@ if [ $? -eq 0 ]; then
     log_done "ramfs already setup"
 else
     sudo mkdir -p /var/ramfs
-    cat fstab | sudo tee -a /etc/fstab > /dev/null
+    cat templates/fstab | sudo tee -a /etc/fstab > /dev/null
     log_done "Ramfs installed"
 fi
 set +e
