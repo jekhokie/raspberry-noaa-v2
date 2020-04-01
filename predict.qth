@@ -1,4 +1,4 @@
 raspberry
- << your latitude>>
- << your longitude >>
- <<sea level meters >>
+ change_latitude
+ change_longitude
+ 50
