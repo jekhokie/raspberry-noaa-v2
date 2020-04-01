@@ -2,8 +2,9 @@
 
 
 ## import common lib
-. ~/.noaa.conf
-. "${NOAA_HOME}"/common.sh
+. "$HOME/.noaa.conf"
+. "$HOME/.tweepy.conf"
+. "$NOAA_HOME/common.sh"
 
 
 ## pass start timestamp and sun elevation
@@ -41,11 +42,12 @@ for i in $ENHANCEMENTS; do
 	/usr/local/bin/wxtoimg -o -m "${NOAA_HOME}/map/${3}-map.png" -e "$i" "${NOAA_AUDIO}/audio/${3}.wav" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-$i.jpg"
 	/usr/bin/convert -quality 90 -format jpg "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-$i.jpg" -undercolor black -fill yellow -pointsize 18 -annotate +20+20 "${1} $i ${START_DATE}" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-$i.jpg"
 done
-
-if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
-	python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE}" "$7" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MCIR-precip.jpg" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MSA-precip.jpg" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-HVC-precip.jpg" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-HVCT-precip.jpg" 
-else
-	python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE}" "$7" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MCIR-precip.jpg" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MCIR.jpg"
+if [ -n "$CONSUMER_KEY" ]; then
+	if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
+		python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE}" "$7" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MCIR-precip.jpg" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MSA-precip.jpg" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-HVC-precip.jpg" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-HVCT-precip.jpg" 
+	else
+		python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE}" "$7" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MCIR-precip.jpg" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MCIR.jpg"
+	fi
 fi
 
 rm "${NOAA_AUDIO}/audio/${3}.wav"

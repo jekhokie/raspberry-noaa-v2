@@ -1,8 +1,9 @@
 #!/bin/bash
 
 ## import common lib
-. ~/.noaa.conf
-. "${NOAA_HOME}"/common.sh
+. "$HOME/.noaa.conf"
+. "$HOME/.tweepy.conf"
+. "$NOAA_HOME/common.sh"
 
 ## pass start timestamp and sun elevation
 PASS_START=$(expr "$5" + 90)
@@ -53,8 +54,10 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
     python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
     rm "${METEOR_OUTPUT}/${3}-122.bmp"
     rm "${METEOR_OUTPUT}/${3}.bmp"
-    log "Posting to Twitter" "INFO"
-    python3 "${NOAA_HOME}/post.py" "$1 EXPERIMENTAL ${START_DATE} Resolución completa: http://weather.reyni.co/image/${FOLDER_DATE}/${3}-122-rectified.jpg" "$7" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122-rectified.jpg"
+    if [ -n "$CONSUMER_KEY" ]; then
+        log "Posting to Twitter" "INFO"
+        python3 "${NOAA_HOME}/post.py" "$1 EXPERIMENTAL ${START_DATE} Resolución completa: http://weather.reyni.co/image/${FOLDER_DATE}/${3}-122-rectified.jpg" "$7" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122-rectified.jpg"
+    fi
 else
     log "Decoding failed, either a bad pass/low SNR or a software problem" "ERROR"
 fi

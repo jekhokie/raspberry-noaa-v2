@@ -116,6 +116,13 @@ else
     log_done "$HOME/.wxtoimgrc installed"
 fi
 
+if [ -e "$HOME/.tweepy.conf" ]; then
+    log_done "$HOME/.tweepy.conf already exists"
+else
+    cp "templates/tweepy.conf" "$HOME/.tweepy.conf"
+    log_done "$HOME/.tweepy.conf installed"
+fi
+
 ### Install meteor_demod
 if [ -e /usr/bin/meteor_demod ]; then
     log_done "meteor_demod was already installed"
@@ -179,7 +186,7 @@ sudo mount -a
 set -e
 sudo chmod 777 /var/ramfs
 
-success "Install (almost) done! Let's do some configuration"
+success "Install (almost) done!"
 echo "
     It's time to configure your ground station
     You'll be asked for your latitude and longitude
@@ -199,3 +206,8 @@ sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/${lon}/g" "sun.py"
 
 
 success "Install done! Double check your $HOME/.noaa.conf settings"
+
+echo "
+    If you want to post your images to Twitter, please setup
+    your Twitter credentials on $HOME/.tweepy.conf
+"
