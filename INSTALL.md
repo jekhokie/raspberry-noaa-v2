@@ -38,7 +38,7 @@ sudo pip3 install numpy ephem tweepy Pillow
 
 ### Install rtl_sdr
 ```
-sudo cp modprobe.d/rtlsdr.conf /etc/modprobe.d/rtlsdr.conf
+sudo cp templates/modprobe.d/rtlsdr.conf /etc/modprobe.d/rtlsdr.conf
 ```
 
 - clone rlt-sdr git repo and install rtl-sdr:
@@ -59,7 +59,7 @@ sudo cp ./rtl-sdr/rtl-sdr.rules /etc/udev/rules.d/
 ### Install WXToIMG
 There's a deb package for it
 ```
-sudo dpkg -i wxtoimg-armhf-2.11.2-beta.deb
+sudo dpkg -i software/wxtoimg-armhf-2.11.2-beta.deb
 ```
 
 ## Raspberry-noaa configuration
@@ -73,17 +73,17 @@ cd raspberry-noaa
 ### Install the default configuration files
 - noaa.conf: paths, satellite elevation and loggin 
 ```
-cp "noaa.conf" "$HOME/.noaa.conf"
+cp "templates/noaa.conf" "$HOME/.noaa.conf"
 ```
 
 - predict.qth: Predict's ground station settings
 ```
-cp "predict.qth" "$HOME/.predict/predict.qth"
+cp "templates/predict.qth" "$HOME/.predict/predict.qth"
 ```
 
 - wxtoimgrc: WxToIMG ground station settings and license
 ```
-cp "wxtoimgrc" "$HOME/.wxtoimgrc"
+cp "templates/wxtoimgrc" "$HOME/.wxtoimgrc"
 ```
 
 Don't forget to adjust your settings in those files
@@ -100,25 +100,25 @@ cd ..
 
 - medet_arm
 ```
-sudo cp medet_arm /usr/bin/medet_arm
+sudo cp software/medet_arm /usr/bin/medet_arm
 sudo chmod +x /usr/bin/medet_arm
 ```
 
 ### Setup Nginx
 ```
-sudo cp nginx.cfg /etc/nginx/sites-enabled/default
+sudo cp templates/nginx.cfg /etc/nginx/sites-enabled/default
 sudo mkdir -p /var/www/wx
 sudo chown -R www-data:www-data /var/www/wx
 sudo usermod -a -G www-data pi
 sudo chmod 775 /var/www/wx
-cp index.html /var/www/wx/index.html
+cp templates/index.html /var/www/wx/index.html
 sudo systemctl restart nginx
 ```
 
 ### Setup RamFS
 ```
 sudo mkdir -p /var/ramfs
-cat fstab | sudo tee -a /etc/fstab > /dev/null
+cat templates/fstab | sudo tee -a /etc/fstab > /dev/null
 sudo mount -a
 sudo chmod 777 /var/ramfs
 ```
@@ -130,10 +130,13 @@ cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa/schedule.sh") | cron
 
 ### Set your Twitter credentials
 - Go to [Twitter Developer site](http://developer.twitter.com/) and apply for a developer account.
-- Set your credentials on `post.py`
 ```
-CONSUMER_KEY = ''
-CONSUMER_SECRET = ''
-ACCESS_TOKEN_KEY = ''
-ACCESS_TOKEN_SECRET = ''
+cp "templates/tweepy.conf" "$HOME/.tweepy.conf"
+```
+- Set your credentials on `"$HOME/.tweepy.conf"`
+```
+export CONSUMER_KEY = ''
+export CONSUMER_SECRET = ''
+export ACCESS_TOKEN_KEY = ''
+export ACCESS_TOKEN_SECRET = ''
 ```
