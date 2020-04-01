@@ -43,6 +43,7 @@ sudo apt install -yq predict \
                      libusb-1.0 \
                      sox \
                      at \
+                     bc \
                      nginx \
                      libncurses5-dev \
                      libncursesw5-dev \
@@ -97,7 +98,7 @@ fi
 if [ -e "$HOME/.noaa.conf" ]; then
     log_done "$HOME/.noaa.conf already exists"
 else
-    cp ".noaa.conf" "$HOME/.noaa.conf"
+    cp "noaa.conf" "$HOME/.noaa.conf"
     log_done "$HOME/.noaa.conf installed"
 fi
 
@@ -106,6 +107,13 @@ if [ -e "$HOME/.predict/predict.qth" ]; then
 else
     cp "predict.qth" "$HOME/.predict/predict.qth"
     log_done "$HOME/.predict/predict.qth installed"
+fi
+
+if [ -e "$HOME/.wxtoimgrc" ]; then
+    log_done "$HOME/.wxtoimgrc already exists"
+else
+    cp "wxtoimgrc" "$HOME/.wxtoimgrc"
+    log_done "$HOME/.wxtoimgrc installed"
 fi
 
 ### Install meteor_demod
@@ -173,7 +181,21 @@ sudo chmod 777 /var/ramfs
 
 success "Install (almost) done! Let's do some configuration"
 echo "
-    1. Edit $HOME/.noaa.conf 
-    2. Edit $HOME/.predict/predict.qth and set lat/lon data
-    3. Edit sun.py and set lat/lon data
+    It's time to configure your ground station
+    You'll be asked for your latitude and longitude
+    Use negative values for South and West
     "
+
+read -rp "Enter your latitude (South values are negative): "
+        lat=$REPLY
+
+read -rp "Enter your longitude (West values are negative): "
+        lon=$REPLY
+
+sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/${lon}/g" "$HOME/.noaa.conf"
+sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/${lon}/g" "$HOME/.wxtoimgrc"
+sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/$(echo  "$lon * -1" | bc)/g" "$HOME/.predict/predict.qth"
+sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/${lon}/g" "sun.py"
+
+
+success "Install done! Double check your $HOME/.noaa.conf settings"
