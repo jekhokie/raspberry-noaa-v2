@@ -29,34 +29,34 @@ FOLDER_DATE="$(date +%Y)/$(date +%m)/$(date +%d)"
 
 ## sane checks
 if [ ! -d "${NOAA_HOME}" ]; then
-	mkdir -p "${NOAA_HOME}"
+	mkdir -m 775 -p "${NOAA_HOME}"
 fi
 
 if [ ! -d "${NOAA_OUTPUT}" ]; then
-	mkdir -p "${NOAA_OUTPUT}"
+	mkdir -m 775 -p "${NOAA_OUTPUT}"
 fi
 
 
 if [ ! -d "${METEOR_OUTPUT}" ]; then
-	mkdir -p "${METEOR_OUTPUT}"
+	mkdir -m 775 -p "${METEOR_OUTPUT}"
 fi
 
 if [ ! -d "${NOAA_AUDIO}/audio/" ]; then
-	mkdir -p "${NOAA_AUDIO}/audio/"
+	mkdir -m 775 -p "${NOAA_AUDIO}/audio/"
 fi
 
 if [ ! -d "${NOAA_OUTPUT}/image/" ]; then
-	mkdir -p "${NOAA_OUTPUT}/image/"
+	mkdir -m 775 -p "${NOAA_OUTPUT}/image/"
 fi
 
 if [ ! -d "${NOAA_HOME}/map/" ]; then
-	mkdir -p "${NOAA_HOME}/map/"
+	mkdir -m 775 -p "${NOAA_HOME}/map/"
 fi
 
 if [ ! -d "${NOAA_HOME}/predict/" ]; then
-	mkdir -p "${NOAA_HOME}/predict/"
+	mkdir -m 775 -p "${NOAA_HOME}/predict/"
 fi
 
 if [ ! -d "${NOAA_OUTPUT}/image/${FOLDER_DATE}" ]; then
-        mkdir -p "${NOAA_OUTPUT}/image/${FOLDER_DATE}"
+        mkdir -m 775 -p "${NOAA_OUTPUT}/image/${FOLDER_DATE}"
 fi
