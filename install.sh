@@ -51,7 +51,9 @@ sudo apt install -yq predict \
                      python3-pip \
                      imagemagick \
                      libxft-dev \
-                     libxft2
+                     libxft2 \
+                     libjpeg9 \
+                     libjpeg9-dev
 
 sudo pip3 install numpy ephem tweepy Pillow
 log_done "Packages installed"
@@ -102,9 +104,10 @@ else
     log_done "$HOME/.noaa.conf installed"
 fi
 
-if [ -e "$HOME/.predict/predict.qth" ]; then
+if [ -d "$HOME/.predict" ] && [ -e "$HOME/.predict/predict.qth" ]; then
     log_done "$HOME/.predict/predict.qth already exists"
 else
+    mkdir "$HOME/.predict"
     cp "templates/predict.qth" "$HOME/.predict/predict.qth"
     log_done "$HOME/.predict/predict.qth installed"
 fi
@@ -204,6 +207,8 @@ sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/${lon}/g" "$HOME/.wxtoi
 sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/$(echo  "$lon * -1" | bc)/g" "$HOME/.predict/predict.qth"
 sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/${lon}/g" "sun.py"
 
+# Running WXTOIMG to have the user accept the licensing agreement
+wxtoimg
 
 success "Install done! Double check your $HOME/.noaa.conf settings"
 
