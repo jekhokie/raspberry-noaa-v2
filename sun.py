@@ -2,8 +2,8 @@
 import ephem
 import time
 import sys
-
-date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(sys.argv[1])+3*60*60))
+timezone = change_tz
+date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(sys.argv[1])+(timezone*60*60)))
 
 obs=ephem.Observer()
 obs.lat='change_latitude'
