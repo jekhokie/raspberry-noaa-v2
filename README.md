@@ -1,3 +1,5 @@
+![Raspberry NOAA](header.png)
+
 # NOAA Automated capture using Raspberry PI
 Most of the code and setup stolen from: [Instructables](https://www.instructables.com/id/Raspberry-Pi-NOAA-Weather-Satellite-Receiver/)
 
