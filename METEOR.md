@@ -1,4 +1,4 @@
-![Raspberry NOAA](header.png)
+![Raspberry NOAA](header_1600.png)
 
 ### Meteor M2 decoding
 The satellite uses a 72k QPSK 120hz carrier to send very high quality images

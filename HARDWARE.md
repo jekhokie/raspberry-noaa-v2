@@ -1,4 +1,4 @@
-![Raspberry NOAA](header.png)
+![Raspberry NOAA](header_1600.png)
 
 # Raspberry PI
 I tried to use a Raspberry PI Zero Wifi, but seems like the lack of power makes bananas. Got several issues when recording the audio stream (blank audio, corrupted wav files, etc) as well as wxmap errors when trying to do the overlay. A Raspberry PI 2+ works great, no issues at all.
