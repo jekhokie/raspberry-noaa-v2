@@ -137,8 +137,8 @@ sudo mkdir -p /var/www/wx
 sudo chown -R www-data:www-data /var/www/wx
 sudo usermod -a -G www-data pi
 sudo chmod 775 /var/www/wx
-cp templates/index.html /var/www/wx/index.html
-cp templates/logo-small.png /var/www/wx/logo-small.png
+sudo cp templates/index.html /var/www/wx/index.html
+sudo cp templates/logo-small.png /var/www/wx/logo-small.png
 sudo systemctl restart nginx
 ```
 
