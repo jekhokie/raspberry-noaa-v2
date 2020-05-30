@@ -9,7 +9,10 @@ Most of the code and setup stolen from: [Instructables](https://www.instructable
   - Pictures are posted to Twitter. See more at [argentinasat twitter account](https://twitter.com/argentinasat).
 
 ### Install
-There's an [install.sh](install.sh) script that does everything at once. If in doubt, see the [install guide](INSTALL.md)
+There's an [install.sh](install.sh) script that does (almost) everything at once. If in doubt, see the [install guide](INSTALL.md)
+
+### Post configuration
+* [Setup Twitter auto posting feature](INSTALL.md#set-your-twitter-credentials)
 
 ### Hardware setup
 Raspberry-noaa runs on Raspberry PI 2 and up. See the [hardware notes](HARDWARE.md)
