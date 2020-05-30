@@ -20,6 +20,11 @@ I'm using [Raspbian](https://www.raspberrypi.org/downloads/raspbian/) as it have
 
 # Automatic install
 1. Clone this repository on your home directory
+```
+cd $HOME
+git clone https://github.com/reynico/raspberry-noaa.git
+cd raspberry-noaa
+```
 2. Run `./install.sh`. You will be asked for your ground station lat/lon position.
 3. If you want automatic Twitter posting, see: [Set your Twitter credentials](#set-your-twitter-credentials)
 
