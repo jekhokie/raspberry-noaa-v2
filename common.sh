@@ -41,6 +41,10 @@ if [ ! -d "${METEOR_OUTPUT}" ]; then
 	mkdir -m 775 -p "${METEOR_OUTPUT}"
 fi
 
+if [ ! -d "${METEOR_OUTPUT}/audio/" ]; then
+	mkdir -m 775 -p "${METEOR_OUTPUT}/audio/"
+fi
+
 if [ ! -d "${NOAA_AUDIO}/audio/" ]; then
 	mkdir -m 775 -p "${NOAA_AUDIO}/audio/"
 fi
