@@ -1,3 +1,5 @@
+![Raspberry NOAA](header.png)
+
 - [Raspberry PI operating system](#raspberry-pi-operating-system)
 - [Automatic install](#automatic-install)
 - [Manual install](#manual-install)
