@@ -152,6 +152,7 @@ else
 fi
 
 ### Cron the scheduler
+set +e
 crontab -l | grep -q "raspberry-noaa"
 if [ $? -eq 0 ]; then
     log_done "Crontab for schedule.sh already exists"
@@ -159,10 +160,11 @@ else
     cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa/schedule.sh") | crontab -
     log_done "Crontab installed"
 fi
+set -e
 
 ### Setup Nginx
 log_running "Setting up Nginx..."
-sudo cp templates/nginx.cfg /etc/nginx/sites-enabled/wx
+sudo cp templates/nginx.cfg /etc/nginx/sites-enabled/default
 (
     sudo mkdir -p /var/www/wx
     sudo chown -R www-data:www-data /var/www/wx
