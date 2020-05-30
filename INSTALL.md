@@ -1,11 +1,30 @@
+- [Raspberry PI operating system](#raspberry-pi-operating-system)
+- [Automatic install](#automatic-install)
+- [Manual install](#manual-install)
+  - [Required packages and software](#required-packages-and-software)
+    - [Install rtl_sdr](#install-rtl_sdr)
+    - [Install WXToIMG](#install-wxtoimg)
+  - [Raspberry-noaa configuration](#raspberry-noaa-configuration)
+    - [Clone this repo](#clone-this-repo)
+    - [Install the default configuration files](#install-the-default-configuration-files)
+    - [Install Meteor software](#install-meteor-software)
+    - [Setup Nginx](#setup-nginx)
+    - [Setup RamFS](#setup-ramfs)
+    - [Cron the scheduling job](#cron-the-scheduling-job)
+    - [Set your Twitter credentials](#set-your-twitter-credentials)
+
 # Raspberry PI operating system
 I'm using [Raspbian](https://www.raspberrypi.org/downloads/raspbian/) as it have full support for Raspberry PI, simple package manager and it's pretty stable
 
 # Automatic install
 1. Clone this repository on your home directory
 2. Run `./install.sh`. You will be asked for your ground station lat/lon position.
+3. If you want automatic Twitter posting, see: [Set your Twitter credentials](#set-your-twitter-credentials)
 
-The install setup is described down here:
+
+This is pretty much the entire setup. If you are interested about the behind of scenes please check the following section
+
+---
 
 
 # Manual install
