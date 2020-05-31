@@ -181,6 +181,7 @@ fi
 log_done "Nginx configured"
 
 ### Setup ramFS
+set +e
 cat /etc/fstab | grep -q "ramfs"
 if [ $? -eq 0 ]; then
     log_done "ramfs already setup"
@@ -189,10 +190,9 @@ else
     cat templates/fstab | sudo tee -a /etc/fstab > /dev/null
     log_done "Ramfs installed"
 fi
-set +e
 sudo mount -a
-set -e
 sudo chmod 777 /var/ramfs
+set -e
 
 success "Install (almost) done!"
 echo "
