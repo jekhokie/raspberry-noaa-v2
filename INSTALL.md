@@ -19,7 +19,12 @@
 I'm using [Raspbian](https://www.raspberrypi.org/downloads/raspbian/) as it have full support for Raspberry PI, simple package manager and it's pretty stable
 
 # Automatic install
-1. Clone this repository on your home directory
+1. Update repositories and install git
+```
+sudo apt update
+sudo apt install git
+```
+2. Clone this repository on your home directory
 ```
 cd $HOME
 git clone https://github.com/reynico/raspberry-noaa.git
