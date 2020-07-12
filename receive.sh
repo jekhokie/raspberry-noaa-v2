@@ -25,7 +25,7 @@ fi
 # $6 = Time to capture
 # $7 = Satellite max elevation
 
-timeout "${6}" /usr/local/bin/rtl_fm -f "${2}"M -s 60k -g 50 -p 55 -E wav -E deemp -F 9 - | /usr/bin/sox -t raw -e signed -c 1 -b 16 -r 60000 - "${NOAA_AUDIO}/audio/${3}.wav" rate 11025
+timeout "${6}" /usr/local/bin/rtl_fm ${BIAS_TEE} -f "${2}"M -s 60k -g 50 -p 55 -E wav -E deemp -F 9 - | /usr/bin/sox -t raw -e signed -c 1 -b 16 -r 60000 - "${NOAA_AUDIO}/audio/${3}.wav" rate 11025
 
 if [ ! -d "{NOAA_OUTPUT}/image/${FOLDER_DATE}" ]; then
 	mkdir -m 775 -p "${NOAA_OUTPUT}/image/${FOLDER_DATE}"

@@ -195,6 +195,15 @@ sudo chmod 777 /var/ramfs
 set -e
 
 success "Install (almost) done!"
+
+read -rp "Do you want to enable bias-tee? (y/N)"
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    sed -i -e "s/enable_bias_tee/-T/g" "$HOME/.noaa.conf"
+    log_done "Bias-tee is enabled!"
+else
+    sed -i -e "s/enable_bias_tee//g" "$HOME/.noaa.conf"
+fi
+
 echo "
     It's time to configure your ground station
     You'll be asked for your latitude and longitude
