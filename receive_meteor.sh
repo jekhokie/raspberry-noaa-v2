@@ -34,12 +34,14 @@ timeout "${6}" /usr/local/bin/rtl_fm -M raw -f "${2}"M -s 288k -g 48 -p 1 | sox 
 log "Normalization in progress" "INFO"
 sox "${METEOR_OUTPUT}/audio/${3}.wav" "${METEOR_OUTPUT}/${3}.wav" gain -n
 
-rm "${METEOR_OUTPUT}/audio/${3}.wav"
 
 log "Demodulation in progress (QPSK)" "INFO"
 meteor_demod -B -o "${METEOR_OUTPUT}/${3}.qpsk" "${METEOR_OUTPUT}/${3}.wav"
 
-rm "${METEOR_OUTPUT}/${3}.wav"
+if [ "$DELETE_AUDIO" = true ];
+    rm "${METEOR_OUTPUT}/audio/${3}.wav"
+    rm "${METEOR_OUTPUT}/${3}.wav"
+fi
 
 log "Decoding in progress (QPSK to BMP)" "INFO"
 medet_arm "${METEOR_OUTPUT}/${3}.qpsk" "${METEOR_OUTPUT}/${3}" -cd
