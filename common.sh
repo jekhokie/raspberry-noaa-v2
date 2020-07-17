@@ -32,8 +32,8 @@ if [ ! -d "${NOAA_HOME}" ]; then
 	mkdir -m 775 -p "${NOAA_HOME}"
 fi
 
-if [ ! -d "${NOAA_OUTPUT}" ]; then
-	mkdir -m 775 -p "${NOAA_OUTPUT}"
+if [ ! -d "${NOAA_OUTPUT}/audio/" ]; then
+	mkdir -m 775 -p "${NOAA_OUTPUT}/audio/"
 fi
 
 
