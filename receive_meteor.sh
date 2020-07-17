@@ -29,7 +29,7 @@ fi
 # $7 = Satellite max elevation
 
 log "Starting rtl_fm record" "INFO"
-timeout "${6}" /usr/local/bin/rtl_fm -M raw -f "${2}"M -s 288k -g 48 -p 1 | sox -t raw -r 288k -c 2 -b 16 -e s - -t wav "${METEOR_OUTPUT}/audio/${3}.wav" rate 96k
+timeout "${6}" /usr/local/bin/rtl_fm ${BIAS_TEE} -M raw -f "${2}"M -s 288k -g 48 -p 1 | sox -t raw -r 288k -c 2 -b 16 -e s - -t wav "${METEOR_OUTPUT}/audio/${3}.wav" rate 96k
 
 log "Normalization in progress" "INFO"
 sox "${METEOR_OUTPUT}/audio/${3}.wav" "${METEOR_OUTPUT}/${3}.wav" gain -n
