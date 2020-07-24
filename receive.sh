@@ -50,7 +50,7 @@ if [ -n "$CONSUMER_KEY" ]; then
 	fi
 fi
 
-if [ "$DELETE_AUDIO" = true ];
+if [ "$DELETE_AUDIO" = true ]; then
     rm "${NOAA_AUDIO}/audio/${3}.wav"
 else
     # Move the audio from the ram fs to the SD Card
