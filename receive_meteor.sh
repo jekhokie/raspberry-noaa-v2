@@ -38,7 +38,7 @@ sox "${METEOR_OUTPUT}/audio/${3}.wav" "${METEOR_OUTPUT}/${3}.wav" gain -n
 log "Demodulation in progress (QPSK)" "INFO"
 meteor_demod -B -o "${METEOR_OUTPUT}/${3}.qpsk" "${METEOR_OUTPUT}/${3}.wav"
 
-if [ "$DELETE_AUDIO" = true ];
+if [ "$DELETE_AUDIO" = true ]; then
     rm "${METEOR_OUTPUT}/audio/${3}.wav"
     rm "${METEOR_OUTPUT}/${3}.wav"
 fi
