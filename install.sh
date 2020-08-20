@@ -53,7 +53,8 @@ sudo apt install -yq predict \
                      libxft-dev \
                      libxft2 \
                      libjpeg9 \
-                     libjpeg9-dev
+                     libjpeg9-dev \
+                     socat
 
 sudo pip3 install numpy ephem tweepy Pillow
 log_done "Packages installed"
