@@ -7,7 +7,7 @@ fi
 
 command_exists() {
     if ! command -v "$1" &> /dev/null; then
-        echo "Required command not found: $1"
+        log "Required command not found: $1" "ERROR"
         exit 1
     fi
 }
@@ -20,6 +20,12 @@ command_exists "socat"
 . "$NOAA_HOME/common.sh"
 
 IP=$(ip route | grep "link src" | awk {'print $NF'})
+
+if pgrep "rtl_fm" > /dev/null
+then
+    log "There is an existing rtl_fm instance running, I quit" "ERROR"
+    exit 1
+fi
 
 echo "$(tput setaf 2)
     The server is in testing mode tuned to $1 Mhz!
