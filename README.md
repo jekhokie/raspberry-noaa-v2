@@ -16,5 +16,8 @@ There's an [install.sh](install.sh) script that does (almost) everything at once
 ## Post config
 * [Setup Twitter auto posting feature](INSTALL.md#set-your-twitter-credentials)
 
+## How do I know if it is running properly?
+This project is intended as a zero-maintenance system where you just power-up the Raspberry PI and wait for images to be received. However, if you are in doubt about it just follow the [working guide](WORKING.md)
+
 ## Hardware setup
 Raspberry-noaa runs on Raspberry PI 2 and up. See the [hardware notes](HARDWARE.md)
