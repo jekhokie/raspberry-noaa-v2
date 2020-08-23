@@ -1,8 +1,8 @@
 #!/bin/bash
 
 ## import common lib
-. ~/.noaa.conf
-. "${NOAA_HOME}"/common.sh
+. "$HOME/.noaa.conf"
+. "$NOAA_HOME/common.sh"
 
 PREDICTION_START=$(/usr/bin/predict -t "${NOAA_HOME}"/predict/weather.tle -p "${1}" | head -1)
 PREDICTION_END=$(/usr/bin/predict -t "${NOAA_HOME}"/predict/weather.tle -p "${1}" | tail -1)

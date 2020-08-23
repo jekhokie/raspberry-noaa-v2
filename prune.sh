@@ -1,7 +1,8 @@
 #!/bin/bash
 
 ## import common lib
-. ~/common.sh
+. "$HOME/.noaa.conf"
+. "$NOAA_HOME/common.sh"
 
 find "${NOAA_HOME}/map/" -type f -name '*.png' -mtime +1 -exec rm -f {} \;
 log "${NOAA_HOME}/map/ folder pruned" "INFO"

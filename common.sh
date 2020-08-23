@@ -3,7 +3,7 @@
 ## debug
 # set -x
 
-. ~/.noaa.conf
+. "$HOME/.noaa.conf"
 
 declare -A levels=([DEBUG]=0 [INFO]=1 [WARN]=2 [ERROR]=3)
 log_level=${LOG_LEVEL}

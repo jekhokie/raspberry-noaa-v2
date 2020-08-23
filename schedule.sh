@@ -1,8 +1,8 @@
 #!/bin/bash
 
 ## import common lib
-. ~/.noaa.conf
-. "${NOAA_HOME}"/common.sh
+. "$HOME/.noaa.conf"
+. "$NOAA_HOME/common.sh"
 
 wget -qr http://www.celestrak.com/NORAD/elements/weather.txt -O "${NOAA_HOME}"/predict/weather.txt
 wget -qr http://www.celestrak.com/NORAD/elements/amateur.txt -O "${NOAA_HOME}"/predict/amateur.txt
