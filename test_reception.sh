@@ -1,23 +1,23 @@
 #!/bin/bash
 
+## import common lib
+. "$HOME/.noaa.conf"
+. "$NOAA_HOME/common.sh"
+
 if [ -z "$1" ]; then
-    echo "Usage: $0 <frequency>. Example: $0 90.3"
+    log "Usage: $0 <frequency>. Example: $0 90.3" "ERROR"
     exit 1
 fi
 
 command_exists() {
     if ! command -v "$1" &> /dev/null; then
-        echo "Required command not found: $1" "ERROR"
+        log "Required command not found: $1" "ERROR"
         exit 1
     fi
 }
 
 command_exists "sox"
 command_exists "socat"
-
-## import common lib
-. "$HOME/.noaa.conf"
-. "$NOAA_HOME/common.sh"
 
 IP=$(ip route | grep "link src" | awk {'print $NF'})
 
