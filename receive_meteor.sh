@@ -34,11 +34,11 @@ timeout "${6}" /usr/local/bin/rtl_fm ${BIAS_TEE} -M raw -f "${2}"M -s 288k -g 48
 log "Normalization in progress" "INFO"
 sox "${METEOR_OUTPUT}/audio/${3}.wav" "${METEOR_OUTPUT}/${3}.wav" gain -n
 
-
 log "Demodulation in progress (QPSK)" "INFO"
 meteor_demod -B -o "${METEOR_OUTPUT}/${3}.qpsk" "${METEOR_OUTPUT}/${3}.wav"
 
 if [ "$DELETE_AUDIO" = true ]; then
+    log "Deleting audio files" "INFO"
     rm "${METEOR_OUTPUT}/audio/${3}.wav"
     rm "${METEOR_OUTPUT}/${3}.wav"
 fi
@@ -55,6 +55,7 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
     log "Rectifying image to adjust aspect ratio" "INFO"
     python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
     convert "${NOAA_OUTPUT}/image/${3}-122-rectified.jpg" -channel rgb -normalize "${NOAA_OUTPUT}/image/${3}-122-rectified.jpg"
+    log "Deleting base image files" "INFO"
     rm "${METEOR_OUTPUT}/${3}-122.bmp"
     rm "${METEOR_OUTPUT}/${3}.bmp"
     rm "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
