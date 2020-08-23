@@ -54,8 +54,10 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
     convert "${METEOR_OUTPUT}/${3}-122.bmp" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
     log "Rectifying image to adjust aspect ratio" "INFO"
     python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
+    convert "${NOAA_OUTPUT}/image/${3}-122-rectified.jpg" -channel rgb -normalize "${NOAA_OUTPUT}/image/${3}-122-rectified.jpg"
     rm "${METEOR_OUTPUT}/${3}-122.bmp"
     rm "${METEOR_OUTPUT}/${3}.bmp"
+    rm "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
     if [ -n "$CONSUMER_KEY" ]; then
         log "Posting to Twitter" "INFO"
         python3 "${NOAA_HOME}/post.py" "$1 EXPERIMENTAL ${START_DATE} Resolución completa: http://weather.reyni.co/image/${FOLDER_DATE}/${3}-122-rectified.jpg" "$7" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122-rectified.jpg"
