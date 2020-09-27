@@ -31,6 +31,7 @@ while [ "$(date --date="@${var2}" +%D)" = "$(date +%D)" ]; do
 		echo "${SATNAME}" "${OUTDATE}" "$MAXELEV"
 		echo "${NOAA_HOME}/receive.sh \"${1}\" $2 ${SATNAME}${OUTDATE} "${NOAA_HOME}"/predict/weather.tle \
 ${var1} ${TIMER} ${MAXELEV}" | at "$(date --date="TZ=\"UTC\" ${START_TIME}" +"%H:%M %D")"
+		sqlite3 /home/pi/raspberry-noaa/panel.db "insert or replace into predict_passes (sat_name,pass_start,pass_end,max_elev) values (\"$SATNAME\",$var1,$var2,$MAXELEV);"
 	fi
 	NEXTPREDICT=$(expr "${var2}" + 60)
 	PREDICTION_START=$(/usr/bin/predict -t "${NOAA_HOME}"/predict/weather.tle -p "${1}" "${NEXTPREDICT}" | head -1)
