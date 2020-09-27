@@ -54,7 +54,10 @@ sudo apt install -yq predict \
                      libxft2 \
                      libjpeg9 \
                      libjpeg9-dev \
-                     socat
+                     socat \
+                     php7.2-fpm \
+                     php7.2-sqlite \
+                     sqlite3
 
 sudo pip3 install numpy ephem tweepy Pillow
 log_done "Packages installed"
