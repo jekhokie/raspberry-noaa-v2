@@ -34,23 +34,28 @@ fi
 
 if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
 	ENHANCEMENTS="ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT"
+	daylight="true"
 else
 	ENHANCEMENTS="ZA MCIR MCIR-precip"
+	daylight="false"
 fi
 
 log "Bulding pass map" "INFO"
 /usr/local/bin/wxmap -T "${1}" -H "${4}" -p 0 -l 0 -o "${PASS_START}" "${NOAA_HOME}/map/${3}-map.png"
 for i in $ENHANCEMENTS; do
 	log "Decoding image" "INFO"
-	/usr/local/bin/wxtoimg -o -m "${NOAA_HOME}/map/${3}-map.png" -e "$i" "${NOAA_AUDIO}/audio/${3}.wav" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-$i.jpg"
-	/usr/bin/convert -quality 90 -format jpg "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-$i.jpg" -undercolor black -fill yellow -pointsize 18 -annotate +20+20 "${1} $i ${START_DATE}" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-$i.jpg"
+	/usr/local/bin/wxtoimg -o -m "${NOAA_HOME}/map/${3}-map.png" -e "$i" "${NOAA_AUDIO}/audio/${3}.wav" "${NOAA_OUTPUT}/image/${3}-$i.jpg"
+	/usr/bin/convert -quality 90 -format jpg "${NOAA_OUTPUT}/image/${3}-$i.jpg" -undercolor black -fill yellow -pointsize 18 -annotate +20+20 "${1} $i ${START_DATE}" "${NOAA_OUTPUT}/image/${3}-$i.jpg"
+	/usr/bin/convert -thumbnail 300 "${NOAA_OUTPUT}/image/${3}-$i.jpg" "${NOAA_OUTPUT}/image/thumb/${3}-$i.jpg
 done
 if [ -n "$CONSUMER_KEY" ]; then
 	log "Posting to Twitter" "INFO"
 	if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
-		python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE}" "$7" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MCIR-precip.jpg" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MSA-precip.jpg" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-HVC-precip.jpg" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-HVCT-precip.jpg" 
+		sqlite3 /home/pi/raspberry-noaa/panel.db "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($5,\"$3\", 1,1);
+		python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE}" "$7" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MCIR-precip.jpg" "${NOAA_OUTPUT}/image/$3-MSA-precip.jpg" "${NOAA_OUTPUT}/image/$3-HVC-precip.jpg" "${NOAA_OUTPUT}/image/$3-HVCT-precip.jpg"
 	else
-		python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE}" "$7" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MCIR-precip.jpg" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MCIR.jpg"
+		sqlite3 /home/pi/raspberry-noaa/panel.db "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($5,\"$3\", 0,1);"
+		python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE}" "$7" "${NOAA_OUTPUT}/image/$3-MCIR-precip.jpg" "${NOAA_OUTPUT}/image/$3-MCIR.jpg"
 	fi
 fi
 
