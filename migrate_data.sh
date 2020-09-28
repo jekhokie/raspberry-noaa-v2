@@ -35,7 +35,7 @@ for filename in $(find . -name *.jpg); do
     passname=$(echo "$basename" | cut -f1,2 -d'-')
     echo "Migration in progress: $basename"
     cp "$BASEPATH/$filename" "$FINALPATH"
-    convert -thumbnail 300 "$BASEPATH/$filename" "$FINALPATH/thumb/$filename"
+    convert -thumbnail 300 "$BASEPATH/$filename" "$FINALPATH/thumb/$basename"
     if [[ $basename == *"METEOR"* ]]; then
         sqlite3 "${RAMFS_AUDIO}/panel.db" "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($epoch_date,\"$passname\",1,0);"
         sqlite3 "${RAMFS_AUDIO}/panel.db" "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($epoch_date,\"$passname\",1,0);"
