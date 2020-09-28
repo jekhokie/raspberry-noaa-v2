@@ -5,15 +5,6 @@
 . "$HOME/.tweepy.conf"
 . "$NOAA_HOME/common.sh"
 
-## pass start timestamp and sun elevation
-PASS_START=$(expr "$5" + 90)
-SUN_ELEV=$(python3 "$NOAA_HOME"/sun.py "$PASS_START")
-
-if [ "${SUN_ELEV}" -lt "${SUN_MIN_ELEV}" ]; then
-	log "Sun elev is too low. Meteor IR radiometers are not working" "INFO"
-	exit 0
-fi
-
 if pgrep "rtl_fm" > /dev/null
 then
 	log "There is an already running rtl_fm instance but I dont care for now, I prefer this pass" "INFO"
@@ -37,6 +28,9 @@ meteor_demod -B -o "${METEOR_OUTPUT}/${3}.qpsk" "${RAMFS_AUDIO}/audio/${3}.wav"
 if [ "$DELETE_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
     rm "${RAMFS_AUDIO}/audio/${3}.wav"
+else
+	log "Moving audio files out to the SD card" "INFO"
+    mv "${RAMFS_AUDIO}/audio/${3}.wav" "${NOAA_OUTPUT}/audio/${3}.wav"
 fi
 
 log "Decoding in progress (QPSK to BMP)" "INFO"
@@ -47,20 +41,22 @@ rm "${METEOR_OUTPUT}/${3}.qpsk"
 if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
     log "I got a successful ${3}.dec file. Creating false color image" "INFO"
     medet_arm "${METEOR_OUTPUT}/${3}.dec" "${METEOR_OUTPUT}/${3}-122" -r 65 -g 65 -b 64 -d
-    convert "${METEOR_OUTPUT}/${3}-122.bmp" "${NOAA_OUTPUT}/image/${3}-122.jpg"
+    convert "${METEOR_OUTPUT}/${3}-122.bmp" "${NOAA_OUTPUT}/images/${3}-122.jpg"
     log "Rectifying image to adjust aspect ratio" "INFO"
-    python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/image/${3}-122.jpg"
-    convert -thumbnail 300 "${NOAA_OUTPUT}/image/${3}-122-rectified.jpg" "${NOAA_OUTPUT}/image/thumb/${3}-122-rectified.jpg"
-    convert "${NOAA_OUTPUT}/image/${3}-122-rectified.jpg" -channel rgb -normalize "${NOAA_OUTPUT}/image/${3}-122-rectified.jpg"
+    python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/images/${3}-122.jpg"
+    convert -thumbnail 300 "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg" "${NOAA_OUTPUT}/images/thumb/${3}-122-rectified.jpg"
+    convert "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg" -channel rgb -normalize "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg"
     log "Deleting base image files" "INFO"
     rm "${METEOR_OUTPUT}/${3}-122.bmp"
     rm "${METEOR_OUTPUT}/${3}.bmp"
-    rm "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
+    rm "${NOAA_OUTPUT}/images/${3}-122.jpg"
     sqlite3 /home/pi/raspberry-noaa/panel.db "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($5,\"$3\", 1,0);"
+    pass_id=$(sqlite3 /home/pi/raspberry-noaa/panel.db "select id from decoded_passes order by id desc limit 1;")
     if [ -n "$CONSUMER_KEY" ]; then
         log "Posting to Twitter" "INFO"
-        python3 "${NOAA_HOME}/post.py" "$1 EXPERIMENTAL ${START_DATE} Resolución completa: http://weather.reyni.co/image/${FOLDER_DATE}/${3}-122-rectified.jpg" "$7" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122-rectified.jpg"
+        python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE} Resolución completa: https://weather.reyni.co/detail.php?id=$pass_id" "$7" "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg"
     fi
+    sqlite3 /home/pi/raspberry-noaa/panel.db "update predict_passes set is_active = 0 where (predict_passes.pass_start) in (select predict_passes.pass_start from predict_passes inner join decoded_passes on predict_passes.pass_start = decoded_passes.pass_start where decoded_passes.id = $pass_id);"
 else
     log "Decoding failed, either a bad pass/low SNR or a software problem" "ERROR"
 fi
