@@ -25,7 +25,10 @@ for filename in $(find . -name *.jpg); do
     cp "$BASEPATH/$filename" "$FINALPATH"
     if [[ $basename == *"METEOR"* ]]; then
         sqlite3 "$DB_PATH" "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($epoch_date,\"$passname\",1,0);"
+        sqlite3 "$DB_PATH" "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($epoch_date,\"$passname\",1,0);"
+        sqlite3 "$DB_PATH" "insert or replace into predict_passes (sat_name,pass_start,pass_end,max_elev) values (\"$sat_name\",$epoch_date,$epoch_date,0);"
     elif [[ $basename == *"ZA"* ]]; then
+        sqlite3 "$DB_PATH" "insert or replace into predict_passes (sat_name,pass_start,pass_end,max_elev) values (\"$sat_name\",$epoch_date,$epoch_date,0);"
         if [[ -f "$FINALPATH/$passname-MSA.jpg" ]]; then
             sqlite3 "$DB_PATH" "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($epoch_date,\"$passname\",1,1);"
         else
