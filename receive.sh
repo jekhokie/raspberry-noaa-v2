@@ -51,7 +51,7 @@ done
 if [ -n "$CONSUMER_KEY" ]; then
 	log "Posting to Twitter" "INFO"
 	if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
-		sqlite3 /home/pi/raspberry-noaa/panel.db "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($5,\"$3\", 1,1);
+		sqlite3 /home/pi/raspberry-noaa/panel.db "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($5,\"$3\", 1,1);"
 		python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE}" "$7" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/$3-MCIR-precip.jpg" "${NOAA_OUTPUT}/image/$3-MSA-precip.jpg" "${NOAA_OUTPUT}/image/$3-HVC-precip.jpg" "${NOAA_OUTPUT}/image/$3-HVCT-precip.jpg"
 	else
 		sqlite3 /home/pi/raspberry-noaa/panel.db "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($5,\"$3\", 0,1);"
