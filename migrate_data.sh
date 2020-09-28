@@ -32,7 +32,11 @@ for filename in $(find . -name *.jpg); do
     
     date_normalized=$(echo "$basedate" | sed -e "s/^$sat_name//;s/./&:/12;s/./&:/10;s/./& /8;s/./&\//6;s/./&\//4")
     epoch_date=$(date "+%s" -d "$date_normalized")
-    passname=$(echo "$basename" | cut -f1,2 -d'-')
+    if [[ $basename == *"METEOR"* ]]; then
+        passname=$(echo "$basename" | cut -f1,2,3 -d'-')
+    else
+        passname=$(echo "$basename" | cut -f1,2 -d'-')
+    fi
     echo "Migration in progress: $basename"
     cp "$BASEPATH/$filename" "$FINALPATH"
     convert -thumbnail 300 "$BASEPATH/$filename" "$FINALPATH/thumb/$basename"
