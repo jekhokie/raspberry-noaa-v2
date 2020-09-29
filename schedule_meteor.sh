@@ -18,8 +18,7 @@ while [ "$(date --date="@${var2}" +%D)" = "$(date +%D)" ]; do
 	var3=$(echo "$START_TIME" | cut -d " " -f 2 | cut -d ":" -f 3)
 	TIMER=$(expr "${var2}" - "${var1}" + "${var3}")
 	OUTDATE=$(date --date="TZ=\"UTC\" ${START_TIME}" +%Y%m%d-%H%M%S)
-	PASS_START=$(expr "$5" + 90)
-	SUN_ELEV=$(python3 "$NOAA_HOME"/sun.py "$PASS_START")
+	SUN_ELEV=$(python3 "$NOAA_HOME"/sun.py "$var1")
 
 	if [ "${MAXELEV}" -gt "${METEOR_MIN_ELEV}" ] && [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
 		log "Pass is above ${METEOR_MIN_ELEV}, that is OK for me" "INFO"
