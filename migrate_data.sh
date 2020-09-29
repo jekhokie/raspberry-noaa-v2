@@ -23,7 +23,7 @@ DB_PATH="${NOAA_HOME}/panel.db"
     # operations are done over the RAMFS
     # partition
     cd "${RAMFS_AUDIO}" || exit 1
-    sqlite3 < "${NOAA_HOME}/panel.sql"
+    sqlite3 < "${NOAA_HOME}/templates/webpanel_schema.sql"
 )
 
 
