@@ -47,17 +47,17 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
     if [ "${SUN_ELEV}" -lt "${SUN_MIN_ELEV}" ]; then
         log "I got a successful ${3}.dec file. Decoding APID 68" "INFO"
         medet_arm "${METEOR_OUTPUT}/${3}.dec" "${METEOR_OUTPUT}/${3}-122" -r 68 -g 68 -b 68 -d
-        convert "${METEOR_OUTPUT}/${3}-122.bmp" "${NOAA_OUTPUT}/images/${3}-122.jpg"
+        convert "${METEOR_OUTPUT}/${3}-122.bmp" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
         python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
         rm "${METEOR_OUTPUT}/${3}-122.bmp"
     else
         log "I got a successful ${3}.dec file. Creating false color image" "INFO"
         medet_arm "${METEOR_OUTPUT}/${3}.dec" "${METEOR_OUTPUT}/${3}-122" -r 65 -g 65 -b 64 -d
-        convert "${METEOR_OUTPUT}/${3}-122.bmp" "${NOAA_OUTPUT}/images/${3}-122.jpg"
+        convert "${METEOR_OUTPUT}/${3}-122.bmp" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
         rm "${METEOR_OUTPUT}/${3}-122.bmp"
         rm "${METEOR_OUTPUT}/${3}.bmp"
         log "Rectifying image to adjust aspect ratio" "INFO"
-        python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/images/${3}-122.jpg"
+        python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
     fi
     if [ -n "$CONSUMER_KEY" ]; then
         log "Posting to Twitter" "INFO"
