@@ -5,6 +5,10 @@
 . "$HOME/.tweepy.conf"
 . "$NOAA_HOME/common.sh"
 
+## pass start timestamp and sun elevation
+PASS_START=$(expr "$5" + 90)
+SUN_ELEV=$(python3 "$NOAA_HOME"/sun.py "$PASS_START")
+
 if pgrep "rtl_fm" > /dev/null
 then
 	log "There is an already running rtl_fm instance but I dont care for now, I prefer this pass" "INFO"
@@ -39,17 +43,19 @@ medet_arm "${METEOR_OUTPUT}/${3}.qpsk" "${METEOR_OUTPUT}/${3}" -cd
 rm "${METEOR_OUTPUT}/${3}.qpsk"
 
 if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
-    log "I got a successful ${3}.dec file. Creating false color image" "INFO"
-    medet_arm "${METEOR_OUTPUT}/${3}.dec" "${METEOR_OUTPUT}/${3}-122" -r 65 -g 65 -b 64 -d
-    convert "${METEOR_OUTPUT}/${3}-122.bmp" "${NOAA_OUTPUT}/images/${3}-122.jpg"
+    if [ "${SUN_ELEV}" -lt "${SUN_MIN_ELEV}" ]; then
+        log "I got a successful ${3}.dec file. Decoding APID 68" "INFO"
+        medet_arm "${METEOR_OUTPUT}/${3}.dec" "${METEOR_OUTPUT}/${3}-122" -r 68 -g 68 -b 68 -d
+        rm "${METEOR_OUTPUT}/${3}-122.bmp"
+    else
+        log "I got a successful ${3}.dec file. Creating false color image" "INFO"
+        medet_arm "${METEOR_OUTPUT}/${3}.dec" "${METEOR_OUTPUT}/${3}-122" -r 65 -g 65 -b 64 -d
+        rm "${METEOR_OUTPUT}/${3}-122.bmp"
+        rm "${METEOR_OUTPUT}/${3}.bmp"
+    fi
     log "Rectifying image to adjust aspect ratio" "INFO"
-    python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/images/${3}-122.jpg"
-    convert -thumbnail 300 "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg" "${NOAA_OUTPUT}/images/thumb/${3}-122-rectified.jpg"
-    convert "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg" -channel rgb -normalize "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg"
-    log "Deleting base image files" "INFO"
-    rm "${METEOR_OUTPUT}/${3}-122.bmp"
-    rm "${METEOR_OUTPUT}/${3}.bmp"
-    rm "${NOAA_OUTPUT}/images/${3}-122.jpg"
+    convert "${METEOR_OUTPUT}/${3}-122.bmp" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
+    python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
     sqlite3 /home/pi/raspberry-noaa/panel.db "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($5,\"$3\", 1,0);"
     pass_id=$(sqlite3 /home/pi/raspberry-noaa/panel.db "select id from decoded_passes order by id desc limit 1;")
     if [ -n "$CONSUMER_KEY" ]; then
