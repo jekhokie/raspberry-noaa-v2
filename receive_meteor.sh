@@ -59,15 +59,6 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
         log "Rectifying image to adjust aspect ratio" "INFO"
         python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/images/${3}-122.jpg"
     fi
-    medet_arm "${METEOR_OUTPUT}/${3}.dec" "${METEOR_OUTPUT}/${3}-122" -r 65 -g 65 -b 64 -d
-    convert "${METEOR_OUTPUT}/${3}-122.bmp" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
-    log "Rectifying image to adjust aspect ratio" "INFO"
-    python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
-    convert "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122-rectified.jpg" -channel rgb -normalize "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122-rectified.jpg"
-    log "Deleting base image files" "INFO"
-    rm "${METEOR_OUTPUT}/${3}-122.bmp"
-    rm "${METEOR_OUTPUT}/${3}.bmp"
-    rm "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
     if [ -n "$CONSUMER_KEY" ]; then
         log "Posting to Twitter" "INFO"
         python3 "${NOAA_HOME}/post.py" "$1 EXPERIMENTAL ${START_DATE} Resolución completa: http://weather.reyni.co/image/${FOLDER_DATE}/${3}-122-rectified.jpg" "$7" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122-rectified.jpg"
