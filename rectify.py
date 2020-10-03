@@ -73,11 +73,16 @@ def wthread(rectified_width, corr, endrow, startrow):
 
             # Linearly interpolate
             for i in range(delta):
-                interp_r = int((start_px[0]*(delta-i) + end_px[0]*i) / delta)
-                interp_g = int((start_px[1]*(delta-i) + end_px[1]*i) / delta)
-                interp_b = int((start_px[2]*(delta-i) + end_px[2]*i) / delta)
-
-                rectified_pixels[cur_col, row] = (interp_r, interp_g, interp_b)
+                # For night passes of Meteor the image is just gray level and
+                # start_px and end_px being an int instead of a tuple
+                if type(start_px) != int:
+                    interp_r = int((start_px[0]*(delta-i) + end_px[0]*i) / delta)
+                    interp_g = int((start_px[1]*(delta-i) + end_px[1]*i) / delta)
+                    interp_b = int((start_px[2]*(delta-i) + end_px[2]*i) / delta)
+                    rectified_pixels[cur_col,row] = (interp_r, interp_g, interp_b)
+                else:
+                    interp = int((start_px*(delta-i) + end_px*i) / delta)
+                    rectified_pixels[cur_col,row] = interp
                 cur_col += 1
 
             start_px = end_px
@@ -94,11 +99,16 @@ def wthread(rectified_width, corr, endrow, startrow):
 
             # Linearly interpolate
             for i in range(delta):
-                interp_r = int((start_px[0]*(delta-i) + end_px[0]*i) / delta)
-                interp_g = int((start_px[1]*(delta-i) + end_px[1]*i) / delta)
-                interp_b = int((start_px[2]*(delta-i) + end_px[2]*i) / delta)
-
-                rectified_pixels[cur_col, row] = (interp_r, interp_g, interp_b)
+                # For night passes of Meteor the image is just gray level and
+                # start_px and end_px being an int instead of a tuple
+                if type(start_px) != int:
+                    interp_r = int((start_px[0]*(delta-i) + end_px[0]*i) / delta)
+                    interp_g = int((start_px[1]*(delta-i) + end_px[1]*i) / delta)
+                    interp_b = int((start_px[2]*(delta-i) + end_px[2]*i) / delta)
+                    rectified_pixels[cur_col,row] = (interp_r, interp_g, interp_b)
+                else:
+                    interp = int((start_px*(delta-i) + end_px*i) / delta)
+                    rectified_pixels[cur_col,row] = interp
                 cur_col -= 1
 
             start_px = end_px

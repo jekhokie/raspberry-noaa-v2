@@ -9,11 +9,6 @@
 PASS_START=$(expr "$5" + 90)
 SUN_ELEV=$(python3 "$NOAA_HOME"/sun.py "$PASS_START")
 
-if [ "${SUN_ELEV}" -lt "${SUN_MIN_ELEV}" ]; then
-	log "Sun elev is too low. Meteor IR radiometers are not working" "INFO"
-	exit 0
-fi
-
 if pgrep "rtl_fm" > /dev/null
 then
 	log "There is an already running rtl_fm instance but I dont care for now, I prefer this pass" "INFO"
@@ -49,7 +44,22 @@ medet_arm "${METEOR_OUTPUT}/${3}.qpsk" "${METEOR_OUTPUT}/${3}" -cd
 rm "${METEOR_OUTPUT}/${3}.qpsk"
 
 if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
-    log "I got a successful ${3}.dec file. Creating false color image" "INFO"
+    if [ "${SUN_ELEV}" -lt "${SUN_MIN_ELEV}" ]; then
+        log "I got a successful ${3}.dec file. Decoding APID 68" "INFO"
+        medet_arm "${METEOR_OUTPUT}/${3}.dec" "${METEOR_OUTPUT}/${3}-122" -r 65 -g 65 -b 68 -s -d
+        convert "${METEOR_OUTPUT}/${3}-122_0.bmp" "${NOAA_OUTPUT}/images/${3}-122.jpg"
+        python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
+        rm "${METEOR_OUTPUT}/${3}-122_1.bmp"
+        rm "${METEOR_OUTPUT}/${3}-122_2.bmp"
+    else
+        log "I got a successful ${3}.dec file. Creating false color image" "INFO"
+        medet_arm "${METEOR_OUTPUT}/${3}.dec" "${METEOR_OUTPUT}/${3}-122" -r 65 -g 65 -b 64 -d
+        convert "${METEOR_OUTPUT}/${3}-122.bmp" "${NOAA_OUTPUT}/images/${3}-122.jpg"
+        rm "${METEOR_OUTPUT}/${3}-122.bmp"
+        rm "${METEOR_OUTPUT}/${3}.bmp"
+        log "Rectifying image to adjust aspect ratio" "INFO"
+        python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/images/${3}-122.jpg"
+    fi
     medet_arm "${METEOR_OUTPUT}/${3}.dec" "${METEOR_OUTPUT}/${3}-122" -r 65 -g 65 -b 64 -d
     convert "${METEOR_OUTPUT}/${3}-122.bmp" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
     log "Rectifying image to adjust aspect ratio" "INFO"
