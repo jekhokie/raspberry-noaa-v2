@@ -53,9 +53,8 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
         medet_arm "${METEOR_OUTPUT}/${3}.dec" "${METEOR_OUTPUT}/${3}-122" -r 65 -g 65 -b 64 -d
     fi
 
-    convert "${METEOR_OUTPUT}/${3}-122.bmp" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
     log "Rectifying image to adjust aspect ratio" "INFO"
-    python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
+    python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.bmp"
     rm "${METEOR_OUTPUT}/${3}.bmp"
     rm "${METEOR_OUTPUT}/${3}-122.bmp"
 
