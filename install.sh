@@ -62,6 +62,14 @@ sudo apt install -yq predict \
 sudo pip3 install numpy ephem tweepy Pillow
 log_done "Packages installed"
 
+### Create the database schema
+if [ -e "$HOME/raspberry-noaa/panel.db" ]; then
+    log_done "Database already created"
+else
+    sqlite3 "panel.db" < "templates/webpanel_schema.sql"
+    log_done "Database schema created"
+fi
+
 ### Blacklist DVB modules
 if [ -e /etc/modprobe.d/rtlsdr.conf ]; then
     log_done "DVB modules were already blacklisted"
@@ -176,12 +184,7 @@ sudo cp templates/nginx.cfg /etc/nginx/sites-enabled/default
     sudo chmod 775 /var/www/wx
 )
 sudo systemctl restart nginx
-if [ ! -e /var/www/wx/index.html ]; then
-    sudo cp templates/index.html /var/www/wx/index.html
-fi
-if [ ! -e /var/www/wx/logo-small.png ]; then
-    sudo cp templates/logo-small.png /var/www/wx/logo-small.png
-fi
+cp -r "templates/webpanel/*" "/var/www/wx/"
 log_done "Nginx configured"
 
 ### Setup ramFS
