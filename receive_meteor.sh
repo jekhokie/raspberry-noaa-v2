@@ -43,19 +43,21 @@ medet_arm "${METEOR_OUTPUT}/${3}.qpsk" "${METEOR_OUTPUT}/${3}" -cd
 rm "${METEOR_OUTPUT}/${3}.qpsk"
 
 if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
+
     if [ "${SUN_ELEV}" -lt "${SUN_MIN_ELEV}" ]; then
         log "I got a successful ${3}.dec file. Decoding APID 68" "INFO"
         medet_arm "${METEOR_OUTPUT}/${3}.dec" "${METEOR_OUTPUT}/${3}-122" -r 68 -g 68 -b 68 -d
-        rm "${METEOR_OUTPUT}/${3}-122.bmp"
     else
         log "I got a successful ${3}.dec file. Creating false color image" "INFO"
         medet_arm "${METEOR_OUTPUT}/${3}.dec" "${METEOR_OUTPUT}/${3}-122" -r 65 -g 65 -b 64 -d
-        rm "${METEOR_OUTPUT}/${3}-122.bmp"
-        rm "${METEOR_OUTPUT}/${3}.bmp"
     fi
+
     log "Rectifying image to adjust aspect ratio" "INFO"
-    convert "${METEOR_OUTPUT}/${3}-122.bmp" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
-    python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.jpg"
+    convert "${METEOR_OUTPUT}/${3}-122.bmp" "${NOAA_OUTPUT}/images/${3}-122.jpg"
+    python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/images/${3}-122.jpg"
+    rm "${METEOR_OUTPUT}/${3}-122.bmp"
+    rm "${METEOR_OUTPUT}/${3}.bmp"
+
     sqlite3 /home/pi/raspberry-noaa/panel.db "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($5,\"$3\", 1,0);"
     pass_id=$(sqlite3 /home/pi/raspberry-noaa/panel.db "select id from decoded_passes order by id desc limit 1;")
     if [ -n "$CONSUMER_KEY" ]; then
