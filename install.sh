@@ -184,7 +184,8 @@ sudo cp templates/nginx.cfg /etc/nginx/sites-enabled/default
     sudo chmod 775 /var/www/wx
 )
 sudo systemctl restart nginx
-cp -r "templates/webpanel/*" "/var/www/wx/"
+sudo cp -rp templates/webpanel/* /var/www/wx/
+
 log_done "Nginx configured"
 
 ### Setup ramFS
@@ -231,8 +232,10 @@ sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/${lon}/g" "$HOME/.wxtoi
 sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/$(echo  "$lon * -1" | bc)/g" "$HOME/.predict/predict.qth"
 sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/${lon}/g;s/change_tz/$(echo  "$timezone * -1" | bc)/g" "sun.py"
 
-# Running WXTOIMG to have the user accept the licensing agreement
-wxtoimg
+### Launch scheduler
+newgrp www-data << END
+    /home/pi/raspberry-noaa/schedule.sh
+END
 
 success "Install done! Double check your $HOME/.noaa.conf settings"
 
@@ -240,3 +243,6 @@ echo "
     If you want to post your images to Twitter, please setup
     your Twitter credentials on $HOME/.tweepy.conf
 "
+
+### Running WXTOIMG to have the user accept the licensing agreement
+wxtoimg
