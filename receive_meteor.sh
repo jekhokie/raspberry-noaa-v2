@@ -53,8 +53,7 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
     fi
 
     log "Rectifying image to adjust aspect ratio" "INFO"
-    convert "${METEOR_OUTPUT}/${3}-122.bmp" "${NOAA_OUTPUT}/images/${3}-122.jpg"
-    python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/images/${3}-122.jpg"
+    python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/images/${3}-122.bmp"
     rm "${METEOR_OUTPUT}/${3}-122.bmp"
     rm "${METEOR_OUTPUT}/${3}.bmp"
 
