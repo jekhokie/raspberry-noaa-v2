@@ -48,8 +48,8 @@ if [ ! -d "${RAMFS_AUDIO}/audio/" ]; then
 	mkdir -m 775 -p "${RAMFS_AUDIO}/audio/"
 fi
 
-if [ ! -d "${NOAA_OUTPUT}/images/" ]; then
-	mkdir -m 775 -p "${NOAA_OUTPUT}/images/"
+if [ ! -d "${NOAA_OUTPUT}/images/thumb" ]; then
+	mkdir -m 775 -p "${NOAA_OUTPUT}/images/thumb"
 fi
 
 if [ ! -d "${NOAA_HOME}/map/" ]; then
