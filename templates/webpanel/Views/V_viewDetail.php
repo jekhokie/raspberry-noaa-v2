@@ -9,7 +9,7 @@
           echo "<tr>";
           $col_count=1;
         }
-        echo "<td><div id =\"satimgdiv\"><a href=". $baseurl . "/" . $path . $enhacement ."><img id=\"satimg\" src=". $baseurl . "/thumb/" . $path . $enhacement ."></img></a></div>";
+        echo "<td><div id =\"satimgdiv\"><a href=". $baseurl . $path . $enhacement ."><img id=\"satimg\" src=". $baseurl . "thumb/" . $path . $enhacement ."></img></a></div>";
         if($col_count==3) {
           echo "</tr>";
         }
