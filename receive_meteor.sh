@@ -31,10 +31,10 @@ fi
 # $7 = Satellite max elevation
 
 log "Starting rtl_fm record" "INFO"
-timeout "${6}" /usr/local/bin/rtl_fm ${BIAS_TEE} -M raw -f "${2}"M -s 288k -g 48 -p 1 | sox -t raw -r 288k -c 2 -b 16 -e s - -t wav "${METEOR_OUTPUT}/audio/${3}.wav" rate 96k
+timeout "${6}" /usr/local/bin/rtl_fm ${BIAS_TEE} -M raw -f "${2}"M -s 288k -g 48 -p 1 | sox -t raw -r 288k -c 2 -b 16 -e s - -t wav "${RAMFS_AUDIO}/audio/${3}.wav" rate 96k
 
 log "Normalization in progress" "INFO"
-sox "${METEOR_OUTPUT}/audio/${3}.wav" "${METEOR_OUTPUT}/${3}.wav" gain -n
+sox "${RAMFS_AUDIO}/audio/${3}.wav" "${METEOR_OUTPUT}/${3}.wav" gain -n
 
 log "Demodulation in progress (QPSK)" "INFO"
 meteor_demod -B -o "${METEOR_OUTPUT}/${3}.qpsk" "${METEOR_OUTPUT}/${3}.wav"
@@ -42,7 +42,7 @@ meteor_demod -B -o "${METEOR_OUTPUT}/${3}.qpsk" "${METEOR_OUTPUT}/${3}.wav"
 if [ "$DELETE_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
     rm "${METEOR_OUTPUT}/audio/${3}.wav"
-    rm "${METEOR_OUTPUT}/${3}.wav"
+    rm "${RAMFS_AUDIO}/${3}.wav"
 fi
 
 log "Decoding in progress (QPSK to BMP)" "INFO"
