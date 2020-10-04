@@ -56,7 +56,6 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
     python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/images/${3}-122.bmp"
     /usr/bin/convert -thumbnail 300 "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg" "${NOAA_OUTPUT}/images/thumb/${3}-122-rectified.jpg"
     rm "${METEOR_OUTPUT}/${3}-122.bmp"
-    rm "${METEOR_OUTPUT}/${3}.bmp"
 
     sqlite3 /home/pi/raspberry-noaa/panel.db "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($5,\"$3\", 1,0);"
     pass_id=$(sqlite3 /home/pi/raspberry-noaa/panel.db "select id from decoded_passes order by id desc limit 1;")
