@@ -47,10 +47,10 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
 
     if [ "${SUN_ELEV}" -lt "${SUN_MIN_ELEV}" ]; then
         log "I got a successful ${3}.dec file. Decoding APID 68" "INFO"
-        medet_arm "${METEOR_OUTPUT}/${3}.dec" "${METEOR_OUTPUT}/${3}-122" -r 68 -g 68 -b 68 -d
+        medet_arm "${METEOR_OUTPUT}/${3}.dec" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122" -r 68 -g 68 -b 68 -d
     else
         log "I got a successful ${3}.dec file. Creating false color image" "INFO"
-        medet_arm "${METEOR_OUTPUT}/${3}.dec" "${METEOR_OUTPUT}/${3}-122" -r 65 -g 65 -b 64 -d
+        medet_arm "${METEOR_OUTPUT}/${3}.dec" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122" -r 65 -g 65 -b 64 -d
     fi
 
     log "Rectifying image to adjust aspect ratio" "INFO"
