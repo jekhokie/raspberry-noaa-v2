@@ -62,6 +62,7 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
 
     log "Rectifying image to adjust aspect ratio" "INFO"
     python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122.bmp"
+    convert "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122-rectified.jpg" -channel rgb -normalize "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122-rectified.jpg"
     rm "${METEOR_OUTPUT}/${3}.bmp"
     rm "${METEOR_OUTPUT}/${3}-122.bmp"
 
