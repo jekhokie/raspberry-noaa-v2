@@ -5,6 +5,13 @@
 . "$HOME/.tweepy.conf"
 . "$NOAA_HOME/common.sh"
 
+
+SYSTEM_MEMORY=$(free -m | awk '/^Mem:/{print $2}')
+if [ "$SYSTEM_MEMORY" -lt 2000 ]; then
+    log "The system doesn't have enough space to store a Meteor pass on RAM" "INFO"
+	RAMFS_AUDIO="${METEOR_OUTPUT}"
+fi
+
 ## pass start timestamp and sun elevation
 PASS_START=$(expr "$5" + 90)
 SUN_ELEV=$(python3 "$NOAA_HOME"/sun.py "$PASS_START")
