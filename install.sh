@@ -189,6 +189,10 @@ sudo cp -rp templates/webpanel/* /var/www/wx/
 log_done "Nginx configured"
 
 ### Setup ramFS
+SYSTEM_MEMORY=$(free -m | awk '/^Mem:/{print $2}')
+if [ "$SYSTEM_MEMORY" -lt 2000 ]; then
+	sed -i -e "s/1000M/200M/g" templates/fstab
+fi
 set +e
 cat /etc/fstab | grep -q "ramfs"
 if [ $? -eq 0 ]; then

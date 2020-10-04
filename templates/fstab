@@ -1,1 +1,1 @@
-tmpfs                   /var/ramfs      tmpfs nodev,nosuid,size=400M 0 0
+tmpfs                   /var/ramfs      tmpfs nodev,nosuid,size=1000M 0 0
