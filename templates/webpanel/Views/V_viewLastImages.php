@@ -25,7 +25,7 @@
         } else {
           $ending = "-122-rectified.jpg";
         }
-        echo "<td><div id =\"satimgdiv\"><a href=". "detail.php?id=" . $image['id'] ."><img id=\"satimg\" src=". $baseurl . "/thumb/" . $image['file_path'] . $ending ."></img></a></div>";
+        echo "<td><div id =\"satimgdiv\"><a href=". "detail.php?id=" . $image['id'] ."><img id=\"satimg\" src=". $baseurl . "thumb/" . $image['file_path'] . $ending ."></img></a></div>";
         echo "<ul><li>". $image['sat_name'] ."</li>";
         echo "<li> " . $lang['elev'] . ": ". $image['max_elev'] ."°</li>";
         echo "<li>". date('d/m/Y H:i:s', $image['pass_start']) ."</li></ul></td>";
