@@ -19,10 +19,14 @@ while [ "$(date --date="@${var2}" +%D)" = "$(date +%D)" ]; do
 	TIMER=$(expr "${var2}" - "${var1}" + "${var3}")
 	OUTDATE=$(date --date="TZ=\"UTC\" ${START_TIME}" +%Y%m%d-%H%M%S)
 
-	SATNAME=$(echo "$1" | sed "s/ //g")
-	echo "${SATNAME}" "${OUTDATE}" "$MAXELEV"
-	echo "${NOAA_HOME}/receive_meteor.sh \"${1}\" $2 ${SATNAME}${OUTDATE} "${NOAA_HOME}"/predict/weather.tle ${var1} ${TIMER} ${MAXELEV}" | at "$(date --date="TZ=\"UTC\" ${START_TIME}" +"%H:%M %D")"
-	sqlite3 /home/pi/raspberry-noaa/panel.db "insert or replace into predict_passes (sat_name,pass_start,pass_end,max_elev,is_active) values (\"$SATNAME\",$var1,$var2,$MAXELEV,1);"
+	if [ "${MAXELEV}" -gt "${METEOR_MIN_ELEV}" ]; then
+		log "Pass is above ${METEOR_MIN_ELEV}, that is OK for me" "INFO"
+		SATNAME=$(echo "$1" | sed "s/ //g")
+		echo "${SATNAME}" "${OUTDATE}" "$MAXELEV"
+		echo "${NOAA_HOME}/receive_meteor.sh \"${1}\" $2 ${SATNAME}${OUTDATE} "${NOAA_HOME}"/predict/weather.tle \
+${var1} ${TIMER} ${MAXELEV}" | at "$(date --date="TZ=\"UTC\" ${START_TIME}" +"%H:%M %D")"
+		sqlite3 /home/pi/raspberry-noaa/panel.db "insert or replace into predict_passes (sat_name,pass_start,pass_end,max_elev,is_active) values (\"$SATNAME\",$var1,$var2,$MAXELEV,1);"
+	fi
 	NEXTPREDICT=$(expr "${var2}" + 60)
 	PREDICTION_START=$(/usr/bin/predict -t "${NOAA_HOME}"/predict/weather.tle -p "${1}" "${NEXTPREDICT}" | head -1)
 	PREDICTION_END=$(/usr/bin/predict -t "${NOAA_HOME}"/predict/weather.tle -p "${1}"  "${NEXTPREDICT}" | tail -1)
