@@ -66,7 +66,7 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
     convert "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122-rectified.png" -undercolor black -fill yellow -pointsize 18 -annotate +20+20 "${1} ${START_DATE} Elevation: $7Â°" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122-rectified-text.png"
     if [ -n "$CONSUMER_KEY" ]; then
         log "Posting to Twitter" "INFO"
-        python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE}" "$7Â°" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122-rectified-text.png"
+        python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE}" "$7°" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-122-rectified-text.png"
     fi
     rm "${METEOR_OUTPUT}/${3}.bmp"
     rm "${METEOR_OUTPUT}/${3}-122.bmp"
