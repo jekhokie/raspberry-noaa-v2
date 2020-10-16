@@ -44,6 +44,9 @@ for i in $ENHANCEMENTS; do
 	/usr/bin/convert -quality 90 -format jpg "${NOAA_OUTPUT}/images/${3}-$i.jpg" -undercolor black -fill yellow -pointsize 18 -annotate +20+20 "${1} $i ${START_DATE}Elev: $7°" "${NOAA_OUTPUT}/images/${3}-$i.jpg"
 	/usr/bin/convert -thumbnail 300 "${NOAA_OUTPUT}/images/${3}-$i.jpg" "${NOAA_OUTPUT}/images/thumb/${3}-$i.jpg"
 done
+
+rm "${NOAA_HOME}/map/${3}-map.png"
+
 if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
 	sqlite3 /home/pi/raspberry-noaa/panel.db "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($5,\"$3\", 1,1);"
 else
