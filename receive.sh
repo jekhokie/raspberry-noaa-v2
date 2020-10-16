@@ -26,7 +26,7 @@ fi
 # $7 = Satellite max elevation
 
 log "Starting rtl_fm record" "INFO"
-timeout "${6}" /usr/local/bin/rtl_fm ${BIAS_TEE} -f "${2}"M -s 60k -g 50 -p 55 -E wav -E deemp -F 9 - | /usr/bin/sox -t raw -e signed -c 1 -b 16 -r 60000 - "${RAMFS_AUDIO}/audio/${3}.wav" rate 11025
+timeout "${6}" /usr/local/bin/rtl_fm ${BIAS_TEE} -f "${2}"M -s 60k -g 50 -E wav -E deemp -F 9 - | /usr/bin/sox -t raw -e signed -c 1 -b 16 -r 60000 - "${RAMFS_AUDIO}/audio/${3}.wav" rate 11025
 
 if [ ! -d "{NOAA_OUTPUT}/image/${FOLDER_DATE}" ]; then
 	mkdir -m 775 -p "${NOAA_OUTPUT}/image/${FOLDER_DATE}"
@@ -45,6 +45,9 @@ for i in $ENHANCEMENTS; do
 	/usr/local/bin/wxtoimg -o -m "${NOAA_HOME}/map/${3}-map.png" -e "$i" "${RAMFS_AUDIO}/audio/${3}.wav" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-$i.jpg"
 	/usr/bin/convert -quality 90 -format jpg "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-$i.jpg" -undercolor black -fill yellow -pointsize 18 -annotate +20+20 "${1} $i ${START_DATE}" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-$i.jpg"
 done
+
+rm "${NOAA_HOME}/map/${3}-map.png"
+
 if [ -n "$CONSUMER_KEY" ]; then
 	log "Posting to Twitter" "INFO"
 	if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
