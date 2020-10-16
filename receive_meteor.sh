@@ -12,6 +12,13 @@ if [ "$SYSTEM_MEMORY" -lt 2000 ]; then
 	RAMFS_AUDIO="${METEOR_OUTPUT}"
 fi
 
+if [ "$FLIP_METEOR_IMG" == "true" ]; then
+    log "I'll flip this image pass because FLIP_METEOR_IMG is set to true" "INFO"
+    FLIP="-rotate 180"
+else
+    FLIP=""
+fi
+
 ## pass start timestamp and sun elevation
 PASS_START=$(expr "$5" + 90)
 SUN_ELEV=$(python3 "$NOAA_HOME"/sun.py "$PASS_START")
@@ -54,7 +61,7 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
     if [ "${SUN_ELEV}" -lt "${SUN_MIN_ELEV}" ]; then
         log "I got a successful ${3}.dec file. Decoding APID 68" "INFO"
         medet_arm "${METEOR_OUTPUT}/${3}.dec" "${NOAA_OUTPUT}/images/${3}-122" -r 68 -g 68 -b 68 -d
-        /usr/bin/convert -rotate 180 "${NOAA_OUTPUT}/images/${3}-122.bmp" "${NOAA_OUTPUT}/images/${3}-122.bmp"
+        /usr/bin/convert $FLIP "${NOAA_OUTPUT}/images/${3}-122.bmp" "${NOAA_OUTPUT}/images/${3}-122.bmp"
     else
         log "I got a successful ${3}.dec file. Creating false color image" "INFO"
         medet_arm "${METEOR_OUTPUT}/${3}.dec" "${NOAA_OUTPUT}/images/${3}-122" -r 65 -g 65 -b 64 -d
@@ -62,7 +69,7 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
 
     log "Rectifying image to adjust aspect ratio" "INFO"
     python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/images/${3}-122.bmp"
-    convert "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg" -channel rgb -normalize "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg"
+    convert "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg" -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+40 "${1} ${START_DATE} Elev: $7°" "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg"
     /usr/bin/convert -thumbnail 300 "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg" "${NOAA_OUTPUT}/images/thumb/${3}-122-rectified.jpg"
     rm "${METEOR_OUTPUT}/${3}.bmp"
 

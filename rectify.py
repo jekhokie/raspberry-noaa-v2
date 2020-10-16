@@ -8,7 +8,7 @@ from math import atan,sin,cos,sqrt,tan,acos,ceil
 from PIL import Image
 
 EARTH_RADIUS = 6371.0
-SAT_HEIGHT = 822.5
+SAT_HEIGHT = 830.0
 SAT_ORBIT_RADIUS = EARTH_RADIUS + SAT_HEIGHT
 SWATH_KM = 2800.0
 THETA_C = SWATH_KM / EARTH_RADIUS
