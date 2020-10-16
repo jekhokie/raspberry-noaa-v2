@@ -42,7 +42,7 @@ meteor_demod -B -o "${METEOR_OUTPUT}/${3}.qpsk" "${METEOR_OUTPUT}/${3}.wav"
 if [ "$DELETE_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
     rm "${METEOR_OUTPUT}/audio/${3}.wav"
-    rm "${RAMFS_AUDIO}/${3}.wav"
+    rm "${RAMFS_AUDIO}/audio/${3}.wav"
 fi
 
 log "Decoding in progress (QPSK to BMP)" "INFO"
