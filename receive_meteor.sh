@@ -25,8 +25,8 @@ SUN_ELEV=$(python3 "$NOAA_HOME"/sun.py "$PASS_START")
 
 if pgrep "rtl_fm" > /dev/null
 then
-	log "There is an already running rtl_fm instance but I dont care for now, I prefer this pass" "INFO"
-	pkill -9 -f rtl_fm
+    log "There is an already running rtl_fm instance but I dont care for now, I prefer this pass" "INFO"
+    pkill -9 -f rtl_fm
 fi
 
 # $1 = Satellite Name
@@ -47,7 +47,7 @@ if [ "$DELETE_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
     rm "${RAMFS_AUDIO}/audio/${3}.wav"
 else
-	log "Moving audio files out to the SD card" "INFO"
+    log "Moving audio files out to the SD card" "INFO"
     mv "${RAMFS_AUDIO}/audio/${3}.wav" "${NOAA_OUTPUT}/audio/${3}.wav"
 fi
 
@@ -71,7 +71,7 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
     python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/images/${3}-122.bmp"
     convert "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg" -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+40 "${1} ${START_DATE} Elev: $7°" "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg"
     /usr/bin/convert -thumbnail 300 "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg" "${NOAA_OUTPUT}/images/thumb/${3}-122-rectified.jpg"
-    rm "${METEOR_OUTPUT}/${3}.bmp"
+    rm "${NOAA_OUTPUT}/images/${3}-122.bmp"
 
     sqlite3 /home/pi/raspberry-noaa/panel.db "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($5,\"$3\", 1,0);"
     pass_id=$(sqlite3 /home/pi/raspberry-noaa/panel.db "select id from decoded_passes order by id desc limit 1;")
