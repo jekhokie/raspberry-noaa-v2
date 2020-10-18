@@ -43,7 +43,7 @@ log "Bulding pass map" "INFO"
 for i in $ENHANCEMENTS; do
 	log "Decoding image" "INFO"
 	/usr/local/bin/wxtoimg -o -m "${NOAA_HOME}/map/${3}-map.png" -e "$i" "${RAMFS_AUDIO}/audio/${3}.wav" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-$i.jpg"
-	/usr/bin/convert -quality 90 -format jpg "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-$i.jpg" -undercolor black -fill yellow -pointsize 18 -annotate +20+20 "${1} $i ${START_DATE}" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-$i.jpg"
+	/usr/bin/convert -quality 90 -format jpg "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-$i.jpg" -undercolor black -fill yellow -pointsize 18 -annotate +20+20 "${1} $i ${START_DATE} Elev: $7°" "${NOAA_OUTPUT}/image/${FOLDER_DATE}/${3}-$i.jpg"
 done
 
 rm "${NOAA_HOME}/map/${3}-map.png"
