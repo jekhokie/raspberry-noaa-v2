@@ -72,6 +72,8 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
     convert "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg" -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+40 "${1} ${START_DATE} Elev: $7°" "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg"
     /usr/bin/convert -thumbnail 300 "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg" "${NOAA_OUTPUT}/images/thumb/${3}-122-rectified.jpg"
     rm "${NOAA_OUTPUT}/images/${3}-122.bmp"
+    rm "${METEOR_OUTPUT}/${3}.bmp"
+    rm "${METEOR_OUTPUT}/${3}.dec"
 
     sqlite3 /home/pi/raspberry-noaa/panel.db "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($5,\"$3\", 1,0);"
     pass_id=$(sqlite3 /home/pi/raspberry-noaa/panel.db "select id from decoded_passes order by id desc limit 1;")
