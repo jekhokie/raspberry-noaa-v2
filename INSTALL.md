@@ -11,6 +11,7 @@
     - [Install the default configuration files](#install-the-default-configuration-files)
     - [Install Meteor software](#install-meteor-software)
     - [Setup Nginx](#setup-nginx)
+    - [Setup Database](#setup-database)
     - [Setup RamFS](#setup-ramfs)
     - [Cron the scheduling job](#cron-the-scheduling-job)
     - [Set your Twitter credentials](#set-your-twitter-credentials)
@@ -60,7 +61,13 @@ sudo apt install -yq predict \
                      python3-pip \
                      imagemagick \
                      libxft-dev \
-                     libxft2
+                     libxft2 \
+                     libjpeg9 \
+                     libjpeg9-dev \
+                     socat \
+                     php7.2-fpm \
+                     php7.2-sqlite \
+                     sqlite3
 ``` 
 
 ```
@@ -145,6 +152,12 @@ sudo chmod 775 /var/www/wx
 sudo cp templates/index.html /var/www/wx/index.html
 sudo cp templates/logo-small.png /var/www/wx/logo-small.png
 sudo systemctl restart nginx
+sudo cp -rp templates/webpanel/* /var/www/wx/
+```
+
+### Setup Database
+```
+sqlite3 "panel.db" < "templates/webpanel_schema.sql"
 ```
 
 ### Setup RamFS
