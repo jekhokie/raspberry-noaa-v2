@@ -49,6 +49,8 @@ if [ "$DELETE_AUDIO" = true ]; then
 else
     log "Moving audio files out to the SD card" "INFO"
     mv "${RAMFS_AUDIO}/audio/${3}.wav" "${NOAA_OUTPUT}/audio/${3}.wav"
+    rm "${METEOR_OUTPUT}/audio/${3}.wav"
+    rm "${RAMFS_AUDIO}/audio/${3}.wav"
 fi
 
 log "Decoding in progress (QPSK to BMP)" "INFO"
@@ -60,7 +62,8 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
 
     if [ "${SUN_ELEV}" -lt "${SUN_MIN_ELEV}" ]; then
         log "I got a successful ${3}.dec file. Decoding APID 68" "INFO"
-        medet_arm "${METEOR_OUTPUT}/${3}.dec" "${NOAA_OUTPUT}/images/${3}-122" -r 68 -g 68 -b 68 -d
+
+medet_arm "${METEOR_OUTPUT}/${3}.dec" "${NOAA_OUTPUT}/images/${3}-122" -r 68 -g 68 -b 68 -d
         /usr/bin/convert $FLIP -negate "${NOAA_OUTPUT}/images/${3}-122.bmp" "${NOAA_OUTPUT}/images/${3}-122.bmp"
     else
         log "I got a successful ${3}.dec file. Creating false color image" "INFO"

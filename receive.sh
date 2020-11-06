@@ -68,8 +68,8 @@ sqlite3 /home/pi/raspberry-noaa/panel.db "update predict_passes set is_active = 
 
 if [ "$DELETE_AUDIO" = true ]; then
 	log "Deleting audio files" "INFO"
-    rm "${RAMFS_AUDIO}/audio/${3}.wav"
+  rm "${RAMFS_AUDIO}/audio/${3}.wav"
 else
 	log "Moving audio files out to the SD card" "INFO"
-    mv "${RAMFS_AUDIO}/audio/${3}.wav" "${NOAA_OUTPUT}/audio/${3}.wav"
+  mv "${RAMFS_AUDIO}/audio/${3}.wav" "${NOAA_OUTPUT}/audio/${3}.wav"
 fi
