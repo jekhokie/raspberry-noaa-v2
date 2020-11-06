@@ -23,4 +23,4 @@ for filename in filenames:
   res = api.media_upload(filename)
   media_ids.append(res.media_id)
 
-api.update_status(status=argentinaFlag + ' Imagen satelital: ' + sys.argv[1] + '. Elevacion maxima: ' + sys.argv[2] + ' grados. #NOAA #weather #argentinaimagenes #noaasatellite #clima #wxtoimg #raspberrypi #argentina #argentinasat', media_ids=media_ids)
+api.update_status(status=argentinaFlag + ' Imagen satelital: ' + sys.argv[1] + '. Elevacion maxima: ' + sys.argv[2] + ' grados. #NOAA #weather #argentinaimagenes #noaasatellite #clima #wxtoimg #raspberrynoaa #argentina #argentinasat', media_ids=media_ids)

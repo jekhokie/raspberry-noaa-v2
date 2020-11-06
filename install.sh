@@ -54,10 +54,21 @@ sudo apt install -yq predict \
                      libxft2 \
                      libjpeg9 \
                      libjpeg9-dev \
-                     socat
+                     socat \
+                     php7.2-fpm \
+                     php7.2-sqlite \
+                     sqlite3
 
 sudo pip3 install numpy ephem tweepy Pillow
 log_done "Packages installed"
+
+### Create the database schema
+if [ -e "$HOME/raspberry-noaa/panel.db" ]; then
+    log_done "Database already created"
+else
+    sqlite3 "panel.db" < "templates/webpanel_schema.sql"
+    log_done "Database schema created"
+fi
 
 ### Blacklist DVB modules
 if [ -e /etc/modprobe.d/rtlsdr.conf ]; then
@@ -173,12 +184,8 @@ sudo cp templates/nginx.cfg /etc/nginx/sites-enabled/default
     sudo chmod 775 /var/www/wx
 )
 sudo systemctl restart nginx
-if [ ! -e /var/www/wx/index.html ]; then
-    sudo cp templates/index.html /var/www/wx/index.html
-fi
-if [ ! -e /var/www/wx/logo-small.png ]; then
-    sudo cp templates/logo-small.png /var/www/wx/logo-small.png
-fi
+sudo cp -rp templates/webpanel/* /var/www/wx/
+
 log_done "Nginx configured"
 
 ### Setup ramFS
@@ -229,8 +236,10 @@ sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/${lon}/g" "$HOME/.wxtoi
 sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/$(echo  "$lon * -1" | bc)/g" "$HOME/.predict/predict.qth"
 sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/${lon}/g;s/change_tz/$(echo  "$timezone * -1" | bc)/g" "sun.py"
 
-# Running WXTOIMG to have the user accept the licensing agreement
-wxtoimg
+### Launch scheduler
+newgrp www-data << END
+    /home/pi/raspberry-noaa/schedule.sh
+END
 
 success "Install done! Double check your $HOME/.noaa.conf settings"
 
@@ -238,3 +247,6 @@ echo "
     If you want to post your images to Twitter, please setup
     your Twitter credentials on $HOME/.tweepy.conf
 "
+
+### Running WXTOIMG to have the user accept the licensing agreement
+wxtoimg
