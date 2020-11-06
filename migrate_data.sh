@@ -5,8 +5,22 @@
 . "$HOME/.tweepy.conf"
 . "$NOAA_HOME/common.sh"
 
+
+# Free disk space
+FREE_DISK="$(df | grep "/dev/root" | awk {'print $3'})"
+
 # This is the original path where images were stored
 BASEPATH="/var/www/wx/image"
+
+# Size of the old images folder
+IMAGEPATH_SIZE="$(du -s $BASEPATH | awk {'print $1'})"
+
+SPACE_NEEDED="$((IMAGEPATH_SIZE * 2))"
+
+if [ "$SPACE_NEEDED" -gt "$FREE_DISK" ]; then
+    echo "You need more free space"
+    exit 1
+fi
 
 # This is the destination path (AKA the new path)
 FINALPATH="/var/www/wx/images"
