@@ -178,10 +178,10 @@ set -e
 log_running "Setting up Nginx..."
 sudo cp templates/nginx.cfg /etc/nginx/sites-enabled/default
 (
-    sudo mkdir -p /var/www/wx
-    sudo chown -R www-data:www-data /var/www/wx
+    sudo mkdir -p /var/www/wx/images
+    sudo chown -R www-data:www-data /var/www/wx/images
     sudo usermod -a -G www-data pi
-    sudo chmod 775 /var/www/wx
+    sudo chmod 775 /var/www/wx/images
 )
 sudo systemctl restart nginx
 sudo cp -rp templates/webpanel/* /var/www/wx/
@@ -236,11 +236,6 @@ sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/${lon}/g" "$HOME/.wxtoi
 sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/$(echo  "$lon * -1" | bc)/g" "$HOME/.predict/predict.qth"
 sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/${lon}/g;s/change_tz/$(echo  "$timezone * -1" | bc)/g" "sun.py"
 
-### Launch scheduler
-newgrp www-data << END
-    /home/pi/raspberry-noaa/schedule.sh
-END
-
 success "Install done! Double check your $HOME/.noaa.conf settings"
 
 echo "
@@ -248,5 +243,9 @@ echo "
     your Twitter credentials on $HOME/.tweepy.conf
 "
 
+set +e
+
 ### Running WXTOIMG to have the user accept the licensing agreement
 wxtoimg
+
+sudo reboot
