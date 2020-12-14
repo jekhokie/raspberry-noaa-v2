@@ -245,6 +245,11 @@ echo "
 
 set +e
 
+### Fix permissions on audio/meteor/images folder
+sudo chmod -R 775 /var/www/wx/audio/
+sudo chmod -R 775 /var/www/wx/images/
+sudo chmod -R 775 /var/www/wx/meteor/
+
 ### Running WXTOIMG to have the user accept the licensing agreement
 wxtoimg
 
