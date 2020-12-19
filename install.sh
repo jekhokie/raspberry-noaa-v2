@@ -28,6 +28,11 @@ success() {
     echo "${GREEN}$1${RESET}"
 }
 
+### Run as a normal user
+if [ $EUID -eq 0 ]; then
+    die "This script shouldn't be run as root."
+fi
+
 ### Verify cloned repo
 if [ ! -e "$HOME/raspberry-noaa" ]; then
         die "Is https://github.com/reynico/raspberry-noaa cloned in your home directory?"
@@ -244,11 +249,6 @@ echo "
 "
 
 set +e
-
-### Fix permissions on audio/meteor/images folder
-sudo chmod -R 775 /var/www/wx/audio/
-sudo chmod -R 775 /var/www/wx/images/
-sudo chmod -R 775 /var/www/wx/meteor/
 
 ### Running WXTOIMG to have the user accept the licensing agreement
 wxtoimg
