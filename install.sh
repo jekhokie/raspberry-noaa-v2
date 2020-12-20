@@ -184,9 +184,9 @@ log_running "Setting up Nginx..."
 sudo cp templates/nginx.cfg /etc/nginx/sites-enabled/default
 (
     sudo mkdir -p /var/www/wx/images
-    sudo chown -R www-data:www-data /var/www/wx/images
+    sudo chown -R www-data:www-data /var/www/wx
     sudo usermod -a -G www-data pi
-    sudo chmod 775 /var/www/wx/images
+    sudo chmod 775 /var/www/wx
 )
 sudo systemctl restart nginx
 sudo cp -rp templates/webpanel/* /var/www/wx/
