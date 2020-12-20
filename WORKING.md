@@ -34,3 +34,10 @@ Will show the scheduled jobs for today, each job can be described using `at -c <
 
 # Images
 Images are saved in the web server's directory, so you can access your received images at http://your.raspberry.pi.ip/, where `your.raspberry.pi.ip` is your Raspberry PI IP address.
+
+# Pruning
+Run `prune.sh` to delete old images. By default it deletes the 10 oldest images from the disk and the database. If you want to schedule this task, run
+
+```bash
+cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa/prune.sh") | crontab -
+```
