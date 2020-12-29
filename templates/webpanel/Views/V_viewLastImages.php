@@ -20,10 +20,11 @@
           echo "<tr>";
           $col_count=1;
         }
-        if ($image['is_noaa'] == true) {
-          $ending = "-MCIR.jpg";
-        } else {
-          $ending = "-122-rectified.jpg";
+        switch($image['sat_type']) {
+          case 0:
+            $ending = "-122-rectified.jpg";
+          case 1:
+            $ending = "-MCIR.jpg";
         }
         echo "<td><div id =\"satimgdiv\"><a href=". "detail.php?id=" . $image['id'] ."><img id=\"satimg\" src=". $baseurl . "thumb/" . $image['file_path'] . $ending ."></img></a></div>";
         echo "<ul><li>". $image['sat_name'] ."</li>";
