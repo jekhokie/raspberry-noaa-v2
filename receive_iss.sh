@@ -37,6 +37,7 @@ if [ -f "$NOAA_HOME/demod.py" ]; then
         log "Decoded image: $image" "INFO"
         ((img_count++))
     done
+    /usr/bin/convert -thumbnail 300 "${NOAA_OUTPUT}/images/${3}-0.png" "${NOAA_OUTPUT}/images/thumb/${3}-0.png"
     sqlite3 "$NOAA_HOME/panel.db" "insert into decoded_passes (pass_start, file_path, daylight_pass, sat_type, img_count) values ($5,\"$3\",1,2, $img_count);"
     pass_id=$(sqlite3 "$NOAA_HOME/panel.db" "select id from decoded_passes order by id desc limit 1;")
     sqlite3 "$NOAA_HOME/panel.db" "update predict_passes set is_active = 0 where (predict_passes.pass_start) in (select predict_passes.pass_start from predict_passes inner join decoded_passes on predict_passes.pass_start = decoded_passes.pass_start where decoded_passes.id = $pass_id);"
