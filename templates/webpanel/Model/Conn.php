@@ -52,7 +52,7 @@
       $pass = $result->fetchArray();
       switch($pass['sat_type']) {
         case 0:
-          $enhacements = "-122-rectified.jpg";
+          $enhacements = ['-122-rectified.jpg'];
           break;
         case 1:
           if ($pass['daylight_pass'] == 1) {
