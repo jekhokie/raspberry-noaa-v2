@@ -45,7 +45,7 @@
     }
 
     public function getEnhacements($id) {
-      $query = $this->con->prepare('SELECT  daylight_pass, sat_type, img_count,
+      $query = $this->con->prepare('SELECT  daylight_pass, sat_type, img_count
                                             FROM decoded_passes WHERE id = ?;');
       $query->bindValue(1, $id);
       $result = $query->execute();
