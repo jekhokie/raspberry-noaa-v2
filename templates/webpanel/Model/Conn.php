@@ -45,21 +45,26 @@
     }
 
     public function getEnhacements($id) {
-      $query = $this->con->prepare('SELECT  daylight_pass, sat_type
+      $query = $this->con->prepare('SELECT  daylight_pass, sat_type, img_count,
                                             FROM decoded_passes WHERE id = ?;');
       $query->bindValue(1, $id);
       $result = $query->execute();
       $pass = $result->fetchArray();
       switch($pass['sat_type']) {
-        case 0:
+        case 0: // Meteor-M2
           $enhacements = ['-122-rectified.jpg'];
           break;
-        case 1:
+        case 1: // NOAA
           if ($pass['daylight_pass'] == 1) {
             $enhacements = ['-ZA.jpg','-MCIR.jpg','-MCIR-precip.jpg','-MSA.jpg','-MSA-precip.jpg','-HVC.jpg','-HVC-precip.jpg','-HVCT.jpg','-HVCT-precip.jpg'];
           } else {
             $enhacements = ['-ZA.jpg','-MCIR.jpg','-MCIR-precip.jpg'];
           }
+          break;
+        case 2: // ISS
+            for ($x = 0; $x <= $$pass['img_count']; $x+=1) {
+              $enhacements[] = "-$x.png";
+            }
           break;
       }
       return $enhacements;

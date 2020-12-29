@@ -21,11 +21,14 @@
           $col_count=1;
         }
         switch($image['sat_type']) {
-          case 0:
+          case 0: // Meteor-M2
             $ending = "-122-rectified.jpg";
             break;
-          case 1:
+          case 1: // NOAA
             $ending = "-MCIR.jpg";
+            break;
+          case 2: // ISS
+            $ending = "-0.png";
             break;
         }
         echo "<td><div id =\"satimgdiv\"><a href=". "detail.php?id=" . $image['id'] ."><img id=\"satimg\" src=". $baseurl . "thumb/" . $image['file_path'] . $ending ."></img></a></div>";
