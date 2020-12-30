@@ -62,13 +62,9 @@
           }
           break;
         case 2: // ISS
-          if ($pass['img_count'] == 1) {
-            $enhacements[] = "-0.png";
-          } else {
-            for ($x = 0; $x <= $pass['img_count']; $x+=1) {
+            for ($x = 0; $x <= $$pass['img_count']; $x+=1) {
               $enhacements[] = "-$x.png";
             }
-          }
           break;
       }
       return $enhacements;
