@@ -47,6 +47,7 @@ if [ -f "$NOAA_HOME/demod.py" ]; then
             if [ "$img_count" -eq 1 ]; then
                 python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE} Resolución completa: https://weather.reyni.co/detail.php?id=$pass_id" "$7" "${NOAA_OUTPUT}/images/${3}-0.png"
             elif [ "$img_count" -eq 2 ]; then
+                /usr/bin/convert -thumbnail 300 "${NOAA_OUTPUT}/images/${3}-1.png" "${NOAA_OUTPUT}/images/thumb/${3}-1.png"
                 python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE} Mas imagenes: https://weather.reyni.co/detail.php?id=$pass_id" "$7" "${NOAA_OUTPUT}/images/${3}-0.png" "${NOAA_OUTPUT}/images/${3}-1.png"
             fi
         fi
