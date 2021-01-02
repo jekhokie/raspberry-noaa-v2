@@ -10,6 +10,11 @@ fi
 ## import common lib
 . "$HOME/.noaa.conf"
 . "$NOAA_HOME/common.sh"
+
+if [ -f "$NOAA_HOME/panel.db" ]; then
+    die "Seems like there's no panel.db database in your project folder"
+fi
+
 STEPS="6"
 
 datetime=$(date +"%Y%m%d-%H%M%S")
