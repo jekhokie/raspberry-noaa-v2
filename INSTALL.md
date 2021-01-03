@@ -13,6 +13,7 @@
     - [Setup Nginx](#setup-nginx)
     - [Setup Database](#setup-database)
     - [Setup RamFS](#setup-ramfs)
+    - [Setup ISS reception and decoding (SSTV)](#setup-iss-reception-and-decoding-sstv)
     - [Cron the scheduling job](#cron-the-scheduling-job)
     - [Set your Twitter credentials](#set-your-twitter-credentials)
 
@@ -166,6 +167,16 @@ sudo mkdir -p /var/ramfs
 cat templates/fstab | sudo tee -a /etc/fstab > /dev/null
 sudo mount -a
 sudo chmod 777 /var/ramfs
+```
+
+### Setup ISS reception and decoding (SSTV)
+```
+wget -qr https://github.com/reynico/pd120_decoder/archive/master.zip -O /tmp/master.zip
+cd /tmp
+unzip master.zip
+cd pd120_decoder-master/pd120_decoder/
+pip3 install --user -r requirements.txt
+cp "{demod.py,utils.py}" "/home/pi/raspberry-noaa/"
 ```
 
 ### Cron the scheduling job
