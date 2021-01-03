@@ -68,7 +68,8 @@ sudo apt install -yq predict \
                      socat \
                      php7.2-fpm \
                      php7.2-sqlite \
-                     sqlite3
+                     sqlite3 \
+                     libgfortran5
 ``` 
 
 ```
