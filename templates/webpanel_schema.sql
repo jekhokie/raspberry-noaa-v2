@@ -10,5 +10,5 @@ CREATE TABLE decoded_passes(
     id integer primary key autoincrement,
     pass_start integer,
     file_path text not null,
-    daylight_pass boolean, is_noaa boolean,
+    daylight_pass boolean, is_noaa boolean, sat_type integer, img_count integer,
     foreign key(pass_start) references passes(pass_start));

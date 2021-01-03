@@ -82,7 +82,7 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
     rm "${METEOR_OUTPUT}/${3}.bmp"
     rm "${METEOR_OUTPUT}/${3}.dec"
 
-    sqlite3 /home/pi/raspberry-noaa/panel.db "insert into decoded_passes (pass_start, file_path, daylight_pass, is_noaa) values ($5,\"$3\", 1,0);"
+    sqlite3 /home/pi/raspberry-noaa/panel.db "insert into decoded_passes (pass_start, file_path, daylight_pass, sat_type) values ($5,\"$3\", 1,0);"
     pass_id=$(sqlite3 /home/pi/raspberry-noaa/panel.db "select id from decoded_passes order by id desc limit 1;")
     if [ -n "$CONSUMER_KEY" ]; then
         log "Posting to Twitter" "INFO"

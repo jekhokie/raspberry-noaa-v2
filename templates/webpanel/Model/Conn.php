@@ -28,7 +28,7 @@
 
     public function getImages($page, $img_per_page) {
       $query = $this->con->prepare("SELECT  decoded_passes.id, predict_passes.pass_start, 
-                                            file_path, is_noaa, predict_passes.sat_name, predict_passes.max_elev 
+                                            file_path, sat_type, predict_passes.sat_name, predict_passes.max_elev 
                                             FROM decoded_passes INNER JOIN predict_passes 
                                             ON predict_passes.pass_start = decoded_passes.pass_start
                                             ORDER BY decoded_passes.pass_start DESC LIMIT ? OFFSET ?;");
@@ -45,19 +45,27 @@
     }
 
     public function getEnhacements($id) {
-      $query = $this->con->prepare('SELECT  daylight_pass, is_noaa
+      $query = $this->con->prepare('SELECT  daylight_pass, sat_type, img_count
                                             FROM decoded_passes WHERE id = ?;');
       $query->bindValue(1, $id);
       $result = $query->execute();
       $pass = $result->fetchArray();
-      if ($pass['is_noaa'] == 0) {
-      $enhacements = ['-122-rectified.jpg'];
-      } else {
-        if ($pass['daylight_pass'] == 1) {
-          $enhacements = ['-ZA.jpg','-MCIR.jpg','-MCIR-precip.jpg','-MSA.jpg','-MSA-precip.jpg','-HVC.jpg','-HVC-precip.jpg','-HVCT.jpg','-HVCT-precip.jpg'];
-        } else {
-          $enhacements = ['-ZA.jpg','-MCIR.jpg','-MCIR-precip.jpg'];
-        }
+      switch($pass['sat_type']) {
+        case 0: // Meteor-M2
+          $enhacements = ['-122-rectified.jpg'];
+          break;
+        case 1: // NOAA
+          if ($pass['daylight_pass'] == 1) {
+            $enhacements = ['-ZA.jpg','-MCIR.jpg','-MCIR-precip.jpg','-MSA.jpg','-MSA-precip.jpg','-HVC.jpg','-HVC-precip.jpg','-HVCT.jpg','-HVCT-precip.jpg'];
+          } else {
+            $enhacements = ['-ZA.jpg','-MCIR.jpg','-MCIR-precip.jpg'];
+          }
+          break;
+        case 2: // ISS
+          for ($x = 0; $x <= $pass['img_count']-1; $x++) {
+            $enhacements[] = "-$x.png";
+          }
+          break;
       }
       return $enhacements;
     }
