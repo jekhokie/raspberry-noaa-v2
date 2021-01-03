@@ -211,6 +211,21 @@ sudo mount -a
 sudo chmod 777 /var/ramfs
 set -e
 
+if [ -f "$HOME/raspberry-noaa/demod.py" ]; then
+    log_done "pd120_decoder already installed"
+else
+    wget -qr https://github.com/reynico/pd120_decoder/archive/master.zip -O /tmp/master.zip
+    (
+        cd /tmp
+        unzip master.zip
+        cd pd120_decoder-master/pd120_decoder/
+        pip3 install --user -r requirements.txt
+        cp "{demod.py,utils.py}" "$HOME/raspberry-noaa/"
+    )
+    log_done "pd120_decoder installed"
+fi
+
+
 success "Install (almost) done!"
 
 read -rp "Do you want to enable bias-tee? (y/N)"
