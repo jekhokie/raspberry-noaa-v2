@@ -4,7 +4,8 @@
 Most of the code and setup stolen from: [Instructables](https://www.instructables.com/id/Raspberry-Pi-NOAA-Weather-Satellite-Receiver/)
 
 ## New Features!
-  - A webpanel!
+  - [ISS SSTV reception and decoding](ISS.md)
+  - [A webpanel!](WEBPANEL.md)
   - [Meteor M2 full decoding!](METEOR.md)
   - Nginx webserver to show images
   - Timestamp and satellite name overlay on every image
