@@ -11,6 +11,11 @@ fi
 . "$HOME/.noaa.conf"
 . "$NOAA_HOME/common.sh"
 
+if [ -f "$NOAA_HOME/demod.py" ]; then
+    log "Seems like you already have run this migration before" "ERROR"
+    exit 1
+fi
+
 if [ ! -f "$NOAA_HOME/panel.db" ]; then
     log "Seems like there's no panel.db database in your project folder" "ERROR"
     exit 1
