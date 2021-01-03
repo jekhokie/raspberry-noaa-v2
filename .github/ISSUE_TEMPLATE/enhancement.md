@@ -1,3 +1,9 @@
+---
+name: Feature Request Template
+about: "For feature requests / improvements."
+
+---
+
 **Please Describe the problem to be solved**
 (Replace This Text: Please present a concise description of the problem to be addressed by this feature request. Please be clear what parts of the problem are considered to be in-scope and out-of-scope.)
 
