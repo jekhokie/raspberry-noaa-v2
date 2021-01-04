@@ -177,7 +177,7 @@ cd /tmp
 unzip master.zip
 cd pd120_decoder-master/pd120_decoder/
 pip3 install --user -r requirements.txt
-cp "{demod.py,utils.py}" "/home/pi/raspberry-noaa/"
+cp demod.py utils.py "/home/pi/raspberry-noaa/"
 ```
 
 ### Cron the scheduling job

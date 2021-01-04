@@ -221,7 +221,7 @@ else
         unzip master.zip
         cd pd120_decoder-master/pd120_decoder/
         pip3 install --user -r requirements.txt
-        cp "{demod.py,utils.py}" "$HOME/raspberry-noaa/"
+        cp demod.py utils.py "$HOME/raspberry-noaa/"
     )
     log_done "pd120_decoder installed"
 fi
