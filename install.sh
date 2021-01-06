@@ -70,8 +70,13 @@ sudo apt install -yq predict \
                      socat \
                      php7.2-fpm \
                      php7.2-sqlite \
-                     sqlite3 \
-                     libgfortran5
+                     sqlite3
+
+if [ "$raspbian_version" == "stretch" ]; then
+    sudo apt install -yq libgfortran-5-dev
+else
+    sudo apt install -yq libgfortran5
+fi
 
 sudo pip3 install numpy ephem tweepy Pillow
 log_done "Packages installed"
