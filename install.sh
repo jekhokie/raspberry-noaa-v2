@@ -40,6 +40,14 @@ fi
 
 ### Install required packages
 log_running "Installing required packages..."
+
+raspbian_version="$(lsb_release -c --short)"
+
+if [ "$raspbian_version" == "stretch" ]; then
+    wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
+    echo "deb https://packages.sury.org/php/ stretch main" | sudo tee /etc/apt/sources.list.d/php7.list
+fi
+
 sudo apt update -yq
 sudo apt install -yq predict \
                      python-setuptools \
@@ -62,8 +70,13 @@ sudo apt install -yq predict \
                      socat \
                      php7.2-fpm \
                      php7.2-sqlite \
-                     sqlite3 \
-                     libgfortran5
+                     sqlite3
+
+if [ "$raspbian_version" == "stretch" ]; then
+    sudo apt install -yq libgfortran-5-dev
+else
+    sudo apt install -yq libgfortran5
+fi
 
 sudo pip3 install numpy ephem tweepy Pillow
 log_done "Packages installed"
