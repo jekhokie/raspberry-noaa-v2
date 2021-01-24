@@ -35,7 +35,7 @@ fi
 
 ### Verify cloned repo
 if [ ! -e "$HOME/raspberry-noaa" ]; then
-        die "Is https://github.com/reynico/raspberry-noaa cloned in your home directory?"
+    die "Is https://github.com/reynico/raspberry-noaa cloned in your home directory?"
 fi
 
 ### Install required packages
@@ -257,10 +257,10 @@ echo "
     "
 
 read -rp "Enter your latitude (South values are negative): "
-        lat=$REPLY
+    lat=$REPLY
 
 read -rp "Enter your longitude (West values are negative): "
-        lon=$REPLY
+    lon=$REPLY
 
 read -rp "Enter your timezone (Ex: -3 for Argentina time): "
         timezone=$REPLY
