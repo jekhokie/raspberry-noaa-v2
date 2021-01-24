@@ -1,5 +1,10 @@
 ![Raspberry NOAA](header_1600.png)
 
+**_This is a spinoff of the original [raspberry-noaa](https://github.com/reynico/raspberry-noaa) created by Nico - they have
+graciously permitted me to push this project forward with a major refactor to enhance things such as usability, style, and general
+updates. All original content has been preserved (as have all commits up to the point of this repo creation) to retain credit to the
+original creators._**
+
 # NOAA and Meteor automated capture using Raspberry PI
 Most of the code and setup stolen from: [Instructables](https://www.instructables.com/id/Raspberry-Pi-NOAA-Weather-Satellite-Receiver/)
 
