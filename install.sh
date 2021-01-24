@@ -78,7 +78,7 @@ else
     sudo apt install -yq libgfortran5
 fi
 
-sudo pip3 install numpy ephem tweepy Pillow
+sudo python3 -m pip install numpy ephem tweepy Pillow
 log_done "Packages installed"
 
 ### Create the database schema
@@ -233,7 +233,7 @@ else
         cd /tmp
         unzip master.zip
         cd pd120_decoder-master/pd120_decoder/
-        pip3 install --user -r requirements.txt
+        python3 -m pip install --user -r requirements.txt
         cp demod.py utils.py "$HOME/raspberry-noaa/"
     )
     log_done "pd120_decoder installed"
