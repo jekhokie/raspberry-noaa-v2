@@ -1,4 +1,4 @@
-![Raspberry NOAA](header_1600.png)
+![Raspberry NOAA](../assets/header_1600.png)
 
 # Webpanel
 Last release includes a PHP webpanel that shows satellite passes for the day and a image grid for every received image.

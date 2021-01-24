@@ -1,4 +1,4 @@
-![Raspberry NOAA](header_1600.png)
+![Raspberry NOAA](assets/header_1600.png)
 
 **_This is a spinoff of the original [raspberry-noaa](https://github.com/reynico/raspberry-noaa) created by Nico - they have
 graciously permitted me to push this project forward with a major refactor to enhance things such as usability, style, and general
