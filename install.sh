@@ -24,6 +24,10 @@ log_running() {
     echo " ${YELLOW}*${RESET} $1"
 }
 
+log_error() {
+    echo " ${RED}error: $1${RESET}"
+}
+
 success() {
     echo "${GREEN}$1${RESET}"
 }
@@ -249,6 +253,33 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 else
     sed -i -e "s/enable_bias_tee//g" "$HOME/.noaa.conf"
 fi
+
+echo "
+    Next we'll configure your webpanel language
+    and locale settings - you can update these in the
+    future by modifying 'lang' in /var/www/wx/Config.php
+    and 'date_default_timezone_set' in /var/www/wx/header.php
+    "
+
+# language configuration
+langs=($(find templates/webpanel/language/ -type f -printf "%f\n" | cut -f 1 -d '.'))
+while : ; do
+    read -rp "Enter your preferred language (${langs[*]}): "
+    lang=$REPLY
+
+    if [[ ! " ${langs[@]} " =~ " ${lang} " ]]; then
+        log_error "choice $lang is not one of the available options (${langs[*]})"
+    else
+        break
+    fi
+done
+sed -i -e "s/'lang' => '.*'$/'lang' => '${lang}'/" "/var/www/wx/Config.php"
+
+echo "Visit https://www.php.net/manual/en/timezones.php for a list of available timezones"
+read -rp "Enter your preferred timezone: "
+    timezone=$REPLY
+timezone=$(echo $timezone | sed 's/\//\\\//g')
+sed -i -e "s/date_default_timezone_set('.*');/date_default_timezone_set('${timezone}');/" "/var/www/wx/header.php"
 
 echo "
     It's time to configure your ground station
