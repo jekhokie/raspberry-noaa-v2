@@ -1,4 +1,4 @@
-![Raspberry NOAA](header_1600.png)
+![Raspberry NOAA](../assets/header_1600.png)
 
 - [Raspberry PI operating system](#raspberry-pi-operating-system)
 - [Automatic install](#automatic-install)

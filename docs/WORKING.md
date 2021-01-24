@@ -1,4 +1,4 @@
-![Raspberry NOAA](header_1600.png)
+![Raspberry NOAA](../assets/header_1600.png)
 
 # Reception
 First thing we need to test is reception. It's the way to be sure the antenna, reception line, reception hardware and software are working properly. There is a [test_reception.sh](test_reception.sh) script that makes testing easy, just tune a broadcast FM near you and listen to the audio, then make the proper adjustments to improve reception.
