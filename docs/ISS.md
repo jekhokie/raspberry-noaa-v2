@@ -17,7 +17,7 @@ There are a few things to take care about
 
 1. A single ISS pass during a SSTV event could have zero to three SSTV transmissions (based on an average pass time of 10 minutes) so we need to find a way to detect the transmission header to fire up the decoder and store each image.
 
-![PD 120 header](docs/pd120_header.png)
+![PD 120 header](pd120_header.png)
 
 2. A simple way to detect the header on an audio file (once digitized with scipy.io) is to sample the header as an absolute numeric representation, apply a threshold during certain amount of time. So if the header is present, mark the stream and do the same for each new header that ocurrs in about `this_timestamp + 120 seconds` so we don't get any false positives in the middle of the PD120 carrier.
 
