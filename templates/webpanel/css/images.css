@@ -1,0 +1,10 @@
+div.card-group.capture-image-cards div.image-card {
+  display: block;
+  text-align: center;
+}
+
+div.card-group.capture-image-cards div.image-card img.card-img-top {
+  max-height: 180px;
+  max-width: 100%;
+  width: unset;
+}
