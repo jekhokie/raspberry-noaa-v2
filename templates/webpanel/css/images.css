@@ -8,3 +8,7 @@ div.card-group.capture-image-cards div.image-card img.card-img-top {
   max-width: 100%;
   width: unset;
 }
+
+div.card-group.capture-image-cards div.image-card p.card-text {
+  text-align: left;
+}
