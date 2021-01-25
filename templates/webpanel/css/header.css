@@ -1,0 +1,17 @@
+header ul.navbar-nav li {
+  display: block;
+  font-weight: 700;
+}
+
+header ul.navbar-nav li a {
+  display: block;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-bottom: 0.2rem;
+  margin-bottom: 0.3rem;
+  margin-right: 1.25rem;
+}
+
+header ul.navbar-nav li.active a {
+  border-bottom: 0.25rem solid white;
+}

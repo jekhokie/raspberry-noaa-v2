@@ -1,0 +1,4 @@
+* Change location of database file (sub-directory and ignore in git)
+** Update config.php
+* Include more details in pass table like "was captured" or not
+
