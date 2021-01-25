@@ -28,14 +28,20 @@
   <body>
     <header class="mb-3">
       <div class="navbar navbar-expand navbar-dark bg-dark">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav mr-auto">
           <li class="nav-item <?php if($page == 'index.php'){ echo 'active'; }?>">
             <a class="nav-link" href="index.php"><?php echo $lang['passes']; ?></a>
           </li>
-          <li class="nav-item <?php if($page == 'images.php'){ echo 'active'; }?>">
-            <a class="nav-link" href="images.php"><?php echo $lang['images']; ?></a>
+          <li class="nav-item <?php if($page == 'captures.php' or $page == 'capture.php'){ echo 'active'; }?>">
+            <a class="nav-link" href="captures.php"><?php echo $lang['captures']; ?></a>
           </li>
         </ul>
+        <span class="navbar-text timezone">
+          <em>
+            <?php echo $configs->timezone; ?><br>
+            (UTC<?php echo date('P'); ?>)
+          </em>
+        </span>
       </div>
     </header>
     <div class="container">

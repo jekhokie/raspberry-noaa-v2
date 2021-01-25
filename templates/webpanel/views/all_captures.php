@@ -1,12 +1,12 @@
-      <link rel="stylesheet" type="text/css" href="css/images.css">
+      <link rel="stylesheet" type="text/css" href="css/captures.css">
 
-      <div class="pagination">
-        <?php
-          if ($page < 1) {
-            echo "<a href=\"?page=" . ($page-1) . "\">" . $lang['prev'] . "</a>";
-          }
-        ?>
-      </div> 
+      <nav aria-label="page" id="pagination" class="mb-0">
+        <?php include('views/pagination.php'); ?>
+      </nav>
+
+      <div class="page-count-summary mb-0 mx-2 my-1">
+        <?php echo $lang['page'] . " " . $page . " " . $lang['of'] . " " . $page_count; ?>
+      </div>
 
       <?php
         $col_count=0;
@@ -36,11 +36,11 @@
 
           // output image and details, with link to respective enhancement images
           echo "<div class=\"card bg-light m-2 p-2 image-card\">";
-          echo "  <a href=\"detail.php?id=" . $image['id'] . "\"><img class=\"card-img-top\" src=\"" . $img_path . "\" alt=\"img\"></a>";
+          echo "  <a href=\"capture.php?id=" . $image['id'] . "\"><img class=\"card-img-top\" src=\"" . $img_path . "\" alt=\"img\"></a>";
           echo "  <div class=\"card-body\">";
           echo "    <h5 class=\"card-title\">" . $image['sat_name'] . "</h5>";
           echo "    <p class=\"card-text\">";
-          echo "      <strong>" . $lang['elev'] . ":</strong> " . $image['max_elev'] . "<br>";
+          echo "      <strong>" . $lang['elev'] . ":</strong> " . $image['max_elev'] . "&#176;<br>";
           echo "      <strong>" . $lang['pass_start'] . ":</strong> " . date('m/d/Y H:i:s', $image['pass_start']);
           echo "    </p>";
           echo "  </div>";
@@ -54,3 +54,7 @@
           }
         }
       ?>
+
+      <nav aria-label="page" id="pagination" class="d-md-none mb-0">
+        <?php include('views/pagination.php'); ?>
+      </nav>

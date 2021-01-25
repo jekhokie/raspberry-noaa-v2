@@ -32,7 +32,7 @@
           echo "<td scope=\"row\">". $pass['sat_name'] ."</td>";
           echo "<td scope=\"row\" class=\"text-center\">" . $pass_start ."</td>";
           echo "<td scope=\"row\" class=\"text-center\">" . $pass_end . "</td>";
-          echo "<td scope=\"row\" class=\"text-center\">" . $pass['max_elev'] ."</td>";
+          echo "<td scope=\"row\" class=\"text-center\">" . $pass['max_elev'] ."&#176;</td>";
           echo "</tr>";
         }
       }

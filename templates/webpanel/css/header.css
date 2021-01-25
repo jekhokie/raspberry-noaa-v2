@@ -15,3 +15,9 @@ header ul.navbar-nav li a {
 header ul.navbar-nav li.active a {
   border-bottom: 0.25rem solid white;
 }
+
+header span.navbar-text.timezone {
+  font-size: 0.75rem;
+  text-align: right;
+  line-height: 0.95rem;
+}

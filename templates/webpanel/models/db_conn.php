@@ -32,8 +32,9 @@
     # get total number of pages to display images given the
     # passed number of images per page
     public function totalPages($img_per_page) {
-      $total_pages = $this->con->querySingle("SELECT count() from decoded_passes;");
-      return ceil($total_pages/$img_per_page);
+      $decoded_passes = $this->con->querySingle("SELECT count()
+                                                 FROM decoded_passes;");
+      return ceil($decoded_passes/$img_per_page);
     }
 
     # get a list of images for the given page and total number
@@ -46,8 +47,8 @@
                                            predict_passes.sat_name,
                                            predict_passes.max_elev
                                            FROM decoded_passes
-                                             INNER JOIN predict_passes
-                                              ON predict_passes.pass_start = decoded_passes.pass_start
+                                           INNER JOIN predict_passes
+                                             ON predict_passes.pass_start = decoded_passes.pass_start
                                            ORDER BY decoded_passes.pass_start DESC LIMIT ? OFFSET ?;");
       $query->bindValue(1, $img_per_page);
       $query->bindValue(2, $img_per_page * ($page-1));
@@ -61,6 +62,49 @@
       }
 
       return $images;
+    }
+
+    # get the enhancements for the particular capture
+    public function getEnhancements($id) {
+      $query = $this->con->prepare('SELECT daylight_pass,
+                                           sat_type,
+                                           img_count
+                                    FROM decoded_passes
+                                    WHERE id = ?;');
+      $query->bindValue(1, $id);
+      $result = $query->execute();
+      $pass = $result->fetchArray();
+
+      # build enhancement paths based on satellite type
+      switch($pass['sat_type']) {
+        case 0: // Meteor-M2
+          $enhancements = ['-122-rectified.jpg'];
+          break;
+        case 1: // NOAA
+          if ($pass['daylight_pass'] == 1) {
+            $enhancements = ['-ZA.jpg','-MCIR.jpg','-MCIR-precip.jpg','-MSA.jpg','-MSA-precip.jpg','-HVC.jpg','-HVC-precip.jpg','-HVCT.jpg','-HVCT-precip.jpg'];
+          } else {
+            $enhancements = ['-ZA.jpg','-MCIR.jpg','-MCIR-precip.jpg'];
+          }
+          break;
+        case 2: // ISS
+          for ($x = 0; $x <= $pass['img_count']-1; $x++) {
+            $enhancements[] = "-$x.png";
+          }
+          break;
+      }
+      return $enhancements;
+    }
+
+    # get the image path for the specific image
+    public function getImagePath($id) {
+      $query = $this->con->prepare('SELECT file_path
+                                    FROM decoded_passes
+                                    WHERE id = ?;');
+      $query->bindValue(1, $id);
+      $result = $query->execute();
+      $image = $result->fetchArray();
+      return $image['file_path'];
     }
   }
 ?>
