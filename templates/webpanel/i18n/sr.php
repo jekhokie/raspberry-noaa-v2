@@ -1,15 +1,16 @@
 <?php
 $lang = array(
-  "passes" => "Preleti satelita",
-  "satellite" => "Satelit",
+  "captures" => "Hvatanja",
+  "elev" => "Visina",
   "images" => "Slike",
+  "max_elev" => "Maksimalna visina",
+  "next" => "Sledeća",
+  "of" => "od",
   "pass_start" => "Početak",
   "pass_end" => "Kraj",
-  "max_elev" => "Maksimalna visina",
-  "elev" => "Visina",
   "page" => "Strana",
-  "of" => "od",
+  "passes" => "Preleti satelita",
   "prev" => "Prethodna",
-  "next" => "Sledeća",
+  "satellite" => "Satelit",
 );
 ?>

@@ -1,15 +1,16 @@
 <?php
 $lang = array(
-  "passes" => "Pasadas",
-  "satellite" => "Satélite",
+  "captures" => "Capturas",
+  "elev" => "Elevación",
   "images" => "Imagenes",
+  "max_elev" => "Elevación",
+  "next" => "Siguiente",
+  "of" => "de",
   "pass_start" => "Inicio",
   "pass_end" => "Fin",
-  "max_elev" => "Elevación",
-  "elev" => "Elevación",
   "page" => "Página",
-  "of" => "de",
+  "passes" => "Pasadas",
   "prev" => "Anterior",
-  "next" => "Siguiente",
+  "satellite" => "Satélite",
 );
 ?>
