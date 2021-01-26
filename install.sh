@@ -298,10 +298,9 @@ read -rp "Enter your longitude (West values are negative): "
 read -rp "Enter your timezone offset (ex: -3 for Argentina time): "
     tzoffset=$REPLY
 
-sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/${lon}/g" "$HOME/.noaa.conf"
+sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/${lon}/g;s/change_tz_offset/${tzoffset}/g" "$HOME/.noaa.conf"
 sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/${lon}/g" "$HOME/.wxtoimgrc"
 sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/$(echo  "$lon * -1" | bc)/g" "$HOME/.predict/predict.qth"
-sed -i -e "s/change_latitude/${lat}/g;s/change_longitude/${lon}/g;s/change_tz/$(echo  "$tzoffset * -1" | bc)/g" "sun.py"
 
 success "Install done! Double check your $HOME/.noaa.conf settings"
 
