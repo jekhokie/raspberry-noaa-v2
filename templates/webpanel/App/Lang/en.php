@@ -1,5 +1,5 @@
 <?php
-$lang = array(
+return array(
   "captures" => "Captures",
   "elev" => "Elevation",
   "images" => "Images",

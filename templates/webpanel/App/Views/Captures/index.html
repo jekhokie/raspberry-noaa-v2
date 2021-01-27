@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block body %}
+  <link rel="stylesheet" type="text/css" href="assets/css/captures.css">
+
+  <nav aria-label="page" id="pagination" class="mb-0">
+    {% include('Captures/pagination.html') %}
+  </nav>
+
+  <div class="page-count-summary mb-0 mx-2 my-1">
+    {{ "#{lang['page']} #{cur_page} #{lang['of']} #{page_count}" }}
+  </div>
+
+  <nav aria-label="page" id="pagination" class="d-md-none mb-0">
+    {% include('Captures/pagination.html') %}
+  </nav>
+
+{% endblock %}

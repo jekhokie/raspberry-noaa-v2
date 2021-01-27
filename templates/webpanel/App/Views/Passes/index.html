@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block body %}
+  <link rel="stylesheet" type="text/css" href="assets/css/pass_list.css">
+
+  <table class="table table-bordered table-sm table-striped" id="passes">
+    <thead class="thead-dark">
+      <tr class="text-center">
+        <th scope="col">{{ lang['satellite'] }}</th>
+        <th scope="col">{{ lang['pass_start'] }}</th>
+        <th scope="col">{{ lang['pass_end'] }}</th>
+        <th scope="col">{{ lang['max_elev'] }}</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+{% endblock %}
