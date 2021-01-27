@@ -73,7 +73,36 @@ sudo cp -rp $NOAA_HOME/templates/webpanel/* $WEB_DIR/
 log "4/$STEPS: Done copying new PHP files" "INFO"
 
 log "5/$STEPS: Moving audio, images, and meteor directories (if required/detected)..." "INFO"
-echo "FILLMEIN"
+new_path=/var/www/wx/public/
+old_audio_path=/var/www/wx/audio
+old_images_path=/var/www/wx/images
+old_meteor_path=/var/www/meteor
+if [ -d $old_audio_path ]; then
+  if [ -d $new_path/audio ]; then
+    log "Found new audio directory already exists - not moving old audio directory to avoid conflict (please handle yourself)" "ERROR"
+  else
+    log "Found old audio path, moving the directory to $new_path/audio" "INFO"
+    mv $old_audio_path $new_path/audio
+  fi
+fi
+
+if [ -d $old_images_path ]; then
+  if [ -d $new_path/images ]; then
+    log "Found new images directory already exists - not moving old images directory to avoid conflict (please handle yourself)" "ERROR"
+  else
+    log "Found old images path, moving the directory to $new_path/images" "INFO"
+    mv $old_images_path $new_path/images
+  fi
+fi
+
+if [ -d $old_meteor_path ]; then
+  if [ -d $new_path/meteor ]; then
+    log "Found new meteor directory already exists - not moving old meteor directory to avoid conflict (please handle yourself)" "ERROR"
+  else
+    log "Found old meteor path, moving the directory to $new_path/meteor" "INFO"
+    mv $old_meteor_path $new_path/meteor
+  fi
+fi
 log "5/$STEPS: Done moving audio, images, and meteor directories" "INFO"
 
 log "6/$STEPS: Running composer to install dependencies..." "INFO"
@@ -82,7 +111,6 @@ log "6/$STEPS: Done running composer install" "INFO"
 
 log "7/$STEPS: Aligning permissions..." "INFO"
 chown -R pi:pi /var/www/wx/
-echo "FILLMEIN"
 log "8/$STEPS: Done aligning permissions" "INFO"
 
 log "8/$STEPS: Updating nginx configuration (if required)..." "INFO"
