@@ -1,13 +1,23 @@
 #!/usr/bin/env python3
+import envbash
 import ephem
 import time
 import sys
-timezone = change_tz + time.localtime().tm_isdst
+import os
+from envbash import load_envbash
+
+# load bash environment vars
+load_envbash('/home/pi/.noaa.conf')
+tz_offset = int(os.environ['TZ_OFFSET'])
+lat = float(os.environ['LAT'])
+lon = float(os.environ['LON'])
+
+timezone = (tz_offset * -1) + time.localtime().tm_isdst
 date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(sys.argv[1])-(timezone*60*60)))
 
 obs=ephem.Observer()
-obs.lat='change_latitude'
-obs.long='change_longitude'
+obs.lat = lat
+obs.long = lon
 obs.date = date
 
 sun = ephem.Sun(obs)
