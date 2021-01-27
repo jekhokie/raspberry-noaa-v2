@@ -12,7 +12,7 @@ fi
 . "$NOAA_HOME/common.sh"
 
 WEB_DIR=/var/www/wx
-STEPS=3
+STEPS=9
 
 echo "
       This script is used to sync webpanel updates and provide an easy
@@ -27,7 +27,7 @@ echo "
       If you have made significant changes to any of the contents in the webpanel
       deployment, they likely WILL be destroyed by running this script as all
       files in $WEB_DIR are replaced with the exception of the following, which are
-      left alone to preserve the captures:
+      moved to the public/ directory as part of this upgrade:
 
         * audio/
         * images/
@@ -45,7 +45,14 @@ else
   exit 1
 fi
 
-log "1/$STEPS: Backing up PHP config file..." "INFO"
+log "1/$STEPS: Checking for composer..." "INFO"
+which composer
+if [ $? -ne 0 ]; then
+  sudo apt-get -y install composer
+fi
+log "1/$STEPS: Composer install/check done" "INFO"
+
+log "2/$STEPS: Backing up PHP config file..." "INFO"
 if [ -f "$WEB_DIR/config.php" ]; then
     log "  Found newer-style config file - backing up." "INFO"
     cp $WEB_DIR/config.php $NOAA_HOME/bak/config.php.backup
@@ -55,15 +62,36 @@ elif [ -f "$WEB_DIR/Config.php" ]; then
 else
     log "  Did not find any existing config file - proceeding." "INFO"
 fi
-log "1/$STEPS: Done backing up PHP config file" "INFO"
+log "2/$STEPS: Done backing up PHP config file" "INFO"
 
-log "2/$STEPS: Removing old PHP files (excluding images/audio)..." "INFO"
+log "3/$STEPS: Removing old PHP files (excluding images/audio)..." "INFO"
 find $WEB_DIR/ -mindepth 1 -type d -name "images" -prune -o -type d -name "audio" -prune -o -type d -name "meteor" -prune -o -print | xargs rm -rf
-log "2/$STEPS: Old PHP files removed" "INFO"
+log "3/$STEPS: Old PHP files removed" "INFO"
 
-log "3/$STEPS: Copying new PHP files..." "INFO"
+log "4/$STEPS: Copying new PHP files..." "INFO"
 sudo cp -rp $NOAA_HOME/templates/webpanel/* $WEB_DIR/
-log "3/$STEPS: Done copying new PHP files" "INFO"
+log "4/$STEPS: Done copying new PHP files" "INFO"
+
+log "5/$STEPS: Moving audio, images, and meteor directories (if required/detected)..." "INFO"
+echo "FILLMEIN"
+log "5/$STEPS: Done moving audio, images, and meteor directories" "INFO"
+
+log "6/$STEPS: Running composer to install dependencies..." "INFO"
+composer install -d /var/www/wx/
+log "6/$STEPS: Done running composer install" "INFO"
+
+log "7/$STEPS: Aligning permissions..." "INFO"
+chown -R pi:pi /var/www/wx/
+echo "FILLMEIN"
+log "8/$STEPS: Done aligning permissions" "INFO"
+
+log "8/$STEPS: Updating nginx configuration (if required)..." "INFO"
+echo "FILLMEIN - MOVE TO public/ AS ROOT DIR WITH REWRITES FOR index.php"
+log "8/$STEPS: Done updating nginx configuration" "INFO"
+
+log "9/$STEPS: Restarting nginx (if required)..." "INFO"
+echo "FILLMEIN: RESTART NGINX ONLY IF REQUIRED"
+log "9/$STEPS: Done restarting nginx" "INFO"
 
 log "Your old PHP config file has been copied to the bak/ directory" "INFO"
 log "Please update any settings you wish to preserve in $WEB_DIR/config.php" "INFO"
