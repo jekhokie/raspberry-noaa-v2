@@ -1,3 +1,2 @@
-predict/
-map/
-panel.db
+# ansible retry files
+*.retry

@@ -50,7 +50,7 @@ log "1/$STEPS: Composer install/check done" "INFO"
 
 log "2/$STEPS: Backing up PHP config file..." "INFO"
 if [ -f "$WEB_HOME/App/Config.php" ]; then
-    cp $WEB_HOME/App/Config.php $NOAA_HOME/bak/Config.php.backup
+    cp $WEB_HOME/App/Config.php $NOAA_HOME/tmp/config_backups/Config.php.backup
     log "  Backed up config file to $NOAA_HOME/bak/Config.php.backup" "INFO"
 else
     log "  Did not find any existing config file - proceeding." "INFO"

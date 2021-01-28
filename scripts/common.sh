@@ -51,6 +51,6 @@ if [ ! -d "${NOAA_HOME}/map/" ]; then
 	mkdir -m 775 -p "${NOAA_HOME}/map/"
 fi
 
-if [ ! -d "${NOAA_HOME}/predict/" ]; then
-	mkdir -m 775 -p "${NOAA_HOME}/predict/"
+if [ ! -d "${NOAA_HOME}/tmp/predict/" ]; then
+	mkdir -m 775 -p "${NOAA_HOME}/tmp/predict/"
 fi
