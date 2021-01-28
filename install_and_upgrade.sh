@@ -46,7 +46,7 @@ else
 fi
 
 log_running "Running Ansible to install and/or update your raspberry-noaa-v2..."
-echo "TODO: FILLMEIN"
+ansible-playbook -i ansible/hosts ansible/site.yml
 
 if [ $? -eq 0 ]; then
   log_done "Ansible apply complete!"

@@ -1,0 +1,8 @@
+---
+- name: install raspberry-noaa-v2
+  hosts: 127.0.0.1
+  connection: local
+  gather_facts: no
+  roles:
+    - common
+...  
