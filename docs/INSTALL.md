@@ -159,7 +159,7 @@ sudo cp -rp templates/webpanel/* /var/www/wx/
 
 ### Setup Database
 ```
-sqlite3 "panel.db" < "templates/webpanel_schema.sql"
+sqlite3 db/panel.db < templates/webpanel_schema.sql
 ```
 
 ### Setup RamFS
@@ -177,7 +177,7 @@ cd /tmp
 unzip master.zip
 cd pd120_decoder-master/pd120_decoder/
 pip3 install --user -r requirements.txt
-cp demod.py utils.py "/home/pi/raspberry-noaa-v2/"
+cp demod.py utils.py "/home/pi/raspberry-noaa-v2/scripts/"
 ```
 
 ### Cron the scheduling job

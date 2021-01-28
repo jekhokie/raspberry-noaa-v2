@@ -9,7 +9,7 @@ fi
 ## import common lib
 . "$HOME/.noaa.conf"
 . "$HOME/.tweepy.conf"
-. "$NOAA_HOME/common.sh"
+. "$NOAA_HOME/scripts/common.sh"
 
 SYSTEM_MEMORY=$(free -m | awk '/^Mem:/{print $2}')
 if [ "$SYSTEM_MEMORY" -lt 2000 ]; then
@@ -26,7 +26,7 @@ fi
 
 ## pass start timestamp and sun elevation
 PASS_START=$(expr "$5" + 90)
-SUN_ELEV=$(python3 "$NOAA_HOME"/sun.py "$PASS_START")
+SUN_ELEV=$(python3 "$NOAA_HOME"/scripts/sun.py "$PASS_START")
 
 if pgrep "rtl_fm" > /dev/null
 then
@@ -75,20 +75,20 @@ if [ -f "${METEOR_OUTPUT}/${3}.dec" ]; then
     fi
 
     log "Rectifying image to adjust aspect ratio" "INFO"
-    python3 "${NOAA_HOME}/rectify.py" "${NOAA_OUTPUT}/images/${3}-122.bmp"
+    python3 "${NOAA_HOME}/scripts/rectify.py" "${NOAA_OUTPUT}/images/${3}-122.bmp"
     convert "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg" -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${1} ${START_DATE} Elev: $7°" "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg"
     /usr/bin/convert -thumbnail 300 "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg" "${NOAA_OUTPUT}/images/thumb/${3}-122-rectified.jpg"
     rm "${NOAA_OUTPUT}/images/${3}-122.bmp"
     rm "${METEOR_OUTPUT}/${3}.bmp"
     rm "${METEOR_OUTPUT}/${3}.dec"
 
-    sqlite3 $NOAA_HOME/panel.db "insert into decoded_passes (pass_start, file_path, daylight_pass, sat_type) values ($5,\"$3\", 1,0);"
-    pass_id=$(sqlite3 $NOAA_HOME/panel.db "select id from decoded_passes order by id desc limit 1;")
+    sqlite3 $DB_HOME/panel.db "insert into decoded_passes (pass_start, file_path, daylight_pass, sat_type) values ($5,\"$3\", 1,0);"
+    pass_id=$(sqlite3 $DB_HOME/panel.db "select id from decoded_passes order by id desc limit 1;")
     if [ -n "$CONSUMER_KEY" ]; then
         log "Posting to Twitter" "INFO"
-        python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE} Resolución completa: https://weather.reyni.co/detail.php?id=$pass_id" "$7" "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg"
+        python3 $NOAA_HOME/scripts/post.py "$1 ${START_DATE} Resolución completa: https://weather.reyni.co/detail.php?id=$pass_id" "$7" "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg"
     fi
-    sqlite3 $NOAA_HOME/panel.db "update predict_passes set is_active = 0 where (predict_passes.pass_start) in (select predict_passes.pass_start from predict_passes inner join decoded_passes on predict_passes.pass_start = decoded_passes.pass_start where decoded_passes.id = $pass_id);"
+    sqlite3 $DB_HOME/panel.db "update predict_passes set is_active = 0 where (predict_passes.pass_start) in (select predict_passes.pass_start from predict_passes inner join decoded_passes on predict_passes.pass_start = decoded_passes.pass_start where decoded_passes.id = $pass_id);"
 else
     log "Decoding failed, either a bad pass/low SNR or a software problem" "ERROR"
 fi

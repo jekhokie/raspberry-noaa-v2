@@ -11,4 +11,4 @@ Currently, the satellite is using 137.1Mhz as the center frequency, Wide-FM @ 12
 2. Use dbdexter's [meteor_demod](https://github.com/dbdexter-dev/meteor_demod) to convert the audio stream to QPSK symbols at a 72k rate
 3. Use artlav's [medet_arm](https://github.com/artlav/meteor_decoder) to generate a decoded dump and then a false color image
 4. Use dbdexter's [meteor_rectify](https://github.com/dbdexter-dev/meteor_rectify) to correct the visible deformation on Meteor images (wrong aspect ratio)
-   1. I made [some changes](rectify.py) to rectify to export to compressed JPG and remove some prints
+   1. I made [some changes](scripts/rectify.py) to rectify to export to compressed JPG and remove some prints

@@ -9,7 +9,7 @@ fi
 ## import common lib
 . "$HOME/.noaa.conf"
 . "$HOME/.tweepy.conf"
-. "$NOAA_HOME/common.sh"
+. "$NOAA_HOME/scripts/common.sh"
 
 if pgrep "rtl_fm" > /dev/null
 then
@@ -40,17 +40,17 @@ if [ -f "$NOAA_HOME/demod.py" ]; then
 
     if [ "$img_count" -gt 0 ]; then
         /usr/bin/convert -thumbnail 300 "${NOAA_OUTPUT}/images/${3}-0.png" "${NOAA_OUTPUT}/images/thumb/${3}-0.png"
-        sqlite3 "$NOAA_HOME/panel.db" "insert into decoded_passes (pass_start, file_path, daylight_pass, sat_type, img_count) values ($5,\"$3\",1,2,$img_count);"
-        pass_id=$(sqlite3 "$NOAA_HOME/panel.db" "select id from decoded_passes order by id desc limit 1;")
+        sqlite3 "$DB_HOME/panel.db" "insert into decoded_passes (pass_start, file_path, daylight_pass, sat_type, img_count) values ($5,\"$3\",1,2,$img_count);"
+        pass_id=$(sqlite3 "$DB_HOME/panel.db" "select id from decoded_passes order by id desc limit 1;")
         if [ -n "$CONSUMER_KEY" ]; then
             log "Posting to Twitter" "INFO"
             if [ "$img_count" -eq 1 ]; then
-                python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE} Resolución completa: https://weather.reyni.co/detail.php?id=$pass_id" "$7" "${NOAA_OUTPUT}/images/${3}-0.png"
+                python3 $NOAA_HOME/scripts/post.py "$1 ${START_DATE} Resolución completa: https://weather.reyni.co/detail.php?id=$pass_id" "$7" "${NOAA_OUTPUT}/images/${3}-0.png"
             elif [ "$img_count" -eq 2 ]; then
                 /usr/bin/convert -thumbnail 300 "${NOAA_OUTPUT}/images/${3}-1.png" "${NOAA_OUTPUT}/images/thumb/${3}-1.png"
-                python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE} Mas imagenes: https://weather.reyni.co/detail.php?id=$pass_id" "$7" "${NOAA_OUTPUT}/images/${3}-0.png" "${NOAA_OUTPUT}/images/${3}-1.png"
+                python3 $NOAA_HOME/scripts/post.py "$1 ${START_DATE} Mas imagenes: https://weather.reyni.co/detail.php?id=$pass_id" "$7" "${NOAA_OUTPUT}/images/${3}-0.png" "${NOAA_OUTPUT}/images/${3}-1.png"
             fi
         fi
-        sqlite3 "$NOAA_HOME/panel.db" "update predict_passes set is_active = 0 where (predict_passes.pass_start) in (select predict_passes.pass_start from predict_passes inner join decoded_passes on predict_passes.pass_start = decoded_passes.pass_start where decoded_passes.id = $pass_id);"
+        sqlite3 "$DB_HOME/panel.db" "update predict_passes set is_active = 0 where (predict_passes.pass_start) in (select predict_passes.pass_start from predict_passes inner join decoded_passes on predict_passes.pass_start = decoded_passes.pass_start where decoded_passes.id = $pass_id);"
     fi
 fi
