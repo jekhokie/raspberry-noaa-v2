@@ -16,8 +16,8 @@ if [ -f "$NOAA_HOME/demod.py" ]; then
     exit 1
 fi
 
-if [ ! -f "$NOAA_HOME/panel.db" ]; then
-    log "Seems like there's no panel.db database in your project folder" "ERROR"
+if [ ! -f "$DB_HOME/panel.db" ]; then
+    log "Seems like there's no db/panel.db database in your project folder" "ERROR"
     exit 1
 fi
 
@@ -26,19 +26,19 @@ STEPS="6"
 datetime=$(date +"%Y%m%d-%H%M%S")
 
 log "1/$STEPS: Backing up database" "INFO"
-cp "$NOAA_HOME/panel.db" "$NOAA_HOME/panel.db.bak-$datetime"
+cp "$DB_HOME/panel.db" "$DB_HOME/panel.db.bak-$datetime"
 log "1/$STEPS: Database backup done: panel.db.bak-$datetime" "INFO"
 
 log "2/$STEPS: Creating new columns" "INFO"
 set +e
-sqlite3 "$NOAA_HOME/panel.db" "alter table decoded_passes add column img_count integer;"
-sqlite3 "$NOAA_HOME/panel.db" "alter table decoded_passes add column sat_type integer;"
+sqlite3 "$DB_HOME/panel.db" "alter table decoded_passes add column img_count integer;"
+sqlite3 "$DB_HOME/panel.db" "alter table decoded_passes add column sat_type integer;"
 set -e
 log "2/$STEPS: img_count and sat_type columns created" "INFO"
 
 
 log "3/$STEPS: Migrating is_noaa column" "INFO"
-sqlite3 "$NOAA_HOME/panel.db" "update decoded_passes set sat_type = is_noaa;"
+sqlite3 "$DB_HOME/panel.db" "update decoded_passes set sat_type = is_noaa;"
 log "3/$STEPS: is_noaa column migration done" "INFO"
 
 

@@ -86,10 +86,10 @@ sudo python3 -m pip install numpy ephem tweepy Pillow
 log_done "Packages installed"
 
 ### Create the database schema
-if [ -e "$HOME/raspberry-noaa-v2/panel.db" ]; then
+if [ -e "$HOME/raspberry-noaa-v2/db/panel.db" ]; then
     log_done "Database already created"
 else
-    sqlite3 "panel.db" < "templates/webpanel_schema.sql"
+    sqlite3 db/panel.db < templates/webpanel_schema.sql
     log_done "Database schema created"
 fi
 

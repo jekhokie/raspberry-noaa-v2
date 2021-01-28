@@ -1,13 +1,13 @@
 ![Raspberry NOAA](../assets/header_1600.png)
 
 # Reception
-First thing we need to test is reception. It's the way to be sure the antenna, reception line, reception hardware and software are working properly. There is a [test_reception.sh](test_reception.sh) script that makes testing easy, just tune a broadcast FM near you and listen to the audio, then make the proper adjustments to improve reception.
+First thing we need to test is reception. It's the way to be sure the antenna, reception line, reception hardware and software are working properly. There is a [test_reception.sh](scripts/test_reception.sh) script that makes testing easy, just tune a broadcast FM near you and listen to the audio, then make the proper adjustments to improve reception.
 
-Open a SSH connection to your Raspberry PI and execute `test_reception.sh <tune frequency>`. 
+Open a SSH connection to your Raspberry PI and execute `./scripts/test_reception.sh <tune frequency>`. 
 
 ```bash
 cd raspberry-noaa-v2/
-./test_reception.sh 90.3
+./scripts/test_reception.sh 90.3
 ```
 
 Now open a terminal on your Linux/Mac/(And maybe windows?) computer and run
@@ -36,8 +36,8 @@ Will show the scheduled jobs for today, each job can be described using `at -c <
 Images are saved in the web server's directory, so you can access your received images at http://your.raspberry.pi.ip/, where `your.raspberry.pi.ip` is your Raspberry PI IP address.
 
 # Pruning
-Run `prune.sh` to delete old images. By default it deletes the 10 oldest images from the disk and the database. If you want to schedule this task, run
+Run `./scripts/prune.sh` to delete old images. By default it deletes the 10 oldest images from the disk and the database. If you want to schedule this task, run
 
 ```bash
-cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa-v2/prune.sh") | crontab -
+cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa-v2/scripts/prune.sh") | crontab -
 ```

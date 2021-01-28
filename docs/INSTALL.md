@@ -159,7 +159,7 @@ sudo cp -rp templates/webpanel/* /var/www/wx/
 
 ### Setup Database
 ```
-sqlite3 "panel.db" < "templates/webpanel_schema.sql"
+sqlite3 db/panel.db < templates/webpanel_schema.sql
 ```
 
 ### Setup RamFS
