@@ -3,6 +3,9 @@
 namespace App;
 
 class Config {
+  # how many captures to show per page (pagination)
+  const CAPTURES_PER_PAGE = 18;
+
   # base directory for sqlite database
   const DB_DIR = '/home/pi/raspberry-noaa/';
 

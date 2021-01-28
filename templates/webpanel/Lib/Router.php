@@ -15,22 +15,26 @@ class Router {
 
   # split URL into controller, action, and params components
   public function convertUrl() {
-    if (isset($_SERVER['REQUEST_URI'])) {
-      # remove leading/trailing slashes, and exclude query params
-      $uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
-      $url = rtrim($uri_parts[0], '/');
-      $url = ltrim($url, '/');
+    # parse the url for the respective parts needed, including filtering for malicious inputs
+    $full_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    $full_url = filter_var($full_url, FILTER_SANITIZE_URL);
+    $url_parts = parse_url($full_url);
 
-      # filter for malicious input
-      $url = filter_var($url, FILTER_SANITIZE_URL);
-
-      # separate path components and store the
-      # the controller, action, and any parameters
-      $url = explode('/', $url);
-      $this->controller = (isset($url[0]) and $url[0] != '') ? $url[0] : 'passes';
-      $this->action = (isset($url[1]) and $url[1] != '') ? $url[1] : 'index';
-      $this->params = (isset($uri_parts[1]) and $uri_parts[1] != '') ? $uri_parts[1] : null;
+    # parse query params if they exist
+    $query_params = array();
+    if (array_key_exists('query', $url_parts)) {
+      parse_str($url_parts['query'], $query_params);
     }
+
+    # remove leading and trailing parts
+    $url = rtrim($url_parts['path'], '/');
+    $url = ltrim($url, '/');
+
+    # the controller, action, and any parameters
+    $url = explode('/', $url);
+    $this->controller = (isset($url[0]) and $url[0] != '') ? $url[0] : 'passes';
+    $this->action = (isset($url[1]) and $url[1] != '') ? $url[1] : 'index';
+    $this->params = $query_params;
   }
 
   # based on request path, attempt to route to correct location
@@ -45,8 +49,11 @@ class Router {
       $full_controller_name = "App\\Controllers\\" . $controller_name;
       $this->controller = new $full_controller_name($this->controller);
 
-      # TODO: Pass parameters
-      $this->controller->{$this->action}();
+      # merge controller name as page identifier
+      $args = array_merge($this->params, array('page' => $this->controller->name));
+
+      # call controller action with parameters
+      $this->controller->{$this->action}($args);
     } else {
       echo '404 - could not find controller<br>';
     }

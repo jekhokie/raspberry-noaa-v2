@@ -2,9 +2,14 @@
 
 namespace Lib;
 
+use App\Config;
+
 abstract class Controller {
+  protected $db_conn;
+
   public function __construct($name) {
     $this->name = $name;
+    $this->connectToDB();
   }
 
   # mapping to provide a before and after functionality
@@ -14,9 +19,6 @@ abstract class Controller {
 
     if (method_exists($this, $method)) {
       if ($this->before() !== false) {
-        # add the page name for navigation control
-        $args = array_merge($args, array(array('page' => $this->name)));
-
         call_user_func_array([$this, $method], $args);
         $this->after();
       }
@@ -25,9 +27,24 @@ abstract class Controller {
     }
   }
 
+  # runs before controller execution
   protected function before() { }
 
+  # runs after controller execution
   protected function after() { }
+
+  # dynamically loads a model within the controller based
+  # on the provided name
+  protected function loadModel($name) {
+    require '../App/Models/' . $name . '.php';
+    $model_obj = '\App\Models\\' . $name;
+    return new $model_obj($this->db_conn);
+  }
+
+  # establishes connection with database
+  private function connectToDB() {
+    $this->db_conn = new \SQLite3(Config::DB_DIR . 'panel.db');
+  }
 }
 
 ?>
