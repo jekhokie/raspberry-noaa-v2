@@ -24,9 +24,9 @@ There are a few things to take care about
 3. A Satellite transmission to the earth has doppler efect so the frequency changes over the time. This is a problem when you plot audio as data. So I had to include a high pass filter to remove the DC offset from the audio recorded by `rtl_fm`.
 
 # Upgrading procedure
-There's a migration script that handles the required modifications over the database as well as the web files. Take in mind that you need to have the web panel version of raspberry-noaa running.
+There's a migration script that handles the required modifications over the database as well as the web files. Take in mind that you need to have the web panel version of raspberry-noaa-v2 running.
 
-1. `cd /home/pi/raspberry-noaa`
+1. `cd /home/pi/raspberry-noaa-v2`
 2. `git fetch -pt && git pull`
 3. `cd migrations/`
 4. `./20201292-iss.sh`

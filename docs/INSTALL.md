@@ -29,8 +29,8 @@ sudo apt install git
 2. Clone this repository on your home directory
 ```
 cd $HOME
-git clone https://github.com/reynico/raspberry-noaa.git
-cd raspberry-noaa
+git clone https://github.com/jekhokie/raspberry-noaa-v2.git
+cd raspberry-noaa-v2
 ```
 2. Run `./install.sh`. You will be asked for your ground station lat/lon position.
 3. If you want automatic Twitter posting, see: [Set your Twitter credentials](#set-your-twitter-credentials)
@@ -106,8 +106,8 @@ sudo dpkg -i software/wxtoimg-armhf-2.11.2-beta.deb
 ### Clone this repo
 ```
 cd $HOME
-git clone https://github.com/reynico/raspberry-noaa.git
-cd raspberry-noaa
+git clone https://github.com/jekhokie/raspberry-noaa-v2.git
+cd raspberry-noaa-v2
 ```
 
 ### Install the default configuration files
@@ -177,12 +177,12 @@ cd /tmp
 unzip master.zip
 cd pd120_decoder-master/pd120_decoder/
 pip3 install --user -r requirements.txt
-cp demod.py utils.py "/home/pi/raspberry-noaa/"
+cp demod.py utils.py "/home/pi/raspberry-noaa-v2/"
 ```
 
 ### Cron the scheduling job
 ```
-cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa/schedule.sh") | crontab -
+cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa-v2/schedule.sh") | crontab -
 ```
 
 ### Set your Twitter credentials
