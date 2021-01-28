@@ -26,7 +26,7 @@ fi
 
 ## pass start timestamp and sun elevation
 PASS_START=$(expr "$5" + 90)
-SUN_ELEV=$(python3 "$NOAA_HOME"/sun.py "$PASS_START")
+SUN_ELEV=$(python3 "$NOAA_HOME"/scripts/sun.py "$PASS_START")
 
 if pgrep "rtl_fm" > /dev/null
 then
