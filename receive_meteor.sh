@@ -9,7 +9,7 @@ fi
 ## import common lib
 . "$HOME/.noaa.conf"
 . "$HOME/.tweepy.conf"
-. "$NOAA_HOME/common.sh"
+. "$NOAA_HOME/scripts/common.sh"
 
 SYSTEM_MEMORY=$(free -m | awk '/^Mem:/{print $2}')
 if [ "$SYSTEM_MEMORY" -lt 2000 ]; then

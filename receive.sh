@@ -9,7 +9,7 @@ fi
 ## import common lib
 . "$HOME/.noaa.conf"
 . "$HOME/.tweepy.conf"
-. "$NOAA_HOME/common.sh"
+. "$NOAA_HOME/scripts/common.sh"
 
 
 ## pass start timestamp and sun elevation

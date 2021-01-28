@@ -9,7 +9,7 @@ fi
 
 ## import common lib
 . "$HOME/.noaa.conf"
-. "$NOAA_HOME/common.sh"
+. "$NOAA_HOME/scripts/common.sh"
 
 STEPS=9
 

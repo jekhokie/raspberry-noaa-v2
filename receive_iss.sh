@@ -9,7 +9,7 @@ fi
 ## import common lib
 . "$HOME/.noaa.conf"
 . "$HOME/.tweepy.conf"
-. "$NOAA_HOME/common.sh"
+. "$NOAA_HOME/scripts/common.sh"
 
 if pgrep "rtl_fm" > /dev/null
 then

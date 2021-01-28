@@ -8,7 +8,7 @@ fi
 
 ## import common lib
 . "$HOME/.noaa.conf"
-. "$NOAA_HOME/common.sh"
+. "$NOAA_HOME/scripts/common.sh"
 
 if [ -z "$1" ]; then
     log "Usage: $0 <frequency>. Example: $0 90.3" "ERROR"

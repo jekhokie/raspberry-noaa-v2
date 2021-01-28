@@ -9,7 +9,7 @@ fi
 
 ## import common lib
 . "$HOME/.noaa.conf"
-. "$NOAA_HOME/common.sh"
+. "$NOAA_HOME/scripts/common.sh"
 
 if [ -f "$NOAA_HOME/demod.py" ]; then
     log "Seems like you already have run this migration before" "ERROR"

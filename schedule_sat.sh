@@ -8,7 +8,7 @@ fi
 
 ## import common lib
 . "$HOME/.noaa.conf"
-. "$NOAA_HOME/common.sh"
+. "$NOAA_HOME/scripts/common.sh"
 
 # $1 = Satellite Name
 # $2 = Frequency

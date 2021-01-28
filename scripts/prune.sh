@@ -2,7 +2,7 @@
 
 ## import common lib
 . "$HOME/.noaa.conf"
-. "$NOAA_HOME/common.sh"
+. "$NOAA_HOME/scripts/common.sh"
 
 for img_path in $(sqlite3 ${DB_HOME}/panel.db "select file_path from decoded_passes limit 10;"); do
     find "${NOAA_OUTPUT}/images/" -type f -name "${IMG_NAME}*.jpg" -exec rm -f {} \;

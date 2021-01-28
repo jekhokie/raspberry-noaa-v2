@@ -8,7 +8,7 @@ fi
 
 ## import common lib
 . "$HOME/.noaa.conf"
-. "$NOAA_HOME/common.sh"
+. "$NOAA_HOME/scripts/common.sh"
 
 PREDICTION_START=$(/usr/bin/predict -t "${NOAA_HOME}"/predict/amateur.tle -p "${1}" | head -1)
 PREDICTION_END=$(/usr/bin/predict -t "${NOAA_HOME}"/predict/amateur.tle -p "${1}" | tail -1)
