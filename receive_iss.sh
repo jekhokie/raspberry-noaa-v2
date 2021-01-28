@@ -45,10 +45,10 @@ if [ -f "$NOAA_HOME/demod.py" ]; then
         if [ -n "$CONSUMER_KEY" ]; then
             log "Posting to Twitter" "INFO"
             if [ "$img_count" -eq 1 ]; then
-                python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE} Resolución completa: https://weather.reyni.co/detail.php?id=$pass_id" "$7" "${NOAA_OUTPUT}/images/${3}-0.png"
+                python3 $NOAA_HOME/scripts/post.py "$1 ${START_DATE} Resolución completa: https://weather.reyni.co/detail.php?id=$pass_id" "$7" "${NOAA_OUTPUT}/images/${3}-0.png"
             elif [ "$img_count" -eq 2 ]; then
                 /usr/bin/convert -thumbnail 300 "${NOAA_OUTPUT}/images/${3}-1.png" "${NOAA_OUTPUT}/images/thumb/${3}-1.png"
-                python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE} Mas imagenes: https://weather.reyni.co/detail.php?id=$pass_id" "$7" "${NOAA_OUTPUT}/images/${3}-0.png" "${NOAA_OUTPUT}/images/${3}-1.png"
+                python3 $NOAA_HOME/scripts/post.py "$1 ${START_DATE} Mas imagenes: https://weather.reyni.co/detail.php?id=$pass_id" "$7" "${NOAA_OUTPUT}/images/${3}-0.png" "${NOAA_OUTPUT}/images/${3}-1.png"
             fi
         fi
         sqlite3 "$DB_HOME/panel.db" "update predict_passes set is_active = 0 where (predict_passes.pass_start) in (select predict_passes.pass_start from predict_passes inner join decoded_passes on predict_passes.pass_start = decoded_passes.pass_start where decoded_passes.id = $pass_id);"

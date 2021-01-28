@@ -63,9 +63,9 @@ pass_id=$(sqlite3 $DB_HOME/panel.db "select id from decoded_passes order by id d
 if [ -n "$CONSUMER_KEY" ]; then
 	log "Posting to Twitter" "INFO"
 	if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
-		python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE} Mas imagenes: https://weather.reyni.co/detail.php?id=$pass_id" "$7" "${NOAA_OUTPUT}/images/$3-MCIR-precip.jpg" "${NOAA_OUTPUT}/images/$3-MSA-precip.jpg" "${NOAA_OUTPUT}/images/$3-HVC-precip.jpg" "${NOAA_OUTPUT}/images/$3-HVCT-precip.jpg"
+		python3 $NOAA_HOME/scripts/post.py "$1 ${START_DATE} Mas imagenes: https://weather.reyni.co/detail.php?id=$pass_id" "$7" "${NOAA_OUTPUT}/images/$3-MCIR-precip.jpg" "${NOAA_OUTPUT}/images/$3-MSA-precip.jpg" "${NOAA_OUTPUT}/images/$3-HVC-precip.jpg" "${NOAA_OUTPUT}/images/$3-HVCT-precip.jpg"
 	else
-		python3 "${NOAA_HOME}/post.py" "$1 ${START_DATE} Mas imagenes: https://weather.reyni.co/detail.php?id=$pass_id" "$7" "${NOAA_OUTPUT}/images/$3-MCIR-precip.jpg" "${NOAA_OUTPUT}/images/$3-MCIR.jpg"
+		python3 $NOAA_HOME/scripts/post.py" "$1 ${START_DATE} Mas imagenes: https://weather.reyni.co/detail.php?id=$pass_id" "$7" "${NOAA_OUTPUT}/images/$3-MCIR-precip.jpg" "${NOAA_OUTPUT}/images/$3-MCIR.jpg"
 	fi
 fi
 
