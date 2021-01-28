@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/header.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/footer.css">
+
+    {% block stylesheets %}
+    {% endblock %}
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+                           integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <title>Raspberry NOAA V2</title>
+
+    <link rel="shortcut icon" href="assets/web_img/favicon.ico" type="image/x-icon"/>
+  </head>
+  <body>
+    <header class="mb-3">
+      <div class="navbar navbar-expand navbar-dark bg-dark">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item {% if page == 'passes' %} active {% endif %}">
+            <a class="nav-link" href="/passes">{{ lang['passes'] }}</a>
+          </li>
+          <li class="nav-item {% if page == 'captures' or page == 'capture'  %} active {% endif%}">
+            <a class="nav-link" href="/captures?page_no=1">{{ lang['captures'] }}</a>
+          </li>
+        </ul>
+        <span class="navbar-text timezone">
+          <em>
+            {{ constant('App\\Config::TIMEZONE') }}<br>
+            (UTC{{ 'now'|date('P') }})
+          </em>
+        </span>
+      </div>
+    </header>
+
+    <div class="container">
+      {% block body %}
+      {% endblock %}
+    </div>
+
+    <footer class="footer text-center">
+      <div class="contaienr">
+        <a href="https://github.com/jekhokie/raspberry-noaa-v2"><img class="img-footer" src="/assets/web_img/logo-small.png"></a>
+      </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+  </body>
+</html>

@@ -12,7 +12,7 @@ tz_offset = int(os.environ['TZ_OFFSET'])
 lat = float(os.environ['LAT'])
 lon = float(os.environ['LON'])
 
-timezone = (tz_offset * -1) + time.localtime().tm_isdst
+timezone = tz_offset + time.localtime().tm_isdst
 date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(sys.argv[1])-(timezone*60*60)))
 
 obs=ephem.Observer()

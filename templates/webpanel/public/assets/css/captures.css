@@ -1,0 +1,41 @@
+ul.pagination li.page-item {
+  width: 100%;
+  text-align: center;
+}
+
+ul.pagination li.page-item a {
+  color: white;
+  background-color: #4CAF50;
+  opacity: 0.85;
+}
+
+ul.pagination li.page-item.disabled a {
+  color: white;
+  background-color: #6c757d;
+}
+
+div.page-count-summary {
+  text-align: center;
+}
+
+div.card-group.capture-image-cards div.image-card {
+  display: block;
+  text-align: center;
+  border: 1px solid rgba(0,0,0,.125);
+  border-radius: 0.25rem;
+}
+
+div.card-group.capture-image-cards a {
+  display: block;
+  height: 180px;
+}
+
+div.card-group.capture-image-cards div.image-card img.card-img-top {
+  max-height: 180px;
+  max-width: 100%;
+  width: unset;
+}
+
+div.card-group.capture-image-cards div.image-card p.card-text {
+  text-align: left;
+}

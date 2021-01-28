@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="/assets/css/pass_list.css">
+{% endblock %}
+
+{% block body %}
+  <table class="table table-bordered table-sm table-striped" id="passes">
+    <thead class="thead-dark">
+      <tr class="text-center">
+        <th scope="col">{{ lang['satellite'] }}</th>
+        <th scope="col">{{ lang['pass_start'] }}</th>
+        <th scope="col">{{ lang['pass_end'] }}</th>
+        <th scope="col">{{ lang['max_elev'] }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set now = 'now'|date('H:i:s') %}
+      {% if pass|length <= 0 %}
+        <tr>
+          <td colspan="4" class="no-passes">0 {{ lang['passes'] }}</td>
+        </tr>
+      {% else %}
+        {% for pass in pass.list %}
+          {% set pass_start = pass.pass_start|date('H:i:s') %}
+          {% set pass_end = pass.pass_end|date('H:i:s') %}
+
+          <tr {% if pass.is_active == false or pass_end < now %} class="inactive" {% endif %}>
+            <td scope="row">{{ pass.sat_name }}</td>
+            <td scope="row" class="text-center">{{ pass_start }}</td>
+            <td scope="row" class="text-center">{{ pass_end }}</td>
+            <td scope="row" class="text-center">{{ pass.max_elev }}</td>
+          </tr>
+        {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+
+{% endblock %}

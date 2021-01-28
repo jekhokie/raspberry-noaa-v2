@@ -6,7 +6,7 @@ First thing we need to test is reception. It's the way to be sure the antenna, r
 Open a SSH connection to your Raspberry PI and execute `test_reception.sh <tune frequency>`. 
 
 ```bash
-cd raspberry-noaa/
+cd raspberry-noaa-v2/
 ./test_reception.sh 90.3
 ```
 
@@ -39,5 +39,5 @@ Images are saved in the web server's directory, so you can access your received 
 Run `prune.sh` to delete old images. By default it deletes the 10 oldest images from the disk and the database. If you want to schedule this task, run
 
 ```bash
-cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa/prune.sh") | crontab -
+cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa-v2/prune.sh") | crontab -
 ```

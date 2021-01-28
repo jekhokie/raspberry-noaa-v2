@@ -1,0 +1,9 @@
+table#passes tr.inactive {
+  color: lightgray;
+}
+
+table#passes td.no-passes {
+  text-align: center;
+  font-weight: bold;
+  font-style: italic;
+}
