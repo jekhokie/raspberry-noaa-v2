@@ -29,7 +29,7 @@ while [ "$(date --date="@${var2}" +%D)" = "$(date +%D)" ]; do
 		log "Pass is above ${METEOR_MIN_ELEV}, that is OK for me" "INFO"
 		SATNAME=$(echo "$1" | sed "s/ //g")
 		echo "${SATNAME}" "${OUTDATE}" "$MAXELEV"
-		echo "${NOAA_HOME}/receive_meteor.sh \"${1}\" $2 ${SATNAME}${OUTDATE} "${NOAA_HOME}"/predict/weather.tle \
+		echo "${NOAA_HOME}/scripts/receive_meteor.sh \"${1}\" $2 ${SATNAME}${OUTDATE} "${NOAA_HOME}"/predict/weather.tle \
 ${var1} ${TIMER} ${MAXELEV}" | at "$(date --date="TZ=\"UTC\" ${START_TIME}" +"%H:%M %D")"
 		sqlite3 $DB_HOME/panel.db "insert or replace into predict_passes (sat_name,pass_start,pass_end,max_elev,is_active) values (\"$SATNAME\",$var1,$var2,$MAXELEV,1);"
 	fi
