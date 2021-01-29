@@ -72,6 +72,14 @@
     group: pi
     mode: 0755
 
+- name: create meteor directory
+  file:
+    path: "{{ noaa_home }}/tmp/meteor"
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0755
+
 - name: create images directory
   become: yes
   file:

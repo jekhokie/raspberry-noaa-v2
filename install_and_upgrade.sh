@@ -33,9 +33,11 @@ if [ ! -e "$HOME/raspberry-noaa-v2" ]; then
   die "Please clone https://github.com/jekhokie/raspberry-noaa-v2 to your home directory"
 fi
 
-# check if this is a new install or an upgrade
+# check if this is a new install or an upgrade based on modprobe settings
+# which is likey a safe way to tell if the user has already installed
+# tools and rebooted
 install_type='install'
-if [ -f $HOME/.base_station.yml ]; then
+if [ -f /etc/modprobe.d/rtlsdr.conf ]; then
   install_type='upgrade'
 fi
 
@@ -49,7 +51,7 @@ if [ $? -ne 0 ]; then
   if [ $? -eq 0 ]; then
     log_done "  Ansible install complete!"
   else
-    die "  Could not install Ansible - please inspect the logs"
+    die "  Could not install Ansible - please inspect the logs above"
   fi
 fi
 
@@ -70,16 +72,28 @@ eval "${ansible_cmd}"
 if [ $? -eq 0 ]; then
   log_done "  Ansible apply complete!"
 else
-  die "  Something failed with the install - please inspect the logs"
+  die "  Something failed with the install - please inspect the logs above"
 fi
 
-log_running "TODO: WIPE AND RE-COPY ALL WEB CONTENT"
-#find $WEB_HOME/ -mindepth 1 -type d -name "images" -prune -o -type d -name "audio" -prune -o -type d -name "meteor" -prune -o -print | xargs rm -rf
-#sudo cp -rp $NOAA_HOME/templates/webpanel/* $WEB_HOME/
-log_running "TODO: RUN COMPOSER INSTALL IN WEB DIR"
-#composer install -d $WEB_HOME/
-log_running "TODO: ASSIGN RECURSIVE PERMISSIONS IN WEB DIR"
-#chown -R pi:pi $WEB_HOME/
+# source some env vars
+. "$HOME/.noaa-v2.conf"
+
+# update all web content and permissions
+log_running "Updating web content..."
+(
+  find $WEB_HOME/ -mindepth 1 -type d -name "Config" -prune -o -print | xargs rm -rf &&
+  cp -r $NOAA_HOME/webpanel/* $WEB_HOME/ &&
+  sudo chown -R pi:www-data $WEB_HOME/ &&
+  composer install -d $WEB_HOME/
+) || die "  Something went wrong updating web content - please inspect the logs above"
+
+# run a schedule of passes if it's the first time installing
+# (as opposed to waiting until cron kicks in the evening)
+if [ $install_type == 'install' ]; then
+  log_running "Scheduling first passes for imagery..."
+  ./scripts/schedule.sh
+  log_running "First passes scheduled!..."
+fi
 
 echo ""
 echo "-------------------------------------------------------------------------------"

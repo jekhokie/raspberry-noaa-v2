@@ -26,6 +26,7 @@
     update_cache: no
     name:
       - php7.2-fpm
+      - php7.2-mbstring
       - php7.2-sqlite3
 
 - name: install composer
@@ -33,6 +34,12 @@
   apt:
     update_cache: no
     name: composer
+
+- name: add pi user to www-data group
+  user:
+    name: pi
+    groups: www-data
+    append: yes
 
 - name: nginx config file
   become: true
@@ -48,14 +55,6 @@
   become: true
   file:
     path: "{{ web_home }}"
-    state: directory
-    owner: pi
-    group: www-data
-    mode: 0775
-
-- name: public directory
-  file:
-    path: "{{ web_home }}/public"
     state: directory
     owner: pi
     group: www-data
