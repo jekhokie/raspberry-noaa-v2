@@ -62,7 +62,13 @@ else
   die "Something failed with the install - please inspect the logs"
 fi
 
-log_running "TODO: COPY ALL WEBSERVER CONTENT"
+log_running "TODO: WIPE AND RE-COPY ALL WEB CONTENT"
+#find $WEB_HOME/ -mindepth 1 -type d -name "images" -prune -o -type d -name "audio" -prune -o -type d -name "meteor" -prune -o -print | xargs rm -rf
+#sudo cp -rp $NOAA_HOME/templates/webpanel/* $WEB_HOME/
+log_running "TODO: RUN COMPOSER INSTALL IN WEB DIR"
+#composer install -d $WEB_HOME/
+log_running "ASSIGN RECURSIVE PERMISSIONS IN WEB DIR"
+#chown -R pi:pi $WEB_HOME/
 
 echo ""
 echo "-------------------------------------------------------------------------------"
