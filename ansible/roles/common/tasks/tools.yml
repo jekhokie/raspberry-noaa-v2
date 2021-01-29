@@ -1,0 +1,58 @@
+---
+- name: install wxtoimg
+  apt:
+    deb: "{{ noaa_home }}/software/wxtoimg-armhf-2.11.2-beta.deb"
+    state: present
+    update_cache: no
+
+- name: check if meteor_demod software is installed
+  stat:
+    path: /usr/bin/meteor_demod
+  register: meteor_demod_bin
+
+- name: git clone meteor_demod software
+  git:
+    repo: https://github.com/dbdexter-dev/meteor_demod.git
+    dest: /tmp/meteor_demod
+    update: no
+  register: meteor_demod
+  when: not meteor_demod_bin.stat.exists
+
+- name: make meteor_demod software
+  command: make
+  args:
+    chdir: /tmp/meteor_demod
+    creates: /tmp/meteor_demod/src/meteor_demod
+  when: meteor_demod.changed
+
+- name: install meteor_demod software
+  become: yes
+  command: make install
+  args:
+    chdir: /tmp/meteor_demod
+    creates: /usr/bin/meteor_demod
+  when: meteor_demod.changed
+
+- name: install medet_arm
+  become: yes
+  copy:
+    src: "{{ noaa_home }}/software/medet_arm"
+    dest: /usr/bin/medet_arm
+    owner: root
+    group: root
+    mode: 0755
+    remote_src: yes
+
+- name: create scheduling cron job
+  cron:
+    name: schedule passes
+    minute: 1
+    hour: 0
+    job: "{{ noaa_home }}/scripts/schedule.sh"
+
+- name: create database
+  shell: "/usr/bin/sqlite3 {{ noaa_home }}/db/panel.db < {{ noaa_home }}/templates/webpanel_schema.sql"
+  args:
+    executable: /bin/bash
+    creates: "{{ noaa_home }}/db/panel.db"
+...

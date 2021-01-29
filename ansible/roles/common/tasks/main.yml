@@ -1,5 +1,16 @@
 ---
-- name: test
-  debug:
-    msg: "This is a test"
+# environment configuration files
+- include: configs.yml
+
+# dependent packages and libs to be installed
+- include: dependencies.yml
+
+# core software modules
+- include: sdr.yml
+
+# tools and utilities
+- include: tools.yml
+
+# webserver configuration
+- include: webserver.yml
 ...

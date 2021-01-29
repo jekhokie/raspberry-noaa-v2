@@ -1,0 +1,58 @@
+---
+- name: install nginx
+  become: yes
+  apt:
+    update_cache: no
+    name: nginx
+
+- name: nginx config file
+  become: true
+  template:
+    src: nginx_default.j2
+    dest: /etc/nginx/sites-available/default
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart nginx
+
+- name: web directory
+  become: true
+  file:
+    path: "{{ web_home }}"
+    state: directory
+    owner: pi
+    group: www-data
+    mode: 0775
+
+- name: public directory
+  file:
+    path: "{{ web_home }}/public"
+    state: directory
+    owner: pi
+    group: www-data
+    mode: 0775
+
+- name: noaa images directory
+  file:
+    path: "{{ noaa_output }}/public/noaa"
+    state: directory
+    owner: pi
+    group: www-data
+    mode: 0775
+
+- name: meteor images directory
+  file:
+    path: "{{ noaa_output }}/public/meteor"
+    state: directory
+    owner: pi
+    group: www-data
+    mode: 0775
+
+- name: audio directory
+  file:
+    path: "{{ noaa_output }}/public/audio"
+    state: directory
+    owner: pi
+    group: www-data
+    mode: 0775
+...

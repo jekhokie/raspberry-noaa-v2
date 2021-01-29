@@ -46,13 +46,21 @@ else
 fi
 
 log_running "Running Ansible to install and/or update your raspberry-noaa-v2..."
-ansible-playbook -i ansible/hosts ansible/site.yml
+if [ -f "$HOME/.base_station.yml" ]; then
+  log_running "  Found existing config parameters - using them!"
+  ansible-playbook -i ansible/hosts ansible/site.yml --extra-vars "@$HOME/.base_station.yml"
+else
+  log_running "  Brand new install - going to prompt for user input"
+  ansible-playbook -i ansible/hosts ansible/site.yml
+fi
 
 if [ $? -eq 0 ]; then
   log_done "Ansible apply complete!"
 else
   die "Something failed with the install - please inspect the logs"
 fi
+
+log_running "TODO: COPY ALL WEBSERVER CONTENT"
 
 echo ""
 echo "-------------------------------------------------------------------------------"

@@ -1,10 +1,10 @@
 server {
-	listen 80 default_server;
-	root /var/www/wx-new/public;
+	listen {{ web_port }};
+	root {{ web_home }};
 	index index.php index.html index.htm index.nginx-debian.html;
 	autoindex on;
 
-	server_name wx.home;
+	server_name wx.home-new;
 
 	location / {
 		try_files $uri $uri/ /index.php;

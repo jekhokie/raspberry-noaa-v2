@@ -1,0 +1,60 @@
+---
+- name: php repository gpg key (stretch only)
+  become: yes
+  apt_key:
+    url: "https://packages.sury.org/php/apt.gpg"
+    state: present
+  when: raspbian_version.stdout == 'stretch'
+
+- name: php repository (stretch only)
+  become: yes
+  apt_repository:
+    repo: deb https://packages.sury.org/php/ stretch main
+    filename: php7.list
+    state: present
+  when: raspbian_version.stdout == 'stretch'
+
+- name: install dependencies
+  become: yes
+  apt:
+    update_cache: yes
+    name:
+      - at
+      - bc
+      - cmake
+      - imagemagick
+      - libatlas-base-dev
+      - libjpeg9
+      - libjpeg9-dev
+      - libncurses5-dev
+      - libncursesw5-dev
+      - libusb-1.0-0
+      - libxft-dev
+      - libxft2
+      - nginx
+      - ntp
+      - php7.2-fpm
+      - php7.2-sqlite3
+      - predict
+      - python3-pip
+      - python-setuptools
+      - socat
+      - sox
+      - sqlite3
+
+- name: install dependencies (stretch only)
+  become: yes
+  apt:
+    name: libgfortran-5-dev
+  when: raspbian_version.stdout == 'stretch'
+
+- name: install dependencies (non-stretch)
+  become: yes
+  apt:
+    name: libgfortran5
+  when: raspbian_version.stdout != 'stretch'
+
+- name: python packages using pip3
+  become: yes
+  command: "python3 -m pip install -r {{ noaa_home }}/requirements.txt"
+...
