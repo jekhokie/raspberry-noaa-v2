@@ -7,7 +7,7 @@ if [ $EUID -eq 0 ]; then
 fi
 
 ## import common lib
-. "$HOME/.noaa.conf"
+. "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
 
 PREDICTION_START=$(/usr/bin/predict -t "${NOAA_HOME}"/tmp/predict/amateur.tle -p "${1}" | head -1)

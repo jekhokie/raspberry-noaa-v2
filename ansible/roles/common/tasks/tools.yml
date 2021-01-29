@@ -51,8 +51,69 @@
     job: "{{ noaa_home }}/scripts/schedule.sh"
 
 - name: create database
-  shell: "/usr/bin/sqlite3 {{ noaa_home }}/db/panel.db < {{ noaa_home }}/templates/webpanel_schema.sql"
+  shell: "/usr/bin/sqlite3 {{ noaa_home }}/db/panel.db < {{ noaa_home }}/db_migrations/seed_schema.sql"
   args:
     executable: /bin/bash
     creates: "{{ noaa_home }}/db/panel.db"
+
+- name: create map directory
+  file:
+    path: "{{ noaa_home }}/tmp/map"
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0755
+
+- name: create predict directory
+  file:
+    path: "{{ noaa_home }}/tmp/predict"
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0755
+
+- name: create images directory
+  become: yes
+  file:
+    path: images_output
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0775
+
+- name: create thumbnails directory
+  become: yes
+  file:
+    path: "{{ images_output }}/thumbs"
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0775
+
+- name: create audio root directory
+  become: yes
+  file:
+    path: audio_output
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0775
+
+- name: create noaa audio directory
+  become: yes
+  file:
+    path: "{{ audio_output }}/noaa"
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0775
+
+- name: create meteor audio directory
+  become: yes
+  file:
+    path: "{{ audio_output }}/meteor"
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0775
 ...

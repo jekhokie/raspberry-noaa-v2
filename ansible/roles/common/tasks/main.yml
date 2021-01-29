@@ -11,6 +11,6 @@
 # tools and utilities
 - include: tools.yml
 
-# webserver configuration
-- include: webserver.yml
+# ramfs setup
+- include: ramfs.yml
 ...

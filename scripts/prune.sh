@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## import common lib
-. "$HOME/.noaa.conf"
+. "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
 
 for img_path in $(sqlite3 ${DB_HOME}/panel.db "select file_path from decoded_passes limit 10;"); do

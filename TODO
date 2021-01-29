@@ -9,3 +9,5 @@ copy meteor/audio/* to public/audio/meteor/*
 * Update scripts for audio and image directory adjustments (above) in scripts/.
 * Update install_and_upgrade.sh script for handling webpanel content update.
 * Create way to handle future database migrations.
+* Run schedule script at the end of the installation if there are no jobs scheduled.
+* Update NOAA_OUTPUT and METEOR_OUTPUT in scripts for new location.

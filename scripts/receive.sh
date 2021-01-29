@@ -7,7 +7,7 @@ if [ $EUID -eq 0 ]; then
 fi
 
 ## import common lib
-. "$HOME/.noaa.conf"
+. "$HOME/.noaa-v2.conf"
 . "$HOME/.tweepy.conf"
 . "$NOAA_HOME/scripts/common.sh"
 

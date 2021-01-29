@@ -7,7 +7,7 @@ if [ $EUID -eq 0 ]; then
 fi
 
 ## import common lib
-. "$HOME/.noaa.conf"
+. "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
 
 wget -qr http://www.celestrak.com/NORAD/elements/weather.txt -O "${NOAA_HOME}"/tmp/predict/weather.txt
@@ -21,7 +21,9 @@ if [ "$SCHEDULE_ISS" == "true" ]; then
 fi
 
 #Remove all AT jobs
-for i in $(atq | awk '{print $1}');do atrm "$i";done
+for i in $(atq | awk '{print $1}'); do
+  atrm "$i"
+done
 
 #Schedule Satellite Passes:
 if [ "$SCHEDULE_ISS" == "true" ]; then

@@ -11,10 +11,10 @@ db_file: "{{ noaa_home }}/db/panel.db"
 # website content directory
 web_home: "/var/www/wx-new"
 
-# output root directories for images
-noaa_output: "{{ web_home }}/public/noaa"
-meteor_output: "{{ web_home }}/public/meteor"
-audio_output: "{{ web_home }}/public/audio"
+# output root directories for images and audio
+output_root: /srv
+images_output: "{{ output_root }}/images"
+audio_output: "{{ output_root }}/audio"
 
 # ramfs location
 ramfs_path: "/var/ramfs"

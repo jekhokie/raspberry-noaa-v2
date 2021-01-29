@@ -1,7 +1,7 @@
 ---
 - name: noaa environment variables
   template:
-    src: noaa.conf.j2
+    src: noaa-v2.conf.j2
     dest: ~pi/.noaa-v2.conf
     owner: pi
     group: pi
