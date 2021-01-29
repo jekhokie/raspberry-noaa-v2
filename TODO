@@ -4,5 +4,8 @@ copy images/* to public/images/*
 copy audio/* to public/audio/noaa/*
 copy meteor/audio/* to public/audio/meteor/*
 
+* Include ramfs handling in Ansible (and whatever is left over from install.sh).
 * Update webpanel links for images to new image paths (above).
 * Update scripts for audio and image directory adjustments (above) in scripts/.
+* Update install_and_upgrade.sh script for handling webpanel content update.
+* Create way to handle future database migrations.
