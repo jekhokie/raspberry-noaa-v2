@@ -1,3 +1,0 @@
-### Setup ramFS
-
-sudo reboot
