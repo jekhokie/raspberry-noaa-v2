@@ -4,6 +4,7 @@
     },
     "autoload": {
       "psr-4": {
+        "Config\\": "Config/",
         "Lib\\": "Lib/",
         "App\\": "App/"
       }

@@ -2,7 +2,7 @@
 
 namespace Lib;
 
-use App\Config;
+use Config\Config;
 
 class View {
   # render a template using twig

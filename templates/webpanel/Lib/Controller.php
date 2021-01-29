@@ -2,7 +2,7 @@
 
 namespace Lib;
 
-use App\Config;
+use Config\Config;
 
 abstract class Controller {
   protected $db_conn;
@@ -43,7 +43,7 @@ abstract class Controller {
 
   # establishes connection with database
   private function connectToDB() {
-    $this->db_conn = new \SQLite3(Config::DB_DIR . 'panel.db');
+    $this->db_conn = new \SQLite3(Config::DB_FILE);
   }
 }
 

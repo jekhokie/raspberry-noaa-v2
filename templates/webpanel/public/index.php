@@ -3,7 +3,7 @@
 # composer auto-loading
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-use App\Config;
+use Config\Config;
 
 # error handling
 error_reporting(E_ALL);

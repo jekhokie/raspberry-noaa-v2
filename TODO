@@ -1,0 +1,8 @@
+* Instructions on migrating to v2:
+---
+copy images/* to public/images/*
+copy audio/* to public/audio/noaa/*
+copy meteor/audio/* to public/audio/meteor/*
+
+* Update webpanel links for images to new image paths (above).
+* Update scripts for audio and image directory adjustments (above) in scripts/.

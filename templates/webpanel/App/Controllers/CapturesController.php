@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use Lib\View;
-use App\Config;
+use Config\Config;
 
 class CapturesController extends \Lib\Controller {
   public function indexAction($args) {
