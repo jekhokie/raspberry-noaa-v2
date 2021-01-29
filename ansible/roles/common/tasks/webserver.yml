@@ -1,4 +1,10 @@
 ---
+- name: install composer
+  become: yes
+  apt:
+    update_cache: no
+    name: composer
+
 - name: install nginx
   become: yes
   apt:
