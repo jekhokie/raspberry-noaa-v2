@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
@@ -35,14 +34,17 @@ if [ ! -e "$HOME/raspberry-noaa-v2" ]; then
 fi
 
 # install ansible
-log_running "Updating and installing Ansible..."
-sudo apt update -yq
-sudo apt install -yq ansible
+which ansible
+if [ $? -ne 0 ]; then
+  log_running "Updating and installing Ansible..."
+  sudo apt update -yq
+  sudo apt install -yq ansible
 
-if [ $? -eq 0 ]; then
-  log_done "Ansible install complete!"
-else
-  die "Could not install Ansible - please inspect the logs"
+  if [ $? -eq 0 ]; then
+    log_done "Ansible install complete!"
+  else
+    die "Could not install Ansible - please inspect the logs"
+  fi
 fi
 
 log_running "Running Ansible to install and/or update your raspberry-noaa-v2..."
@@ -65,6 +67,6 @@ log_running "TODO: COPY ALL WEBSERVER CONTENT"
 echo ""
 echo "-------------------------------------------------------------------------------"
 log_finished "CONGRATULATIONS - raspberry-noaa-v2 has been successfully installed/upgraded!"
-log_finished "You can view the webpanel updates by visiting http://<YOUR_IP_OR_HOSTNAME>/"
-log_finished "in a web browser."
+log_finished "You can view the webpanel updates by visiting the following URL in a web browser:"
+log_finished "http://<YOUR_IP_OR_HOSTNAME>:<CONFIGURED_PORT>/"
 echo "-------------------------------------------------------------------------------"
