@@ -43,6 +43,10 @@
       prompt: Sun minimum elevation (degrees) to attempt additional imagery enhancements?
       private: no
       default: 10
+    - name: web_port
+      prompt: Port to run the web interface on?
+      private: no
+      default: 80
   pre_tasks:
     - name: get os release
       shell: lsb_release -c --short

@@ -8,8 +8,7 @@ noaa_home: "/home/pi/raspberry-noaa-v2"
 # database file
 db_file: "{{ noaa_home }}/db/panel.db"
 
-# website content directory and port
-web_port: 8080
+# website content directory
 web_home: "/var/www/wx-new"
 
 # output root directories for images
