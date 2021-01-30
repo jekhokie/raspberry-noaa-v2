@@ -14,6 +14,7 @@
       - libncurses5-dev
       - libncursesw5-dev
       - libusb-1.0-0
+      - libusb-1.0-0-dev
       - libxft-dev
       - libxft2
       - ntp

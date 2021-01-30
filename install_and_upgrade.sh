@@ -87,13 +87,10 @@ log_running "Updating web content..."
   composer install -d $WEB_HOME/
 ) || die "  Something went wrong updating web content - please inspect the logs above"
 
-# run a schedule of passes if it's the first time installing
-# (as opposed to waiting until cron kicks in the evening)
-if [ $install_type == 'install' ]; then
-  log_running "Scheduling first passes for imagery..."
-  ./scripts/schedule.sh
-  log_running "First passes scheduled!..."
-fi
+# run a schedule of passes (as opposed to waiting until cron kicks in the evening)
+log_running "Scheduling first passes for imagery..."
+./scripts/schedule.sh
+log_running "First passes scheduled!"
 
 echo ""
 echo "-------------------------------------------------------------------------------"
