@@ -1,0 +1,41 @@
+---
+- name: noaa environment variables
+  template:
+    src: noaa-v2.conf.j2
+    dest: ~pi/.noaa-v2.conf
+    owner: pi
+    group: pi
+    mode: 0644
+
+- name: predict directory
+  file:
+    path: ~pi/.predict
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0755
+
+- name: predict config file
+  template:
+    src: predict.qth.j2
+    dest: ~pi/.predict/predict.qth
+    owner: pi
+    group: pi
+    mode: 0644
+
+- name: wxtoimg config file
+  template:
+    src: wxtoimgrc
+    dest: ~pi/.wxtoimgrc
+    owner: pi
+    group: pi
+    mode: 0644
+
+- name: twitter post config file
+  copy:
+    src: tweepy.conf
+    dest: ~pi/.tweepy.conf
+    owner: pi
+    group: pi
+    mode: 0644
+...

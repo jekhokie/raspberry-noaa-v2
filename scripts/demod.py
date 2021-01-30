@@ -72,7 +72,6 @@ def create_hilbert(atten, delta):
     hilbert = filter * window
     return hilbert
 
-
 def create_analytica(datos, filtro):
     zeros = np.zeros((len(filtro)-1)//2)
     realdata = np.concatenate([zeros, datos, zeros])

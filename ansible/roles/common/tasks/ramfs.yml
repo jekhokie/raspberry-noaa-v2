@@ -1,0 +1,26 @@
+---
+- name: ramfs directory
+  file:
+    path: ramfs_path
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0770
+
+- name: get system memory
+  shell: free -m | awk '/^Mem:/{print $2}'
+  register: os_memory
+  check_mode: no
+  changed_when: no
+- debug:
+    msg: "{{ os_memory.stdout|int }}"
+
+- name: fstab entry for ramfs
+  become: yes
+  mount:
+    fstype: tmpfs
+    opts: "nodev,nosuid,size={% if os_memory.stdout|int < 2000 %}200M{% else %}1000M{% endif %}"
+    src: tmpfs
+    path: "{{ ramfs_path }}"
+    state: mounted
+...

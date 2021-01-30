@@ -1,0 +1,4 @@
+---
+- import_playbook: core.yml
+- import_playbook: webserver.yml
+...  

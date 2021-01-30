@@ -1,0 +1,68 @@
+---
+- name: blacklist dvb modules
+  become: yes
+  copy:
+    src: rtlsdr.conf
+    dest: /etc/modprobe.d/rtlsdr.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: check if rtl-sdr software is installed
+  stat:
+    path: /usr/local/bin/rtl_sdr
+  register: rtlsdr_bin
+
+- name: git clone rtl-sdr software
+  git:
+    repo: https://github.com/osmocom/rtl-sdr.git
+    dest: /tmp/rtl-sdr
+    update: no
+  register: rtlsdr
+  when: not rtlsdr_bin.stat.exists
+
+- name: create rtl-sdr build directory
+  file:
+    path: /tmp/rtl-sdr/build
+    state: directory
+    mode: 0755
+  when: rtlsdr.changed
+
+- name: generate build system for rtl-sdr software
+  command: cmake ../ -DINSTALL_UDEV_RULES=ON -DDETACH_KERNEL_DRIVER=ON
+  args:
+    chdir: /tmp/rtl-sdr/build
+    creates: /tmp/rtl-sdr/build/Makefile
+  when: rtlsdr.changed
+
+- name: make rtl-sdr software
+  command: make
+  args:
+    chdir: /tmp/rtl-sdr/build
+    creates: /tmp/rtl-sdr/build/src/rtl_sdr
+  when: rtlsdr.changed
+
+- name: install rtl-sdr software
+  become: yes
+  command: make install
+  args:
+    chdir: /tmp/rtl-sdr/build
+    creates: /usr/local/bin/rtl_fm
+  when: rtlsdr.changed
+
+- name: link files
+  become: yes
+  command: ldconfig
+  when: rtlsdr.changed
+
+- name: copy udev rules
+  become: yes
+  copy:
+    src: /tmp/rtl-sdr/rtl-sdr.rules
+    dest: /etc/udev/rules.d/rtl-sdr.rules
+    owner: root
+    group: root
+    mode: 0644
+    remote_src: yes
+  when: rtlsdr.changed
+...

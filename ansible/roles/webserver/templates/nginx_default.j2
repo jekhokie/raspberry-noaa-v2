@@ -1,0 +1,24 @@
+server {
+  listen {{ web_port }};
+  root {{ web_home }}/public;
+  index index.php index.html index.htm index.nginx-debian.html;
+  autoindex on;
+
+  server_name wx.home-new;
+
+  location ~ /images/(.*) {
+    alias /srv/images/$1;
+  }
+
+  location / {
+    try_files $uri $uri/ /index.php;
+  }
+
+  location ~ \.php$ {
+    include snippets/fastcgi-php.conf;
+    fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
+  }
+
+  # Rewrite the old path yyyy/mm/dd/ to /images/
+  rewrite "^/image/\d{4}/\d{2}/\d{2}/(.+)$" /images/$1 permanent;
+}

@@ -1,0 +1,21 @@
+---
+# available languages for webpanel (see "Lang" directory files)
+available_langs: [ ar, de, en, es, sr ]
+
+# root git clone directory (where functionality exists)
+noaa_home: "/home/pi/raspberry-noaa-v2"
+
+# database file
+db_file: "{{ noaa_home }}/db/panel.db"
+
+# website content directory
+web_home: "/var/www/wx-new"
+
+# output root directories for images and audio
+output_root: /srv
+images_output: "{{ output_root }}/images"
+audio_output: "{{ output_root }}/audio"
+
+# ramfs location
+ramfs_path: "/var/ramfs"
+...

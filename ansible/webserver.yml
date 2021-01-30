@@ -1,0 +1,33 @@
+---
+- name: install raspberry-noaa-v2 webpanel
+  hosts: webserver
+  connection: local
+  gather_facts: no
+  vars_prompt:
+    - name: lang_setting
+      prompt: What is your preferred language setting (ar, de, en, es, sr)?
+      private: no
+      default: en
+    - name: web_port
+      prompt: Port to run the web interface on?
+      private: no
+      default: 80
+  pre_tasks:
+    - name: validate language setting
+      assert:
+        that: lang_setting in available_langs
+        fail_msg: "Your specified locale {{ lang_setting }} is not one of the available - please re-run and try again."
+    - name: store settings for future runs
+      template:
+        src: ../templates/webserver.yml.j2
+        dest: ~pi/.webserver.yml
+        owner: pi
+        group: pi
+        mode: 0644
+  roles:
+    - role: webserver
+  post_tasks:
+    - name: output web server url
+      debug:
+        msg: "Your web server URL is: http://<hostname_or_ip>:{{ web_port }}"
+...

@@ -1,0 +1,25 @@
+<?php
+
+namespace Config;
+
+class Config {
+  # how many captures to show per page (pagination)
+  const CAPTURES_PER_PAGE = 18;
+
+  # base directory for sqlite database
+  const DB_FILE = '{{ db_file }}';
+
+  # see files in App/Lang directory for available translations
+  const LANG = '{{ lang_setting }}';
+
+  # use https://www.php.net/manual/en/timezones.php
+  const TIMEZONE = '{{ timezone }}';
+
+  # location of images
+  const IMAGE_PATH = '{{ images_output }}';
+
+  # location of thumbnails
+  const THUMB_PATH = '{{ images_output }}/thumb';
+}
+
+?>

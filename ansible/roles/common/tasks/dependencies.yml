@@ -1,0 +1,42 @@
+---
+- name: install dependencies
+  become: yes
+  apt:
+    update_cache: yes
+    name:
+      - at
+      - bc
+      - cmake
+      - imagemagick
+      - libatlas-base-dev
+      - libjpeg9
+      - libjpeg9-dev
+      - libncurses5-dev
+      - libncursesw5-dev
+      - libusb-1.0-0
+      - libxft-dev
+      - libxft2
+      - ntp
+      - predict
+      - python3-pip
+      - python-setuptools
+      - socat
+      - sox
+      - sqlite3
+
+- name: install dependencies (stretch only)
+  become: yes
+  apt:
+    name: libgfortran-5-dev
+  when: raspbian_version.stdout == 'stretch'
+
+- name: install dependencies (non-stretch)
+  become: yes
+  apt:
+    name: libgfortran5
+  when: raspbian_version.stdout != 'stretch'
+
+- name: python packages using pip3
+  become: yes
+  command: "python3 -m pip install -r {{ noaa_home }}/requirements.txt"
+...

@@ -1,6 +1,7 @@
+envbash==1.2.0
+ephem==3.7.7.1
 idna==2.8
 numpy==1.18.1
 Pillow==7.1.2
 tweepy==3.8.0
 urllib3==1.25.8
-envbash==1.2.0

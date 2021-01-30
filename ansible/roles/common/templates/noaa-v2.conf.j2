@@ -1,0 +1,19 @@
+NOAA_HOME={{ noaa_home }}
+DB_FILE={{ db_file }}
+WEB_HOME={{ web_home }}
+IMAGE_OUTPUT={{ images_output }}
+NOAA_AUDIO_OUTPUT={{ audio_output }}/noaa
+METEOR_AUDIO_OUTPUT={{ audio_output }}/meteor
+RAMFS_AUDIO={{ ramfs_path }}
+SAT_MIN_ELEV={{ sat_min_elevation }}
+METEOR_MIN_ELEV={{ meteor_min_elevation }}
+SUN_MIN_ELEV={{ sun_min_elevation }}
+LAT={{ latitude }}
+LON={{ longitude }}
+DELETE_AUDIO="{% if delete_audio|string == 'True' %}true{% else %}false{% endif %}"
+BIAS_TEE="{% if enable_bias_tee|string == 'True' %}-T{% endif %}"
+FLIP_METEOR_IMG="true"
+GAIN=50
+SCHEDULE_ISS="{% if schedule_iss|string == 'True' %}true{% else %}false{% endif %}"
+TZ_OFFSET={{ timezone_offset }}
+LOG_LEVEL=DEBUG
