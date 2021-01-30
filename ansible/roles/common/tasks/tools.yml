@@ -84,7 +84,7 @@
 - name: create thumbnails directory
   become: yes
   file:
-    path: "{{ images_output }}/thumbs"
+    path: "{{ images_output }}/thumb"
     state: directory
     owner: pi
     group: pi

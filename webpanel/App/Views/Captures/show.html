@@ -17,7 +17,7 @@
 
     <div class="card bg-light m-2 p-2 image-card">
       <a href="/images/{{ capture.image_path }}{{ enhancement }}">
-        <img class="card-img-top" src="/images/thumb/{{ capture.image_path }}{{ enhancement }}" alt="img">
+        <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.image_path }}{{ enhancement }}" alt="img">
       </a>
       <div class="card-body">
         <p class="card-text">
