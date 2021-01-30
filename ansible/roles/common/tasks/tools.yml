@@ -64,14 +64,6 @@
     group: pi
     mode: 0755
 
-- name: create predict directory
-  file:
-    path: "{{ noaa_home }}/tmp/predict"
-    state: directory
-    owner: pi
-    group: pi
-    mode: 0755
-
 - name: create meteor directory
   file:
     path: "{{ noaa_home }}/tmp/meteor"
