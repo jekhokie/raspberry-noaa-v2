@@ -9,11 +9,15 @@ Wanting to give this version a go but not sure what's involved to get from the o
 out this simple [migration document](docs/migrate_from_raspberry_noaa.md) that explains the few commands you need to run and retain
 your original data!
 
-# NOAA and Meteor Automated Capture Using Raspberry PI
+# Raspberry NOAA (...and Meteor) V2
 
 Most of the base code was built from the great work done by [haslettj](https://www.instructables.com/member/haslettj/) in their
 [Instructables](https://www.instructables.com/id/Raspberry-Pi-NOAA-Weather-Satellite-Receiver/) post. Not credit is assumed for
 original work and all credit goes to the original creator.
+
+In addition, as noted above, this repo is based on the great original work that Nico did in his
+[raspberry-noaa](https://github.com/reynico/raspberry-noaa) repository.
+
 
 ## Why a Version 2?
 
