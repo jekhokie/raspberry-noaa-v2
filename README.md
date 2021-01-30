@@ -6,7 +6,7 @@ updates. All original content has been preserved (as have all commits up to the 
 original creators._**
 
 Wanting to give this version a go but not sure what's involved to get from the original raspberry-noaa to raspberry-noaa-v2? Check
-out this simple [migration document](docs/migrate_from_raspberry_noaa) that explains the few commands you need to run and retain
+out this simple [migration document](docs/migrate_from_raspberry_noaa.md) that explains the few commands you need to run and retain
 your original data!
 
 # NOAA and Meteor Automated Capture Using Raspberry PI
@@ -32,7 +32,7 @@ of Raspberry Pi (but if you get it working on a version, please do submit a PR a
 In addition, it's recommended that the [Raspberry Pi OS](https://www.raspberrypi.org/software/) operating system is used - this is the
 OS that has been tested and proven working. If you do test with another OS - again, please submit a PR and let us know how it works out!
 
-If you're interested in the details behind the original raspberry-noaa hardware compatibility tests, see the [hardware](docs/hardware)
+If you're interested in the details behind the original raspberry-noaa hardware compatibility tests, see the [hardware](docs/hardware.md)
 document.
 
 ## Install
@@ -47,7 +47,7 @@ cd raspberry-noaa-v2/
 ./install_and_upgrade.sh
 ```
 
-Once the script completes, you can either follow the [migration document](docs/migrate_from_raspberry_noaa) (if you had previously
+Once the script completes, you can either follow the [migration document](docs/migrate_from_raspberry_noaa.md) (if you had previously
 been using raspberry-noaa on this device) or just visit the webpanel and get going!
 
 ## Upgrade
@@ -66,12 +66,12 @@ your original configurations will remain intact and used without you needing to 
 There are and will be future "optional" features for this framework. Below is a list of optional capabilities that you may wish
 to enable/configure with links to the respective instructions:
 
-* [Auto-Post to Twitter](docs/auto_post_to_twitter)
+* [Auto-Post to Twitter](docs/auto_post_to_twitter.md)
 
 ## Troubleshooting
 
 If you're running into issues where you're not seeing imagery after passes complete or getting blank/strange images, you can check
-out the [troubleshooting](docs/troubleshooting) document to try and narrow down the problem.
+out the [troubleshooting](docs/troubleshooting.md) document to try and narrow down the problem.
 
 ## Additional Feature Information
 
