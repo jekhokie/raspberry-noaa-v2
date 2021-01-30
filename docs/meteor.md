@@ -1,4 +1,4 @@
-![Raspberry NOAA](../assets/header_1600.png)
+![Raspberry NOAA](../assets/header_1600_v2.png)
 
 # Meteor M2 Decoding
 

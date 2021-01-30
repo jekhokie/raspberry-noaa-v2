@@ -1,4 +1,4 @@
-![Raspberry NOAA](../assets/header_1600.png)
+![Raspberry NOAA](../assets/header_1600_v2.png)
 
 If you're running into issues, there are some steps you can follow to troubleshoot.
 

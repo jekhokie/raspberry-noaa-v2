@@ -1,3 +1,5 @@
+![Raspberry NOAA](../assets/header_1600_v2.png)
+
 # Migrating from raspberry-noaa (V1)
 
 If you've already installed and have been using the original raspberry-noaa framework and want to give

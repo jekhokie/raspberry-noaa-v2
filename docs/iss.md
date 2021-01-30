@@ -1,4 +1,4 @@
-![Raspberry NOAA](../assets/header_1600.png)
+![Raspberry NOAA](../assets/header_1600_v2.png)
 
 This project now includes full reception and decoding of SSTV transmissions from the ISS.
 
