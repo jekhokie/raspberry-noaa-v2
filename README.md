@@ -5,26 +5,77 @@ graciously permitted me to push this project forward with a major refactor to en
 updates. All original content has been preserved (as have all commits up to the point of this repo creation) to retain credit to the
 original creators._**
 
-# NOAA and Meteor automated capture using Raspberry PI
-Most of the code and setup stolen from: [Instructables](https://www.instructables.com/id/Raspberry-Pi-NOAA-Weather-Satellite-Receiver/)
+Wanting to give this version a go but not sure what's involved to get from the original raspberry-noaa to raspberry-noaa-v2? Check
+out this simple [migration document](docs/migrate_from_raspberry_noaa) that explains the few commands you need to run and retain
+your original data!
 
-## New Features!
-  - [ISS SSTV reception and decoding](docs/ISS.md)
-  - [A webpanel!](docs/WEBPANEL.md)
-  - [Meteor M2 full decoding!](docs/METEOR.md)
-  - Nginx webserver to show images
-  - Timestamp and satellite name overlay on every image
-  - WXToIMG configured to create several images (HVC,HVCT,MCIR, etc) based on sun elevation
-  - Pictures can be posted to Twitter. See more at [argentinasat twitter account](https://twitter.com/argentinasat)
+# NOAA and Meteor Automated Capture Using Raspberry PI
+
+Most of the base code was built from the great work done by [haslettj](https://www.instructables.com/member/haslettj/) in their
+[Instructables](https://www.instructables.com/id/Raspberry-Pi-NOAA-Weather-Satellite-Receiver/) post. Not credit is assumed for
+original work and all credit goes to the original creator.
+
+## Why a Version 2?
+
+A lot of the work done by Nico and the original Instructables poster was absolutely fantastic and simple. However, as I started
+using the framework, I found myself making a lot of changes but getting the changes into place in a manageable way was a bit difficult.
+In discussing this with Nico, we agreed that there is a logical next maturity step for this framework, so I took this on to provide
+a simple, one-command script and corresponding framework to manage and maintain the entire project when any changes occur, and
+refactored the webpanel functionality significantly to enable better feature additions in the future.
+
+## Compatibility
+
+The original raspberry-noaa was tested on Raspberry Pi 2 and up. However, while it's possible this compatibility has been maintained
+with raspberry-noaa-v2, this version was developed and tested on a Raspberry Pi 4 - it has not been exhaustively tested on other variants
+of Raspberry Pi (but if you get it working on a version, please do submit a PR and mention it so this document can be updated!).
+
+In addition, it's recommended that the [Raspberry Pi OS](https://www.raspberrypi.org/software/) operating system is used - this is the
+OS that has been tested and proven working. If you do test with another OS - again, please submit a PR and let us know how it works out!
+
+If you're interested in the details behind the original raspberry-noaa hardware compatibility tests, see the [hardware](docs/hardware)
+document.
 
 ## Install
-There's an [install.sh](install.sh) script that does (almost) everything at once. If in doubt, see the [install guide](docs/INSTALL.md)
 
-## Post config
-* [Setup Twitter auto posting feature](docs/INSTALL.md#set-your-twitter-credentials)
+To install the product and get going, simply clone the project to the `pi` user's home directory, run a script, and provide the
+inputs asked for:
 
-## How do I know if it is running properly?
-This project is intended as a zero-maintenance system where you just power-up the Raspberry PI and wait for images to be received. However, if you are in doubt about it just follow the [working guide](docs/WORKING.md)
+```bash
+cd $HOME
+git clone https://github.com/jekhokie/raspberry-noaa-v2.git
+cd raspberry-noaa-v2/
+./install_and_upgrade.sh
+```
 
-## Hardware setup
-Raspberry-noaa runs on Raspberry PI 2 and up. See the [hardware notes](docs/HARDWARE.md)
+Once the script completes, you can either follow the [migration document](docs/migrate_from_raspberry_noaa) (if you had previously
+been using raspberry-noaa on this device) or just visit the webpanel and get going!
+
+## Upgrade
+
+Want to get the latest and greatest content from the GitHub master branch? Easy - use the same script from the Install process
+and all of your content will automatically upgrade (obviously you'll want to do this when there isn't a scheduled capture occurring
+or about to occur). Note that the upgrade process will *only* ask you for parameters if they are new to the software being updated -
+your original configurations will remain intact and used without you needing to get involved!
+
+```bash
+./install_and_update.sh
+```
+
+## Post Install
+
+There are and will be future "optional" features for this framework. Below is a list of optional capabilities that you may wish
+to enable/configure with links to the respective instructions:
+
+* [Auto-Post to Twitter](docs/auto_post_to_twitter)
+
+## Troubleshooting
+
+If you're running into issues where you're not seeing imagery after passes complete or getting blank/strange images, you can check
+out the [troubleshooting](docs/troubleshooting) document to try and narrow down the problem.
+
+## Additional Feature Information
+
+For additional information on some of the capabilities included in this framework, see below:
+
+  - [ISS SSTV Reception and Decoding](docs/iss.md)
+  - [Meteor M2 Full Decoding](docs/meteor.md)
