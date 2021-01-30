@@ -15,7 +15,7 @@ in_mem=true
 SYSTEM_MEMORY=$(free -m | awk '/^Mem:/{print $2}')
 if [ "$SYSTEM_MEMORY" -lt 2000 ]; then
   log "The system doesn't have enough space to store a Meteor pass on RAM" "INFO"
-	RAMFS_AUDIO="${METEOR_AUDIO_OUTPUT}"
+  RAMFS_AUDIO="${METEOR_AUDIO_OUTPUT}"
   in_mem=false
 fi
 
