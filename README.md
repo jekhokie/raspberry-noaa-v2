@@ -39,6 +39,13 @@ OS that has been tested and proven working. If you do test with another OS - aga
 If you're interested in the details behind the original raspberry-noaa hardware compatibility tests, see the [hardware](docs/hardware.md)
 document.
 
+## wxtoimg License Terms Acceptance
+
+Use of this framework assumes acceptance of the wxtoimg license terms and will automatically "accept" the terms as part of the installation.
+You MUST review the license prior to installing this framework, which can be viewed under the "Terms and Conditions" section of the
+[wxtoimg manual](https://wxtoimgrestored.xyz/downloads/wxgui.pdf). If you do not agree to the wxtoimg terms, please do not install or
+use this framework.
+
 ## Install
 
 To install the product and get going, simply clone the project to the `pi` user's home directory, run a script, and provide the
