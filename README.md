@@ -18,7 +18,6 @@ original work and all credit goes to the original creator.
 In addition, as noted above, this repo is based on the great original work that Nico did in his
 [raspberry-noaa](https://github.com/reynico/raspberry-noaa) repository.
 
-
 ## Why a Version 2?
 
 A lot of the work done by Nico and the original Instructables poster was absolutely fantastic and simple. However, as I started
@@ -46,6 +45,20 @@ You MUST review the license prior to installing this framework, which can be vie
 [wxtoimg manual](https://wxtoimgrestored.xyz/downloads/wxgui.pdf). If you do not agree to the wxtoimg terms, please do not install or
 use this framework.
 
+## Prerequisites
+
+Below are some prerequisites steps and considerations prior to installing this software:
+
+1. Although the software certainly works on a Pi with a desktop environment installed, it would be best to use the minimal Raspberry Pi
+OS (no desktop environment) to help avoid processing interference due to higher CPU/Memory consumption from the GUI components.
+2. Update your localisation settings on your Pi prior to installing the software using the `sudo raspi-config` command, updating
+"5 Localisation Options -> L1 Locale" and "5 Localisation Options -> L2 Timezone" settings to match your base station location for more
+consistent time and language handling.
+3. You need git installed to clone the repository - this can be done via "sudo apt-get -y install git".
+4. It is recommended to change your `pi` user default password after logging into the Raspberry Pi for the first time. While it is not
+recommended that you expose a Pi instance to the public internet for access (unless you have a VERY strict process about security
+patching, and even then it would still be questionable), updating your Pi user password is a decent first step for security.
+
 ## Install
 
 To install the product and get going, simply clone the project to the `pi` user's home directory, run a script, and provide the
@@ -59,7 +72,7 @@ cd raspberry-noaa-v2/
 ```
 
 Once the script completes, you can either follow the [migration document](docs/migrate_from_raspberry_noaa.md) (if you had previously
-been using raspberry-noaa on this device) or just visit the webpanel and get going!
+been using raspberry-noaa on this device) or, if this is a brand new setup, just visit the webpanel and get going!
 
 ## Upgrade
 
