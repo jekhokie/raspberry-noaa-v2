@@ -31,6 +31,14 @@
     group: pi
     mode: 0644
 
+- name: wxtoimg license terms acceptance file
+  copy:
+    src: wxtoimglic
+    dest: ~pi/.wxtoimglic
+    owner: pi
+    group: pi
+    mode: 0644
+
 - name: twitter post config file
   copy:
     src: tweepy.conf
