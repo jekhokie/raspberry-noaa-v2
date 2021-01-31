@@ -18,6 +18,26 @@ original work and all credit goes to the original creator.
 In addition, as noted above, this repo is based on the great original work that Nico did in his
 [raspberry-noaa](https://github.com/reynico/raspberry-noaa) repository.
 
+## Quick Start
+
+Don't want all the nitty-gritty details? Here's the quick-start - if you have questions, continue reading the rest of this README or
+reach out by submitting an issue:
+
+```bash
+# update os localisation settings
+sudo raspi-config
+
+# clone and install, following prompts
+sudo apt-get -y install git
+cd $HOME
+git clone https://github.com/jekhokie/raspberry-noaa-v2.git
+cd raspberry-noaa-v2/
+./install_and_upgrade.sh
+```
+
+Once complete, follow the [migration document](docs/migrate_from_raspberry_noaa.md) if you want to migrate from the original raspberry-noaa
+to this version 2 (keep your previous captures and make them visible).
+
 ## Why a Version 2?
 
 A lot of the work done by Nico and the original Instructables poster was absolutely fantastic and simple. However, as I started
