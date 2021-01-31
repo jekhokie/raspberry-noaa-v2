@@ -108,7 +108,6 @@ if [ $install_type == 'install' ]; then
   log_running "It looks like this is a fresh install of the tooling for captures."
   log_running "If you've never had the software tools installed previously (e.g. if you've"
   log_running "not installed the original raspberry-noaa repo content), you likely need to"
-  log_running "restart your device."
-
-  log_running "TODO: PROMPT AND RESTART PI FOR ALL CONFIGS TO TAKE EFFECT ON FRESH INSTALL"
+  log_running "restart your device. Please do this to rule out any potential issues in the"
+  log_running "software and libraries that have been installed."
 fi
