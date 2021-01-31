@@ -11,10 +11,7 @@
       prompt: What is your base station longitude (West values are negative)?
       private: no
     - name: timezone_offset
-      prompt: What is your time zone offset (e.g. -3 for Argentina time)?
-      private: no
-    - name: timezone
-      prompt: What is your timezone (see https://www.php.net/manual/en/timezones.php)?
+      prompt: What is your time zone offset (e.g. -5 for US Eastern)?
       private: no
     - name: enable_bias_tee
       prompt: Enable bias tee (True/False)?

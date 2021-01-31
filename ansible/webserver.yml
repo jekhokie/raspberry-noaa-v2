@@ -4,6 +4,9 @@
   connection: local
   gather_facts: no
   vars_prompt:
+    - name: timezone
+      prompt: What is your timezone (e.g. America/New_York - see https://www.php.net/manual/en/timezones.php)?
+      private: no
     - name: lang_setting
       prompt: What is your preferred language setting (ar, de, en, es, sr)?
       private: no
