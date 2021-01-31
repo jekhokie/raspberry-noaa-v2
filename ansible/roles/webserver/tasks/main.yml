@@ -42,16 +42,6 @@
     groups: www-data
     append: yes
 
-- name: nginx config file
-  become: yes
-  template:
-    src: nginx_default.j2
-    dest: /etc/nginx/sites-available/default
-    owner: root
-    group: root
-    mode: 0644
-  notify: restart nginx
-
 - name: web directory
   become: yes
   file:
@@ -78,4 +68,14 @@
     owner: pi
     group: www-data
     mode: 0644
+
+- name: nginx config file
+  become: yes
+  template:
+    src: nginx_default.j2
+    dest: /etc/nginx/sites-available/default
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart nginx
 ...
