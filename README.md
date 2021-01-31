@@ -54,7 +54,7 @@ OS (no desktop environment) to help avoid processing interference due to higher 
 2. Update your localisation settings on your Pi prior to installing the software using the `sudo raspi-config` command, updating
 "5 Localisation Options -> L1 Locale" and "5 Localisation Options -> L2 Timezone" settings to match your base station location for more
 consistent time and language handling.
-3. You need git installed to clone the repository - this can be done via "sudo apt-get -y install git".
+3. You need git installed to clone the repository - this can be done via `sudo apt-get -y install git`.
 4. It is recommended to change your `pi` user default password after logging into the Raspberry Pi for the first time. While it is not
 recommended that you expose a Pi instance to the public internet for access (unless you have a VERY strict process about security
 patching, and even then it would still be questionable), updating your Pi user password is a decent first step for security.
