@@ -1,2 +1,6 @@
 # ansible retry files
 *.retry
+
+# vim swap files
+*.swp
+*.swo
