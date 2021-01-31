@@ -112,6 +112,12 @@ to enable/configure with links to the respective instructions:
 
 * [Auto-Post to Twitter](docs/auto_post_to_twitter.md)
 
+## Changing Configurations After Install
+
+Want to make changes to either the base station functionality or webpanel settings? You can view and edit the available settings in
+/home/pi/.base_station.yml` and `/home/pi/.webserver.yml` respectively. Once modifying a setting in those files, simply re-run
+the installer/upgrader script: `./install_and_update.sh`.
+
 ## Troubleshooting
 
 If you're running into issues where you're not seeing imagery after passes complete or getting blank/strange images, you can check
