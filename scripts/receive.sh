@@ -42,7 +42,13 @@ else
 fi
 
 log "Bulding pass map" "INFO"
-/usr/local/bin/wxmap -T "${1}" -H "${4}" -p 0 -l 0 -o "${PASS_START}" "${NOAA_HOME}/tmp/map/${3}-map.png"
+# add 10 seconds to ensure we account for small deviations in timing - being even a second too soon
+# can cause an error of "wxmap: warning: could not find matching pass to build overlay map.", while
+# going over the start time by a few seconds while still being within the pass timing causes wxmap
+# to track *back* to the start of the pass
+epoch_adjusted=$(($PASS_START + 10))
+/usr/local/bin/wxmap -T "${1}" -H "${4}" -p 0 -l 0 -o "${epoch_adjusted}" "${NOAA_HOME}/tmp/map/${3}-map.png"
+
 for i in $ENHANCEMENTS; do
   log "Decoding image" "INFO"
   /usr/local/bin/wxtoimg -o -m "${NOAA_HOME}/tmp/map/${3}-map.png" -e "$i" "${RAMFS_AUDIO}/${3}.wav" "${IMAGE_OUTPUT}/${3}-$i.jpg"
