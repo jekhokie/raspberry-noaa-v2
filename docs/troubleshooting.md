@@ -2,6 +2,28 @@
 
 If you're running into issues, there are some steps you can follow to troubleshoot.
 
+# Log Output
+
+The `at` jobs log their output and you will receive a linux mail in the `pi` user's mailbox with the script
+results after the pass and processing completes. Use the `mail` application on the command line to view the mail
+messages and investigate the log outputs for any indications of errors.
+
+# USB Access Permission
+
+If you inspect the mail output from your scheduled runs and see a message related to the following, it likely means
+the udev rules put in place by the installer are not active (likely because you have not activated them or, more
+specifically, rebooted your Pi after the initial installation). An error will look similar to the following:
+
+```bash
+Using device 0: Generic RTL2832U OEM
+usb_open error -3
+Please fix the device permissions, e.g. by installing the udev rules file rtl-sdr.rules
+Failed to open rtlsdr device #0.
+```
+
+If you see the above, the best way to handle this is to reboot your Pi so the udev rules put in place by the installer
+are activated and any other items requiring the reboot are sufficiently "kicked" for the next pass.
+
 # Reception
 
 The first thing to test is reception, which will validate that the antenna, reception line, reception hardware, and
