@@ -1,4 +1,4 @@
-create table predict_passes(
+CREATE TABLE IF NOT EXISTS predict_passes(
     sat_name text not null,
     pass_start timestamp primary key default (strftime('%s', 'now')) not null,
     pass_end timestamp default (strftime('%s', 'now')) not null,
@@ -6,7 +6,7 @@ create table predict_passes(
     is_active boolean);
 
 
-CREATE TABLE decoded_passes(
+CREATE TABLE IF NOT EXISTS decoded_passes(
     id integer primary key autoincrement,
     pass_start integer,
     file_path text not null,
