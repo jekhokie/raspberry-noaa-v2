@@ -64,4 +64,10 @@ web_port: 80
 
 # log level for output from scripts
 log_level: DEBUG
+
+# whether to enable the satvis visualization for satellite tracking
+# in the passes view - note that this iframe-driven visualization is
+# by default disabled on "extra-small" devices such as phones due to
+# the processing and space requirements
+enable_satvis: true
 ...

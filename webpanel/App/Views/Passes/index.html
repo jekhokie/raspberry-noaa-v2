@@ -4,6 +4,14 @@
   <link rel="stylesheet" type="text/css" href="/assets/css/pass_list.css">
 {% endblock %}
 
+{% block pre_body %}
+  {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
+    <div id="satvis" class="d-none d-sm-block">
+      <iframe name="satvis" src="https://satvis.space/?elements=Point,Label,Orbit%20track,Sensor%20cone&layers=OfflineHighres&gs=50.8515,-0.1446&tags=Weather"></iframe>
+    </div>
+  {% endif %}
+{% endblock %}
+
 {% block body %}
   <table class="table table-bordered table-sm table-striped" id="passes">
     <thead class="thead-dark">
