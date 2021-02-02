@@ -47,8 +47,20 @@ log "Bulding pass map" "INFO"
 # going over the start time by a few seconds while still being within the pass timing causes wxmap
 # to track *back* to the start of the pass
 epoch_adjusted=$(($PASS_START + 10))
-/usr/local/bin/wxmap -T "${1}" -H "${4}" -p 0 -l 0 -o "${epoch_adjusted}" "${NOAA_HOME}/tmp/map/${3}-map.png"
 
+# calculate any extra map options such as crosshair for base station, coloring, etc.
+extra_map_opts=""
+if [ "${NOAA_MAP_CROSSHAIR_ENABLE}" == "true" ]; then
+  extra_map_opts="${extra_map_opts} -l 1 -c l:${NOAA_MAP_CROSSHAIR_COLOR}"
+fi
+if [ "${NOAA_MAP_GRID_DEGREES}" != "0.0" ]; then
+  extra_map_opts="${extra_map_opts} -g ${NOAA_MAP_GRID_DEGREES} -c g:${NOAA_MAP_GRID_COLOR}"
+fi
+
+# build overlay map
+/usr/local/bin/wxmap -T "${1}" -H "${4}" -p 0 ${extra_map_opts} -o "${epoch_adjusted}" "${NOAA_HOME}/tmp/map/${3}-map.png"
+
+# build images based on enhancements defined
 for i in $ENHANCEMENTS; do
   log "Decoding image" "INFO"
   /usr/local/bin/wxtoimg -o -m "${NOAA_HOME}/tmp/map/${3}-map.png" -e "$i" "${RAMFS_AUDIO}/${3}.wav" "${IMAGE_OUTPUT}/${3}-$i.jpg"

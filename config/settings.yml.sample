@@ -8,22 +8,49 @@ longitude: -74.005974
 # time zone offset from UTC (for example, '-5' for US Eastern)
 timezone_offset: -5
 
-# whether to enable bias tee (power LNA or upstream devices from SDR)
-enable_bias_tee: True
+# receiver settings
+#   enable_bias_tee - driving power to LNA, for example
+#   gain - receiver gain
+enable_bias_tee: false
+receiver_gain: 50
 
 # whether to schedule specific orbiting objects for capture
-schedule_iss: False
-schedule_noaa: True
-schedule_meteor: True
+schedule_iss: false
+schedule_noaa: true
+schedule_meteor: true
 
 # whether audio files should be deleted after images are created
-delete_audio: False
+delete_audio: false
 
 # thresholds for scheduling captures - enables avoiding an attempt
 # to capture imagery if objects are lower than these degree elevation thresholds
 sat_min_elevation: 30
-meteor_min_elevation: 30
 sun_min_elevation: 10
+
+# noaa map configurations
+# http://usradioguy.com/wp-content/uploads/2020/05/wxtoimgcommand-line.pdf
+#
+# note - colors are in format 0xRRGGBB (only applicable when the
+#        feature is enabled), where:
+#   RR: Red hex value
+#   GG: Green hex value
+#   BB: Blue hex value
+# Colors can alternatively be specified as one of the following:
+#   black, white, gray, light-gray, dark-gray, red, pink dark-red,
+#   light-red, # green, light-green, dark-green, black-green, blue,
+#   light-blue, dark-blue, black-blue, yellow, light-yellow, dark-yellow,
+#   magenta, light-magenta, dark-magenta, cyan, light-cyan, dark-cyan,
+#   orange, dark-orange, purple, lavender, violet, navy, turquoise,
+#   aquamarine, chartreuse, gold, beige, tan, brown, and maroon
+#
+#   noaa_map_crosshair_enable - whether to place a crosshairs on the base station location
+#   noaa_map_crosshair_color - color of base station crosshair
+#   noaa_map_grid_degrees - latitude/longitude lines drawn every grid degrees (default 10.0, 0.0 to disable)
+#   noaa_map_grid_color - color of gridlines for latitude/longitude
+noaa_map_crosshair_enable: false
+noaa_map_crosshair_color: "0xffff00"
+noaa_map_grid_degrees: 10.0
+noaa_map_grid_color: "0xff0000"
 
 # locale settings for timezone and language
 #   timezone: see https://www.php.net/manual/en/timezones.php
@@ -34,4 +61,7 @@ lang_setting: en
 
 # port to run the webpanel on
 web_port: 80
+
+# log level for output from scripts
+log_level: DEBUG
 ...
