@@ -54,6 +54,11 @@ In discussing this with Nico, we agreed that there is a logical next maturity st
 a simple, one-command script and corresponding framework to manage and maintain the entire project when any changes occur, and
 refactored the webpanel functionality significantly to enable better feature additions in the future.
 
+See below for some sample screenshots of the webpanel, which is now mobile-friendly!
+
+[![Webpanel Pass List][1]][1]
+[![Webpanel Captures][2]][2]
+
 ## Compatibility
 
 The original raspberry-noaa was tested on Raspberry Pi 2 and up. However, while it's possible this compatibility has been maintained
@@ -155,3 +160,6 @@ For additional information on some of the capabilities included in this framewor
 
   - [ISS SSTV Reception and Decoding](docs/iss.md)
   - [Meteor M2 Full Decoding](docs/meteor.md)
+
+[1]: /docs/assets/images/webpanel-pass-list.jpg
+[2]: /docs/assets/images/webpanel-captures.jpg
