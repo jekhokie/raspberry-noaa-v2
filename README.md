@@ -27,11 +27,19 @@ reach out by submitting an issue:
 # update os localisation settings
 sudo raspi-config
 
-# clone and install, following prompts
+# install git
 sudo apt-get -y install git
+
+# clone repository
 cd $HOME
 git clone https://github.com/jekhokie/raspberry-noaa-v2.git
 cd raspberry-noaa-v2/
+
+# copy sample settings and update for your install
+cp config/settings.yml.sample config/settings.yml
+vi config/settings.yml
+
+# perform install
 ./install_and_upgrade.sh
 ```
 
@@ -81,13 +89,23 @@ patching, and even then it would still be questionable), updating your Pi user p
 
 ## Install
 
-To install the product and get going, simply clone the project to the `pi` user's home directory, run a script, and provide the
-inputs asked for:
+To install the product and get going, simply clone the project to the `pi` user's home directory, set up your settings, and run the
+install script:
 
 ```bash
+# install git
+sudo apt-get -y install git
+
+# clone repository
 cd $HOME
 git clone https://github.com/jekhokie/raspberry-noaa-v2.git
 cd raspberry-noaa-v2/
+
+# copy sample settings and update for your install
+cp config/settings.yml.sample config/settings.yml
+vi config/settings.yml
+
+# perform install
 ./install_and_upgrade.sh
 ```
 
@@ -98,10 +116,19 @@ been using raspberry-noaa on this device) or, if this is a brand new setup, just
 
 Want to get the latest and greatest content from the GitHub master branch? Easy - use the same script from the Install process
 and all of your content will automatically upgrade (obviously you'll want to do this when there isn't a scheduled capture occurring
-or about to occur). Note that the upgrade process will *only* ask you for parameters if they are new to the software being updated -
-your original configurations will remain intact and used without you needing to get involved!
+or about to occur). Note that once you pull the latest code down using git, you'll likely want to compare your `config/settings.yml`
+file with the new code `config/settings.yml.sample` and include/incorporate any new or renamed configuration parameters.
 
 ```bash
+# pull down new code
+cd $HOME/raspberry-noaa-v2/
+git pull
+
+# compare settings file:
+#   config/settings.yml.sample with config/settings.yml
+# and incorporate any changes/updates
+
+# perform upgrade
 ./install_and_update.sh
 ```
 
@@ -114,9 +141,8 @@ to enable/configure with links to the respective instructions:
 
 ## Changing Configurations After Install
 
-Want to make changes to either the base station functionality or webpanel settings? You can view and edit the available settings in
-/home/pi/.base_station.yml` and `/home/pi/.webserver.yml` respectively. Once modifying a setting in those files, simply re-run
-the installer/upgrader script: `./install_and_update.sh`.
+Want to make changes to either the base station functionality or webpanel settings? Simply update the `config/settings.yml` file
+and re-run `./install_and_update.sh` - the script will take care of the rest of the configurations!
 
 ## Troubleshooting
 

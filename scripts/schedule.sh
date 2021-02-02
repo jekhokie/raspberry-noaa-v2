@@ -46,7 +46,14 @@ log "Scheduling new capture jobs..." "INFO"
 if [ "$SCHEDULE_ISS" == "true" ]; then
   $NOAA_HOME/scripts/schedule_captures.sh "ISS (ZARYA)" 145.8000 "receive_iss.sh" $TLE_OUTPUT
 fi
-$NOAA_HOME/scripts/schedule_captures.sh "NOAA 15" 137.6200 "receive_noaa.sh" $TLE_OUTPUT
-$NOAA_HOME/scripts/schedule_captures.sh "NOAA 18" 137.9125 "receive_noaa.sh" $TLE_OUTPUT
-$NOAA_HOME/scripts/schedule_captures.sh "NOAA 19" 137.1000 "receive_noaa.sh" $TLE_OUTPUT
-$NOAA_HOME/scripts/schedule_captures.sh "METEOR-M 2" 137.1000 "receive_meteor.sh" $TLE_OUTPUT
+
+if [ "$SCHEDULE_NOAA" == "true" ]; then
+  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 15" 137.6200 "receive_noaa.sh" $TLE_OUTPUT
+  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 18" 137.9125 "receive_noaa.sh" $TLE_OUTPUT
+  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 19" 137.1000 "receive_noaa.sh" $TLE_OUTPUT
+fi
+
+if [ "$SCHEDULE_METEOR" == "true" ]; then
+  $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M 2" 137.1000 "receive_meteor.sh" $TLE_OUTPUT
+fi
+log "Done scheduling jobs!" "INFO"

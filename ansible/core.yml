@@ -3,65 +3,12 @@
   hosts: core
   connection: local
   gather_facts: no
-  vars_prompt:
-    - name: latitude
-      prompt: What is your base station latitude (South values are negative)?
-      private: no
-    - name: longitude
-      prompt: What is your base station longitude (West values are negative)?
-      private: no
-    - name: timezone_offset
-      prompt: What is your time zone offset (e.g. -5 for US Eastern)?
-      private: no
-    - name: enable_bias_tee
-      prompt: Enable bias tee (True/False)?
-      private: no
-      default: False
-    - name: schedule_iss
-      prompt: Schedule ISS captures (True/False)?
-      private: no
-      default: False
-    - name: delete_audio
-      prompt: Delete audio files after image create (True/False)?
-      private: no
-      default: True
-    - name: sat_min_elevation
-      prompt: NOAA satellite minimum elevation (degrees) to schedule capture?
-      private: no
-      default: 30
-    - name: meteor_min_elevation
-      prompt: Meteor satellite minimum elevation (degrees) to schedule capture?
-      private: no
-      default: 30
-    - name: sun_min_elevation
-      prompt: Sun minimum elevation (degrees) to attempt additional imagery enhancements?
-      private: no
-      default: 10
   pre_tasks:
     - name: get os release
       shell: lsb_release -c --short
       register: raspbian_version
       check_mode: no
       changed_when: no
-    - name: validate bias tee setting
-      assert:
-        that: enable_bias_tee|string == 'True' or enable_bias_tee|string == 'False'
-        fail_msg: "'Enable bias tee?' must be either 'True' or 'False' - please re-run and try again."
-    - name: validate schedule_iss setting
-      assert:
-        that: schedule_iss|string == 'True' or schedule_iss|string == 'False'
-        fail_msg: "'Schedule ISS captures?' must be either 'True' or 'False' - please re-run and try again."
-    - name: validate delete_audio setting
-      assert:
-        that: delete_audio|string == 'True' or delete_audio|string == 'False'
-        fail_msg: "'Delete audio files after image create?' must be either 'True' or 'False' - please re-run and try again."
-    - name: store settings for future runs
-      template:
-        src: ../templates/base_station.yml.j2
-        dest: ~pi/.base_station.yml
-        owner: pi
-        group: pi
-        mode: 0644
   roles:
     - role: common
 ...
