@@ -13,7 +13,7 @@ SCHEDULE_METEOR={{ schedule_meteor|lower }}
 SAT_MIN_ELEV={{ sat_min_elevation }}
 SUN_MIN_ELEV={{ sun_min_elevation }}
 DELETE_AUDIO={{ delete_audio|lower }}
-BIAS_TEE={{ enable_bias_tee|lower }}
+BIAS_TEE="{% if enable_bias_tee|lower == 'true' %}-T{% endif %}"
 FLIP_METEOR_IMG={{ flip_meteor_image|lower }}
 GAIN={{ receiver_gain }}
 TZ_OFFSET={{ timezone_offset }}
