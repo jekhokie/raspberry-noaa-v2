@@ -1,0 +1,37 @@
+---
+# base station configurations
+#   latitude: south values are negative
+#   longitude: west values are negative
+latitude: 40.712776
+longitude: -74.005974
+
+# time zone offset from UTC (for example, '-5' for US Eastern)
+timezone_offset: -5
+
+# whether to enable bias tee (power LNA or upstream devices from SDR)
+enable_bias_tee: True
+
+# whether to schedule specific orbiting objects for capture
+schedule_iss: False
+schedule_noaa: True
+schedule_meteor: True
+
+# whether audio files should be deleted after images are created
+delete_audio: False
+
+# thresholds for scheduling captures - enables avoiding an attempt
+# to capture imagery if objects are lower than these degree elevation thresholds
+sat_min_elevation: 30
+meteor_min_elevation: 30
+sun_min_elevation: 10
+
+# locale settings for timezone and language
+#   timezone: see https://www.php.net/manual/en/timezones.php
+#   lang_setting: see the 'webpanel/App/Lang' folder for available
+#                 languages (2-letter filename - e.g. ar, de, en, es, sr)
+timezone: America/New_York
+lang_setting: en
+
+# port to run the webpanel on
+web_port: 80
+...

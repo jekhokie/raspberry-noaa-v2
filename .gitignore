@@ -4,3 +4,6 @@
 # vim swap files
 *.swp
 *.swo
+
+# environment-specific config file
+config/settings.yml

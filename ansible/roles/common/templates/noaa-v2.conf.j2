@@ -1,3 +1,4 @@
+# framework configs
 NOAA_HOME={{ noaa_home }}
 DB_FILE={{ db_file }}
 WEB_HOME={{ web_home }}
@@ -5,15 +6,26 @@ IMAGE_OUTPUT={{ images_output }}
 NOAA_AUDIO_OUTPUT={{ audio_output }}/noaa
 METEOR_AUDIO_OUTPUT={{ audio_output }}/meteor
 RAMFS_AUDIO={{ ramfs_path }}
-SAT_MIN_ELEV={{ sat_min_elevation }}
-METEOR_MIN_ELEV={{ meteor_min_elevation }}
-SUN_MIN_ELEV={{ sun_min_elevation }}
+
+# base station configs
 LAT={{ latitude }}
 LON={{ longitude }}
+
+# whether to schedule specific objects
+SCHEDULE_ISS="{% if schedule_iss|string == 'True' %}true{% else %}false{% endif %}"
+SCHEDULE_NOAA="{% if schedule_noaa|string == 'True' %}true{% else %}false{% endif %}"
+SCHEDULE_METEOR="{% if schedule_meteor|string == 'True' %}true{% else %}false{% endif %}"
+
+# thresholds for captures
+SAT_MIN_ELEV={{ sat_min_elevation }}
+SUN_MIN_ELEV={{ sun_min_elevation }}
+
+# system configs, processing configs, and sdr tuning
 DELETE_AUDIO="{% if delete_audio|string == 'True' %}true{% else %}false{% endif %}"
 BIAS_TEE="{% if enable_bias_tee|string == 'True' %}-T{% endif %}"
 FLIP_METEOR_IMG="true"
 GAIN=50
-SCHEDULE_ISS="{% if schedule_iss|string == 'True' %}true{% else %}false{% endif %}"
+
+# language and debugging
 TZ_OFFSET={{ timezone_offset }}
 LOG_LEVEL=DEBUG

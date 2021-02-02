@@ -55,20 +55,15 @@ if [ $? -ne 0 ]; then
   fi
 fi
 
-# append pre-set variables if available
-log_running "Getting any pre-configured variables..."
-ansible_extra_args=""
-if [ -f $HOME/.base_station.yml ]; then
-  ansible_extra_args="--extra-vars \"@~/.base_station.yml\""
+log_running "Checking for configuration settings..."
+if [ -f config/settings.yml ]; then
+  log_done "  Settings file ready!"
+else
+  die "  No settings file detected - please copy config/settings.yml.sample to config/settings.yml and edit for your environment"
 fi
-if [ -f $HOME/.webserver.yml ]; then
-  ansible_extra_args="$ansible_extra_args --extra-vars \"@~/.webserver.yml\""
-fi
-ansible_cmd="ansible-playbook -i ansible/hosts $ansible_extra_args ansible/site.yml"
-log_running "  Done getting pre-configured variables!"
 
 log_running "Running Ansible to install and/or update your raspberry-noaa-v2..."
-eval "${ansible_cmd}"
+ansible-playbook -i ansible/hosts --extra-vars "@config/settings.yml" ansible/site.yml
 if [ $? -eq 0 ]; then
   log_done "  Ansible apply complete!"
 else
