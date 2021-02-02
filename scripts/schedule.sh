@@ -56,3 +56,4 @@ fi
 if [ "$SCHEDULE_METEOR" == "true" ]; then
   $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M 2" 137.1000 "receive_meteor.sh" $TLE_OUTPUT
 fi
+log "Done scheduling jobs!" "INFO"
