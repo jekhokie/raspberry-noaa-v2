@@ -22,6 +22,10 @@ schedule_meteor: true
 # whether audio files should be deleted after images are created
 delete_audio: false
 
+# processing settings
+#   flip_meteor_image - whether the meteor image should be flipped
+flip_meteor_image: true
+
 # thresholds for scheduling captures - enables avoiding an attempt
 # to capture imagery if objects are lower than these degree elevation thresholds
 sat_min_elevation: 30
