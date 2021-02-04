@@ -46,4 +46,28 @@
     owner: pi
     group: pi
     mode: 0644
+
+- name: gnuradio home directory
+  file:
+    path: ~pi/.gnuradio
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0755
+
+- name: gnuradio prefs directory
+  file:
+    path: ~pi/.gnuradio/prefs
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0755
+
+- name: gnuradio prefs file
+  copy:
+    src: vmcircbuf_default_factory
+    dest: ~pi/.gnuradio/prefs/vmcircbuf_default_factory
+    owner: pi
+    group: pi
+    mode: 0644
 ...

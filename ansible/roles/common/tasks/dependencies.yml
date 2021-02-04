@@ -7,6 +7,8 @@
       - at
       - bc
       - cmake
+      - gnuradio
+      - gr-osmosdr
       - imagemagick
       - libatlas-base-dev
       - libjpeg9
