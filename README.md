@@ -3,7 +3,8 @@
 **_This is a spinoff of the original [raspberry-noaa](https://github.com/reynico/raspberry-noaa) created by Nico - they have
 graciously permitted me to push this project forward with a major refactor to enhance things such as usability, style, and general
 updates. All original content has been preserved (as have all commits up to the point of this repo creation) to retain credit to the
-original creators._**
+original creators. Please see the "Credits" section of this README for additional info and contributions from the fantastic
+NOAA/METEOR community!._**
 
 Wanting to give this version a go but not sure what's involved to get from the original raspberry-noaa to raspberry-noaa-v2? Check
 out this simple [migration document](docs/migrate_from_raspberry_noaa.md) that explains the few commands you need to run and retain
@@ -11,12 +12,9 @@ your original data!
 
 # Raspberry NOAA (...and Meteor) V2
 
-Most of the base code was built from the great work done by [haslettj](https://www.instructables.com/member/haslettj/) in their
-[Instructables](https://www.instructables.com/id/Raspberry-Pi-NOAA-Weather-Satellite-Receiver/) post. Not credit is assumed for
-original work and all credit goes to the original creator.
+NOAA and Meteor-M 2 satellite imagery capture setup for the Raspberry Pi!
 
-In addition, as noted above, this repo is based on the great original work that Nico did in his
-[raspberry-noaa](https://github.com/reynico/raspberry-noaa) repository.
+See "Credits" for the awesome way this version of the framework came to be.
 
 ## Quick Start
 
@@ -160,6 +158,21 @@ For additional information on some of the capabilities included in this framewor
 
   - [ISS SSTV Reception and Decoding](docs/iss.md)
   - [Meteor M2 Full Decoding](docs/meteor.md)
+
+## Credits
+
+The NOAA/METEOR image capture community is a group of fantastic, experienced engineers, radio operators, and tinkerers that all contributed in some way, shape,
+or form to the success of this repository/framework. Below are some direct contributions and call-outs to the significant efforts made:
+
+* **[haslettj](https://www.instructables.com/member/haslettj/)**: Did the hard initial work and created the post to instruct on how to build the base of this framework.
+    * [Instructables](https://www.instructables.com/id/Raspberry-Pi-NOAA-Weather-Satellite-Receiver/) post had much of the content needed to kick this work off.
+* **[Nico Rey](https://github.com/reynico)**: Initial creator of the [raspberry-noaa](https://github.com/reynico/raspberry-noaa) starting point for this repository.
+* **[otti-soft](https://github.com/otti-soft/meteor-m2-lrpt)**: Meteor-M 2 python functionality for image processing.
+* **(NateDN10)[https://www.instructables.com/member/NateDN10/)**: Came up with the major enhancements to the Meteor-M 2 receiver image processing in "otti-soft"s repo above.
+    * [Instructables](https://www.instructables.com/Raspberry-Pi-NOAA-and-Meteor-M-2-Receiver/) post had the details behind creating the advanced functionality.
+* **[Dom Robinson](https://www.facebook.com/d2consulting.co.uk)**: Meteor enhancements, Satvis visualizations, and overall great code written that were incorporated into the repo.
+    * Merge of functionality into this repo was partially created using his excellent fork of the original raspberry-noaa repo [here](https://github.com/dom-robinson/raspberry-noaa).
+* **[Mohamed Anjum Abdullah](https://www.facebook.com/MohamedAnjum9694/)**: Initial testing of the first release.
 
 [1]: /docs/assets/images/webpanel-pass-list.jpg
 [2]: /docs/assets/images/webpanel-captures.jpg
