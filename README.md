@@ -52,6 +52,16 @@ In discussing this with Nico, we agreed that there is a logical next maturity st
 a simple, one-command script and corresponding framework to manage and maintain the entire project when any changes occur, and
 refactored the webpanel functionality significantly to enable better feature additions in the future.
 
+Enhancements since V1:
+
+* Enhanced Meteor-M 2 capture and post-processing.
+* Satvis visualization in iframe within webpanel pass list page
+* MVC architecture for webpanel to allow faster feature integration
+* Advanced map functionality (enable/disable and color crosshairs for base station, set and color lat/lon lines, etc.)
+* Improved organization of documentation for easier navigation
+* Improved script organization and code-reuse (keeping it DRY)
+* Single-click installer with single configuration file driving entire framework (scripts AND webpanel)
+
 See below for some sample screenshots of the webpanel, which is now mobile-friendly!
 
 [![Webpanel Pass List][1]][1]
