@@ -24,6 +24,13 @@ class Pass extends \Lib\Model {
 
     $this->list = $passes;
   }
+
+  # delete a pass by the epoch start time
+  public function deleteByPassStart($pass_start) {
+    $query = $this->db_conn->prepare('DELETE FROM predict_passes WHERE pass_start = ?;');
+    $query->bindValue(1, $pass_start);
+    $result = $query->execute();
+  }
 }
 
 ?>
