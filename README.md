@@ -57,6 +57,7 @@ refactored the webpanel functionality significantly to enable better feature add
 Enhancements since V1:
 
 * Enhanced Meteor-M 2 capture and post-processing.
+* Administrative web interface for deleting bad captures from database and respective images on disk.
 * Satvis visualization in iframe within webpanel pass list page
 * MVC architecture for webpanel to allow faster feature integration
 * Advanced map functionality (enable/disable and color crosshairs for base station, set and color lat/lon lines, etc.)
@@ -64,10 +65,7 @@ Enhancements since V1:
 * Improved script organization and code-reuse (keeping it DRY)
 * Single-click installer with single configuration file driving entire framework (scripts AND webpanel)
 
-See below for some sample screenshots of the webpanel, which is now mobile-friendly!
-
-[![Webpanel Pass List][1]][1]
-[![Webpanel Captures][2]][2]
+See [HERE](docs/webpanel_screenshots.md) for some screen shots of the webpanel, which is now mobile friendly!
 
 ## Compatibility
 
@@ -187,6 +185,3 @@ or form to the success of this repository/framework. Below are some direct contr
 * **[Dom Robinson](https://www.facebook.com/d2consulting.co.uk)**: Meteor enhancements, Satvis visualizations, and overall great code written that were incorporated into the repo.
     * Merge of functionality into this repo was partially created using his excellent fork of the original raspberry-noaa repo [here](https://github.com/dom-robinson/raspberry-noaa).
 * **[Mohamed Anjum Abdullah](https://www.facebook.com/MohamedAnjum9694/)**: Initial testing of the first release.
-
-[1]: /docs/assets/images/webpanel-pass-list.jpg
-[2]: /docs/assets/images/webpanel-captures.jpg

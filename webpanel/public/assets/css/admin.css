@@ -1,0 +1,8 @@
+table#admin-capture-list tbody tr {
+  height: 128px;
+}
+
+table#admin-capture-list tbody td.capture-thumbnail img {
+  max-height: 128px;
+  max-width: 128px;
+}
