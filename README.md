@@ -19,7 +19,9 @@ See "Credits" for the awesome way this version of the framework came to be.
 ## Quick Start
 
 Don't want all the nitty-gritty details? Here's the quick-start - if you have questions, continue reading the rest of this README or
-reach out by submitting an issue:
+reach out by submitting an issue. Note - make sure you accurately set the gain and frequency offset for your receiver or else you likely won't get
+any Meteor-M 2 passes! This can be done by running `rtl_test -p` and watching the `cumulative PPM` values for ~5 minutes as they converge
+on a number which you will use for the `freq_offset` value:
 
 ```bash
 # update os localisation settings
@@ -103,7 +105,9 @@ patching, and even then it would still be questionable), updating your Pi user p
 ## Install
 
 To install the product and get going, simply clone the project to the `pi` user's home directory, set up your settings, and run the
-install script:
+install script. Note - make sure you accurately set the gain and frequency offset for your receiver or else you likely won't get
+any Meteor-M 2 passes! This can be done by running `rtl_test -p` and watching the `cumulative PPM` values for ~5 minutes as they converge
+on a number which you will use for the `freq_offset` value:
 
 ```bash
 # install git
@@ -178,7 +182,7 @@ or form to the success of this repository/framework. Below are some direct contr
     * [Instructables](https://www.instructables.com/id/Raspberry-Pi-NOAA-Weather-Satellite-Receiver/) post had much of the content needed to kick this work off.
 * **[Nico Rey](https://github.com/reynico)**: Initial creator of the [raspberry-noaa](https://github.com/reynico/raspberry-noaa) starting point for this repository.
 * **[otti-soft](https://github.com/otti-soft/meteor-m2-lrpt)**: Meteor-M 2 python functionality for image processing.
-* **(NateDN10)[https://www.instructables.com/member/NateDN10/)**: Came up with the major enhancements to the Meteor-M 2 receiver image processing in "otti-soft"s repo above.
+* **[NateDN10](https://www.instructables.com/member/NateDN10/)**: Came up with the major enhancements to the Meteor-M 2 receiver image processing in "otti-soft"s repo above.
     * [Instructables](https://www.instructables.com/Raspberry-Pi-NOAA-and-Meteor-M-2-Receiver/) post had the details behind creating the advanced functionality.
 * **[Dom Robinson](https://www.facebook.com/d2consulting.co.uk)**: Meteor enhancements, Satvis visualizations, and overall great code written that were incorporated into the repo.
     * Merge of functionality into this repo was partially created using his excellent fork of the original raspberry-noaa repo [here](https://github.com/dom-robinson/raspberry-noaa).

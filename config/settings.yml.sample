@@ -13,6 +13,7 @@ timezone_offset: -5
 #   gain - receiver gain
 enable_bias_tee: false
 receiver_gain: 50
+freq_offset: -5
 
 # whether to schedule specific orbiting objects for capture
 schedule_iss: false

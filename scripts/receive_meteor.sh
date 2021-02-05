@@ -50,7 +50,7 @@ if pgrep "rtl_fm" > /dev/null; then
 fi
 
 log "Starting rtl_fm record" "INFO"
-timeout "${CAPTURE_LENGTH}" python ${NOAA_HOME}/scripts/rtlsdr_m2_lrpt_rx.py ${AUDIO_FILE_BASE}
+timeout "${CAPTURE_LENGTH}" python ${NOAA_HOME}/scripts/rtlsdr_m2_lrpt_rx.py ${AUDIO_FILE_BASE} ${GAIN} ${FREQ_OFFSET}
 
 sleep 5
 log "Decoding in progress (QPSK to BMP)" "INFO"

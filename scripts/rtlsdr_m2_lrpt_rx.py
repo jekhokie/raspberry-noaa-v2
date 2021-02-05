@@ -26,6 +26,11 @@ class top_block(gr.top_block):
     def __init__(self):
         gr.top_block.__init__(self, "Meteor QPSK LRPT")
 
+        # get vars for configuration
+        stream_name = sys.argv[1]
+        gain = float(sys.argv[2])
+        freq_offset = int(sys.argv[3])
+
         ##################################################
         # Variables
         ##################################################
@@ -37,7 +42,7 @@ class top_block(gr.top_block):
         self.pll_alpha = pll_alpha = 0.006
         self.freq = freq = 137100000
         self.clock_alpha = clock_alpha = 0.002
-        self.bitstream_name = bitstream_name = sys.argv[1] + ".s"
+        self.bitstream_name = bitstream_name = stream_name + ".s"
 
         ##################################################
         # Blocks
@@ -45,11 +50,11 @@ class top_block(gr.top_block):
         self.rtlsdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + '' )
         self.rtlsdr_source_0.set_sample_rate(samp_rate_airspy)
         self.rtlsdr_source_0.set_center_freq(freq, 0)
-        self.rtlsdr_source_0.set_freq_corr(3, 0)
+        self.rtlsdr_source_0.set_freq_corr(freq_offset, 0)
         self.rtlsdr_source_0.set_dc_offset_mode(0, 0)
         self.rtlsdr_source_0.set_iq_balance_mode(0, 0)
         self.rtlsdr_source_0.set_gain_mode(False, 0)
-        self.rtlsdr_source_0.set_gain(38.2, 0)
+        self.rtlsdr_source_0.set_gain(gain, 0)
         self.rtlsdr_source_0.set_if_gain(0, 0)
         self.rtlsdr_source_0.set_bb_gain(0, 0)
         self.rtlsdr_source_0.set_antenna('', 0)
