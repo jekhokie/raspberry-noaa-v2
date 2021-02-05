@@ -40,8 +40,6 @@ class AdminController extends \Lib\Controller {
       foreach ($capture->enhancements as $enhancement) {
         $img = Config::IMAGE_PATH . '/' . $capture->image_path . $enhancement;
         $thumb = Config::THUMB_PATH . '/' . $capture->image_path . $enhancement;
-        echo $img . "<br>";
-        echo $thumb . "<br>";
 
         try {
           if (file_exists($img)) { unlink($img); }
@@ -58,10 +56,6 @@ class AdminController extends \Lib\Controller {
 
       # remove capture and pass records from database
       $capture->getStartEpoch($capture_id);
-      echo "Capture ID: " . $capture_id . "<br>";
-      echo "Capture Epoch start: " . $capture->start_epoch . "<br>";
-      echo get_current_user();
-      echo posix_getpwuid(posix_geteuid())['name'];
       $capture->deleteById($capture_id);
       $pass->deleteByPassStart($capture->start_epoch);
       $status_msg = 'Success';
