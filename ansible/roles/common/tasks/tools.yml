@@ -79,7 +79,6 @@
     path: images_output
     state: directory
     owner: pi
-    group: pi
     mode: 0775
 
 - name: create thumbnails directory
@@ -88,7 +87,6 @@
     path: "{{ images_output }}/thumb"
     state: directory
     owner: pi
-    group: pi
     mode: 0775
 
 - name: create audio root directory

@@ -78,4 +78,30 @@
     group: root
     mode: 0644
   notify: restart nginx
+
+- name: update images directory group
+  become: yes
+  file:
+    path: images_output
+    state: directory
+    group: www-data
+
+- name: update thumbnails directory group
+  become: yes
+  file:
+    path: "{{ images_output }}/thumb"
+    state: directory
+    group: www-data
+
+- name: update database folder permissions
+  file:
+    path: "{{ noaa_home }}/db"
+    group: www-data
+    mode: 0770
+
+- name: update database file permissions
+  file:
+    path: "{{ noaa_home }}/db/panel.db"
+    group: www-data
+    mode: 0770
 ...
