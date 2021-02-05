@@ -1,0 +1,19 @@
+ul.pagination li.page-item {
+  width: 100%;
+  text-align: center;
+}
+
+ul.pagination li.page-item a {
+  color: white;
+  background-color: #4CAF50;
+  opacity: 0.85;
+}
+
+ul.pagination li.page-item.disabled a {
+  color: white;
+  background-color: #6c757d;
+}
+
+div.page-count-summary {
+  text-align: center;
+}

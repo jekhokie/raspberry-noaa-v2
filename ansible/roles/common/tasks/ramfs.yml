@@ -12,8 +12,6 @@
   register: os_memory
   check_mode: no
   changed_when: no
-- debug:
-    msg: "{{ os_memory.stdout|int }}"
 
 - name: fstab entry for ramfs
   become: yes

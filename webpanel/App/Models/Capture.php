@@ -5,6 +5,7 @@ namespace App\Models;
 class Capture extends \Lib\Model {
     public $enhancements;
     public $image_path;
+    public $start_epoch;
 
     # get a list of captures for the given page and total number
     # of configured images per page
@@ -84,6 +85,25 @@ class Capture extends \Lib\Model {
       $image = $result->fetchArray();
 
       $this->image_path = $image['file_path'];
+    }
+
+    # get the epoch start time for the capture
+    public function getStartEpoch($id) {
+      $query = $this->db_conn->prepare('SELECT pass_start
+                                        FROM decoded_passes
+                                        WHERE id = ?;');
+      $query->bindValue(1, $id);
+      $result = $query->execute();
+      $res = $result->fetchArray();
+
+      $this->start_epoch = $res['pass_start'];
+    }
+
+    # delete a capture by id
+    public function deleteById($id) {
+      $query = $this->db_conn->prepare('DELETE FROM decoded_passes WHERE id = ?;');
+      $query->bindValue(1, $id);
+      $result = $query->execute();
     }
 }
 
