@@ -24,7 +24,9 @@ delete_audio: false
 
 # processing settings
 #   flip_meteor_image - whether the meteor image should be flipped
+#   produce_spectrogram - whether to produce a spectrogram image of the audio recording
 flip_meteor_image: true
+produce_spectrogram: true
 
 # thresholds for scheduling captures - enables avoiding an attempt
 # to capture imagery if objects are lower than these degree elevation thresholds
