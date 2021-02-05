@@ -73,6 +73,15 @@ fi
 # source some env vars
 . "$HOME/.noaa-v2.conf"
 
+# run database migrations
+log_running "Updating database schema with any changes..."
+$NOAA_HOME/db_migrations/update_database.sh
+if [ $? -eq 0 ]; then
+  log_done "  Database schema updated!"
+else
+  die "  Something failed with database update - please inspect the logs above"
+fi
+
 # update all web content and permissions
 log_running "Updating web content..."
 (

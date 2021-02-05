@@ -52,7 +52,7 @@
     job: "{{ noaa_home }}/scripts/schedule.sh"
 
 - name: create database
-  shell: "/usr/bin/sqlite3 {{ noaa_home }}/db/panel.db < {{ noaa_home }}/db_migrations/seed_schema.sql"
+  shell: "/usr/bin/sqlite3 {{ noaa_home }}/db/panel.db < {{ noaa_home }}/db_migrations/00_seed_schema.sql"
   args:
     executable: /bin/bash
     creates: "{{ noaa_home }}/db/panel.db"
