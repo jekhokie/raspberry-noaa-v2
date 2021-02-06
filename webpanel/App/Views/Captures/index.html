@@ -24,7 +24,7 @@
     {% endif %}
 
         <div class="card bg-light m-2 p-2 image-card">
-          <a href="captures/listImages?pass_id={{ capture.id }}">
+          <a href="/captures/listImages?pass_id={{ capture.id }}">
             {% if capture.sat_type == 0 %}
               <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-122-rectified.jpg">
             {% elseif capture.sat_type == 1 %}

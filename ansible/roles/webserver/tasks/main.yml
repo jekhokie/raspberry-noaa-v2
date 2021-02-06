@@ -94,12 +94,14 @@
     group: www-data
 
 - name: update database folder permissions
+  become: yes
   file:
     path: "{{ noaa_home }}/db"
     group: www-data
     mode: 0770
 
 - name: update database file permissions
+  become: yes
   file:
     path: "{{ noaa_home }}/db/panel.db"
     group: www-data
