@@ -1,12 +1,12 @@
 #!/bin/bash
 
-### Run as a normal user
+# run as a normal user
 if [ $EUID -eq 0 ]; then
   echo "This script shouldn't be run as root."
   exit 1
 fi
 
-## import common lib
+# import common lib
 . "$HOME/.noaa-v2.conf"
 . "$HOME/.tweepy.conf"
 . "$NOAA_HOME/scripts/common.sh"
@@ -36,7 +36,7 @@ if [ "$FLIP_METEOR_IMG" == "true" ]; then
   FLIP="-rotate 180"
 fi
 
-## pass start timestamp and sun elevation
+# pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
 SUN_ELEV=$(python3 "$NOAA_HOME"/scripts/sun.py "$PASS_START")
 
@@ -51,12 +51,13 @@ timeout "${CAPTURE_TIME}" /usr/local/bin/rtl_fm ${BIAS_TEE} -M raw -f "${FREQ}"M
 log "Demodulation in progress (QPSK)" "INFO"
 meteor_demod -B -o "${NOAA_HOME}/tmp/meteor/${FILENAME_BASE}.qpsk" "${RAMFS_AUDIO}/${FILENAME_BASE}.wav"
 
-if [[ "$PRODUCE_SPECTROGRAM}" == "true" ]]; then
+spectrogram=0
+if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
   log "Producing spectrogram" "INFO"
+  spectrogram=1
   spectrogram_text="${START_DATE} @ ${SAT_MAX_ELEVATION}°"
   sox "${RAMFS_AUDIO}/${FILENAME_BASE}.wav" -n spectrogram -t "${SAT_NAME}" -x 1024 -y 257 -c "${spectrogram_text}" -o "${IMAGE_OUTPUT}/${FILENAME_BASE}-spectrogram.png"
   /usr/bin/convert -thumbnail 300 "${IMAGE_OUTPUT}/${FILENAME_BASE}-spectrogram.png" "${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}-spectrogram.png"
-  sqlite3 $DB_FILE "INSERT INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram) VALUES ($EPOCH_START, \"$FILENAME_BASE\", 1, 0, 1);"
 fi
 
 if [ "$DELETE_AUDIO" = true ]; then
@@ -87,14 +88,14 @@ if [ -f "${FILENAME}.dec" ]; then
 
   log "Rectifying image to adjust aspect ratio" "INFO"
   python3 "${NOAA_HOME}/scripts/rectify.py" "${IMAGE_OUTPUT}/${FILENAME_BASE}-122.bmp"
-  convert "${IMAGE_OUTPUT}/${FILENAME_BASE}-122-rectified.jpg" -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${SAT_NAME} ${START_DATE} Elev: $SAT_MAX_ELEVATION°" "${IMAGE_OUTPUT}/${FILENAME_BASE}-122-rectified.jpg"
+  /usr/bin/convert "${IMAGE_OUTPUT}/${FILENAME_BASE}-122-rectified.jpg" -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${SAT_NAME} ${START_DATE} Elev: $SAT_MAX_ELEVATION°" "${IMAGE_OUTPUT}/${FILENAME_BASE}-122-rectified.jpg"
   /usr/bin/convert -thumbnail 300 "${IMAGE_OUTPUT}/${FILENAME_BASE}-122-rectified.jpg" "${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}-122-rectified.jpg"
   rm "${IMAGE_OUTPUT}/${FILENAME_BASE}-122.bmp"
   rm "${FILENAME}.bmp"
   rm "${FILENAME}.dec"
 
   # insert or replace in case there was already an insert due to the spectrogram creation
-  sqlite3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type) VALUES ($EPOCH_START,\"$FILENAME_BASE\", 1, 0);"
+  sqlite3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram) VALUES ($EPOCH_START,\"$FILENAME_BASE\", 1, 0, $spectrogram);"
   pass_id=$(sqlite3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
   sqlite3 $DB_FILE "UPDATE predict_passes SET is_active = 0 WHERE (predict_passes.pass_start) in (select predict_passes.pass_start from predict_passes inner join decoded_passes on predict_passes.pass_start = decoded_passes.pass_start where decoded_passes.id = $pass_id);"
   if [ -n "$CONSUMER_KEY" ]; then
