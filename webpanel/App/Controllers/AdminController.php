@@ -26,6 +26,7 @@ class AdminController extends \Lib\Controller {
   # TODO: This is not very DRY between this and the above function - do
   #       something about this in the future
   public function deleteCaptureAction($args) {
+    $lang = include(__DIR__ . '/../Lang/' . Config::LANG . '.php');
     $capture = $this->loadModel('Capture');
     $pass = $this->loadModel('Pass');
 
@@ -60,7 +61,7 @@ class AdminController extends \Lib\Controller {
       $pass->deleteByPassStart($capture->start_epoch);
       $status_msg = 'Success';
     } else {
-      $status_msg = lang['fail_delete_missing_id'];
+      $status_msg = $lang['fail_delete_missing_id'];
     }
 
     $total_pages = $capture->totalPages(Config::ADMIN_CAPTURES_PER_PAGE);
