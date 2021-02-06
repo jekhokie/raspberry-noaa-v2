@@ -49,7 +49,6 @@
       {% for capture in capture.list %}
         <tr scope="row">
           <td class="capture-select text-center align-middle">
-            <!--<a href="admin/deleteCapture?id={{ capture.id }}" class="btn btn-sm btn-danger delete-capture">X</a>-->
             <button type="button" class="btn btn-sm btn-danger delete-capture" data-toggle="modal"
                                  data-capture-id="{{ capture.id }}"
                                  data-sat-name="{{ capture.sat_name }}"
@@ -63,7 +62,7 @@
             {{ capture.max_elev }}&#176;
           </td>
           <td class="capture-thumbnail text-center align-middle">
-            <a href="captures/listImages?pass_id={{ capture.id }}">
+            <a href="/captures/listImages?pass_id={{ capture.id }}">
               {% if capture.sat_type == 0 %}
                 <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-122-rectified.jpg">
               {% elseif capture.sat_type == 1 %}
