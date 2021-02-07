@@ -15,7 +15,6 @@ enable_bias_tee: false
 receiver_gain: 50
 
 # whether to schedule specific orbiting objects for capture
-schedule_iss: false
 schedule_noaa: true
 schedule_meteor: true
 

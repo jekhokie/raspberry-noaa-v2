@@ -164,7 +164,6 @@ out the [troubleshooting](docs/troubleshooting.md) document to try and narrow do
 
 For additional information on some of the capabilities included in this framework, see below:
 
-  - [ISS SSTV Reception and Decoding](docs/iss.md)
   - [Meteor M2 Full Decoding](docs/meteor.md)
 
 ## Credits

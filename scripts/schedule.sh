@@ -27,9 +27,6 @@ wget -qr http://www.celestrak.com/NORAD/elements/amateur.txt -O "${AMATEUR_TXT}"
 #   because it cannot handle that level of sub-directory
 log "Clearing and re-creating TLE file with latest..." "INFO"
 echo -n "" > $TLE_OUTPUT
-if [ "$SCHEDULE_ISS" == "true" ]; then
-    grep "ZARYA" $AMATEUR_TXT -A 2 >> $TLE_OUTPUT
-fi
 grep "NOAA 15" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
 grep "NOAA 18" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
 grep "NOAA 19" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
@@ -43,10 +40,6 @@ done
 
 # create schedules to call respective receive scripts
 log "Scheduling new capture jobs..." "INFO"
-if [ "$SCHEDULE_ISS" == "true" ]; then
-  $NOAA_HOME/scripts/schedule_captures.sh "ISS (ZARYA)" 145.8000 "receive_iss.sh" $TLE_OUTPUT
-fi
-
 if [ "$SCHEDULE_NOAA" == "true" ]; then
   $NOAA_HOME/scripts/schedule_captures.sh "NOAA 15" 137.6200 "receive_noaa.sh" $TLE_OUTPUT
   $NOAA_HOME/scripts/schedule_captures.sh "NOAA 18" 137.9125 "receive_noaa.sh" $TLE_OUTPUT
