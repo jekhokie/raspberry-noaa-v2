@@ -87,7 +87,7 @@ if [ -f "${FILENAME}.dec" ]; then
   fi
 
   log "Rectifying image to adjust aspect ratio" "INFO"
-  python3 "${NOAA_HOME}/scripts/rectify.py" "${IMAGE_OUTPUT}/${FILENAME_BASE}-122.bmp"
+  python3 "${NOAA_HOME}/scripts/image_processors/meteor_rectify.py" "${IMAGE_OUTPUT}/${FILENAME_BASE}-122.bmp"
   /usr/bin/convert "${IMAGE_OUTPUT}/${FILENAME_BASE}-122-rectified.jpg" -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${SAT_NAME} ${START_DATE} Elev: $SAT_MAX_ELEVATION°" "${IMAGE_OUTPUT}/${FILENAME_BASE}-122-rectified.jpg"
   /usr/bin/convert -thumbnail 300 "${IMAGE_OUTPUT}/${FILENAME_BASE}-122-rectified.jpg" "${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}-122-rectified.jpg"
   rm "${IMAGE_OUTPUT}/${FILENAME_BASE}-122.bmp"
