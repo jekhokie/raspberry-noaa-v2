@@ -26,9 +26,6 @@ FREQ=$2
 RECEIVE_SCRIPT=$3
 TLE_FILE=$4
 
-# predict binary
-PREDICT="/usr/bin/predict"
-
 # come up with prediction start/end timings for pass
 predict_start=$($PREDICT -t $TLE_FILE -p "${OBJ_NAME}" | head -1)
 predict_end=$($PREDICT   -t $TLE_FILE -p "${OBJ_NAME}" | tail -1)
@@ -50,7 +47,7 @@ while [ "$(date --date="@${end_epoch_time}" +%D)" = "$(date +%D)" ]; do
 ${start_epoch_time} ${timer} ${max_elev}" | at "$(date --date="TZ=\"UTC\" ${start_datetime}" +"%H:%M %D")"
 
     # update database with scheduled pass
-    sqlite3 $DB_FILE "insert or replace into predict_passes (sat_name,pass_start,pass_end,max_elev,is_active) values (\"$safe_obj_name\",$start_epoch_time,$end_epoch_time,$max_elev,1);"
+    $SQLITE3 $DB_FILE "insert or replace into predict_passes (sat_name,pass_start,pass_end,max_elev,is_active) values (\"$safe_obj_name\",$start_epoch_time,$end_epoch_time,$max_elev,1);"
   fi
 
   next_predict=$(expr "${end_epoch_time}" + 60)
