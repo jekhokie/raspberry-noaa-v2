@@ -35,7 +35,7 @@ if pgrep "rtl_fm" > /dev/null; then
 fi
 
 log "Starting rtl_fm record" "INFO"
-${NOAA_HOME}/scripts/audio_recorders/record_noaa.sh "${SAT_NAME}" $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.wav"
+${NOAA_HOME}/scripts/audio_recorders/record_noaa.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav"
 
 spectrogram=0
 if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
