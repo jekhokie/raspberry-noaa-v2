@@ -5,7 +5,7 @@
 
 # run as a non-root user
 if [ $EUID -eq 0 ]; then
-  echo "This script shouldn't be run as root."
+  log "This script shouldn't be run as root." "ERROR"
   exit 1
 fi
 
@@ -42,9 +42,9 @@ done
 # create schedules to call respective receive scripts
 log "Scheduling new capture jobs..." "INFO"
 if [ "$SCHEDULE_NOAA" == "true" ]; then
-  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 15" 137.6200 "receive_noaa.sh" $TLE_OUTPUT
-  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 18" 137.9125 "receive_noaa.sh" $TLE_OUTPUT
-  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 19" 137.1000 "receive_noaa.sh" $TLE_OUTPUT
+  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 15" "receive_noaa.sh" $TLE_OUTPUT
+  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 18" "receive_noaa.sh" $TLE_OUTPUT
+  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 19" "receive_noaa.sh" $TLE_OUTPUT
 fi
 
 if [ "$SCHEDULE_METEOR" == "true" ]; then
