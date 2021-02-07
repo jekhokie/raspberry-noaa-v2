@@ -10,7 +10,6 @@ fi
 
 # import common lib
 . "$HOME/.noaa-v2.conf"
-. "$HOME/.tweepy.conf"
 . "$NOAA_HOME/scripts/common.sh"
 
 # input params
