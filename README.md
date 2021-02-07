@@ -54,6 +54,7 @@ refactored the webpanel functionality significantly to enable better feature add
 
 Enhancements since V1:
 
+* Option to produce a spectrogram image alongside the other processed image types.
 * Administrative web interface for deleting bad captures from database and respective images on disk.
 * Satvis visualization in iframe within webpanel pass list page
 * MVC architecture for webpanel to allow faster feature integration
