@@ -23,4 +23,5 @@ obs.date = date
 sun = ephem.Sun(obs)
 sun.compute(obs)
 sun_angle = float(sun.alt) * 57.2957795 # Rad to deg
+
 print(int(sun_angle))
