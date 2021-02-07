@@ -21,7 +21,7 @@
       </a>
       <div class="card-body">
         <p class="card-text">
-          <strong>Enhancement: </strong>{{ enhancement|trim('-', side='left')|trim('.jpg', side='right') }}
+          <strong>Enhancement: </strong>{{ enhancement|trim('-', side='left')|split('.')|slice(0,-1)|join }}
         </p>
       </div>
     </div>

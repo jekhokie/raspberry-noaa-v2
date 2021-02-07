@@ -46,7 +46,8 @@ class Capture extends \Lib\Model {
     public function getEnhancements($id) {
       $query = $this->db_conn->prepare('SELECT daylight_pass,
                                                sat_type,
-                                               img_count
+                                               img_count,
+                                               has_spectrogram
                                         FROM decoded_passes
                                         WHERE id = ?;');
       $query->bindValue(1, $id);
@@ -70,6 +71,11 @@ class Capture extends \Lib\Model {
             $enhancements[] = "-$x.png";
           }
           break;
+      }
+
+      # capture spectrogram if one exists
+      if ($pass['has_spectrogram'] == '1') {
+        array_push($enhancements, '-spectrogram.png');
       }
       
       $this->enhancements = $enhancements;
