@@ -98,10 +98,6 @@ if [ -f "${FILENAME}.dec" ]; then
   sqlite3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram) VALUES ($EPOCH_START,\"$FILENAME_BASE\", 1, 0, $spectrogram);"
   pass_id=$(sqlite3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
   sqlite3 $DB_FILE "UPDATE predict_passes SET is_active = 0 WHERE (predict_passes.pass_start) in (select predict_passes.pass_start from predict_passes inner join decoded_passes on predict_passes.pass_start = decoded_passes.pass_start where decoded_passes.id = $pass_id);"
-  if [ -n "$CONSUMER_KEY" ]; then
-    log "Posting to Twitter" "INFO"
-    python3 $NOAA_HOME/scripts/post.py "$SAT_NAME ${START_DATE} Resolución completa: https://weather.reyni.co/detail.php?id=$pass_id" "$SAT_MAX_ELEVATION" "${IMAGE_OUTPUT}/${FILENAME_BASE}-122-rectified.jpg"
-  fi
 else
   log "Decoding failed, either a bad pass/low SNR or a software problem" "ERROR"
 fi

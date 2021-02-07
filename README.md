@@ -148,7 +148,7 @@ git pull
 There are and will be future "optional" features for this framework. Below is a list of optional capabilities that you may wish
 to enable/configure with links to the respective instructions:
 
-* [Auto-Post to Twitter](docs/auto_post_to_twitter.md)
+* _Coming Soon!_
 
 ## Changing Configurations After Install
 

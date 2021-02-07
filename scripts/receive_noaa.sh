@@ -90,15 +90,6 @@ fi
 
 pass_id=$(sqlite3 $DB_FILE "select id from decoded_passes order by id desc limit 1;")
 
-if [ -n "$CONSUMER_KEY" ]; then
-  log "Posting to Twitter" "INFO"
-  if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
-    python3 "${NOAA_HOME}/scripts/post.py" "$SAT_NAME ${START_DATE} Mas imagenes: https://weather.reyni.co/detail.php?id=$pass_id" "$SAT_MAX_ELEVATION" "${IMAGE_OUTPUT}/$FILENAME_BASE-MCIR-precip.jpg" "${IMAGE_OUTPUT}/$FILENAME_BASE-MSA-precip.jpg" "${IMAGE_OUTPUT}/$FILENAME_BASE-HVC-precip.jpg" "${IMAGE_OUTPUT}/$FILENAME_BASE-HVCT-precip.jpg"
-  else
-    python3 "$NOAA_HOME/scripts/post.py" "$SAT_NAME ${START_DATE} Mas imagenes: https://weather.reyni.co/detail.php?id=$pass_id" "$SAT_MAX_ELEVATION" "${IMAGE_OUTPUT}/$FILENAME_BASE-MCIR-precip.jpg" "${IMAGE_OUTPUT}/$FILENAME_BASE-MCIR.jpg"
-  fi
-fi
-
 sqlite3 $DB_FILE "update predict_passes set is_active = 0 where (predict_passes.pass_start) in (select predict_passes.pass_start from predict_passes inner join decoded_passes on predict_passes.pass_start = decoded_passes.pass_start where decoded_passes.id = $pass_id);"
 
 if [ "$DELETE_AUDIO" = true ]; then
