@@ -4,7 +4,7 @@
 
 # run as a normal user
 if [ $EUID -eq 0 ]; then
-  echo "This script shouldn't be run as root."
+  log "This script shouldn't be run as root." "ERROR"
   exit 1
 fi
 
@@ -14,12 +14,11 @@ fi
 
 # input params
 SAT_NAME=$1
-FREQ=$2
-FILENAME_BASE=$3
-TLE_FILE=$4
-EPOCH_START=$5
-CAPTURE_TIME=$6
-SAT_MAX_ELEVATION=$7
+FILENAME_BASE=$2
+TLE_FILE=$3
+EPOCH_START=$4
+CAPTURE_TIME=$5
+SAT_MAX_ELEVATION=$6
 
 # base directory plus filename helper variables
 AUDIO_FILE_BASE="${NOAA_AUDIO_OUTPUT}/${FILENAME_BASE}"
@@ -36,7 +35,7 @@ if pgrep "rtl_fm" > /dev/null; then
 fi
 
 log "Starting rtl_fm record" "INFO"
-timeout "${CAPTURE_TIME}" $RTL_FM ${BIAS_TEE} -f "${FREQ}"M -s 60k -g $GAIN -E wav -E deemp -F 9 - | $SOX -t raw -e signed -c 1 -b 16 -r 60000 - "${AUDIO_FILE_BASE}.wav" rate 11025
+${NOAA_HOME}/scripts/audio_recorders/record_noaa.sh "${SAT_NAME}" $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.wav"
 
 spectrogram=0
 if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then

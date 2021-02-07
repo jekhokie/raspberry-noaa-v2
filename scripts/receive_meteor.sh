@@ -4,7 +4,7 @@
 
 # run as a normal user
 if [ $EUID -eq 0 ]; then
-  echo "This script shouldn't be run as root."
+  log "This script shouldn't be run as root." "ERROR"
   exit 1
 fi
 
@@ -50,7 +50,7 @@ if pgrep "rtl_fm" > /dev/null; then
 fi
 
 log "Starting rtl_fm record" "INFO"
-timeout "${CAPTURE_TIME}" $RTL_FM ${BIAS_TEE} -M raw -f "${FREQ}"M -s 288k -g $GAIN | $SOX -t raw -r 288k -c 2 -b 16 -e s - -t wav "${RAMFS_AUDIO_BASE}.wav" rate 96k
+${NOAA_HOME}/scripts/audio_recorders/record_meteor.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.wav"
 
 log "Demodulation in progress (QPSK)" "INFO"
 $METER_DEMOD -B -o "${NOAA_HOME}/tmp/meteor/${FILENAME_BASE}.qpsk" "${RAMFS_AUDIO_BASE}.wav"

@@ -17,6 +17,12 @@ SQLITE3="/usr/bin/sqlite3"
 WXMAP="/usr/local/bin/wxmap"
 WXTOIMG="/usr/local/bin/wxtoimg"
 
+# frequency ranges for objects
+METEOR_FREQ="137.1000"
+NOAA15_FREQ="137.6200"
+NOAA18_FREQ="137.9125"
+NOAA19_FREQ="137.1000"
+
 declare -A levels=([DEBUG]=0 [INFO]=1 [WARN]=2 [ERROR]=3)
 log_level=${LOG_LEVEL}
 
