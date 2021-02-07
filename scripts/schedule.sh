@@ -1,6 +1,7 @@
 #!/bin/bash
 #
-# High-level scheduling script - schedules all desired satellite and orbital captures.
+# Purpose: High-level scheduling script - schedules all desired satellite
+#          and orbital captures.
 
 # run as a non-root user
 if [ $EUID -eq 0 ]; then
