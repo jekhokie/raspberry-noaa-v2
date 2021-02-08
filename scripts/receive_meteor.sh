@@ -1,6 +1,9 @@
 #!/bin/bash
 #
 # Purpose: Receive and process Meteor-M 2 captures.
+#
+# Example:
+#   ./receive_meteor.sh "METEOR-M 2" METEOR-M220210205-192623 1612571183 922 39
 
 # run as a normal user
 if [ $EUID -eq 0 ]; then
