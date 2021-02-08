@@ -52,7 +52,7 @@ log "Starting rtl_fm record" "INFO"
 ${NOAA_HOME}/scripts/audio_recorders/record_meteor.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.wav"
 
 log "Demodulation in progress (QPSK)" "INFO"
-$METER_DEMOD -B -o "${NOAA_HOME}/tmp/meteor/${FILENAME_BASE}.qpsk" "${RAMFS_AUDIO_BASE}.wav"
+$METEOR_DEMOD -B -o "${NOAA_HOME}/tmp/meteor/${FILENAME_BASE}.qpsk" "${RAMFS_AUDIO_BASE}.wav"
 
 spectrogram=0
 if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then

@@ -81,7 +81,7 @@ for i in $ENHANCEMENTS; do
 
   $WXTOIMG -o -m "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png" -e "$i" "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-$i.jpg"
 
-  $CONVERT -quality 90 -format jpg "${IMAGE_FILE_BASE}-$i.jpg" -undercolor black -fill yellow -pointsize 18 -annotate +20+20 $annotation "${IMAGE_FILE_BASE}-$i.jpg"
+  $CONVERT -quality 90 -format jpg "${IMAGE_FILE_BASE}-$i.jpg" -undercolor black -fill yellow -pointsize 18 -annotate +20+20 "${annotation}" "${IMAGE_FILE_BASE}-$i.jpg"
   $CONVERT -thumbnail 300 "${IMAGE_FILE_BASE}-$i.jpg" "${IMAGE_THUMB_BASE}-$i.jpg"
 done
 
