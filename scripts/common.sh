@@ -28,8 +28,6 @@ if [ $EUID -eq 0 ]; then
   exit 1
 fi
 
-. "$HOME/.noaa-v2.conf"
-
 # binary helpers
 CONVERT="/usr/bin/convert"
 MEDET_ARM="/usr/bin/medet_arm"
@@ -40,6 +38,11 @@ SOX="/usr/bin/sox"
 SQLITE3="/usr/bin/sqlite3"
 WXMAP="/usr/local/bin/wxmap"
 WXTOIMG="/usr/local/bin/wxtoimg"
+
+# base directories for scripts
+SCRIPTS_DIR="${NOAA_HOME}/scripts"
+AUDIO_PROC_DIR="${SCRIPTS_DIR}/audio_processors"
+IMAGE_PROC_DIR="${SCRIPTS_DIR}/image_processors"
 
 # frequency ranges for objects
 METEOR_FREQ="137.1000"

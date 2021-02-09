@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # import common lib and settings
+. "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
 
 if [ -z "$1" ]; then

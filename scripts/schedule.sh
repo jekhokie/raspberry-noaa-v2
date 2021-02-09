@@ -4,6 +4,7 @@
 #          and orbital captures.
 
 # import common lib and settings
+. "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
 
 # some constants

@@ -2,11 +2,21 @@
 #
 # Purpose: Receive and process NOAA captures.
 #
+# Input parameters:
+#   1. Name of satellite (e.g. "NOAA 18")
+#   2. Filename of image outputs
+#   3. TLE file location
+#   4. Epoch start time for capture
+#   5. Duration of capture (seconds)
+#   6. Max angle elevation for satellite
+#
 # Example:
 #   ./receive_noaa.sh "NOAA 18" NOAA1820210208-194829 ./orbit.tle 1612831709 919 31
 
 # import common lib and settings
+. "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
+capture_start=$START_DATE
 
 # input params
 SAT_NAME=$1
@@ -23,7 +33,7 @@ IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
-SUN_ELEV=$(python3 "$NOAA_HOME"/scripts/sun.py "$PASS_START")
+SUN_ELEV=$(python3 "$SCRIPTS_DIR"/sun.py "$PASS_START")
 
 if pgrep "rtl_fm" > /dev/null; then
   log "There is an existing rtl_fm instance running, I quit" "ERROR"
@@ -31,24 +41,15 @@ if pgrep "rtl_fm" > /dev/null; then
 fi
 
 log "Starting rtl_fm record" "INFO"
-${NOAA_HOME}/scripts/audio_recorders/record_noaa.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav"
+${AUDIO_PROC_DIR}/noaa_record.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav"
 
 spectrogram=0
 if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
-  spectrogram=1
-
   log "Producing spectrogram" "INFO"
-  spectrogram_text="${START_DATE} @ ${SAT_MAX_ELEVATION}°"
-  $SOX "${AUDIO_FILE_BASE}.wav" -n spectrogram -t "${SAT_NAME}" -x 1024 -y 257 -c "${spectrogram_text}" -o "${IMAGE_FILE_BASE}-spectrogram.png"
-  $CONVERT -thumbnail 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png"
-fi
-
-if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
-  ENHANCEMENTS="ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT"
-  daylight="true"
-else
-  ENHANCEMENTS="ZA MCIR MCIR-precip"
-  daylight="false"
+  spectrogram=1
+  spectro_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
+  ${IMAGE_PROC_DIR}/spectrogram.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" spectro_text
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png"
 fi
 
 log "Bulding pass map" "INFO"
@@ -68,17 +69,63 @@ if [ "${NOAA_MAP_GRID_DEGREES}" != "0.0" ]; then
 fi
 
 # build overlay map
-$WXMAP -T "${SAT_NAME}" -H "${TLE_FILE}" -p 0 ${extra_map_opts} -o "${epoch_adjusted}" "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
+map_overlay="${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
+$WXMAP -T "${SAT_NAME}" -H "${TLE_FILE}" -p 0 ${extra_map_opts} -o "${epoch_adjusted}" $map_overlay
+
+# determine which enhancements to create based on sunlight/dark
+if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
+  ENHANCEMENTS="ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT"
+  daylight="true"
+else
+  ENHANCEMENTS="ZA MCIR MCIR-precip"
+  daylight="false"
+fi
 
 # build images based on enhancements defined
-for i in $ENHANCEMENTS; do
+for enhancement in $ENHANCEMENTS; do
   log "Decoding image" "INFO"
-  annotation="${SAT_NAME} $i ${START_DATE} Elev: $SAT_MAX_ELEVATION°"
+  annotation="${SAT_NAME} $enhancement ${capture_start} Elev: $SAT_MAX_ELEVATION°"
 
-  $WXTOIMG -o -m "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png" -e "$i" "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-$i.jpg"
+  # determine what frequency based on NOAA variant
+  proc_script=""
+  case $enhancement in
+    "ZA")
+      proc_script="noaa_za.sh"
+      ;;
+    "MCIR")
+      proc_script="noaa_mcir.sh"
+      ;;
+    "MCIR-precip")
+      proc_script="noaa_mcir_precip.sh"
+      ;;
+    "MSA")
+      proc_script="noaa_msa.sh"
+      ;;
+    "MSA-precip")
+      proc_script="noaa_msa_precip.sh"
+      ;;
+    "HVC")
+      proc_script="noaa_hvc.sh"
+      ;;
+    "HVC-precip")
+      proc_script="noaa_hvc_precip.sh"
+      ;;
+    "HVCT")
+      proc_script="noaa_hvct.sh"
+      ;;
+    "HVCT-precip")
+      proc_script="noaa_hvct_precip.sh"
+      ;;
+  esac
 
-  $CONVERT -quality 90 -format jpg "${IMAGE_FILE_BASE}-$i.jpg" -undercolor black -fill yellow -pointsize 18 -annotate +20+20 "${annotation}" "${IMAGE_FILE_BASE}-$i.jpg"
-  $CONVERT -thumbnail 300 "${IMAGE_FILE_BASE}-$i.jpg" "${IMAGE_THUMB_BASE}-$i.jpg"
+  if [ -z "${proc_script}" ]; then
+    log "No image processor found for $enhancement - skipping." "ERROR"
+  else
+    ${IMAGE_PROC_DIR}/${proc_script}.sh $map_overlay "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg"
+  fi
+
+  ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${annotation}" 90
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-$enhancement.png" "${IMAGE_THUMB_BASE}-$enhancement.png"
 done
 
 rm "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"

@@ -10,6 +10,7 @@
 #   ./schedule_captures.sh "NOAA 18" "receive_noaa.sh" "weather.tle"
 
 # import common lib and settings
+. "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
 
 # map inputs to sane var names

@@ -2,11 +2,20 @@
 #
 # Purpose: Receive and process Meteor-M 2 captures.
 #
+# Input parameters:
+#   1. Name of satellite "METEOR-M 2"
+#   2. Filename of image outputs
+#   3. Epoch start time for capture
+#   4. Duration of capture (seconds)
+#   5. Max angle elevation for satellite
+#
 # Example:
 #   ./receive_meteor.sh "METEOR-M 2" METEOR-M220210205-192623 1612571183 922 39
 
 # import common lib and settings
+. "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
+capture_start=$START_DATE
 
 # input params
 SAT_NAME=$1
@@ -37,7 +46,7 @@ fi
 
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
-SUN_ELEV=$(python3 "$NOAA_HOME"/scripts/sun.py "$PASS_START")
+SUN_ELEV=$(python3 "$SCRIPTS_DIR"/sun.py "$PASS_START")
 
 if pgrep "rtl_fm" > /dev/null; then
   log "There is an already running rtl_fm instance but I dont care for now, I prefer this pass" "INFO"
@@ -45,19 +54,19 @@ if pgrep "rtl_fm" > /dev/null; then
 fi
 
 log "Starting rtl_fm record" "INFO"
-${NOAA_HOME}/scripts/audio_recorders/record_meteor.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.wav"
+${AUDIO_PROC_DIR}/meteor_record.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.wav"
 
 log "Demodulation in progress (QPSK)" "INFO"
-$METEOR_DEMOD -B -o "${NOAA_HOME}/tmp/meteor/${FILENAME_BASE}.qpsk" "${RAMFS_AUDIO_BASE}.wav"
+qpsk_file="${NOAA_HOME}/tmp/meteor/${FILENAME_BASE}.qpsk"
+${AUDIO_PROC_DIR}/meteor_demodulate.sh "${qpsk_file}" "${RAMFS_AUDIO_BASE}.wav"
 
 spectrogram=0
 if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
-  spectrogram=1
-
   log "Producing spectrogram" "INFO"
-  spectrogram_text="${START_DATE} @ ${SAT_MAX_ELEVATION}°"
-  $SOX "${RAMFS_AUDIO_BASE}.wav" -n spectrogram -t "${SAT_NAME}" -x 1024 -y 257 -c "${spectrogram_text}" -o "${IMAGE_FILE_BASE}-spectrogram.png"
-  $CONVERT -thumbnail 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png"
+  spectrogram=1
+  spectro_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
+  ${IMAGE_PROC_DIR}/spectrogram.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" spectro_text
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png"
 fi
 
 if [ "$DELETE_AUDIO" = true ]; then
@@ -72,24 +81,26 @@ else
 fi
 
 log "Decoding in progress (QPSK to BMP)" "INFO"
-$MEDET_ARM "${NOAA_HOME}/tmp/meteor/${FILENAME_BASE}.qpsk" "${AUDIO_FILE_BASE}" -cd
+${IMAGE_PROC_DIR}/meteor_decode.sh "${qpsk_file}" "${AUDIO_FILE_BASE}"
 
-rm "${NOAA_HOME}/tmp/meteor/${FILENAME_BASE}.qpsk"
+rm "${qpsk_file}"
 
 if [ -f "${AUDIO_FILE_BASE}.dec" ]; then
   if [ "${SUN_ELEV}" -lt "${SUN_MIN_ELEV}" ]; then
     log "I got a successful ${FILENAME_BASE}.dec file. Decoding APID 68" "INFO"
-    $MEDET_ARM "${AUDIO_FILE_BASE}.dec" "${IMAGE_FILE_BASE}-122" -r 68 -g 68 -b 68 -d
+    ${IMAGE_PROC_DIR}/meteor_apid68_decode.sh "${AUDIO_FILE_BASE}.dec" "${IMAGE_FILE_BASE}-122"
     $CONVERT $FLIP -negate "${IMAGE_FILE_BASE}-122.bmp" "${IMAGE_FILE_BASE}-122.bmp"
   else
     log "I got a successful ${FILENAME_BASE}.dec file. Creating false color image" "INFO"
-    $MEDET_ARM "${AUDIO_FILE_BASE}.dec" "${IMAGE_FILE_BASE}-122" -r 65 -g 65 -b 64 -d
+    ${IMAGE_PROC_DIR}/meteor_false_color_decode.sh "${AUDIO_FILE_BASE}.dec" "${IMAGE_FILE_BASE}-122"
   fi
 
   log "Rectifying image to adjust aspect ratio" "INFO"
   python3 "${NOAA_HOME}/scripts/image_processors/meteor_rectify.py" "${IMAGE_FILE_BASE}-122.bmp"
-  $CONVERT "${IMAGE_FILE_BASE}-122-rectified.jpg" -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${SAT_NAME} ${START_DATE} Elev: $SAT_MAX_ELEVATION°" "${IMAGE_FILE_BASE}-122-rectified.jpg"
-  $CONVERT -thumbnail 300 "${IMAGE_FILE_BASE}-122-rectified.jpg" "${IMAGE_THUMB_BASE}-122-rectified.jpg"
+
+  annotation="${SAT_NAME} ${capture_start} Elev: $SAT_MAX_ELEVATION°"
+  ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}"
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-122-rectified.jpg" "${IMAGE_THUMB_BASE}-122-rectified.jpg"
   rm "${IMAGE_FILE_BASE}-122.bmp"
   rm "${AUDIO_FILE_BASE}.bmp"
   rm "${AUDIO_FILE_BASE}.dec"
