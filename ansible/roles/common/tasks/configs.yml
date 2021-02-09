@@ -38,12 +38,4 @@
     owner: pi
     group: pi
     mode: 0644
-
-- name: twitter post config file
-  copy:
-    src: tweepy.conf
-    dest: ~pi/.tweepy.conf
-    owner: pi
-    group: pi
-    mode: 0644
 ...

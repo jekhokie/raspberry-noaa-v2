@@ -27,15 +27,15 @@ are activated and any other items requiring the reboot are sufficiently "kicked"
 # Reception
 
 The first thing to test is reception, which will validate that the antenna, reception line, reception hardware, and
-software are all working correctly. There is a [scripts/test_reception.sh](scripts/test_reception.sh) script that
-can be used to perform broadcast FM capture, allowing for tuning and adjustments. To use this, SSH to your
+software are all working correctly. There is a [scripts/testing/test_reception.sh](scripts/testing/test_reception.sh)
+script that can be used to perform broadcast FM capture, allowing for tuning and adjustments. To use this, SSH to your
 Raspberry Pi and perform the following:
 
 ```bash
 cd $HOME/raspberry-noaa-v2/
 
 # specify a frequency to use with the script
-./scripts/test_reception.sh 90.3
+./scripts/testing/test_reception.sh 90.3
 ```
 
 Then, open another terminal either on the Raspberry Pi or on another device that can reach the Pi (on the network)

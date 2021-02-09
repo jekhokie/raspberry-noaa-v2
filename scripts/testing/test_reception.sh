@@ -1,12 +1,6 @@
 #!/bin/bash
 
-### Run as a normal user
-if [ $EUID -eq 0 ]; then
-    echo "This script shouldn't be run as root."
-    exit 1
-fi
-
-## import common lib
+# import common lib and settings
 . "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
 
