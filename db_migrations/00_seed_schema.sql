@@ -5,7 +5,6 @@ CREATE TABLE IF NOT EXISTS predict_passes(
     max_elev int not null,
     is_active boolean);
 
-
 CREATE TABLE IF NOT EXISTS decoded_passes(
     id integer primary key autoincrement,
     pass_start integer,
