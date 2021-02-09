@@ -18,12 +18,14 @@
   become: yes
   apt:
     update_cache: no
+    state: present
     name: nginx
 
 - name: install php
   become: yes
   apt:
     update_cache: no
+    state: present
     name:
       - php7.2-fpm
       - php7.2-mbstring
@@ -33,6 +35,7 @@
   become: yes
   apt:
     update_cache: no
+    state: present
     name: composer
 
 - name: add pi user to www-data group
