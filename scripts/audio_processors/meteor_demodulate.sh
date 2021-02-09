@@ -18,4 +18,4 @@ INPUT_QPSK=$1
 OUTPUT_WAV=$2
 
 # produce the output image
-$METEOR_DEMOD -B -o "${INPUT_QPSK}.qpsk" "${OUTPUT_WAV}"
+$METEOR_DEMOD -B -o "${INPUT_QPSK}" "${OUTPUT_WAV}"
