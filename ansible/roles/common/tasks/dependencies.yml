@@ -18,7 +18,6 @@
       - libusb-1.0-0-dev
       - libxft-dev
       - libxft2
-      - ntp
       - predict
       - python3-pip
       - python-setuptools

@@ -5,6 +5,9 @@
 # dependent packages and libs to be installed
 - include: dependencies.yml
 
+# ntp configurations
+- include: ntp.yml
+
 # core software modules
 - include: sdr.yml
 
