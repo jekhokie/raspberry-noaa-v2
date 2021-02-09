@@ -52,10 +52,12 @@ In discussing this with Nico, we agreed that there is a logical next maturity st
 a simple, one-command script and corresponding framework to manage and maintain the entire project when any changes occur, and
 refactored the webpanel functionality significantly to enable better feature additions in the future.
 
-Enhancements since V1:
+Changes since V1:
 
-* Option to produce a spectrogram image alongside the other processed image types.
-* Administrative web interface for deleting bad captures from database and respective images on disk.
+* Refactor of scripts to support pluggable audio capture and image processing (and to keep things DRY)
+* Removal of ISS captures and Twitter posting to reduce complexity and increase focus on core functionality (for now)
+* Option to produce a spectrogram image alongside the other processed image types
+* Administrative web interface for deleting bad captures from database and respective images on disk
 * Satvis visualization in iframe within webpanel pass list page
 * MVC architecture for webpanel to allow faster feature integration
 * Advanced map functionality (enable/disable and color crosshairs for base station, set and color lat/lon lines, etc.)
