@@ -40,11 +40,11 @@ while [ "$(date --date="@${end_epoch_time}" +%D)" = "$(date +%D)" ]; do
   file_date_ext=$(date --date="TZ=\"UTC\" ${start_datetime}" +%Y%m%d-%H%M%S)
 
   if [ "${max_elev}" -gt "${SAT_MIN_ELEV}" ]; then
-    safe_obj_name=$(echo "${OBJ_NAME}" | sed "s/ //g")
+    printf -v safe_obj_name "%q" $(echo "${OBJ_NAME}" | sed "s/ /-/g")
     log "Scheduling capture for: ${safe_obj_name} ${file_date_ext} ${max_elev}" "INFO"
-    echo "${NOAA_HOME}/scripts/${RECEIVE_SCRIPT} \"${OBJ_NAME}\" $FREQ ${safe_obj_name}${file_date_ext} "${TLE_FILE}" \
+    echo "${NOAA_HOME}/scripts/${RECEIVE_SCRIPT} \"${OBJ_NAME}\" $FREQ ${safe_obj_name}-${file_date_ext} "${TLE_FILE}" \
 ${start_epoch_time} ${timer} ${max_elev}" | at "$(date --date="TZ=\"UTC\" ${start_datetime}" +"%H:%M %D")"
-    sqlite3 $DB_FILE "insert or replace into predict_passes (sat_name,pass_start,pass_end,max_elev,is_active) values (\"$safe_obj_name\",$start_epoch_time,$end_epoch_time,$max_elev,1);"
+    sqlite3 $DB_FILE "insert or replace into predict_passes (sat_name,pass_start,pass_end,max_elev,is_active) values (\"${OBJ_NAME}\",$start_epoch_time,$end_epoch_time,$max_elev,1);"
   fi
   next_predict=$(expr "${end_epoch_time}" + 60)
   predict_start=$(/usr/bin/predict -t "${TLE_FILE}" -p "${OBJ_NAME}" "${next_predict}" | head -1)
