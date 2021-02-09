@@ -9,14 +9,7 @@
 # Example:
 #   ./schedule_captures.sh "NOAA 18" "receive_noaa.sh" "weather.tle"
 
-# run as a normal user
-if [ $EUID -eq 0 ]; then
-  log "This script shouldn't be run as root." "ERROR"
-  exit 1
-fi
-
-# import common lib
-. "$HOME/.noaa-v2.conf"
+# import common lib and settings
 . "$NOAA_HOME/scripts/common.sh"
 
 # map inputs to sane var names

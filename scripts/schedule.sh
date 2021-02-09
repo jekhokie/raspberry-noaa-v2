@@ -3,14 +3,7 @@
 # Purpose: High-level scheduling script - schedules all desired satellite
 #          and orbital captures.
 
-# run as a non-root user
-if [ $EUID -eq 0 ]; then
-  log "This script shouldn't be run as root." "ERROR"
-  exit 1
-fi
-
-# import common lib
-. "$HOME/.noaa-v2.conf"
+# import common lib and settings
 . "$NOAA_HOME/scripts/common.sh"
 
 # some constants

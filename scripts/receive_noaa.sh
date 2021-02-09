@@ -5,14 +5,7 @@
 # Example:
 #   ./receive_noaa.sh "NOAA 18" NOAA1820210208-194829 ./orbit.tle 1612831709 919 31
 
-# run as a normal user
-if [ $EUID -eq 0 ]; then
-  log "This script shouldn't be run as root." "ERROR"
-  exit 1
-fi
-
-# import common lib
-. "$HOME/.noaa-v2.conf"
+# import common lib and settings
 . "$NOAA_HOME/scripts/common.sh"
 
 # input params

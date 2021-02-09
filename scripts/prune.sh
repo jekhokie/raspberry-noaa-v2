@@ -3,8 +3,7 @@
 # Purpose: Prunes (removes) the 10 oldest captures from the database
 #          and respective images.
 
-# import common lib
-. "$HOME/.noaa-v2.conf"
+# import common lib and settings
 . "$NOAA_HOME/scripts/common.sh"
 
 log "Pruning captures..." "INFO"

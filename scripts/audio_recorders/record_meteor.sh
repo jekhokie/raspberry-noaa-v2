@@ -9,14 +9,7 @@
 # Example (record meteor audio at for 15 seconds, output to /srv/audio/meteor/METEORM2.wav):
 #   ./record_meteor.sh 15 /srv/audio/meteor/METEORM2.wav
 
-# run as a normal user
-if [ $EUID -eq 0 ]; then
-  log "This script shouldn't be run as root." "ERROR"
-  exit 1
-fi
-
-# import common lib
-. "$HOME/.noaa-v2.conf"
+# import common lib and settings
 . "$NOAA_HOME/scripts/common.sh"
 
 # input params

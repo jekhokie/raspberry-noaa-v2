@@ -5,14 +5,7 @@
 # Example:
 #   ./receive_meteor.sh "METEOR-M 2" METEOR-M220210205-192623 1612571183 922 39
 
-# run as a normal user
-if [ $EUID -eq 0 ]; then
-  log "This script shouldn't be run as root." "ERROR"
-  exit 1
-fi
-
-# import common lib
-. "$HOME/.noaa-v2.conf"
+# import common lib and settings
 . "$NOAA_HOME/scripts/common.sh"
 
 # input params
