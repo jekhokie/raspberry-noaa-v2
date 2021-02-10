@@ -39,6 +39,11 @@ vi config/settings.yml
 
 # perform install
 ./install_and_upgrade.sh
+
+# you may see a warning in the install process similar to the following:
+#   /usr/lib/python3/dist-packages/requests/init.py:91: RequestsDependencyWarning: urllib3 (1.25.8) or chardet (3.0.4) doesn't match a supported version!
+#    RequestsDependencyWarning)
+# it's safe to ignore this warning
 ```
 
 Once complete, follow the [migration document](docs/migrate_from_raspberry_noaa.md) if you want to migrate from the original raspberry-noaa
@@ -120,6 +125,11 @@ vi config/settings.yml
 
 # perform install
 ./install_and_upgrade.sh
+
+# you may see a warning in the install process similar to the following:
+#   /usr/lib/python3/dist-packages/requests/init.py:91: RequestsDependencyWarning: urllib3 (1.25.8) or chardet (3.0.4) doesn't match a supported version!
+#    RequestsDependencyWarning)
+# it's safe to ignore this warning
 ```
 
 Once the script completes, you can either follow the [migration document](docs/migrate_from_raspberry_noaa.md) (if you had previously
@@ -143,6 +153,11 @@ git pull
 
 # perform upgrade
 ./install_and_update.sh
+
+# you may see a warning in the install process similar to the following:
+#   /usr/lib/python3/dist-packages/requests/init.py:91: RequestsDependencyWarning: urllib3 (1.25.8) or chardet (3.0.4) doesn't match a supported version!
+#    RequestsDependencyWarning)
+# it's safe to ignore this warning
 ```
 
 ## Post Install
