@@ -85,7 +85,7 @@
 - name: update images directory group
   become: yes
   file:
-    path: images_output
+    path: "{{ images_output }}"
     state: directory
     group: www-data
 
