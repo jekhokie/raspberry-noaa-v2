@@ -3,4 +3,4 @@ ephem==3.7.7.1
 idna==2.8
 numpy==1.18.1
 Pillow==7.1.2
-urllib3==1.25.8
+urllib3==1.21.1
