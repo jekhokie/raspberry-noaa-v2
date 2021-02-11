@@ -9,8 +9,10 @@ longitude: -74.005974
 timezone_offset: -5
 
 # receiver settings
+#   sdr_device_id - which SDR device to use (use rtl_eeprom to see available devices)
 #   enable_bias_tee - driving power to LNA, for example
 #   gain - receiver gain
+sdr_device_id: 0
 enable_bias_tee: false
 receiver_gain: 50
 
