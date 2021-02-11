@@ -19,5 +19,6 @@ return array(
   "cancel" => "Cancelar",
   "fail_delete_missing_id" => "Error al eliminar: falta el parámetro 'id'",
   "successful_delete_capture" => "Captura eliminada con éxito",
+  "conflicting_pass" => "Conflicto con pase anterior",
 );
 ?>
