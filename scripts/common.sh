@@ -19,7 +19,8 @@ log() {
   # log in place (which for at jobs end up in the linux mail)
   echo "${log_priority} : ${log_message}"
 
-  # TODO: log to log file to help with processing outputs (Issue #27)
+  # log output to a log file
+  echo $(date '+%d-%m-%Y %H:%M') $0 "${log_priority} : ${log_message}" >> "$NOAA_LOG"
 }
 
 # run as a normal user for any scripts within
