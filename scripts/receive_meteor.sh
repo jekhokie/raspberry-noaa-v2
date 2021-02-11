@@ -54,19 +54,19 @@ if pgrep "rtl_fm" > /dev/null; then
 fi
 
 log "Starting rtl_fm record" "INFO"
-${AUDIO_PROC_DIR}/meteor_record.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.wav"
+${AUDIO_PROC_DIR}/meteor_record.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
 
 log "Demodulation in progress (QPSK)" "INFO"
 qpsk_file="${NOAA_HOME}/tmp/meteor/${FILENAME_BASE}.qpsk"
-${AUDIO_PROC_DIR}/meteor_demodulate.sh "${qpsk_file}" "${RAMFS_AUDIO_BASE}.wav"
+${AUDIO_PROC_DIR}/meteor_demodulate.sh "${qpsk_file}" "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
 
 spectrogram=0
 if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
   log "Producing spectrogram" "INFO"
   spectrogram=1
   spectro_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
-  ${IMAGE_PROC_DIR}/spectrogram.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" spectro_text
-  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png"
+  ${IMAGE_PROC_DIR}/spectrogram.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" spectro_text >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png" >> $NOAA_LOG 2>&1
 fi
 
 if [ "$DELETE_AUDIO" = true ]; then
@@ -81,26 +81,26 @@ else
 fi
 
 log "Decoding in progress (QPSK to BMP)" "INFO"
-${IMAGE_PROC_DIR}/meteor_decode.sh "${qpsk_file}" "${AUDIO_FILE_BASE}"
+${IMAGE_PROC_DIR}/meteor_decode.sh "${qpsk_file}" "${AUDIO_FILE_BASE}" >> $NOAA_LOG 2>&1
 
 rm "${qpsk_file}"
 
 if [ -f "${AUDIO_FILE_BASE}.dec" ]; then
   if [ "${SUN_ELEV}" -lt "${SUN_MIN_ELEV}" ]; then
     log "I got a successful ${FILENAME_BASE}.dec file. Decoding APID 68" "INFO"
-    ${IMAGE_PROC_DIR}/meteor_apid68_decode.sh "${AUDIO_FILE_BASE}.dec" "${IMAGE_FILE_BASE}-122"
-    $CONVERT $FLIP -negate "${IMAGE_FILE_BASE}-122.bmp" "${IMAGE_FILE_BASE}-122.bmp"
+    ${IMAGE_PROC_DIR}/meteor_apid68_decode.sh "${AUDIO_FILE_BASE}.dec" "${IMAGE_FILE_BASE}-122" >> $NOAA_LOG 2>&1
+    $CONVERT $FLIP -negate "${IMAGE_FILE_BASE}-122.bmp" "${IMAGE_FILE_BASE}-122.bmp" >> $NOAA_LOG 2>&1
   else
     log "I got a successful ${FILENAME_BASE}.dec file. Creating false color image" "INFO"
-    ${IMAGE_PROC_DIR}/meteor_false_color_decode.sh "${AUDIO_FILE_BASE}.dec" "${IMAGE_FILE_BASE}-122"
+    ${IMAGE_PROC_DIR}/meteor_false_color_decode.sh "${AUDIO_FILE_BASE}.dec" "${IMAGE_FILE_BASE}-122" >> $NOAA_LOG 2>&1
   fi
 
   log "Rectifying image to adjust aspect ratio" "INFO"
-  python3 "${NOAA_HOME}/scripts/image_processors/meteor_rectify.py" "${IMAGE_FILE_BASE}-122.bmp"
+  python3 "${NOAA_HOME}/scripts/image_processors/meteor_rectify.py" "${IMAGE_FILE_BASE}-122.bmp" >> $NOAA_LOG 2>&1
 
   annotation="${SAT_NAME} ${capture_start} Elev: $SAT_MAX_ELEVATION°"
-  ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}"
-  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-122-rectified.jpg" "${IMAGE_THUMB_BASE}-122-rectified.jpg"
+  ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-122-rectified.jpg" "${IMAGE_THUMB_BASE}-122-rectified.jpg" >> $NOAA_LOG 2>&1
   rm "${IMAGE_FILE_BASE}-122.bmp"
   rm "${AUDIO_FILE_BASE}.bmp"
   rm "${AUDIO_FILE_BASE}.dec"
