@@ -34,14 +34,22 @@
           {% set pass_end = pass.pass_end|date('H:i:s') %}
 
           <tr {% if pass.is_active == false or pass_end < now %} class="inactive" {% endif %}>
-            <td scope="row">{{ pass.sat_name }}</td>
+            <td scope="row" class="{% if prev_pass_end >= pass.pass_start %}conflict{% endif %}">
+              {% if prev_pass_end >= pass.pass_start %}<i class="fa fa-exclamation-triangle conflict-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['conflicting_pass'] }}"></i>{% endif %} {{ pass.sat_name }}
+            </td>
             <td scope="row" class="text-center">{{ pass_start }}</td>
             <td scope="row" class="text-center">{{ pass_end }}</td>
             <td scope="row" class="text-center">{{ pass.max_elev }}</td>
           </tr>
+
+          {% set prev_pass_end = pass.pass_end %}
         {% endfor %}
       {% endif %}
     </tbody>
   </table>
 
+{% endblock %}
+
+{% block js_includes %}
+  <script src="/assets/js/tooltips.js"></script>
 {% endblock %}

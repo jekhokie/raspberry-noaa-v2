@@ -20,5 +20,6 @@ return array(
   "cancel" => "Cancel",
   "fail_delete_missing_id" => "Failed to delete - missing 'id' parameter",
   "successful_delete_capture" => "Successfully deleted capture",
+  "conflicting_pass" => "Conflict with previous pass",
 );
 ?>

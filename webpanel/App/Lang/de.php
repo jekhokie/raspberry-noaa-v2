@@ -19,5 +19,6 @@ return array(
   "cancel" => "Stornieren",
   "fail_delete_missing_id" => "Fehler beim Löschen - fehlender 'id'-Parameter",
   "successful_delete_capture" => "Capture erfolgreich gelöscht",
+  "conflicting_pass" => "Konflikt mit vorherigem Pass",
 );
 ?>
