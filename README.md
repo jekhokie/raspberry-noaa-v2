@@ -44,6 +44,8 @@ vi config/settings.yml
 Once complete, follow the [migration document](docs/migrate_from_raspberry_noaa.md) if you want to migrate from the original raspberry-noaa
 to this version 2 (keep your previous captures and make them visible).
 
+To see what occurred during a capture event, check out the log file `/var/log/raspberry-noaa-v2/output.log`.
+
 ## Why a Version 2?
 
 A lot of the work done by Nico and the original Instructables poster was absolutely fantastic and simple. However, as I started
@@ -52,20 +54,9 @@ In discussing this with Nico, we agreed that there is a logical next maturity st
 a simple, one-command script and corresponding framework to manage and maintain the entire project when any changes occur, and
 refactored the webpanel functionality significantly to enable better feature additions in the future.
 
-Changes since V1:
+Check out the release notes for fixes and enhancements for each of the various releases since the V1 split to V2!
 
-* Refactor of scripts to support pluggable audio capture and image processing (and to keep things DRY)
-* Removal of ISS captures and Twitter posting to reduce complexity and increase focus on core functionality (for now)
-* Option to produce a spectrogram image alongside the other processed image types
-* Administrative web interface for deleting bad captures from database and respective images on disk
-* Satvis visualization in iframe within webpanel pass list page
-* MVC architecture for webpanel to allow faster feature integration
-* Advanced map functionality (enable/disable and color crosshairs for base station, set and color lat/lon lines, etc.)
-* Improved organization of documentation for easier navigation
-* Improved script organization and code-reuse (keeping it DRY)
-* Single-click installer with single configuration file driving entire framework (scripts AND webpanel)
-
-See [HERE](docs/webpanel_screenshots.md) for some screen shots of the webpanel, which is now mobile friendly!
+Also, check out [THIS LINK](docs/webpanel_screenshots.md) for some screen shots of the webpanel, which is now mobile friendly!
 
 ## Compatibility
 
@@ -160,7 +151,8 @@ and re-run `./install_and_update.sh` - the script will take care of the rest of 
 ## Troubleshooting
 
 If you're running into issues where you're not seeing imagery after passes complete or getting blank/strange images, you can check
-out the [troubleshooting](docs/troubleshooting.md) document to try and narrow down the problem.
+out the [troubleshooting](docs/troubleshooting.md) document to try and narrow down the problem. In addition, you can inspect the log
+output file in `/var/log/raspberry-noaa-v2/output.log` to investigate potential errors or issues during capture events.
 
 ## Additional Feature Information
 
