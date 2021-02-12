@@ -13,6 +13,7 @@ return array(
   "passes" => "Überflüge",
   "prev" => "Vorherig",
   "satellite" => "Satellit",
+  "admin" => "Administrator",
   "admin_delete_warning" => "Klicken Sie auf das 'X' neben den zu löschenden Aufnahmen, um sowohl den Durchgang / die Aufnahme aus der Datenbank zu entfernen als auch alle zugehörigen Bilder zu löschen. ** WARNUNG **: Dies ist irreversibel. Bitte stellen Sie sicher, dass dies das ist, was Sie wollen!",
   "admin_delete_confirm_header" => "Löschung bestätigen",
   "confirm" => "Bestätigen",
