@@ -74,10 +74,10 @@ $WXMAP -T "${SAT_NAME}" -H "${TLE_FILE}" -p 0 ${extra_map_opts} -o "${epoch_adju
 
 # determine which enhancements to create based on sunlight/dark
 if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
-  ENHANCEMENTS="ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT"
+  ENHANCEMENTS="ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT therm"
   daylight="true"
 else
-  ENHANCEMENTS="ZA MCIR MCIR-precip"
+  ENHANCEMENTS="ZA MCIR MCIR-precip therm"
   daylight="false"
 fi
 
@@ -115,6 +115,9 @@ for enhancement in $ENHANCEMENTS; do
       ;;
     "HVCT-precip")
       proc_script="noaa_hvct_precip.sh"
+      ;;
+    "therm")
+      proc_script="noaa_therm.sh"
       ;;
   esac
 
