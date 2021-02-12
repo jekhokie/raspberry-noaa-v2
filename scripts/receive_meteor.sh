@@ -54,7 +54,7 @@ if pgrep "rtl_fm" > /dev/null; then
 fi
 
 log "Starting rtl_fm record" "INFO"
-####${AUDIO_PROC_DIR}/meteor_record.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}" #note i have removed .wav here
+${AUDIO_PROC_DIR}/meteor_record.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}" #note i have removed .wav here
 
 #sleep to allow files to close.
 echo "sleeping"
@@ -63,7 +63,7 @@ sleep 2
 
 log "Demodulation in progress (.s)" "INFO"
 s_file="${RAMFS_AUDIO_BASE}"
-####${IMAGE_PROC_DIR}/meteor_decode.sh "${s_file}" "${RAMFS_AUDIO_BASE}"
+${IMAGE_PROC_DIR}/meteor_decode.sh "${s_file}" "${RAMFS_AUDIO_BASE}"
 
 
 spectrogram=0
@@ -75,11 +75,6 @@ spectrogram=0
 #  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png"
 #fi
 
-
-#log "Decoding in progress (QPSK to BMP)" "INFO"
-#${IMAGE_PROC_DIR}/meteor_decode.sh "${qpsk_file}" "${AUDIO_FILE_BASE}"
-
-#rm "${qpsk_file}"
 
 if [ -f "${RAMFS_AUDIO_BASE}_0.bmp" ]; then
 
