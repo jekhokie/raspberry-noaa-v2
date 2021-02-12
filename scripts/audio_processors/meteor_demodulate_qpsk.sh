@@ -1,13 +1,13 @@
 #!/bin/bash
 #
-# Purpose: Demodulate Meteor-M 2 audio file.
+# Purpose: Demodulate Meteor-M 2 audio file in QPSK format.
 #
 # Input parameters:
 #   1. Input QPSK file
 #   2. Output .wav file
 #
 # Example:
-#   ./demodulate_meteor.sh /path/to/input.qpsk /path/to/output.wav
+#   ./demodulate_meteor_qpsk.sh /path/to/input.qpsk /path/to/output.wav
 
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
