@@ -174,3 +174,21 @@ or form to the success of this repository/framework. Below are some direct contr
 * **[Dom Robinson](https://www.facebook.com/d2consulting.co.uk)**: Meteor enhancements, Satvis visualizations, and overall great code written that were incorporated into the repo.
     * Merge of functionality into this repo was partially created using his excellent fork of the original raspberry-noaa repo [here](https://github.com/dom-robinson/raspberry-noaa).
 * **[Mohamed Anjum Abdullah](https://www.facebook.com/MohamedAnjum9694/)**: Initial testing of the first release.
+
+## Contributing
+
+Pull requests are welcome! Simply follow the below pattern:
+
+1. Fork the repository to your own GitHub account.
+2. `git clone` your forked repository.
+3. `git checkout -b <my-branch-name>` to create a branch, replacing with your actual branch name.
+4. Do some awesome feature development or bug fixes, committing to the branch regularly.
+5. `git push origin <my-branch-name>` to push your branch to your forked repository.
+6. Head back to the upstream `jekhokie/raspberry-noaa-v2` repository and submit a pull request using your branch from your forked repository.
+7. Provide really good details on the development you've done within the branch, and answer any questions asked/address feedback.
+8. Profit when you see your pull request merged to the upstream master and used by the community!
+
+Make sure you keep your forked repository up to date with the upstream `jekhokie/raspberry-noaa-v2` master branch as this will make
+development and addressing merge conflicts MUCH easier in the long run.
+
+Happy coding (and receiving)!
