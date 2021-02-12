@@ -8,6 +8,9 @@ The `at` jobs log their output and you will receive a linux mail in the `pi` use
 results after the pass and processing completes. Use the `mail` application on the command line to view the mail
 messages and investigate the log outputs for any indications of errors.
 
+In addition, all detailed log output is now captured in the directory `/var/log/raspberry-noaa-v2/` as well - check
+the `output.log` files in this directory for detailed capture and processing information!
+
 # USB Access Permission
 
 If you inspect the mail output from your scheduled runs and see a message related to the following, it likely means
@@ -78,3 +81,23 @@ midnight:
 ```bash
 cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa-v2/scripts/prune.sh") | crontab -
 ```
+
+# Completely White Meteor-M 2 Images
+
+It's possible that you received a good Meteor-M 2 audio capture but the processing appears to have produced a completely
+white/blank image output. In these cases, it's likely that the calculated sun angle for the time of capture was below the
+threshold of your `SUN_MIN_ELEV` parameter, resulting in processing the image using values assuming a night capture and
+washing out the actual detail in the image. You can check whether this was the case by getting the epoch time at the start
+of the capture (convert your local capture start time to epoch time using a tool such as
+[epoch calculator](https://www.epochconverter.com/)) and passing it to the `sun.py` script to see what the sun angle was
+(according to the script) at that time of capture:
+
+```bash
+$ python3 ./scripts/sun.py 1613063493
+
+33
+```
+
+If the output value (in the above case, 33 degrees) was less than your `SUN_MIN_ELEV` threshold, night processing of the
+image occurred and, if the sun was actually bright enough in your area at that time, the image would be almost completely
+white. To adjust this, lower your `SUN_MIN_ELEV` threshold.
