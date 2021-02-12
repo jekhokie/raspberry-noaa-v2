@@ -14,13 +14,8 @@
 . "$NOAA_HOME/scripts/common.sh"
 
 # input params
-INPUT_S=$1
+INPUT_QPSK=$1
 OUTPUT_BMP=$2
 
-# produce the output image - Needs config driven switching - but i am only now learning about these two.
-
-# Winter
-$MEDET_ARM ${INPUT_S}.s ${OUTPUT_BMP} -r 68 -g 65 -b 64 -na -s
-
-# Summer
-#$MEDET_ARM ${INPUT_S}.s ${OUTPUT_BMP} -r 66 -g 65 -b 64 -na -s
+# produce the output image
+$MEDET_ARM "${INPUT_QPSK}" "${OUTPUT_BMP}" -cd

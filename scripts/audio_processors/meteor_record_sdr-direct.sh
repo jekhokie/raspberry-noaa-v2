@@ -1,4 +1,3 @@
-
 #!/bin/bash
 #
 # Purpose: Record Meteor-M audio via rtl_fm to a wav file.
@@ -17,19 +16,12 @@
 # input params
 CAPTURE_TIME=$1
 OUT_FILE=$2
-GAIN=$3
-PPM=$4
 
 # check that filename extension is wav (only type supported currently)
-#if [ ${OUT_FILE: -4} != ".wav" ]; then
-#  log "Output file must end in .wav extension." "ERROR"
-#  exit 1
-#fi
+if [ ${OUT_FILE: -4} != ".wav" ]; then
+  log "Output file must end in .wav extension." "ERROR"
+  exit 1
+fi
 
 log "Recording at ${METEOR_FREQ} MHz..." "INFO"
-
-# Hardcoded values at end These should be passed. Possibly one for Justin to pipe through from config.
-timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/rtlsdr_m2_lrpt_rx.py" "${SAT_NAME}" "${METEOR_FREQ}" "${OUT_FILE}" 38.2 3
-
-
-
+timeout "${CAPTURE_TIME}" $RTL_FM ${BIAS_TEE} -M raw -f "${METEOR_FREQ}"M -s 288k -g $GAIN | $SOX -t raw -r 288k -c 2 -b 16 -e s - -t wav "${OUT_FILE}" rate 96k

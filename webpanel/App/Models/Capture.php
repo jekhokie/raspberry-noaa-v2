@@ -57,14 +57,14 @@ class Capture extends \Lib\Model {
       # build enhancement paths based on satellite type
       switch($pass['sat_type']) {
         case 0: // Meteor-M2
-          $enhancements = ['-122-rectified.jpg'];
+          $enhancements = ['-122-rectified.jpg','_ir-122-rectified.jpg','_col-122-rectified.jpg'];
           break;
         case 1: // NOAA
-          if ($pass['daylight_pass'] == 1) {
+          #if ($pass['daylight_pass'] == 1) {
             $enhancements = ['-ZA.jpg','-MCIR.jpg','-MCIR-precip.jpg','-MSA.jpg','-MSA-precip.jpg','-HVC.jpg','-HVC-precip.jpg','-HVCT.jpg','-HVCT-precip.jpg'];
-          } else {
-            $enhancements = ['-ZA.jpg','-MCIR.jpg','-MCIR-precip.jpg'];
-          }
+          #} else {
+          #  $enhancements = ['-ZA.jpg','-MCIR.jpg','-MCIR-precip.jpg'];
+          #}
           break;
         case 2: // ISS
           for ($x = 0; $x <= $pass['img_count']-1; $x++) {

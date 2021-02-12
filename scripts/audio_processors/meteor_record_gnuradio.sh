@@ -27,9 +27,9 @@ PPM=$4
 #fi
 
 log "Recording at ${METEOR_FREQ} MHz..." "INFO"
+#timeout "${CAPTURE_TIME}" $RTL_FM ${BIAS_TEE} -M raw -f "${METEOR_FREQ}"M -s 288k -g $GAIN | $SOX -t raw -r 288k -c 2 -b 16 -e s - -t wav "${OUT_FILE}" rate 96k
 
-# Hardcoded values at end These should be passed. Possibly one for Justin to pipe through from config.
-timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/rtlsdr_m2_lrpt_rx.py" "${SAT_NAME}" "${METEOR_FREQ}" "${OUT_FILE}" 38.2 3
+timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/rtlsdr_m2_lrpt_rx.py" "${SAT_NAME}" "${METEOR_FREQ}"M "${OUT_FILE}".s "${GAIN}" "${PPM}"
 
 
 
