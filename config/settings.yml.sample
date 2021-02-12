@@ -9,8 +9,10 @@ longitude: -74.005974
 timezone_offset: -5
 
 # receiver settings
+#   sdr_device_id - which SDR device to use (use rtl_eeprom to see available devices)
 #   enable_bias_tee - driving power to LNA, for example
 #   gain - receiver gain
+sdr_device_id: 0
 enable_bias_tee: false
 receiver_gain: 50
 
@@ -75,4 +77,10 @@ log_level: DEBUG
 # by default disabled on "extra-small" devices such as phones due to
 # the processing and space requirements
 enable_satvis: true
+
+# pruning capabilities - must be configured in cron (see documentation)
+#   delete_oldest_n - how many oldest captures to delete on each run
+#   delete_older_than_n - delete all images older than this many days
+delete_oldest_n: 0
+delete_older_than_n: 0
 ...

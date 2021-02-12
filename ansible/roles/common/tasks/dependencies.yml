@@ -40,8 +40,4 @@
     state: present
     name: libgfortran5
   when: raspbian_version.stdout != 'stretch'
-
-- name: python packages using pip3
-  become: yes
-  command: "python3 -m pip install -r {{ noaa_home }}/requirements.txt"
 ...

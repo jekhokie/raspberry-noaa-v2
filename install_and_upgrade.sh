@@ -41,6 +41,14 @@ if [ -f /etc/modprobe.d/rtlsdr.conf ]; then
   install_type='upgrade'
 fi
 
+log_running "Installing Python dependencies..."
+sudo python3 -m pip install -r $HOME/raspberry-noaa-v2/requirements.txt
+if [ $? -eq 0 ]; then
+  log_done "  Successfully aligned required Python packages!"
+else
+  die "  Could not install dependent Python packages - please check the logs above"
+fi
+
 # install ansible
 which ansible-playbook 2>&1 >/dev/null
 if [ $? -ne 0 ]; then

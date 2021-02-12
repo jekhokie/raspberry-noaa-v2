@@ -11,7 +11,7 @@
 #   3. Output .jpg file
 #
 # Example:
-#   ./noaa_gp_ir_za.sh /path/to/map_overlay.png /path/to/input.wav /path/to/output.jpg
+#   ./noaa_za.sh /path/to/map_overlay.png /path/to/input.wav /path/to/output.jpg
 
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"

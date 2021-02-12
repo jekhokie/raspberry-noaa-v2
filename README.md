@@ -1,5 +1,7 @@
 ![Raspberry NOAA](assets/header_1600_v2.png)
 
+Looking for support, wanting to talk about new features, or just hang out? Come chat with us on [Discord!](https://discord.gg/A9w68pqBuc)
+
 **_This is a spinoff of the original [raspberry-noaa](https://github.com/reynico/raspberry-noaa) created by Nico - they have
 graciously permitted me to push this project forward with a major refactor to enhance things such as usability, style, and general
 updates. All original content has been preserved (as have all commits up to the point of this repo creation) to retain credit to the
@@ -9,6 +11,10 @@ NOAA/METEOR community!._**
 Wanting to give this version a go but not sure what's involved to get from the original raspberry-noaa to raspberry-noaa-v2? Check
 out this simple [migration document](docs/migrate_from_raspberry_noaa.md) that explains the few commands you need to run and retain
 your original data!
+
+Finally, if you're looking for one of the cheapest ways to get started from an antenna perspective, check out
+[this post](https://jekhokie.github.io/noaa/satellite/rf/antenna/sdr/2019/05/31/noaa-satellite-imagery-sdr.html), specifically around
+how to use a cheap rabbit ears antenna as a dipole for capturing NOAA and Meteor images!
 
 # Raspberry NOAA (...and Meteor) V2
 
@@ -39,15 +45,12 @@ vi config/settings.yml
 
 # perform install
 ./install_and_upgrade.sh
-
-# you may see a warning in the install process similar to the following:
-#   /usr/lib/python3/dist-packages/requests/init.py:91: RequestsDependencyWarning: urllib3 (1.25.8) or chardet (3.0.4) doesn't match a supported version!
-#    RequestsDependencyWarning)
-# it's safe to ignore this warning
 ```
 
 Once complete, follow the [migration document](docs/migrate_from_raspberry_noaa.md) if you want to migrate from the original raspberry-noaa
 to this version 2 (keep your previous captures and make them visible).
+
+To see what occurred during a capture event, check out the log file `/var/log/raspberry-noaa-v2/output.log`.
 
 ## Why a Version 2?
 
@@ -57,20 +60,9 @@ In discussing this with Nico, we agreed that there is a logical next maturity st
 a simple, one-command script and corresponding framework to manage and maintain the entire project when any changes occur, and
 refactored the webpanel functionality significantly to enable better feature additions in the future.
 
-Changes since V1:
+Check out the release notes for fixes and enhancements for each of the various releases since the V1 split to V2!
 
-* Refactor of scripts to support pluggable audio capture and image processing (and to keep things DRY)
-* Removal of ISS captures and Twitter posting to reduce complexity and increase focus on core functionality (for now)
-* Option to produce a spectrogram image alongside the other processed image types
-* Administrative web interface for deleting bad captures from database and respective images on disk
-* Satvis visualization in iframe within webpanel pass list page
-* MVC architecture for webpanel to allow faster feature integration
-* Advanced map functionality (enable/disable and color crosshairs for base station, set and color lat/lon lines, etc.)
-* Improved organization of documentation for easier navigation
-* Improved script organization and code-reuse (keeping it DRY)
-* Single-click installer with single configuration file driving entire framework (scripts AND webpanel)
-
-See [HERE](docs/webpanel_screenshots.md) for some screen shots of the webpanel, which is now mobile friendly!
+Also, check out [THIS LINK](docs/webpanel_screenshots.md) for some screen shots of the webpanel, which is now mobile friendly!
 
 ## Compatibility
 
@@ -125,11 +117,6 @@ vi config/settings.yml
 
 # perform install
 ./install_and_upgrade.sh
-
-# you may see a warning in the install process similar to the following:
-#   /usr/lib/python3/dist-packages/requests/init.py:91: RequestsDependencyWarning: urllib3 (1.25.8) or chardet (3.0.4) doesn't match a supported version!
-#    RequestsDependencyWarning)
-# it's safe to ignore this warning
 ```
 
 Once the script completes, you can either follow the [migration document](docs/migrate_from_raspberry_noaa.md) (if you had previously
@@ -153,11 +140,6 @@ git pull
 
 # perform upgrade
 ./install_and_update.sh
-
-# you may see a warning in the install process similar to the following:
-#   /usr/lib/python3/dist-packages/requests/init.py:91: RequestsDependencyWarning: urllib3 (1.25.8) or chardet (3.0.4) doesn't match a supported version!
-#    RequestsDependencyWarning)
-# it's safe to ignore this warning
 ```
 
 ## Post Install
@@ -175,7 +157,8 @@ and re-run `./install_and_update.sh` - the script will take care of the rest of 
 ## Troubleshooting
 
 If you're running into issues where you're not seeing imagery after passes complete or getting blank/strange images, you can check
-out the [troubleshooting](docs/troubleshooting.md) document to try and narrow down the problem.
+out the [troubleshooting](docs/troubleshooting.md) document to try and narrow down the problem. In addition, you can inspect the log
+output file in `/var/log/raspberry-noaa-v2/output.log` to investigate potential errors or issues during capture events.
 
 ## Additional Feature Information
 
@@ -197,3 +180,21 @@ or form to the success of this repository/framework. Below are some direct contr
 * **[Dom Robinson](https://www.facebook.com/d2consulting.co.uk)**: Meteor enhancements, Satvis visualizations, and overall great code written that were incorporated into the repo.
     * Merge of functionality into this repo was partially created using his excellent fork of the original raspberry-noaa repo [here](https://github.com/dom-robinson/raspberry-noaa).
 * **[Mohamed Anjum Abdullah](https://www.facebook.com/MohamedAnjum9694/)**: Initial testing of the first release.
+
+## Contributing
+
+Pull requests are welcome! Simply follow the below pattern:
+
+1. Fork the repository to your own GitHub account.
+2. `git clone` your forked repository.
+3. `git checkout -b <my-branch-name>` to create a branch, replacing with your actual branch name.
+4. Do some awesome feature development or bug fixes, committing to the branch regularly.
+5. `git push origin <my-branch-name>` to push your branch to your forked repository.
+6. Head back to the upstream `jekhokie/raspberry-noaa-v2` repository and submit a pull request using your branch from your forked repository.
+7. Provide really good details on the development you've done within the branch, and answer any questions asked/address feedback.
+8. Profit when you see your pull request merged to the upstream master and used by the community!
+
+Make sure you keep your forked repository up to date with the upstream `jekhokie/raspberry-noaa-v2` master branch as this will make
+development and addressing merge conflicts MUCH easier in the long run.
+
+Happy coding (and receiving)!

@@ -13,8 +13,8 @@ AMATEUR_TXT="${NOAA_HOME}/tmp/amateur.txt"
 TLE_OUTPUT="${NOAA_HOME}/tmp/orbit.tle"
 
 # get the txt files for orbit information
-wget -qr http://www.celestrak.com/NORAD/elements/weather.txt -O "${WEATHER_TXT}"
-wget -qr http://www.celestrak.com/NORAD/elements/amateur.txt -O "${AMATEUR_TXT}"
+wget -qr http://www.celestrak.com/NORAD/elements/weather.txt -O "${WEATHER_TXT}" >> $NOAA_LOG 2>&1
+wget -qr http://www.celestrak.com/NORAD/elements/amateur.txt -O "${AMATEUR_TXT}" >> $NOAA_LOG 2>&1
 
 # create tle files for scheduling
 #   note: it's really unfortunate but a directory structure any deeper than 'tmp' in the
@@ -36,12 +36,12 @@ done
 # create schedules to call respective receive scripts
 log "Scheduling new capture jobs..." "INFO"
 if [ "$SCHEDULE_NOAA" == "true" ]; then
-  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 15" "receive_noaa.sh" $TLE_OUTPUT
-  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 18" "receive_noaa.sh" $TLE_OUTPUT
-  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 19" "receive_noaa.sh" $TLE_OUTPUT
+  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 15" "receive_noaa.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
+  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 18" "receive_noaa.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
+  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 19" "receive_noaa.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
 fi
 
 if [ "$SCHEDULE_METEOR" == "true" ]; then
-  $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M 2" "receive_meteor.sh" $TLE_OUTPUT
+  $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M 2" "receive_meteor.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
 fi
 log "Done scheduling jobs!" "INFO"

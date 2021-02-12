@@ -60,11 +60,9 @@ ${AUDIO_PROC_DIR}/meteor_record.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}" #note i h
 echo "sleeping"
 sleep 2
 
-
 log "Demodulation in progress (.s)" "INFO"
 s_file="${RAMFS_AUDIO_BASE}"
 ${IMAGE_PROC_DIR}/meteor_decode.sh "${s_file}" "${RAMFS_AUDIO_BASE}"
-
 
 spectrogram=0
 #if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
@@ -74,7 +72,6 @@ spectrogram=0
 #  ${IMAGE_PROC_DIR}/spectrogram.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" spectro_text
 #  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png"
 #fi
-
 
 if [ -f "${RAMFS_AUDIO_BASE}_0.bmp" ]; then
 
@@ -88,7 +85,6 @@ if [ -f "${RAMFS_AUDIO_BASE}_0.bmp" ]; then
   #fi
 
   log "Post Processing in  progress" "INFO"
-
 
   # Blend and Convert
   log "Blend and combine channels in progress" "INFO"
@@ -112,7 +108,6 @@ if [ -f "${RAMFS_AUDIO_BASE}_0.bmp" ]; then
           convert ${RAMFS_AUDIO_BASE}_col-rectified.jpg -rotate 180 -normalize -quality 90 ${RAMFS_AUDIO_BASE}_col.jpg
   fi
 
-
   log "Annotating where required." "INFO"
   annotation="${SAT_NAME} ${capture_start} Elev: $SAT_MAX_ELEVATION°"
 
@@ -123,13 +118,9 @@ if [ -f "${RAMFS_AUDIO_BASE}_0.bmp" ]; then
   convert "${RAMFS_AUDIO_BASE}_col.jpg" -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}_col-122-rectified.jpg"
   convert -thumbnail 300 "${RAMFS_AUDIO_BASE}_col.jpg" "${IMAGE_THUMB_BASE}_col-122-rectified.jpg"
 
-
-
 #  rm "${IMAGE_FILE_BASE}-122.bmp"
 #  rm "${AUDIO_FILE_BASE}.bmp"
 #  rm "${AUDIO_FILE_BASE}.dec"
-
-
 
   # insert or replace in case there was already an insert due to the spectrogram creation
   log "Update DB" "INFO"
@@ -146,10 +137,6 @@ if [ -f "${RAMFS_AUDIO_BASE}_0.bmp" ]; then
   #if [ -f "${NOAA_OUTPUT}/images/${3}-122-rectified.jpg" ]; then 
   #  mpack -s ${3}-${7} ${NOAA_OUTPUT}/images/${3}-122-rectified.jpg trigger@applet.ifttt.com
   #fi
-
-
-
-
 
 else
   log "Decoding failed, either a bad pass/low SNR or a software problem" "ERROR"
