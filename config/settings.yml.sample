@@ -94,4 +94,10 @@ enable_satvis: true
 #   delete_older_than_n - delete all images older than this many days
 delete_oldest_n: 0
 delete_older_than_n: 0
+
+# operating system configurations
+#   disable_wifi_power_mgmt - if running wireless internet and you want to
+#       disable "sleep" mode of your wifi device (assuming it's wlan0), set
+#        this to true
+disable_wifi_power_mgmt: false
 ...
