@@ -138,7 +138,6 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     if [ "$in_mem" == "true" ]; then
       log "Moving audio files out to the SD card" "INFO"
       mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
-      rm "${RAMFS_AUDIO_BASE}.s"
     fi
   fi
 
@@ -188,8 +187,8 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     rm -f ${AUDIO_FILE_BASE}-col-rectified.jpg
     rm -f ${AUDIO_FILE_BASE}.dec
   else
-    die "Did not get a successful .bmp image - stopping processing"
+    log "Did not get a successful .bmp image - stopping processing" "ERROR"
   fi
 else
-  die "Receiver type '$METEOR_RECEIVER' not valid"
+  log "Receiver type '$METEOR_RECEIVER' not valid" "ERROR"
 fi
