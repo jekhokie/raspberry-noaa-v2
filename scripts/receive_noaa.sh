@@ -89,7 +89,7 @@ fi
 # build images based on enhancements defined
 for enhancement in $ENHANCEMENTS; do
   log "Decoding image" "INFO"
-  annotation="${SAT_NAME} $enhancement ${capture_start} Elev: $SAT_MAX_ELEVATION°"
+  annotation="${SAT_NAME} $enhancement ${capture_start} Elev: $SAT_MAX_ELEVATION° Sun elevation: #SUN_ELEV°"
 
   # determine what frequency based on NOAA variant
   proc_script=""
