@@ -148,6 +148,7 @@ There are and will be future "optional" features for this framework. Below is a 
 to enable/configure with links to the respective instructions:
 
 * [Pruning Old Images](docs/pruning.md)
+* [Database Backups](docs/db_backups.md)
 
 ## Changing Configurations After Install
 
