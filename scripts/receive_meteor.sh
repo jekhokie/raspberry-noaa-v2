@@ -62,6 +62,9 @@ fi
 # TODO: Fix this up - this conditional selection is a massive bit of complexity that
 #       needs to be handled, but in the interest of not breaking everythin (at least in
 #       the first round), keeping it simple.
+
+spectrogram=0
+
 if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   log "Starting rtl_fm record" "INFO"
   ${AUDIO_PROC_DIR}/meteor_record_rtl_fm.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
@@ -70,7 +73,6 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   qpsk_file="${NOAA_HOME}/tmp/meteor/${FILENAME_BASE}.qpsk"
   ${AUDIO_PROC_DIR}/meteor_demodulate_qpsk.sh "${qpsk_file}" "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
 
-  spectrogram=0
   if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
     log "Producing spectrogram" "INFO"
     spectrogram=1
@@ -129,7 +131,7 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
   sleep 2
 
   log "Decoding in progress (Bitstream to BMP)" "INFO"
-  ${IMAGE_PROC_DIR}/meteor_decode_bitstream.sh "${AUDIO_FILE_BASE}.s" "${RAMFS_AUDIO_BASE}" >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/meteor_decode_bitstream.sh "${RAMFS_AUDIO_BASE}.s" "${RAMFS_AUDIO_BASE}" >> $NOAA_LOG 2>&1
 
   if [ "$DELETE_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
@@ -142,29 +144,31 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
   fi
 
   # check if we got an image, and post-process if so
-  if [ -f "${AUDIO_FILE_BASE}_0.bmp" ]; then
+  if [ -f "${RAMFS_AUDIO_BASE}_0.bmp" ]; then
     log "I got a successful bmp file - post-processing" "INFO"
     log "Blend and combine channels" "INFO"
-    $CONVERT ${AUDIO_FILE_BASE}_1.bmp ${AUDIO_FILE_BASE}_1.bmp ${AUDIO_FILE_BASE}_0.bmp -combine -set colorspace sRGB ${unfiltered_file}.bmp >> $NOAA_LOG 2>&1
-    $CONVERT ${AUDIO_FILE_BASE}_2.bmp ${AUDIO_FILE_BASE}_2.bmp ${AUDIO_FILE_BASE}_2.bmp -combine -set colorspace sRGB -negate ${ir_file}.bmp >> $NOAA_LOG 2>&1
-    $CONVERT ${AUDIO_FILE_BASE}_0.bmp ${AUDIO_FILE_BASE}_1.bmp ${AUDIO_FILE_BASE}_2.bmp -combine -set colorspace sRGB ${color_file}.bmp >> $NOAA_LOG 2>&1
+    $CONVERT ${RAMFS_AUDIO_BASE}_1.bmp ${RAMFS_AUDIO_BASE}_1.bmp ${RAMFS_AUDIO_BASE}_0.bmp -combine -set colorspace sRGB ${RAMFS_AUDIO_BASE}.bmp >> $NOAA_LOG 2>&1
+    $CONVERT ${RAMFS_AUDIO_BASE}_2.bmp ${RAMFS_AUDIO_BASE}_2.bmp ${RAMFS_AUDIO_BASE}_2.bmp -combine -set colorspace sRGB -negate ${RAMFS_AUDIO_BASE}-ir.bmp >> $NOAA_LOG 2>&1
+    $CONVERT ${RAMFS_AUDIO_BASE}_0.bmp ${RAMFS_AUDIO_BASE}_1.bmp ${RAMFS_AUDIO_BASE}_2.bmp -combine -set colorspace sRGB ${RAMFS_AUDIO_BASE}-col.bmp >> $NOAA_LOG 2>&1
 
     log "Rectifying image to adjust aspect ratio" "INFO"
-    python3 "${IMAGE_PROC_DIR}/meteor_rectify.py" ${AUDIO_FILE_BASE}.bmp >> $NOAA_LOG 2>&1
-    python3 "${IMAGE_PROC_DIR}/meteor_rectify.py" ${AUDIO_FILE_BASE}-ir.bmp >> $NOAA_LOG 2>&1
-    python3 "${IMAGE_PROC_DIR}/meteor_rectify.py" ${AUDIO_FILE_BASE}-col.bmp >> $NOAA_LOG 2>&1
+    python3 "${IMAGE_PROC_DIR}/meteor_rectify.py" ${RAMFS_AUDIO_BASE}.bmp >> $NOAA_LOG 2>&1
+    python3 "${IMAGE_PROC_DIR}/meteor_rectify.py" ${RAMFS_AUDIO_BASE}-ir.bmp >> $NOAA_LOG 2>&1
+    python3 "${IMAGE_PROC_DIR}/meteor_rectify.py" ${RAMFS_AUDIO_BASE}-col.bmp >> $NOAA_LOG 2>&1
+
 
     log "Compressing and rotating where required" "INFO"
-    $CONVERT ${AUDIO_FILE_BASE}-rectified.jpg -rotate 180 -normalize -quality 90 ${AUDIO_FILE_BASE}.jpg
-    $CONVERT ${AUDIO_FILE_BASE}-ir-rectified.jpg -rotate 180 -normalize -quality 90 ${AUDIO_FILE_BASE}-ir.jpg
-    $CONVERT ${AUDIO_FILE_BASE}-col-rectified.jpg -rotate 180 -normalize -quality 90 ${AUDIO_FILE_BASE}-col.jpg
+    $CONVERT ${RAMFS_AUDIO_BASE}-rectified.jpg -rotate 180 -normalize -quality 90 ${RAMFS_AUDIO_BASE}.jpg
+    $CONVERT ${RAMFS_AUDIO_BASE}-ir-rectified.jpg -rotate 180 -normalize -quality 90 ${RAMFS_AUDIO_BASE}-ir.jpg
+    $CONVERT ${RAMFS_AUDIO_BASE}-col-rectified.jpg -rotate 180 -normalize -quality 90 ${RAMFS_AUDIO_BASE}-col.jpg
+
 
     log "Annotating images" "INFO"
-    convert "${AUDIO_FILE_BASE}.jpg" -gravity $IMAGE_ANNOTATION_LOCATION -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-122-rectified.jpg"
+    convert "${RAMFS_AUDIO_BASE}.jpg" -gravity $IMAGE_ANNOTATION_LOCATION -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-122-rectified.jpg"
     convert -thumbnail 300 "${IMAGE_FILE_BASE}-122-rectified.jpg" "${IMAGE_THUMB_BASE}-122-rectified.jpg"
-    convert "${AUDIO_FILE_BASE}-ir.jpg" -gravity $IMAGE_ANNOTATION_LOCATION -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-ir-122-rectified.jpg"
+    convert "${RAMFS_AUDIO_BASE}-ir.jpg" -gravity $IMAGE_ANNOTATION_LOCATION -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-ir-122-rectified.jpg"
     convert -thumbnail 300 "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${IMAGE_THUMB_BASE}-ir-122-rectified.jpg"
-    convert "${AUDIO_FILE_BASE}-col.jpg" -gravity $IMAGE_ANNOTATION_LOCATION -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-col-122-rectified.jpg"
+    convert "${RAMFS_AUDIO_BASE}-col.jpg" -gravity $IMAGE_ANNOTATION_LOCATION -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-col-122-rectified.jpg"
     convert -thumbnail 300 "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${IMAGE_THUMB_BASE}-col-122-rectified.jpg"
 
     # insert or replace in case there was already an insert due to the spectrogram creation
@@ -172,20 +176,22 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     pass_id=$(sqlite3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
     $SQLITE3 $DB_FILE "UPDATE predict_passes SET is_active = 0 WHERE (predict_passes.pass_start) in (select predict_passes.pass_start from predict_passes inner join decoded_passes on predict_passes.pass_start = decoded_passes.pass_start where decoded_passes.id = $pass_id);"
 
+
     log "Cleaning up temp files" "INFO"
-    rm -f ${AUDIO_FILE_BASE}_0.bmp
-    rm -f ${AUDIO_FILE_BASE}_1.bmp
-    rm -f ${AUDIO_FILE_BASE}_2.bmp
-    rm -f ${AUDIO_FILE_BASE}.jpg
-    rm -f ${AUDIO_FILE_BASE}-ir.jpg
-    rm -f ${AUDIO_FILE_BASE}-col.jpg
-    rm -f ${AUDIO_FILE_BASE}.bmp
-    rm -f ${AUDIO_FILE_BASE}-ir.bmp
-    rm -f ${AUDIO_FILE_BASE}-col.bmp
-    rm -f ${AUDIO_FILE_BASE}-rectified.jpg
-    rm -f ${AUDIO_FILE_BASE}-ir-rectified.jpg
-    rm -f ${AUDIO_FILE_BASE}-col-rectified.jpg
-    rm -f ${AUDIO_FILE_BASE}.dec
+    rm -f ${RAMFS_AUDIO_BASE}_0.bmp
+    rm -f ${RAMFS_AUDIO_BASE}_1.bmp
+    rm -f ${RAMFS_AUDIO_BASE}_2.bmp
+    rm -f ${RAMFS_AUDIO_BASE}.jpg
+    rm -f ${RAMFS_AUDIO_BASE}-ir.jpg
+    rm -f ${RAMFS_AUDIO_BASE}-col.jpg
+    rm -f ${RAMFS_AUDIO_BASE}.bmp
+    rm -f ${RAMFS_AUDIO_BASE}-ir.bmp
+    rm -f ${RAMFS_AUDIO_BASE}-col.bmp
+    rm -f ${RAMFS_AUDIO_BASE}-rectified.jpg
+    rm -f ${RAMFS_AUDIO_BASE}-ir-rectified.jpg
+    rm -f ${RAMFS_AUDIO_BASE}-col-rectified.jpg
+    rm -f ${RAMFS_AUDIO_BASE}.dec
+
   else
     log "Did not get a successful .bmp image - stopping processing" "ERROR"
   fi
