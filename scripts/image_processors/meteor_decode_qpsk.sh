@@ -1,13 +1,13 @@
 #!/bin/bash
 #
-# Purpose: Demodulate Meteor-M 2 audio file.
+# Purpose: Decode Meteor-M 2 qpsk file to .bmp image file.
 #
 # Input parameters:
 #   1. Input QPSK file
-#   2. Output .wav file
+#   2. Output filename for .bmp file
 #
 # Example:
-#   ./demodulate_meteor.sh /path/to/input.qpsk /path/to/output.wav
+#   ./meteor_decode.sh /path/to/input.qpsk /path/to/output.bmp
 
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
@@ -15,7 +15,7 @@
 
 # input params
 INPUT_QPSK=$1
-OUTPUT_WAV=$2
+OUTPUT_BMP=$2
 
 # produce the output image
-$METEOR_DEMOD -B -o "${INPUT_QPSK}" "${OUTPUT_WAV}" >> $NOAA_LOG 2>&1
+$MEDET_ARM "${INPUT_QPSK}" "${OUTPUT_BMP}" -cd

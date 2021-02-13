@@ -9,12 +9,18 @@ longitude: -74.005974
 timezone_offset: -5
 
 # receiver settings
+#   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'gnuradio')
+#     **WARNING**: 'gnuradio' does not work with certain SDR devices (e.g. it will not currently
+#                  work with a RTL-SDR v3 dongle, as no image will be decoded from the bitstream)
 #   sdr_device_id - which SDR device to use (use rtl_eeprom to see available devices)
 #   enable_bias_tee - driving power to LNA, for example
-#   gain - receiver gain
+#   receiver_gain - receiver gain
+#   receiver_freq_offset - receiver frequency offset (PPM)
+meteor_receiver: 'rtl_fm'
 sdr_device_id: 0
 enable_bias_tee: false
 receiver_gain: 50
+receiver_freq_offset: -6
 
 # whether to schedule specific orbiting objects for capture
 schedule_noaa: true
