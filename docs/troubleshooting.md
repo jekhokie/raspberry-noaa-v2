@@ -92,3 +92,18 @@ $ python3 ./scripts/sun.py 1613063493
 If the output value (in the above case, 33 degrees) was less than your `SUN_MIN_ELEV` threshold, night processing of the
 image occurred and, if the sun was actually bright enough in your area at that time, the image would be almost completely
 white. To adjust this, lower your `SUN_MIN_ELEV` threshold.
+
+# Images Not Showing for Captures
+
+If you are missing images for captures you are fairly certain should have produced images (high elevation, for example),
+it's possible you may be running into an issue where some versions of `rtl_fm` do not have a Bias-Tee option (`-T`) when
+attempting to enable Bias-Tee. This framework specifically installs a version of `rtl_fm` that is compatible with the
+Bias-Tee option, but if you are using another distribution that has the binary pre-installed and/or install another version
+yourself, it's possible this may be causing the recording to crash when attempting to use the `-T` option if it's not
+available in the version being used. To check if your `rtl_fm` version supports the Bias-Tee option, you can run the command
+`rtl_fm -h`. This command will display all available flags for your version, which should indicate a `-T` option available if
+supported.
+
+It's recommended you use the binary installed with this framework. However, if you must install or use another version and
+the version does not support enabling Bias-Tee, there are ways to force Bias-Tee to be on through the SDR drivers for some
+SDR devices (see your device official documentation).
