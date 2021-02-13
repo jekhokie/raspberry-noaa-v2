@@ -139,7 +139,7 @@ git pull
 # and incorporate any changes/updates
 
 # perform upgrade
-./install_and_update.sh
+./install_and_upgrade.sh
 ```
 
 ## Post Install
