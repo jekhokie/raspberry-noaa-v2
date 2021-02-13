@@ -73,35 +73,6 @@ Audio may not exist depending on how you configured your installation. By defaul
 after images are created to preserve space on your Raspberry Pi. If you disabled deleting audio, the audio should obviously
 still remain in its directory after image processing completes.
 
-In addition, there is an ability to "prune" images to maintain space on your Raspberry Pi. This can be done one of 2 ways,
-detailed below. In either case, to adjust the configurations for these, update the respective parameter in the `config/settings.yml`
-file and re-run the `install_and_upgrade.sh` script to propagate your settings *BEFORE* creating the cron jobs.
-
-**NOTE**: Both of these prune scripts delete the associated files and database records for the captures that are in scope.
-Make sure this is what you want as once the script has run and the captures are deleted, they will not be recoverable.
-
-## Prune Oldest n Captures
-
-This script, named `scripts/prune_scripts/prune_oldest.sh`, is used to prune the oldest `n` number of captures, where `n` is
-configured as the `delete_oldest_n` parameter in `config/settings.yml`. This is an example of a cron job that is
-configured to run nightly at midnight using this script:
-
-```bash
-# prune oldest n captures
-cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa-v2/scripts/prune_oldest.sh") | crontab -
-```
-
-## Prune Captures Older Than n Days
-
-This script, named `scripts/prune_scripts/prune_older_than.sh`, is used to prune all captures older than `n` days old, where
-`n` is configured as the `delete_older_than_n` parameter in `config/settings.yml`. This is an example of a cron job
-that is configured to run nightly at midnight using this script:
-
-```bash
-# prune captures older than n days
-cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa-v2/scripts/prune_older_than.sh") | crontab -
-```
-
 # Completely White Meteor-M 2 Images
 
 It's possible that you received a good Meteor-M 2 audio capture but the processing appears to have produced a completely
@@ -121,3 +92,18 @@ $ python3 ./scripts/sun.py 1613063493
 If the output value (in the above case, 33 degrees) was less than your `SUN_MIN_ELEV` threshold, night processing of the
 image occurred and, if the sun was actually bright enough in your area at that time, the image would be almost completely
 white. To adjust this, lower your `SUN_MIN_ELEV` threshold.
+
+# Images Not Showing for Captures
+
+If you are missing images for captures you are fairly certain should have produced images (high elevation, for example),
+it's possible you may be running into an issue where some versions of `rtl_fm` do not have a Bias-Tee option (`-T`) when
+attempting to enable Bias-Tee. This framework specifically installs a version of `rtl_fm` that is compatible with the
+Bias-Tee option, but if you are using another distribution that has the binary pre-installed and/or install another version
+yourself, it's possible this may be causing the recording to crash when attempting to use the `-T` option if it's not
+available in the version being used. To check if your `rtl_fm` version supports the Bias-Tee option, you can run the command
+`rtl_fm -h`. This command will display all available flags for your version, which should indicate a `-T` option available if
+supported.
+
+It's recommended you use the binary installed with this framework. However, if you must install or use another version and
+the version does not support enabling Bias-Tee, there are ways to force Bias-Tee to be on through the SDR drivers for some
+SDR devices (see your device official documentation).
