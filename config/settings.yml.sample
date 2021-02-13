@@ -65,10 +65,14 @@ sun_min_elevation: 10
 #   noaa_map_crosshair_color - color of base station crosshair
 #   noaa_map_grid_degrees - latitude/longitude lines drawn every grid degrees (default 10.0, 0.0 to disable)
 #   noaa_map_grid_color - color of gridlines for latitude/longitude
+#   noaa_map_country_border_color - color of country borders
+#   noaa_map_state_border_color - color of state borders
 noaa_map_crosshair_enable: false
 noaa_map_crosshair_color: "0xffff00"
 noaa_map_grid_degrees: 10.0
 noaa_map_grid_color: "0xff0000"
+noaa_map_country_border_color: "0xff0000"
+noaa_map_state_border_color: "0xff0000"
 
 # locale settings for timezone and language
 #   timezone: see https://www.php.net/manual/en/timezones.php
