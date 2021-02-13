@@ -153,7 +153,7 @@ to enable/configure with links to the respective instructions:
 ## Changing Configurations After Install
 
 Want to make changes to either the base station functionality or webpanel settings? Simply update the `config/settings.yml` file
-and re-run `./install_and_update.sh` - the script will take care of the rest of the configurations!
+and re-run `./install_and_upgrade.sh` - the script will take care of the rest of the configurations!
 
 ## Troubleshooting
 
