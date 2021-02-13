@@ -187,6 +187,8 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     rm -f ${AUDIO_FILE_BASE}-ir-rectified.jpg
     rm -f ${AUDIO_FILE_BASE}-col-rectified.jpg
     rm -f ${AUDIO_FILE_BASE}.dec
+  else
+    die "Did not get a successful .bmp image - stopping processing"
   fi
 else
   die "Receiver type '$METEOR_RECEIVER' not valid"
