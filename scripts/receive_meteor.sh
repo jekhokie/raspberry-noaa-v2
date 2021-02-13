@@ -54,7 +54,7 @@ if pgrep "rtl_fm" > /dev/null; then
 fi
 
 log "Starting rtl_fm record" "INFO"
-#${AUDIO_PROC_DIR}/meteor_record.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}" #note i have removed .wav here
+${AUDIO_PROC_DIR}/meteor_record.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}" #note i have removed .wav here
 
 #sleep to allow files to close.
 echo "sleeping"
