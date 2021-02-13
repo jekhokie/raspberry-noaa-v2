@@ -90,7 +90,9 @@ fi
 for enhancement in $ENHANCEMENTS; do
   log "Decoding image" "INFO"
   annotation="${SAT_NAME} $enhancement ${capture_start} Elev: $SAT_MAX_ELEVATION° Sun elevation: #SUN_ELEV°"
-
+  if ["${GROUND_STATION_LOCATION}" != ""]; then
+     annotation="Ground Station: ${GROUND_STATION_LOCATION} ${annotation}"
+  fi   
   # determine what frequency based on NOAA variant
   proc_script=""
   case $enhancement in
