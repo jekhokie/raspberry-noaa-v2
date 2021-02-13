@@ -25,7 +25,7 @@
 
 - name: wxtoimg config file
   template:
-    src: wxtoimgrc
+    src: wxtoimgrc.j2
     dest: ~pi/.wxtoimgrc
     owner: pi
     group: pi
