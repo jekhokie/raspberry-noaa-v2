@@ -32,8 +32,10 @@ delete_audio: false
 # processing settings
 #   flip_meteor_image - whether the meteor image should be flipped
 #   produce_spectrogram - whether to produce a spectrogram image of the audio recording
+#   noaa_crop_telemetry - whether to crop the left/right telemetry in image captures
 flip_meteor_image: true
 produce_spectrogram: true
+noaa_crop_telemetry: false
 
 # thresholds for scheduling captures - enables avoiding an attempt
 # to capture imagery if objects are lower than these degree elevation thresholds
