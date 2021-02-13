@@ -67,7 +67,12 @@ fi
 if [ "${NOAA_MAP_GRID_DEGREES}" != "0.0" ]; then
   extra_map_opts="${extra_map_opts} -g ${NOAA_MAP_GRID_DEGREES} -c g:${NOAA_MAP_GRID_COLOR}"
 fi
-
+if [ "${NOAA_MAP_COUNTRY_BORDER_COLOR}" != "" ]; then 
+   extra_map_opts="${extra_map_opts} -c C:${NOAA_MAP_COUNTRY_BORDER_COLOR}"
+fi
+if [ "${NOAA_MAP_STATE_BORDER_COLOR}" != "" ]; then 
+   extra_map_opts="${extra_map_opts} -c S:${NOAA_MAP_STATE_BORDER_COLOR}"
+fi
 # build overlay map
 map_overlay="${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
 $WXMAP -T "${SAT_NAME}" -H "${TLE_FILE}" -p 0 ${extra_map_opts} -o "${epoch_adjusted}" $map_overlay >> $NOAA_LOG 2>&1
