@@ -80,4 +80,42 @@
     owner: pi
     group: pi
     mode: 0644
+
+- name: disable wifi power mgmt script
+  become: yes
+  copy:
+    src: disable-wifi-powermgmt.sh
+    dest: /usr/local/sbin/disable-wifi-powermgmt.sh
+    owner: root
+    group: root
+    mode: 0755
+  when: disable_wifi_power_mgmt | bool
+  register: wifi_powermgmt_script
+
+- name: disable wifi power mgmt service definition
+  become: yes
+  copy:
+    src: disable-wifi-powermgmt.service
+    dest: /lib/systemd/system/disable-wifi-powermgmt.service
+    owner: root
+    group: root
+    mode: 0644
+  when: disable_wifi_power_mgmt | bool
+  register: wifi_powermgmt_service
+
+- name: enable systemd wifi power management disable service
+  become: yes
+  systemd:
+    daemon_reload: yes
+    name: disable-wifi-powermgmt.service
+    enabled: yes
+  when: (wifi_powermgmt_script.changed or wifi_powermgmt_service.changed) and (disable_wifi_power_mgmt|bool)
+
+- name: disable systemd wifi power management disable service
+  become: yes
+  systemd:
+    daemon_reload: yes
+    name: disable-wifi-powermgmt.service
+    enabled: no
+  when: not disable_wifi_power_mgmt|bool
 ...
