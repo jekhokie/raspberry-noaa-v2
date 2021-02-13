@@ -26,5 +26,11 @@ MAP_OVERLAY=$1
 INPUT_WAV=$2
 OUTPUT_IMAGE=$3
 
+# calculate any extra args for the processor
+extra_args=""
+if [ "${NOAA_CROP_TELEMETRY}" == "true" ]; then
+  extra_args="-c"
+fi
+
 # produce the output image
-$WXTOIMG -o -m "${MAP_OVERLAY}" -e "HVC-precip" "${INPUT_WAV}" "${OUTPUT_IMAGE}"
+$WXTOIMG -o -m "${MAP_OVERLAY}" ${extra_args} -e "HVC-precip" "${INPUT_WAV}" "${OUTPUT_IMAGE}"
