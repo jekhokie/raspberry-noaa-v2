@@ -19,4 +19,4 @@ INPUT_JPG=$1
 ANNOTATION_TEXT=$2
 QUALITY=$3
 
-$CONVERT "${INPUT_JPG}" -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${ANNOTATION_TEXT}" "${INPUT_JPG}"
+$CONVERT "${INPUT_JPG}" -gravity $IMAGE_ANNOTATION_LOCATION -channel rgb -normalize -undercolor black -fill yellow -pointsize 18 -annotate +10+10 "${ANNOTATION_TEXT}" "${INPUT_JPG}"

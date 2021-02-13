@@ -161,11 +161,11 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     $CONVERT ${AUDIO_FILE_BASE}-col-rectified.jpg -rotate 180 -normalize -quality 90 ${AUDIO_FILE_BASE}-col.jpg
 
     log "Annotating images" "INFO"
-    convert "${AUDIO_FILE_BASE}.jpg" -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-122-rectified.jpg"
+    convert "${AUDIO_FILE_BASE}.jpg" -gravity $IMAGE_ANNOTATION_LOCATION -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-122-rectified.jpg"
     convert -thumbnail 300 "${IMAGE_FILE_BASE}-122-rectified.jpg" "${IMAGE_THUMB_BASE}-122-rectified.jpg"
-    convert "${AUDIO_FILE_BASE}-ir.jpg" -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-ir-122-rectified.jpg"
+    convert "${AUDIO_FILE_BASE}-ir.jpg" -gravity $IMAGE_ANNOTATION_LOCATION -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-ir-122-rectified.jpg"
     convert -thumbnail 300 "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${IMAGE_THUMB_BASE}-ir-122-rectified.jpg"
-    convert "${AUDIO_FILE_BASE}-col.jpg" -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-col-122-rectified.jpg"
+    convert "${AUDIO_FILE_BASE}-col.jpg" -gravity $IMAGE_ANNOTATION_LOCATION -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-col-122-rectified.jpg"
     convert -thumbnail 300 "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${IMAGE_THUMB_BASE}-col-122-rectified.jpg"
 
     # insert or replace in case there was already an insert due to the spectrogram creation
