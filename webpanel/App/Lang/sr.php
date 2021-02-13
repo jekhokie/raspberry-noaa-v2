@@ -19,5 +19,6 @@ return array(
   "cancel" => "Poništiti, otkazati",
   "fail_delete_missing_id" => "Brisanje nije uspelo - nedostaje parametar „id“",
   "successful_delete_capture" => "Snimanje je uspešno izbrisano",
+  "conflicting_pass" => "Sukob sa prethodnom prolaskom",
 );
 ?>

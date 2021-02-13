@@ -29,7 +29,4 @@ PPM=$4
 log "Recording at ${METEOR_FREQ} MHz..." "INFO"
 
 # Hardcoded values at end These should be passed. Possibly one for Justin to pipe through from config.
-timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/rtlsdr_m2_lrpt_rx.py" "${SAT_NAME}" "${METEOR_FREQ}" "${OUT_FILE}" 38.2 3
-
-
-
+timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/rtlsdr_m2_lrpt_rx.py" "${SAT_NAME}" "${METEOR_FREQ}" "${OUT_FILE}" 38.2 3 >> $NOAA_LOG 2>&1

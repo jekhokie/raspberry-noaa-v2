@@ -8,6 +8,9 @@ The `at` jobs log their output and you will receive a linux mail in the `pi` use
 results after the pass and processing completes. Use the `mail` application on the command line to view the mail
 messages and investigate the log outputs for any indications of errors.
 
+In addition, all detailed log output is now captured in the directory `/var/log/raspberry-noaa-v2/` as well - check
+the `output.log` files in this directory for detailed capture and processing information!
+
 # USB Access Permission
 
 If you inspect the mail output from your scheduled runs and see a message related to the following, it likely means
@@ -70,11 +73,51 @@ Audio may not exist depending on how you configured your installation. By defaul
 after images are created to preserve space on your Raspberry Pi. If you disabled deleting audio, the audio should obviously
 still remain in its directory after image processing completes.
 
-In addition, there is an ability to "prune" images to maintain space on your Raspberry Pi, deleting the 10 oldest images
-from the disk and the database. Note that this is a destructive operation that is non-recoverable, so be certain this is
-what you want to be doing. If so, run the following command, which will configure the prune script to run each day at
-midnight:
+In addition, there is an ability to "prune" images to maintain space on your Raspberry Pi. This can be done one of 2 ways,
+detailed below. In either case, to adjust the configurations for these, update the respective parameter in the `config/settings.yml`
+file and re-run the `install_and_upgrade.sh` script to propagate your settings *BEFORE* creating the cron jobs.
+
+**NOTE**: Both of these prune scripts delete the associated files and database records for the captures that are in scope.
+Make sure this is what you want as once the script has run and the captures are deleted, they will not be recoverable.
+
+## Prune Oldest n Captures
+
+This script, named `scripts/prune_scripts/prune_oldest.sh`, is used to prune the oldest `n` number of captures, where `n` is
+configured as the `delete_oldest_n` parameter in `config/settings.yml`. This is an example of a cron job that is
+configured to run nightly at midnight using this script:
 
 ```bash
-cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa-v2/scripts/prune.sh") | crontab -
+# prune oldest n captures
+cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa-v2/scripts/prune_oldest.sh") | crontab -
 ```
+
+## Prune Captures Older Than n Days
+
+This script, named `scripts/prune_scripts/prune_older_than.sh`, is used to prune all captures older than `n` days old, where
+`n` is configured as the `delete_older_than_n` parameter in `config/settings.yml`. This is an example of a cron job
+that is configured to run nightly at midnight using this script:
+
+```bash
+# prune captures older than n days
+cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa-v2/scripts/prune_older_than.sh") | crontab -
+```
+
+# Completely White Meteor-M 2 Images
+
+It's possible that you received a good Meteor-M 2 audio capture but the processing appears to have produced a completely
+white/blank image output. In these cases, it's likely that the calculated sun angle for the time of capture was below the
+threshold of your `SUN_MIN_ELEV` parameter, resulting in processing the image using values assuming a night capture and
+washing out the actual detail in the image. You can check whether this was the case by getting the epoch time at the start
+of the capture (convert your local capture start time to epoch time using a tool such as
+[epoch calculator](https://www.epochconverter.com/)) and passing it to the `sun.py` script to see what the sun angle was
+(according to the script) at that time of capture:
+
+```bash
+$ python3 ./scripts/sun.py 1613063493
+
+33
+```
+
+If the output value (in the above case, 33 degrees) was less than your `SUN_MIN_ELEV` threshold, night processing of the
+image occurred and, if the sun was actually bright enough in your area at that time, the image would be almost completely
+white. To adjust this, lower your `SUN_MIN_ELEV` threshold.

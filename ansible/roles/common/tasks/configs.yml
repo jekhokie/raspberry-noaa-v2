@@ -38,4 +38,22 @@
     owner: pi
     group: pi
     mode: 0644
+
+- name: log directory for raspberry-noaa-v2 logs
+  become: yes
+  file:
+    path: /var/log/raspberry-noaa-v2
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0755
+
+- name: logrotate settings for raspberry-noaa-v2 logs
+  become: yes
+  copy:
+    src: logrotate-settings
+    dest: /etc/logrotate.d/raspberry-noaa-v2
+    owner: root
+    group: root
+    mode: 0644
 ...

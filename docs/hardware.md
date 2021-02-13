@@ -11,6 +11,7 @@ Below are Raspberry Pi models that are in use and confirmed working with this fr
 
 * Raspberry Pi 4 (2GB)
 * Raspberry Pi 3 B+
+* Raspberry Pi 3 B
 * Raspberry Pi 2
 
 Below are Raspberry Pi models that have been tested but do *not* work with this framework:
@@ -36,7 +37,7 @@ and to choose the highest Class/U rating possible to enable faster write and rea
 
 Below are links to SDR receivers that are in use and confirmed working with this framework:
 
-* [RTL-SDR.com Dongle](https://www.rtl-sdr.com/buy-rtl-sdr-dvb-t-dongles/)
+* [RTL-SDR.com V3 Dongle](https://www.rtl-sdr.com/buy-rtl-sdr-dvb-t-dongles/)
 * [Nooelec NESDR SMArTee XTR SDR](https://www.nooelec.com/store/nesdr-smartee-xtr-sdr.html)
 
 ## Antenna
@@ -58,5 +59,6 @@ Below are links to other hardware that are in use and confirmed working with thi
 
 * [Nooelec SAWbird+ NOAA Filter](https://www.nooelec.com/store/sdr/sdr-addons/sawbird-plus-noaa-308.html)
 * [Flamingo+ FM Notch Filter](https://www.nooelec.com/store/sdr/sdr-addons/flamingo-plus-fm.html)
+* Double Cross Antenna
 * RG-174u Cable
 * S-LMR240 Cable

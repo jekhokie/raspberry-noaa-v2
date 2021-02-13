@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use Config\Config;
 
 class Capture extends \Lib\Model {
     public $enhancements;
@@ -37,8 +38,7 @@ class Capture extends \Lib\Model {
     # get total number of pages to display images given the
     # passed number of images per page
     public function totalPages($images_per_page) {
-      $decoded_passes = $this->db_conn->querySingle("SELECT count()
-                                                     FROM decoded_passes;");
+      $decoded_passes = $this->db_conn->querySingle("SELECT count() FROM decoded_passes;");
       return ceil($decoded_passes/$images_per_page);
     }
 
@@ -46,6 +46,7 @@ class Capture extends \Lib\Model {
     public function getEnhancements($id) {
       $query = $this->db_conn->prepare('SELECT daylight_pass,
                                                sat_type,
+                                               file_path,
                                                img_count,
                                                has_spectrogram
                                         FROM decoded_passes
@@ -73,6 +74,15 @@ class Capture extends \Lib\Model {
           break;
       }
 
+      # remove any enhancements that do not actually exist for this capture
+      foreach ($enhancements as $e) {
+        $filepath = Config::IMAGE_PATH . '/' . $pass['file_path'] . $e;
+        if (!file_exists($filepath)) {
+          $key = array_search($e, $enhancements);
+          unset($enhancements[$key]);
+        }
+      }
+
       # capture spectrogram if one exists
       if ($pass['has_spectrogram'] == '1') {
         array_push($enhancements, '-spectrogram.png');
@@ -83,9 +93,7 @@ class Capture extends \Lib\Model {
 
     # get the image path for the specific image
     public function getImagePath($id) {
-      $query = $this->db_conn->prepare('SELECT file_path
-                                        FROM decoded_passes
-                                        WHERE id = ?;');
+      $query = $this->db_conn->prepare('SELECT file_path FROM decoded_passes WHERE id = ?;');
       $query->bindValue(1, $id);
       $result = $query->execute();
       $image = $result->fetchArray();
@@ -95,9 +103,7 @@ class Capture extends \Lib\Model {
 
     # get the epoch start time for the capture
     public function getStartEpoch($id) {
-      $query = $this->db_conn->prepare('SELECT pass_start
-                                        FROM decoded_passes
-                                        WHERE id = ?;');
+      $query = $this->db_conn->prepare('SELECT pass_start FROM decoded_passes WHERE id = ?;');
       $query->bindValue(1, $id);
       $result = $query->execute();
       $res = $result->fetchArray();

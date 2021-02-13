@@ -19,6 +19,7 @@ return array(
   "cancel" => "إلغاء",
   "fail_delete_missing_id" => "فشل الحذف - معلمة "id" مفقودة",
   "successful_delete_capture" => "تم حذف الالتقاط بنجاح",
+  "conflicting_pass" => "التعارض مع التمريرة السابقة",
 );
 ?>
 

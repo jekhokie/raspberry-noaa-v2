@@ -9,6 +9,14 @@ div#satvis iframe {
   height: 100%;
 }
 
+table#passes tr td.conflict i.conflict-icon {
+  color: #ec5645;
+}
+
+table#passes tr.inactive td.conflict i.conflict-icon {
+  color: lightgray;
+}
+
 table#passes tr.inactive {
   color: lightgray;
 }

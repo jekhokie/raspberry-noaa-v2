@@ -21,5 +21,5 @@ OUT_PNG_FILE=$2
 CHART_TITLE=$3
 CHART_COMMENT=$4
 
-# produce the spectrogram
-$SOX "${IN_WAV_FILE}" -n spectrogram -t "${CHART_TITLE}" -x 1024 -y 257 -c "${CHART_COMMENT}" -o "${OUT_PNG_FILE}"
+# produce the spectrogram on a single channel (the first one)
+$SOX "${IN_WAV_FILE}" -n remix 1 spectrogram -t "${CHART_TITLE}" -x 1024 -y 257 -c "${CHART_COMMENT}" -o "${OUT_PNG_FILE}"
