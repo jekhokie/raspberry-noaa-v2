@@ -33,9 +33,12 @@ delete_audio: false
 #   flip_meteor_image - whether the meteor image should be flipped
 #   produce_spectrogram - whether to produce a spectrogram image of the audio recording
 #   noaa_crop_telemetry - whether to crop the left/right telemetry in image captures
+#   image_annotation_location - where to place the annotation in images - valid options are:
+#        NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
 flip_meteor_image: true
 produce_spectrogram: true
 noaa_crop_telemetry: false
+image_annotation_location: 'NorthWest'
 
 # thresholds for scheduling captures - enables avoiding an attempt
 # to capture imagery if objects are lower than these degree elevation thresholds
