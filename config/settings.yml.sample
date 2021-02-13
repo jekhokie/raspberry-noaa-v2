@@ -74,6 +74,9 @@ noaa_map_grid_color: "0xff0000"
 noaa_map_country_border_color: "0xff0000"
 noaa_map_state_border_color: "0xff0000"
 
+#ground station location for annotation
+ground_station_location: ""
+
 # locale settings for timezone and language
 #   timezone: see https://www.php.net/manual/en/timezones.php
 #   lang_setting: see the 'webpanel/App/Lang' folder for available
