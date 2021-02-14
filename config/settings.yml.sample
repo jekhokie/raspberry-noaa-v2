@@ -35,10 +35,13 @@ delete_audio: false
 #   noaa_crop_telemetry - whether to crop the left/right telemetry in image captures
 #   image_annotation_location - where to place the annotation in images - valid options are:
 #        NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
+#   produce_noaa_pristine_image - whether to produce a pristine image (unmodified) for larger
+#        composite-based use cases
 flip_meteor_image: true
 produce_spectrogram: true
 noaa_crop_telemetry: false
 image_annotation_location: 'NorthWest'
+produce_noaa_pristine_image: true
 
 # thresholds for scheduling captures - enables avoiding an attempt
 # to capture imagery if objects are lower than these degree elevation thresholds
