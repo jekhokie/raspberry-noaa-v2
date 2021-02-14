@@ -1,0 +1,51 @@
+---
+- name: install mpack and msmtp if emailing is enabled
+  become: yes
+  apt:
+    update_cache: no
+    state: present
+    name:
+      - mpack
+      - msmtp
+      - msmtp-mta
+  when: enable_email_push | bool
+
+- name: drop template email msmtp config file
+  copy:
+    src: msmtprc
+    dest: /home/pi/.msmtprc
+    force: no
+    owner: pi
+    group: pi
+    mode: 0600
+  when: enable_email_push | bool
+
+- name: create an msmtp log directory
+  become: yes
+  file:
+    path: /var/log/msmtp
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0750
+  when: enable_email_push | bool
+
+- name: create an msmtp starter log with permissions
+  become: yes
+  file:
+    path: /var/log/msmtp/output.log
+    owner: pi
+    group: pi
+    mode: 0644
+    state: touch
+  when: enable_email_push | bool
+
+- name: logrotate settings for msmtp
+  become: yes
+  copy:
+    src: email-logrotate-settings
+    dest: /etc/logrotate.d/msmtp
+    owner: root
+    group: root
+    mode: 0644
+...
