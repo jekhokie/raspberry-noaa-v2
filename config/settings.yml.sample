@@ -41,7 +41,7 @@ flip_meteor_image: true
 produce_spectrogram: true
 noaa_crop_telemetry: false
 image_annotation_location: 'NorthWest'
-produce_noaa_pristine_image: true
+produce_noaa_pristine_image: false
 
 # thresholds for scheduling captures - enables avoiding an attempt
 # to capture imagery if objects are lower than these degree elevation thresholds
