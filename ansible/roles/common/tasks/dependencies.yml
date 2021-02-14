@@ -27,13 +27,15 @@
       - sox
       - sqlite3
 
-- name: install mpack if emailing is desired
+- name: install mpack and msmtp if emailing is enabled
   become: yes
   apt:
     update_cache: no
     state: present
     name:
       - mpack
+      - msmtp
+      - msmtp-mta
   when: enable_email_push | bool
 
 - name: install dependencies (stretch only)
