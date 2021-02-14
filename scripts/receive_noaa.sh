@@ -140,7 +140,7 @@ for enhancement in $ENHANCEMENTS; do
 
   if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
     log "Emailing image" "INFO"
-    ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-$enchancement.jpg" "${annotation}"
+    ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-$enhancement.jpg" "${annotation}"
   fi
 done
 
