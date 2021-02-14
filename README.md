@@ -149,6 +149,7 @@ to enable/configure with links to the respective instructions:
 
 * [Pruning Old Images](docs/pruning.md)
 * [Database Backups](docs/db_backups.md)
+* [Emailing Images (IFTTT)](docs/emailing.md)
 
 ## Changing Configurations After Install
 
