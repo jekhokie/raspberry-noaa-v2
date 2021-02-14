@@ -44,7 +44,8 @@ WXTOIMG="/usr/local/bin/wxtoimg"
 SCRIPTS_DIR="${NOAA_HOME}/scripts"
 AUDIO_PROC_DIR="${SCRIPTS_DIR}/audio_processors"
 IMAGE_PROC_DIR="${SCRIPTS_DIR}/image_processors"
-
+PUSH_PROC_DIR="${SCRIPTS_DIR}/push_processors/"
+ 
 # frequency ranges for objects
 METEOR_FREQ="137.1000"
 NOAA15_FREQ="137.6200"

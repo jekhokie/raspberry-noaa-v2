@@ -116,6 +116,12 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     rm "${AUDIO_FILE_BASE}.bmp"
     rm "${AUDIO_FILE_BASE}.dec"
 
+
+    if [ "$EMAIL_OUTPUT" == "true" ]; then
+      log "Mailing images to IFTT" "INFO"
+      ${PUSH_PROC_DIR}/mail-to-iftt.sh  "${IMAGE_FILE_BASE}" ${annotation}
+    fi
+
     # insert or replace in case there was already an insert due to the spectrogram creation
     $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram) VALUES ($EPOCH_START,\"$FILENAME_BASE\", 1, 0, $spectrogram);"
     pass_id=$(sqlite3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
@@ -176,7 +182,11 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     pass_id=$(sqlite3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
     $SQLITE3 $DB_FILE "UPDATE predict_passes SET is_active = 0 WHERE (predict_passes.pass_start) in (select predict_passes.pass_start from predict_passes inner join decoded_passes on predict_passes.pass_start = decoded_passes.pass_start where decoded_passes.id = $pass_id);"
 
-
+    if [ "$EMAIL_OUTPUT" == "true" ]; then
+	log "Mailing images to IFTT" "INFO"
+	${PUSH_PROC_DIR}/mail-to-iftt.sh  "${IMAGE_FILE_BASE}" ${annotation}
+    fi
+   
     log "Cleaning up temp files" "INFO"
     rm -f ${RAMFS_AUDIO_BASE}_0.bmp
     rm -f ${RAMFS_AUDIO_BASE}_1.bmp
