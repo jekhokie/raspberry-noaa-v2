@@ -34,4 +34,13 @@ else
   log "  - ${script} already applied" "INFO"
 fi
 
+script="02_add_noaa_pristine_bool.sql"
+check=$($SQL_CMD $NOAA_HOME/db/panel.db ".schema decoded_passes" | grep 'has_pristine')
+if [ -z "${check}" ]; then
+  log "  - applying ${script}" "INFO"
+  $SQL_CMD $NOAA_HOME/db/panel.db < $NOAA_HOME/db_migrations/$script
+else
+  log "  - ${script} already applied" "INFO"
+fi
+
 log "Schema updates complete!" "INFO"
