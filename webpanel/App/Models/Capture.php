@@ -48,7 +48,8 @@ class Capture extends \Lib\Model {
                                                sat_type,
                                                file_path,
                                                img_count,
-                                               has_spectrogram
+                                               has_spectrogram,
+                                               has_pristine
                                         FROM decoded_passes
                                         WHERE id = ?;');
       $query->bindValue(1, $id);
@@ -81,6 +82,10 @@ class Capture extends \Lib\Model {
       # capture spectrogram if one exists
       if ($pass['has_spectrogram'] == '1') {
         array_push($enhancements, '-spectrogram.png');
+      }
+      # capture pristine if one exists
+      if ($pass['has_pristine'] == '1') {
+        array_push($enhancements, '-pristine.jpg');
       }
       
       $this->enhancements = $enhancements;
