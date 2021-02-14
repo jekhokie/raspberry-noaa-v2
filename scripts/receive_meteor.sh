@@ -60,11 +60,9 @@ if pgrep "rtl_fm" > /dev/null; then
 fi
 
 # TODO: Fix this up - this conditional selection is a massive bit of complexity that
-#       needs to be handled, but in the interest of not breaking everythin (at least in
+#       needs to be handled, but in the interest of not breaking everything (at least in
 #       the first round), keeping it simple.
-
 spectrogram=0
-
 if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   log "Starting rtl_fm record" "INFO"
   ${AUDIO_PROC_DIR}/meteor_record_rtl_fm.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
