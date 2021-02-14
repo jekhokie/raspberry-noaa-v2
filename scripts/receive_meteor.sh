@@ -114,6 +114,11 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     rm "${AUDIO_FILE_BASE}.bmp"
     rm "${AUDIO_FILE_BASE}.dec"
 
+    if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
+      log "Emailing image" "INFO"
+      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}"
+    fi
+
     # insert or replace in case there was already an insert due to the spectrogram creation
     $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram) VALUES ($EPOCH_START,\"$FILENAME_BASE\", 1, 0, $spectrogram);"
     pass_id=$(sqlite3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
@@ -154,12 +159,10 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     python3 "${IMAGE_PROC_DIR}/meteor_rectify.py" ${RAMFS_AUDIO_BASE}-ir.bmp >> $NOAA_LOG 2>&1
     python3 "${IMAGE_PROC_DIR}/meteor_rectify.py" ${RAMFS_AUDIO_BASE}-col.bmp >> $NOAA_LOG 2>&1
 
-
     log "Compressing and rotating where required" "INFO"
     $CONVERT ${RAMFS_AUDIO_BASE}-rectified.jpg -rotate 180 -normalize -quality 90 ${RAMFS_AUDIO_BASE}.jpg
     $CONVERT ${RAMFS_AUDIO_BASE}-ir-rectified.jpg -rotate 180 -normalize -quality 90 ${RAMFS_AUDIO_BASE}-ir.jpg
     $CONVERT ${RAMFS_AUDIO_BASE}-col-rectified.jpg -rotate 180 -normalize -quality 90 ${RAMFS_AUDIO_BASE}-col.jpg
-
 
     log "Annotating images" "INFO"
     convert "${RAMFS_AUDIO_BASE}.jpg" -gravity $IMAGE_ANNOTATION_LOCATION -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-122-rectified.jpg"
@@ -174,6 +177,12 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     pass_id=$(sqlite3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
     $SQLITE3 $DB_FILE "UPDATE predict_passes SET is_active = 0 WHERE (predict_passes.pass_start) in (select predict_passes.pass_start from predict_passes inner join decoded_passes on predict_passes.pass_start = decoded_passes.pass_start where decoded_passes.id = $pass_id);"
 
+    if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
+      log "Emailing image" "INFO"
+      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}"
+      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${annotation}"
+      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${annotation}"
+    fi
 
     log "Cleaning up temp files" "INFO"
     rm -f ${RAMFS_AUDIO_BASE}_0.bmp

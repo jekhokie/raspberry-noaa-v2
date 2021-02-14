@@ -27,6 +27,15 @@
       - sox
       - sqlite3
 
+- name: install mpack if emailing is desired
+  become: yes
+  apt:
+    update_cache: no
+    state: present
+    name:
+      - mpack
+  when: enable_email_push | bool
+
 - name: install dependencies (stretch only)
   become: yes
   apt:

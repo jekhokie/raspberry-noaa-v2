@@ -103,4 +103,12 @@ delete_older_than_n: 0
 #       disable "sleep" mode of your wifi device (assuming it's wlan0), set
 #        this to true
 disable_wifi_power_mgmt: false
+
+# push processing settings for sending images elsewhere
+# Email: Send all images to an email address.
+#   NOTE: Make sure you set up your ~/.msmtprc file before enabling email push!
+#   enable_email_push - whether to send all images to an external email
+#   email_push_address - if enabled, address to send all images to
+enable_email_push: false
+email_push_address: test@ifttt.com
 ...
