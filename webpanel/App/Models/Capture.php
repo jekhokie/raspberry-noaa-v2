@@ -65,7 +65,7 @@ class Capture extends \Lib\Model {
           if ($pass['daylight_pass'] == 1) {
             $enhancements = ['-ZA.jpg','-MCIR.jpg','-MCIR-precip.jpg','-MSA.jpg','-MSA-precip.jpg','-HVC.jpg','-HVC-precip.jpg','-HVCT.jpg','-HVCT-precip.jpg','-therm.jpg'];
           } else {
-            $enhancements = ['-ZA.jpg','-MCIR.jpg','-MCIR-precip.jpg','-therm.jpg'];
+            $enhancements = ['-ZA.jpg','-MCIR.jpg','-MCIR-precip.jpg','-MSA.jpg','-MSA-precip.jpg','-HVC.jpg','-HVC-precip.jpg','-HVCT.jpg','-HVCT-precip.jpg','-therm.jpg'];
           }
           break;
       }

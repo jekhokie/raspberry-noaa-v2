@@ -85,7 +85,7 @@ if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
   ENHANCEMENTS="ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT therm"
   daylight="true"
 else
-  ENHANCEMENTS="ZA MCIR MCIR-precip therm"
+  ENHANCEMENTS="ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT therm"
   daylight="false"
 fi
 
