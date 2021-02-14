@@ -52,6 +52,14 @@ if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
   ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png"
 fi
 
+pristine=0
+if [[ "${PRODUCE_NOAA_PRISTINE}" == "true" ]]; then
+  log "Producing pristine image" "INFO"
+  pristine=1
+  ${IMAGE_PROC_DIR}/noaa_pristine.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.jpg"
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_THUMB_BASE}-pristine.jpg"
+fi
+
 log "Bulding pass map" "INFO"
 # add 10 seconds to ensure we account for small deviations in timing - being even a second too soon
 # can cause an error of "wxmap: warning: could not find matching pass to build overlay map.", while
@@ -135,9 +143,9 @@ rm "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
 
 # store enhancements
 if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
-  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram) VALUES ($EPOCH_START, \"$FILENAME_BASE\", 1, 1, $spectrogram);"
+  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine) VALUES ($EPOCH_START, \"$FILENAME_BASE\", 1, 1, $spectrogram, $pristine);"
 else
-  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram) VALUES ($EPOCH_START, \"$FILENAME_BASE\", 0, 1, $spectrogram);"
+  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine) VALUES ($EPOCH_START, \"$FILENAME_BASE\", 0, 1, $spectrogram, $pristine);"
 fi
 
 pass_id=$($SQLITE3 $DB_FILE "select id from decoded_passes order by id desc limit 1;")
