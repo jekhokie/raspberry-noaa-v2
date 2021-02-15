@@ -110,12 +110,4 @@
     name: disable-wifi-powermgmt.service
     enabled: yes
   when: (wifi_powermgmt_script.changed or wifi_powermgmt_service.changed) and (disable_wifi_power_mgmt|bool)
-
-- name: disable systemd wifi power management disable service
-  become: yes
-  systemd:
-    daemon_reload: yes
-    name: disable-wifi-powermgmt.service
-    enabled: no
-  when: not disable_wifi_power_mgmt|bool
 ...
