@@ -1,0 +1,60 @@
+---
+- name: install dependencies
+  become: yes
+  apt:
+    update_cache: no
+    state: present
+    name:
+      - lightdm
+      - raspberrypi-ui-mods
+      - realvnc-vnc-server
+      - xinit
+      - xserver-xorg
+  when: install_remote_desktop | bool
+
+- name: check if realvnc-vnc-server is installed
+  become: yes
+  command: dpkg -l realvnc-vnc-server
+  register: vnc_check
+  failed_when: no
+  changed_when: no
+
+- name: start and enable vnc server
+  become: yes
+  systemd:
+    daemon_reload: yes
+    name: vncserver-x11-serviced.service
+    state: started
+    enabled: yes
+  when:
+    - install_remote_desktop | bool
+    - vnc_check.rc == 0
+
+- name: stop and disable vnc server
+  become: yes
+  systemd:
+    daemon_reload: yes
+    name: vncserver-x11-serviced.service
+    state: stopped
+    enabled: no
+  when:
+    - not install_remote_desktop | bool
+    - vnc_check.rc == 0
+
+- name: check if Xauthority file exists
+  stat:
+    path: /home/pi/.Xauthority
+  register: xauthority_file
+  when: install_remote_desktop | bool
+
+- name: create an x virtual desktop (for headless)
+  become: yes
+  shell: vncserver
+  register: x_server
+  check_mode: no
+  changed_when: no
+  when:
+    - install_remote_desktop | bool
+    - vnc_check.rc == 0
+    - not xauthority_file.stat.exists
+...

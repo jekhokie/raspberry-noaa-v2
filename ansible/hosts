@@ -5,3 +5,6 @@ localhost ansible_connection=local
 
 [webserver]
 localhost ansible_connection=local
+
+[remote-desktop]
+localhost ansible_connection=local

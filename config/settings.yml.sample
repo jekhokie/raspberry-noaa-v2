@@ -111,4 +111,12 @@ disable_wifi_power_mgmt: false
 #   email_push_address - if enabled, address to send all images to
 enable_email_push: false
 email_push_address: test@ifttt.com
+
+# whether to install remote desktop and gui-based tools
+# NOTE: This will install a full desktop environment (PIXEL) alongside VNC in order
+#       to ensure VNC can function, which may or may not have an impact on your Pi
+#       performance and recording/captures. This install will also take several minutes
+#       to complete, so please be patient during the install process.
+#   install_remote_desktop - whether to install PIXEL desktop and VNC
+install_remote_desktop: false
 ...

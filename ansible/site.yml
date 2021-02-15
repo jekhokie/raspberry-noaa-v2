@@ -1,4 +1,5 @@
 ---
 - import_playbook: core.yml
+- import_playbook: remote-desktop.yml
 - import_playbook: webserver.yml
 ...  
