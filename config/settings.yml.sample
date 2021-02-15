@@ -35,10 +35,13 @@ delete_audio: false
 #   noaa_crop_telemetry - whether to crop the left/right telemetry in image captures
 #   image_annotation_location - where to place the annotation in images - valid options are:
 #        NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
+#   produce_noaa_pristine_image - whether to produce a pristine image (unmodified) for larger
+#        composite-based use cases
 flip_meteor_image: true
 produce_spectrogram: true
 noaa_crop_telemetry: false
 image_annotation_location: 'NorthWest'
+produce_noaa_pristine_image: false
 
 # thresholds for scheduling captures - enables avoiding an attempt
 # to capture imagery if objects are lower than these degree elevation thresholds
@@ -101,4 +104,18 @@ enable_satvis: true
 #   delete_older_than_n - delete all images older than this many days
 delete_oldest_n: 0
 delete_older_than_n: 0
+
+# operating system configurations
+#   disable_wifi_power_mgmt - if running wireless internet and you want to
+#       disable "sleep" mode of your wifi device (assuming it's wlan0), set
+#        this to true
+disable_wifi_power_mgmt: false
+
+# push processing settings for sending images elsewhere
+# Email: Send all images to an email address.
+#   NOTE: Make sure you set up your ~/.msmtprc file before enabling email push!
+#   enable_email_push - whether to send all images to an external email
+#   email_push_address - if enabled, address to send all images to
+enable_email_push: false
+email_push_address: test@ifttt.com
 ...

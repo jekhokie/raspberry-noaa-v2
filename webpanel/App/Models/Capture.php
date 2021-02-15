@@ -48,7 +48,8 @@ class Capture extends \Lib\Model {
                                                sat_type,
                                                file_path,
                                                img_count,
-                                               has_spectrogram
+                                               has_spectrogram,
+                                               has_pristine
                                         FROM decoded_passes
                                         WHERE id = ?;');
       $query->bindValue(1, $id);
@@ -58,7 +59,7 @@ class Capture extends \Lib\Model {
       # build enhancement paths based on satellite type
       switch($pass['sat_type']) {
         case 0: // Meteor-M2
-          $enhancements = ['-122-rectified.jpg'];
+          $enhancements = ['-122-rectified.jpg','-col-122-rectified.jpg','-ir-122-rectified.jpg'];
           break;
         case 1: // NOAA
           if ($pass['daylight_pass'] == 1) {
@@ -81,6 +82,10 @@ class Capture extends \Lib\Model {
       # capture spectrogram if one exists
       if ($pass['has_spectrogram'] == '1') {
         array_push($enhancements, '-spectrogram.png');
+      }
+      # capture pristine if one exists
+      if ($pass['has_pristine'] == '1') {
+        array_push($enhancements, '-pristine.jpg');
       }
       
       $this->enhancements = $enhancements;

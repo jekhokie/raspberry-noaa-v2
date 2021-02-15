@@ -16,4 +16,7 @@
 
 # ramfs setup
 - include: ramfs.yml
+
+# email setup
+- include: email.yml
 ...
