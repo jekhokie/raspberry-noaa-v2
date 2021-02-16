@@ -81,6 +81,17 @@ fi
 if [ "${NOAA_MAP_STATE_BORDER_COLOR}" != "" ]; then 
    extra_map_opts="${extra_map_opts} -c S:${NOAA_MAP_STATE_BORDER_COLOR}"
 fi
+if [ "${NOAA_MAP_COUNTRY_BORDER_ENABLE}" == "true" ]; then
+  extra_map_opts="${extra_map_opts} -C 1 -c C:${NOAA_MAP_COUNTRY_BORDER_COLOR}"
+else
+  extra_map_opts="${extra_map_opts} -C 0"
+fi
+if [ "${NOAA_MAP_STATE_BORDER_ENABLE}" == "true" ]; then
+  extra_map_opts="${extra_map_opts} -S 1 -c S:${NOAA_MAP_STATE_BORDER_COLOR}"
+else
+  extra_map_opts="${extra_map_opts} -S 0"
+fi
+
 # build overlay map
 map_overlay="${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
 $WXMAP -T "${SAT_NAME}" -H "${TLE_FILE}" -p 0 ${extra_map_opts} -o "${epoch_adjusted}" $map_overlay >> $NOAA_LOG 2>&1
@@ -97,10 +108,17 @@ fi
 # build images based on enhancements defined
 for enhancement in $ENHANCEMENTS; do
   log "Decoding image" "INFO"
-  annotation="${SAT_NAME} $enhancement ${capture_start} Elev: $SAT_MAX_ELEVATION° Sun elevation: #SUN_ELEV°"
-  if ["${GROUND_STATION_LOCATION}" != ""]; then
-     annotation="Ground Station: ${GROUND_STATION_LOCATION} ${annotation}"
-  fi   
+
+  # create annotation string
+  annotation=""
+  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+    annotation="Ground Station: ${GROUND_STATION_LOCATION} "
+  fi
+  annotation="${annotation}${SAT_NAME} ${enhancement} ${capture_start} Elev: ${SAT_MAX_ELEVATION}°"
+  if [ "${SHOW_SUN_ELEVATION}" == "true" ]; then
+    annotation="${annotation} Sun Elevation: ${SUN_ELEV}°"
+  fi
+
   # determine what frequency based on NOAA variant
   proc_script=""
   case $enhancement in
