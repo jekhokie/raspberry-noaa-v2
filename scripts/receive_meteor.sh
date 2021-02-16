@@ -160,9 +160,9 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     python3 "${IMAGE_PROC_DIR}/meteor_rectify.py" ${RAMFS_AUDIO_BASE}-col.bmp >> $NOAA_LOG 2>&1
 
     log "Compressing and rotating where required" "INFO"
-    $CONVERT ${RAMFS_AUDIO_BASE}-rectified.jpg -rotate 180 -normalize -quality 90 ${RAMFS_AUDIO_BASE}.jpg
-    $CONVERT ${RAMFS_AUDIO_BASE}-ir-rectified.jpg -rotate 180 -normalize -quality 90 ${RAMFS_AUDIO_BASE}-ir.jpg
-    $CONVERT ${RAMFS_AUDIO_BASE}-col-rectified.jpg -rotate 180 -normalize -quality 90 ${RAMFS_AUDIO_BASE}-col.jpg
+    $CONVERT ${RAMFS_AUDIO_BASE}-rectified.jpg $FLIP -normalize -quality 90 ${RAMFS_AUDIO_BASE}.jpg
+    $CONVERT ${RAMFS_AUDIO_BASE}-ir-rectified.jpg $FLIP -normalize -quality 90 ${RAMFS_AUDIO_BASE}-ir.jpg
+    $CONVERT ${RAMFS_AUDIO_BASE}-col-rectified.jpg $FLIP -normalize -quality 90 ${RAMFS_AUDIO_BASE}-col.jpg
 
     log "Annotating images" "INFO"
     convert "${RAMFS_AUDIO_BASE}.jpg" -gravity $IMAGE_ANNOTATION_LOCATION -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-122-rectified.jpg"
