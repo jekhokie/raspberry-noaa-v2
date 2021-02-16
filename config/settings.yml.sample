@@ -8,6 +8,11 @@ longitude: -74.005974
 # time zone offset from UTC (for example, '-5' for US Eastern)
 timezone_offset: -5
 
+# ntp configurations
+#   ntp_server - if you have a local server (e.g. stratum1), you can use this setting
+#        to specify a hostname or ip address to communicate with the ntp server
+ntp_server: ''
+
 # receiver settings
 #   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'gnuradio')
 #     **WARNING**: 'gnuradio' does not work with certain SDR devices (e.g. it will not currently
