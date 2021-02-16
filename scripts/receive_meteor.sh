@@ -24,9 +24,6 @@ EPOCH_START=$3
 CAPTURE_TIME=$4
 SAT_MAX_ELEVATION=$5
 
-# store annotation for images
-annotation="${SAT_NAME} ${capture_start} Elev: $SAT_MAX_ELEVATION°"
-
 # base directory plus filename_base for re-use
 RAMFS_AUDIO_BASE="${RAMFS_AUDIO}/${FILENAME_BASE}"
 AUDIO_FILE_BASE="${METEOR_AUDIO_OUTPUT}/${FILENAME_BASE}"
@@ -50,6 +47,16 @@ fi
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
 SUN_ELEV=$(python3 "$SCRIPTS_DIR"/sun.py "$PASS_START")
+
+# store annotation for images
+annotation=""
+if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+  annotation="Ground Station: ${GROUND_STATION_LOCATION} "
+fi
+annotation="${annotation}${SAT_NAME} ${capture_start} Elev: ${SAT_MAX_ELEVATION}°"
+if [ "${SHOW_SUN_ELEVATION}" == "true" ]; then
+  annotation="${annotation} Sun Elevation: ${SUN_ELEV}°"
+fi
 
 # always kill running captures for NOAA in favor of capture
 # for Meteor, no matter which receive method is being used, in order
