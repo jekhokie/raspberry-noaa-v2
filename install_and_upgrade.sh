@@ -41,6 +41,14 @@ if [ -f /etc/modprobe.d/rtlsdr.conf ]; then
   install_type='upgrade'
 fi
 
+log_running "Checking configuration files..."
+python3 scripts/diff_yaml_configs.py config/settings.yml.sample config/settings.yml
+if [ $? -eq 0 ]; then
+  log_done "  Config check complete!"
+else
+  die "  Please update your config/settings.yml file to include the missing parameters from config/settings.yml.sample"
+fi
+
 log_running "Installing Python dependencies..."
 sudo python3 -m pip install -r $HOME/raspberry-noaa-v2/requirements.txt
 if [ $? -eq 0 ]; then
