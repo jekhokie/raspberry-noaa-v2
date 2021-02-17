@@ -45,3 +45,18 @@ if [ "$SCHEDULE_METEOR" == "true" ]; then
   $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M 2" "receive_meteor.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
 fi
 log "Done scheduling jobs!" "INFO"
+
+if [ "${ENABLE_EMAIL_SCHEDULE_PUSH}" == "true" ]; then
+  # create annotation to send as subject for email
+  annotation="Scheduled Passes | "
+  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+    annotation="${annotation}Ground Station: ${GROUND_STATION_LOCATION} | "
+  fi
+  annotation="${annotation}Timezone Offset: ${TZ_OFFSET}"
+
+  log "Generating image of pass list schedule for email" "INFO"
+  $WKHTMLTOIMG --format jpg --quality 100 --width 1024 --height 768 --crop-y 190 "http://localhost:${WEBPANEL_PORT}/" "${NOAA_HOME}/tmp/pass-list.jpg" >> $NOAA_LOG 2>&1
+
+  log "Emailing pass list schedule to destination address" "INFO"
+  ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${NOAA_HOME}/tmp/pass-list.jpg" "${annotation}"
+fi

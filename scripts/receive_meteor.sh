@@ -8,9 +8,10 @@
 #   3. Epoch start time for capture
 #   4. Duration of capture (seconds)
 #   5. Max angle elevation for satellite
+#   6. Direction of pass
 #
 # Example:
-#   ./receive_meteor.sh "METEOR-M 2" METEOR-M220210205-192623 1612571183 922 39
+#   ./receive_meteor.sh "METEOR-M 2" METEOR-M220210205-192623 1612571183 922 39 Northbound
 
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
@@ -23,9 +24,7 @@ FILENAME_BASE=$2
 EPOCH_START=$3
 CAPTURE_TIME=$4
 SAT_MAX_ELEVATION=$5
-
-# store annotation for images
-annotation="${SAT_NAME} ${capture_start} Elev: $SAT_MAX_ELEVATION°"
+PASS_DIRECTION=$6
 
 # base directory plus filename_base for re-use
 RAMFS_AUDIO_BASE="${RAMFS_AUDIO}/${FILENAME_BASE}"
@@ -49,7 +48,20 @@ fi
 
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
-SUN_ELEV=$(python3 "$SCRIPTS_DIR"/sun.py "$PASS_START")
+SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
+
+# store annotation for images
+annotation=""
+if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+  annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
+fi
+annotation="${annotation}${SAT_NAME} ${capture_start} Max Elev: ${SAT_MAX_ELEVATION}°"
+if [ "${SHOW_SUN_ELEVATION}" == "true" ]; then
+  annotation="${annotation} Sun Elevation: ${SUN_ELEV}°"
+fi
+if [ "${SHOW_PASS_DIRECTION}" == "true" ]; then
+  annotation="${annotation} | ${PASS_DIRECTION}"
+fi
 
 # always kill running captures for NOAA in favor of capture
 # for Meteor, no matter which receive method is being used, in order
@@ -160,9 +172,15 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     python3 "${IMAGE_PROC_DIR}/meteor_rectify.py" ${RAMFS_AUDIO_BASE}-col.bmp >> $NOAA_LOG 2>&1
 
     log "Compressing and rotating where required" "INFO"
+<<<<<<< HEAD
     $CONVERT ${RAMFS_AUDIO_BASE}-rectified.jpg ${FLIP} -normalize -quality 90 ${RAMFS_AUDIO_BASE}.jpg
     $CONVERT ${RAMFS_AUDIO_BASE}-ir-rectified.jpg ${FLIP} -normalize -quality 90 ${RAMFS_AUDIO_BASE}-ir.jpg
     $CONVERT ${RAMFS_AUDIO_BASE}-col-rectified.jpg ${FLIP} -normalize -quality 90 ${RAMFS_AUDIO_BASE}-col.jpg
+=======
+    $CONVERT ${RAMFS_AUDIO_BASE}-rectified.jpg $FLIP -normalize -quality 90 ${RAMFS_AUDIO_BASE}.jpg
+    $CONVERT ${RAMFS_AUDIO_BASE}-ir-rectified.jpg $FLIP -normalize -quality 90 ${RAMFS_AUDIO_BASE}-ir.jpg
+    $CONVERT ${RAMFS_AUDIO_BASE}-col-rectified.jpg $FLIP -normalize -quality 90 ${RAMFS_AUDIO_BASE}-col.jpg
+>>>>>>> upstream/master
 
     log "Annotating images" "INFO"
     convert "${RAMFS_AUDIO_BASE}.jpg" -gravity $IMAGE_ANNOTATION_LOCATION -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-122-rectified.jpg"

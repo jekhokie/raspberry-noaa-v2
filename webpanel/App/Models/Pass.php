@@ -3,6 +3,8 @@
 namespace App\Models;
 
 class Pass extends \Lib\Model {
+  public $travel_direction;
+
   # get a list of passes
   public function getList() {
     $today = strtotime(date('Y-m-d', time()));
@@ -10,7 +12,9 @@ class Pass extends \Lib\Model {
                                            is_active,
                                            pass_start,
                                            pass_end,
-                                           max_elev
+                                           max_elev,
+                                           pass_start_azimuth,
+                                           direction
                                     FROM predict_passes
                                     WHERE (pass_start > $today)
                                     ORDER BY pass_start ASC;");

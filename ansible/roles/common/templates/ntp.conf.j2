@@ -17,9 +17,10 @@ filegen loopstats file loopstats type day enable
 filegen peerstats file peerstats type day enable
 filegen clockstats file clockstats type day enable
 
-
-# You do need to talk to an NTP server or two (or three).
-#server ntp.your-provider.example
+{% if ntp_server != "" %}
+# Specific server to use (presumably local and low latency)
+server {{ ntp_server }} iburst
+{% endif %}
 
 # pool.ntp.org maps to about 1000 low-stratum NTP servers.  Your server will
 # pick a different set every time it starts up.  Please consider joining the
@@ -28,7 +29,6 @@ pool 0.debian.pool.ntp.org iburst
 pool 1.debian.pool.ntp.org iburst
 pool 2.debian.pool.ntp.org iburst
 pool 3.debian.pool.ntp.org iburst
-
 
 # Access control configuration; see /usr/share/doc/ntp-doc/html/accopt.html for
 # details.  The web page <http://support.ntp.org/bin/view/Support/AccessRestrictions>
@@ -52,7 +52,6 @@ restrict source notrap nomodify noquery
 # Clients from this (example!) subnet have unlimited access, but only if
 # cryptographically authenticated.
 #restrict 192.168.123.0 mask 255.255.255.0 notrust
-
 
 # If you want to provide time to your local subnet, change the next line.
 # (Again, the address is an example only.)

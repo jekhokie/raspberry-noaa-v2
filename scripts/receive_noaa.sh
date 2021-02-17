@@ -9,9 +9,10 @@
 #   4. Epoch start time for capture
 #   5. Duration of capture (seconds)
 #   6. Max angle elevation for satellite
+#   7. Direction of pass
 #
 # Example:
-#   ./receive_noaa.sh "NOAA 18" NOAA1820210208-194829 ./orbit.tle 1612831709 919 31
+#   ./receive_noaa.sh "NOAA 18" NOAA1820210208-194829 ./orbit.tle 1612831709 919 31 Southbound
 
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
@@ -25,6 +26,7 @@ TLE_FILE=$3
 EPOCH_START=$4
 CAPTURE_TIME=$5
 SAT_MAX_ELEVATION=$6
+PASS_DIRECTION=$7
 
 # base directory plus filename helper variables
 AUDIO_FILE_BASE="${NOAA_AUDIO_OUTPUT}/${FILENAME_BASE}"
@@ -33,7 +35,7 @@ IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
-SUN_ELEV=$(python3 "$SCRIPTS_DIR"/sun.py "$PASS_START")
+SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 
 if pgrep "rtl_fm" > /dev/null; then
   log "There is an existing rtl_fm instance running, I quit" "ERROR"
@@ -75,6 +77,22 @@ fi
 if [ "${NOAA_MAP_GRID_DEGREES}" != "0.0" ]; then
   extra_map_opts="${extra_map_opts} -g ${NOAA_MAP_GRID_DEGREES} -c g:${NOAA_MAP_GRID_COLOR}"
 fi
+if [ "${NOAA_MAP_COUNTRY_BORDER_COLOR}" != "" ]; then 
+   extra_map_opts="${extra_map_opts} -c C:${NOAA_MAP_COUNTRY_BORDER_COLOR}"
+fi
+if [ "${NOAA_MAP_STATE_BORDER_COLOR}" != "" ]; then 
+   extra_map_opts="${extra_map_opts} -c S:${NOAA_MAP_STATE_BORDER_COLOR}"
+fi
+if [ "${NOAA_MAP_COUNTRY_BORDER_ENABLE}" == "true" ]; then
+  extra_map_opts="${extra_map_opts} -C 1 -c C:${NOAA_MAP_COUNTRY_BORDER_COLOR}"
+else
+  extra_map_opts="${extra_map_opts} -C 0"
+fi
+if [ "${NOAA_MAP_STATE_BORDER_ENABLE}" == "true" ]; then
+  extra_map_opts="${extra_map_opts} -S 1 -c S:${NOAA_MAP_STATE_BORDER_COLOR}"
+else
+  extra_map_opts="${extra_map_opts} -S 0"
+fi
 
 # build overlay map
 map_overlay="${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
@@ -92,7 +110,19 @@ fi
 # build images based on enhancements defined
 for enhancement in $ENHANCEMENTS; do
   log "Decoding image" "INFO"
-  annotation="${SAT_NAME} $enhancement ${capture_start} Elev: $SAT_MAX_ELEVATION°"
+
+  # create annotation string
+  annotation=""
+  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+    annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
+  fi
+  annotation="${annotation}${SAT_NAME} ${enhancement} ${capture_start} Max Elev: ${SAT_MAX_ELEVATION}°"
+  if [ "${SHOW_SUN_ELEVATION}" == "true" ]; then
+    annotation="${annotation} Sun Elevation: ${SUN_ELEV}°"
+  fi
+  if [ "${SHOW_PASS_DIRECTION}" == "true" ]; then
+    annotation="${annotation} | ${PASS_DIRECTION}"
+  fi
 
   # determine what frequency based on NOAA variant
   proc_script=""
