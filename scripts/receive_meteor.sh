@@ -60,7 +60,7 @@ if [ "${SHOW_SUN_ELEVATION}" == "true" ]; then
   annotation="${annotation} Sun Elevation: ${SUN_ELEV}°"
 fi
 if [ "${SHOW_PASS_DIRECTION}" == "true" ]; then
-  annotation="${annotation} | ${PASS_DIRECTION}°"
+  annotation="${annotation} | ${PASS_DIRECTION}"
 fi
 
 # always kill running captures for NOAA in favor of capture

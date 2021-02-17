@@ -121,7 +121,7 @@ for enhancement in $ENHANCEMENTS; do
     annotation="${annotation} Sun Elevation: ${SUN_ELEV}°"
   fi
   if [ "${SHOW_PASS_DIRECTION}" == "true" ]; then
-    annotation="${annotation} | ${PASS_DIRECTION}°"
+    annotation="${annotation} | ${PASS_DIRECTION}"
   fi
 
   # determine what frequency based on NOAA variant
