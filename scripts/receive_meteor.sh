@@ -8,9 +8,10 @@
 #   3. Epoch start time for capture
 #   4. Duration of capture (seconds)
 #   5. Max angle elevation for satellite
+#   6. Direction of pass
 #
 # Example:
-#   ./receive_meteor.sh "METEOR-M 2" METEOR-M220210205-192623 1612571183 922 39
+#   ./receive_meteor.sh "METEOR-M 2" METEOR-M220210205-192623 1612571183 922 39 Northbound
 
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
@@ -23,6 +24,7 @@ FILENAME_BASE=$2
 EPOCH_START=$3
 CAPTURE_TIME=$4
 SAT_MAX_ELEVATION=$5
+PASS_DIRECTION=$6
 
 # base directory plus filename_base for re-use
 RAMFS_AUDIO_BASE="${RAMFS_AUDIO}/${FILENAME_BASE}"
@@ -51,11 +53,14 @@ SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 # store annotation for images
 annotation=""
 if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-  annotation="Ground Station: ${GROUND_STATION_LOCATION} "
+  annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
 fi
 annotation="${annotation}${SAT_NAME} ${capture_start} Max Elev: ${SAT_MAX_ELEVATION}°"
 if [ "${SHOW_SUN_ELEVATION}" == "true" ]; then
   annotation="${annotation} Sun Elevation: ${SUN_ELEV}°"
+fi
+if [ "${SHOW_PASS_DIRECTION}" == "true" ]; then
+  annotation="${annotation} | ${PASS_DIRECTION}°"
 fi
 
 # always kill running captures for NOAA in favor of capture
