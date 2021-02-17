@@ -84,7 +84,7 @@ of the capture (convert your local capture start time to epoch time using a tool
 (according to the script) at that time of capture:
 
 ```bash
-$ python3 ./scripts/sun.py 1613063493
+$ python3 ./scripts/tools/sun.py 1613063493
 
 33
 ```

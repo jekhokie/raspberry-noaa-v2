@@ -42,7 +42,7 @@ if [ -f /etc/modprobe.d/rtlsdr.conf ]; then
 fi
 
 log_running "Checking configuration files..."
-python3 scripts/diff_yaml_configs.py config/settings.yml.sample config/settings.yml
+python3 scripts/tools/diff_yaml_configs.py config/settings.yml.sample config/settings.yml
 if [ $? -eq 0 ]; then
   log_done "  Config check complete!"
 else

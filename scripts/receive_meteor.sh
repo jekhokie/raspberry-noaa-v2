@@ -46,7 +46,7 @@ fi
 
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
-SUN_ELEV=$(python3 "$SCRIPTS_DIR"/sun.py "$PASS_START")
+SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 
 # store annotation for images
 annotation=""
