@@ -41,6 +41,20 @@ if [ -f /etc/modprobe.d/rtlsdr.conf ]; then
   install_type='upgrade'
 fi
 
+log_running "Checking for python3-pip..."
+dpkg -l python3-pip 2>&1 >/dev/null
+if [ $? -eq 0 ]; then
+  log_done "  python3-pip already installed!"
+else
+  log_running "  python3-pip not yet installed - installing..."
+  sudo apt-get -y install python3-pip
+  if [ $? -eq 0 ]; then
+    log_done "    python3-pip successfully installed!"
+  else
+    die "    Could not install python3-pip - please check the logs above"
+  fi
+fi
+
 log_running "Installing Python dependencies..."
 sudo python3 -m pip install -r $HOME/raspberry-noaa-v2/requirements.txt
 if [ $? -eq 0 ]; then
