@@ -43,7 +43,7 @@ else
   log "  - ${script} already applied" "INFO"
 fi
 
-script="03_add_pass_start_azimuth.sql"
+script="03_add_pass_azimuth_direction.sql"
 check=$($SQL_CMD $NOAA_HOME/db/panel.db ".schema predict_passes" | grep 'pass_start_azimuth')
 if [ -z "${check}" ]; then
   log "  - applying ${script}" "INFO"
