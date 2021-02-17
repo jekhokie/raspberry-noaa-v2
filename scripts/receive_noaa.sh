@@ -114,7 +114,7 @@ for enhancement in $ENHANCEMENTS; do
   if [ "${GROUND_STATION_LOCATION}" != "" ]; then
     annotation="Ground Station: ${GROUND_STATION_LOCATION} "
   fi
-  annotation="${annotation}${SAT_NAME} ${enhancement} ${capture_start} Elev: ${SAT_MAX_ELEVATION}°"
+  annotation="${annotation}${SAT_NAME} ${enhancement} ${capture_start} Max Elev: ${SAT_MAX_ELEVATION}°"
   if [ "${SHOW_SUN_ELEVATION}" == "true" ]; then
     annotation="${annotation} Sun Elevation: ${SUN_ELEV}°"
   fi
