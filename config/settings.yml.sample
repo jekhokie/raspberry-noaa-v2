@@ -45,6 +45,7 @@ delete_audio: false
 #   ground_station_location - free-form text for indicating ground station location in image
 #        annotation (leave blank if you wish to exclude the ground station annotation)
 #   show_sun_elevation - whether to show sun elevation in annotation
+#   show_pass_direction - show which direction the satellite is moving in the image annotation
 flip_meteor_image: true
 produce_spectrogram: true
 noaa_crop_telemetry: false
@@ -52,6 +53,7 @@ image_annotation_location: 'NorthWest'
 produce_noaa_pristine_image: false
 ground_station_location: ''
 show_sun_elevation: false
+show_pass_direction: false
 
 # thresholds for scheduling captures - enables avoiding an attempt
 # to capture imagery if objects are lower than these degree elevation thresholds
@@ -119,7 +121,7 @@ delete_older_than_n: 0
 # operating system configurations
 #   disable_wifi_power_mgmt - if running wireless internet and you want to
 #       disable "sleep" mode of your wifi device (assuming it's wlan0), set
-#        this to true
+#       this to true (note: updating this requires a reboot)
 disable_wifi_power_mgmt: false
 
 # push processing settings for sending images elsewhere

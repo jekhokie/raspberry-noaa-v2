@@ -33,10 +33,16 @@
               <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-0.jpg">
             {% endif %}
           </a>
-          <div class="card-body">
+          <div class="card-body my-0 py-0 pt-3">
             <h5 class="card-title">{{ capture.sat_name }}</h5>
             <p>
               <strong>{{ lang.elev }}: </strong>{{ capture.max_elev }}&#176;<br>
+              {% if capture.pass_start_azimuth != '' %}
+                <strong>{{ lang.pass_start_azimuth }}: </strong>{{ capture.pass_start_azimuth }}&#176;<br>
+              {% endif %}
+              {% if capture.direction != '' %}
+                <strong>{{ lang.travel_direction }}: </strong>{{ capture.direction }}<br>
+              {% endif %}
               <strong>{{ lang.pass_start }}: </strong>{{ capture.pass_start|date('m/d/Y H:i:s') }}
             </p>
           </div>

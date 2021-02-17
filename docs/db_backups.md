@@ -8,7 +8,7 @@ of backing up mid-stream of scheduled passes being recorded):
 
 ```bash
 # back up database nightly at 12:05AM local and retain 3 copies
-cat <(crontab -l) <(echo "5 0 * * * /home/pi/raspberry-noaa-v2/scripts/db_backup.sh") | crontab -
+cat <(crontab -l) <(echo "5 0 * * * /home/pi/raspberry-noaa-v2/scripts/tools/db_backup.sh") | crontab -
 ```
 
 Backups will be created in the `db_backups` directory of this framework, with the last 3 days of backup files
