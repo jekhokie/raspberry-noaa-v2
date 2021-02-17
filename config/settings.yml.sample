@@ -130,7 +130,11 @@ disable_wifi_power_mgmt: false
 #   email_push_address - if enabled, address to send all images to
 #   enable_email_schedule_push - whether to email an image of the nightly-created
 #       pass-list schedule to the email destination
+#   enable_discord_push - whether to push images to a Discord channel
+#   discord_webhook_url - webhook url for the Discord channel
 enable_email_push: false
 email_push_address: test@ifttt.com
 enable_email_schedule_push: false
+enable_discord_push: false
+discord_webhook_url: ''
 ...

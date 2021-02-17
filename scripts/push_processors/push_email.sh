@@ -11,6 +11,9 @@
 #   1. Email address
 #   2. Attachment (image)
 #   3. Email Subject
+#
+# Example:
+#   ./scripts/push_processors/push_email.sh test@test.com /srv/images/NOAA-18-20210212-091356-MCIR.jpg "Test"
 
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"

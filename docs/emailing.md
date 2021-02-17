@@ -58,6 +58,6 @@ page, for example, the image should be posted to the page with text from the ann
 
 ## Troubleshooting
 
-If you aren't receiving emails at the destination configured, inspect the `/var/log/msmtp/output.log` file for errors that
+If you are not receiving emails at the destination configured, inspect the `/var/log/msmtp/output.log` file for errors that
 might be occurring. This file is also good to consult in general as it contains information about emails being sent that were
 successful.

@@ -128,7 +128,12 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
 
     if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
       log "Emailing image" "INFO"
-      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}"
+      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+    fi
+
+    if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
+      log "Pushing image to Discord" "INFO"
+      ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
     fi
 
     # insert or replace in case there was already an insert due to the spectrogram creation
@@ -191,9 +196,16 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 
     if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
       log "Emailing image" "INFO"
-      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}"
-      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${annotation}"
-      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${annotation}"
+      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+    fi
+
+    if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
+      log "Pushing images to Discord" "INFO"
+      ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
     fi
 
     log "Cleaning up temp files" "INFO"

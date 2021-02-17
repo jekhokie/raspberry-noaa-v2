@@ -155,6 +155,7 @@ to enable/configure with links to the respective instructions:
 * [Pruning Old Images](docs/pruning.md)
 * [Database Backups](docs/db_backups.md)
 * [Emailing Images (IFTTT)](docs/emailing.md)
+* [Pushing Images to Discord](docs/discord_push.md)
 
 ## Changing Configurations After Install
 
