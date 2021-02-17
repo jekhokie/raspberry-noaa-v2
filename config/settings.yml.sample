@@ -125,10 +125,12 @@ delete_older_than_n: 0
 disable_wifi_power_mgmt: false
 
 # push processing settings for sending images elsewhere
-# Email: Send all images to an email address.
-#   NOTE: Make sure you set up your ~/.msmtprc file before enabling email push!
+#   * NOTE: Make sure you set up your ~/.msmtprc file before enabling email push!
 #   enable_email_push - whether to send all images to an external email
 #   email_push_address - if enabled, address to send all images to
+#   enable_email_schedule_push - whether to email an image of the nightly-created
+#       pass-list schedule to the email destination
 enable_email_push: false
 email_push_address: test@ifttt.com
+enable_email_schedule_push: false
 ...
