@@ -50,6 +50,10 @@ fi
 PASS_START=$(expr "$EPOCH_START" + 90)
 SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 
+# determine if pass is in daylight
+daylight=0
+if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then daylight=1; fi
+
 # store annotation for images
 annotation=""
 if [ "${GROUND_STATION_LOCATION}" != "" ]; then
@@ -137,9 +141,20 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     fi
 
     # insert or replace in case there was already an insert due to the spectrogram creation
-    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram) VALUES ($EPOCH_START,\"$FILENAME_BASE\", 1, 0, $spectrogram);"
-    pass_id=$(sqlite3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
-    $SQLITE3 $DB_FILE "UPDATE predict_passes SET is_active = 0 WHERE (predict_passes.pass_start) in (select predict_passes.pass_start from predict_passes inner join decoded_passes on predict_passes.pass_start = decoded_passes.pass_start where decoded_passes.id = $pass_id);"
+    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram) \
+                                         VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram);"
+
+    pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
+    $SQLITE3 $DB_FILE "UPDATE predict_passes \
+                       SET is_active = 0 \
+                       WHERE (predict_passes.pass_start) \
+                       IN ( \
+                         SELECT predict_passes.pass_start \
+                         FROM predict_passes \
+                         INNER JOIN decoded_passes \
+                         ON predict_passes.pass_start = decoded_passes.pass_start \
+                         WHERE decoded_passes.id = $pass_id \
+                       );"
   else
     log "Decoding failed, either a bad pass/low SNR or a software problem" "ERROR"
   fi
@@ -190,9 +205,20 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     convert -thumbnail 300 "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${IMAGE_THUMB_BASE}-col-122-rectified.jpg"
 
     # insert or replace in case there was already an insert due to the spectrogram creation
-    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram) VALUES ($EPOCH_START,\"$FILENAME_BASE\", 1, 0, $spectrogram);"
-    pass_id=$(sqlite3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
-    $SQLITE3 $DB_FILE "UPDATE predict_passes SET is_active = 0 WHERE (predict_passes.pass_start) in (select predict_passes.pass_start from predict_passes inner join decoded_passes on predict_passes.pass_start = decoded_passes.pass_start where decoded_passes.id = $pass_id);"
+    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram) \
+                                         VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram);"
+
+    pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
+    $SQLITE3 $DB_FILE "UPDATE predict_passes \
+                       SET is_active = 0 \
+                       WHERE (predict_passes.pass_start) \
+                       IN ( \
+                         SELECT predict_passes.pass_start \
+                         FROM predict_passes \
+                         INNER JOIN decoded_passes \
+                         ON predict_passes.pass_start = decoded_passes.pass_start \
+                         WHERE decoded_passes.id = $pass_id \
+                       );"
 
     if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
       log "Emailing image" "INFO"
