@@ -46,6 +46,10 @@ delete_audio: false
 #        annotation (leave blank if you wish to exclude the ground station annotation)
 #   show_sun_elevation - whether to show sun elevation in annotation
 #   show_pass_direction - show which direction the satellite is moving in the image annotation
+#   noaa_daytime_enhancements - list of enhancements to create images using during daytime captures
+#        (note: default value is total list of supported image processors)
+#   noaa_nighttime_enhancements - list of enhancements to create images using during nighttime captures
+#        (note: default value is total list of supported image processors)
 flip_meteor_image: true
 produce_spectrogram: true
 noaa_crop_telemetry: false
@@ -54,6 +58,8 @@ produce_noaa_pristine_image: false
 ground_station_location: ''
 show_sun_elevation: false
 show_pass_direction: false
+noaa_daytime_enhancements: 'ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT therm'
+noaa_nighttime_enhancements: 'ZA MCIR MCIR-precip therm'
 
 # thresholds for scheduling captures - enables avoiding an attempt
 # to capture imagery if objects are lower than these degree elevation thresholds
