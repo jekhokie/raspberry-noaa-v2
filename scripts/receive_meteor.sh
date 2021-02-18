@@ -130,14 +130,18 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     rm "${AUDIO_FILE_BASE}.bmp"
     rm "${AUDIO_FILE_BASE}.dec"
 
-    if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
-      log "Emailing image" "INFO"
-      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
-    fi
+    if [ -f "${IMAGE_FILE_BASE}-122-rectified.jpg" ]; then
+      if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
+        log "Emailing image" "INFO"
+        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      fi
 
-    if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
-      log "Pushing image to Discord" "INFO"
-      ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
+        log "Pushing image to Discord" "INFO"
+        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      fi
+    else
+      log "No image produced - not pushing anywhere" "INFO"
     fi
 
     # insert or replace in case there was already an insert due to the spectrogram creation
@@ -220,18 +224,32 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
                          WHERE decoded_passes.id = $pass_id \
                        );"
 
+    # TODO: This is VERY not DRY - possibly put the image filenames in an array
+    #       and iterate over it, which would significantly DRY this code up
     if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
-      log "Emailing image" "INFO"
-      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
-      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
-      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      log "Emailing images" "INFO"
+      if [ -f "${IMAGE_FILE_BASE}-122-rectified.jpg" ]; then
+        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      fi
+      if [ -f "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" ]; then
+        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      fi
+      if [ -f "${IMAGE_FILE_BASE}-col-122-rectified.jpg" ]; then
+        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      fi
     fi
 
     if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
       log "Pushing images to Discord" "INFO"
-      ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
-      ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
-      ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      if [ -f "${IMAGE_FILE_BASE}-122-rectified.jpg" ]; then
+        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      fi
+      if [ -f "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" ]; then
+        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      fi
+      if [ -f "${IMAGE_FILE_BASE}-col-122-rectified.jpg" ]; then
+        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      fi
     fi
 
     log "Cleaning up temp files" "INFO"
