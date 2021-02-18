@@ -102,7 +102,7 @@ noaa_map_state_border_color: "0xffff00"
 # locale settings for timezone and language
 #   timezone: see https://www.php.net/manual/en/timezones.php
 #   lang_setting: see the 'webpanel/App/Lang' folder for available
-#                 languages (2-letter filename - e.g. ar, de, en, es, sr)
+#                 languages (2-letter filename - e.g. ar, de, en, es, nl, sr)
 timezone: America/New_York
 lang_setting: en
 
