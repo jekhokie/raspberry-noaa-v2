@@ -168,13 +168,18 @@ for enhancement in $ENHANCEMENTS; do
     ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${annotation}" 90 >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_THUMB_BASE}-$enhancement.jpg" >> $NOAA_LOG 2>&1
 
-    if [ "${ENABLE_EMAIL_PUSH}" == "true" ]; then
-      log "Emailing image" "INFO"
-      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-$enhancement.jpg" "${annotation}" >> $NOAA_LOG 2>&1
-    fi
+    if [ -f "${IMAGE_FILE_BASE}-$enhancement.jpg" ]; then
+      if [ "${ENABLE_EMAIL_PUSH}" == "true" ]; then
+        log "Emailing image enhancement $enhancement" "INFO"
+        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-$enhancement.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      fi
 
-    if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
-      ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
+        log "Pushing image enhancement $enhancement to Discord" "INFO"
+        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+      fi
+    else
+      log "No image with enhancement $enhancement created - not pushing anywhere" "INFO"
     fi
   fi
 done
