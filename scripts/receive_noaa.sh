@@ -100,9 +100,13 @@ $WXMAP -T "${SAT_NAME}" -H "${TLE_FILE}" -p 0 ${extra_map_opts} -o "${epoch_adju
 
 # run all enhancements all the time - any that cannot be produced will
 # simply be left out/not included, so there is no harm in running all of them
-ENHANCEMENTS="ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT therm"
-daylight=0
-if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then daylight=1; fi
+if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
+  ENHANCEMENTS="${NOAA_DAY_ENHANCEMENTS}"
+  daylight=1
+else
+  ENHANCEMENTS="${NOAA_NIGHT_ENHANCEMENTS}"
+  daylight=0
+fi
 
 # build images based on enhancements defined
 for enhancement in $ENHANCEMENTS; do

@@ -65,7 +65,11 @@ class Capture extends \Lib\Model {
         $enhancements = ['-122-rectified.jpg','-col-122-rectified.jpg','-ir-122-rectified.jpg'];
         break;
       case 1: // NOAA
-        $enhancements = ['-ZA.jpg','-MCIR.jpg','-MCIR-precip.jpg','-MSA.jpg','-MSA-precip.jpg','-HVC.jpg','-HVC-precip.jpg','-HVCT.jpg','-HVCT-precip.jpg','-therm.jpg'];
+        if ($pass['daylight_pass'] == 1) {
+          $enhancements = array_map(function($x) { return "-" . $x . ".jpg"; }, explode(' ', Config::NOAA_DAY_ENHANCEMENTS));
+        } else {
+          $enhancements = array_map(function($x) { return "-" . $x . ".jpg"; }, explode(' ', Config::NOAA_NIGHT_ENHANCEMENTS));
+        }
         break;
     }
 
