@@ -39,7 +39,7 @@
             <td{% if prev_pass_end >= pass.pass_start %} class="conflict"{% endif %}>
               {% if prev_pass_end >= pass.pass_start %}<i class="fa fa-exclamation-triangle conflict-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['conflicting_pass'] }}"></i>{% endif %}
               {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
-                <a href='https://satvis.space/?elements=Point,Label,Orbit%20track,Sensor%20cone&layers=OfflineHighres&tags=Weather&sat={{ pass.sat_name }}' target='satvis'>{{ pass.sat_name }}</a>
+                <a href='https://satvis.space/?elements=Point,Label,Orbit%20track,Sensor%20cone&layers=OfflineHighres&tags=Weather&sat={{ pass.sat_name }}&gs={{ constant('Config\\Config::BASE_STATION_LAT') }},{{ constant('Config\\Config::BASE_STATION_LON') }}' target='satvis'>{{ pass.sat_name }}</a>
               {% else %}
                 {{ pass.sat_name }}
               {% endif %}
