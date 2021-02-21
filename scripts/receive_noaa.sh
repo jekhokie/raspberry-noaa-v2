@@ -20,13 +20,13 @@
 capture_start=$START_DATE
 
 # input params
-SAT_NAME=$1
-FILENAME_BASE=$2
-TLE_FILE=$3
-EPOCH_START=$4
-CAPTURE_TIME=$5
-SAT_MAX_ELEVATION=$6
-PASS_DIRECTION=$7
+export SAT_NAME=$1
+export FILENAME_BASE=$2
+export TLE_FILE=$3
+export EPOCH_START=$4
+export CAPTURE_TIME=$5
+export SAT_MAX_ELEVATION=$6
+export PASS_DIRECTION=$7
 
 # base directory plus filename helper variables
 AUDIO_FILE_BASE="${NOAA_AUDIO_OUTPUT}/${FILENAME_BASE}"
@@ -35,7 +35,7 @@ IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
-SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
+export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 
 if pgrep "rtl_fm" > /dev/null; then
   log "There is an existing rtl_fm instance running, I quit" "ERROR"
@@ -110,6 +110,7 @@ fi
 
 # build images based on enhancements defined
 for enhancement in $ENHANCEMENTS; do
+  export ENHANCEMENT=$enhancement
   log "Decoding image" "INFO"
 
   # create annotation string

@@ -19,12 +19,12 @@
 capture_start=$START_DATE
 
 # input params
-SAT_NAME=$1
-FILENAME_BASE=$2
-EPOCH_START=$3
-CAPTURE_TIME=$4
-SAT_MAX_ELEVATION=$5
-PASS_DIRECTION=$6
+export SAT_NAME=$1
+export FILENAME_BASE=$2
+export EPOCH_START=$3
+export CAPTURE_TIME=$4
+export SAT_MAX_ELEVATION=$5
+export PASS_DIRECTION=$6
 
 # base directory plus filename_base for re-use
 RAMFS_AUDIO_BASE="${RAMFS_AUDIO}/${FILENAME_BASE}"
@@ -48,7 +48,7 @@ fi
 
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
-SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
+export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 
 # determine if pass is in daylight
 daylight=0
