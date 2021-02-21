@@ -13,12 +13,6 @@ import sys
 import yaml
 from os import path
 
-def diff_configs(pristine, check):
-  '''
-  Perform a basic key/value check to ensure all config keys in
-  pristine exist in check, and return a list of deltas, if any
-  '''
-
 def main():
   '''
   Main function to check for usage, accept arguments from command
