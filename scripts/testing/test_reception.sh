@@ -34,6 +34,6 @@ echo "$(tput setaf 2)
     $(tput sgr0)
 "
 
-rtl_fm ${BIAS_TEE} -f "$1M" -s 256k -g 48 -p 55 -E deemp -F 9 - \
+rtl_fm ${BIAS_TEE} -f "$1M" -s 256k -g $GAIN -p $FREQ_OFFSET -E deemp -F 9 - \
         | sox -traw -r256k -es -b16 -c1 -V1 - -tmp3 - \
         | socat -u - TCP-LISTEN:8073 1>/dev/null
