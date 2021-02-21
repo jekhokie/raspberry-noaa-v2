@@ -144,9 +144,12 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
       log "No image produced - not pushing anywhere" "INFO"
     fi
 
-    # insert or replace in case there was already an insert due to the spectrogram creation
-    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram) \
-                                         VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram);"
+    # store decoded pass
+    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram) \
+                                         VALUES ( \
+                                           (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
+                                           $EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram \
+                                         );"
 
     pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
     $SQLITE3 $DB_FILE "UPDATE predict_passes \
