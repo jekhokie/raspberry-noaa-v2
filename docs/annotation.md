@@ -4,6 +4,15 @@ If you want to update the annotation that exists on the images, the process is f
 Simply edit the file `config/annotation/annotation.html.j2` following the instructions in the file
 and the next pass captures you receive should have the images overlaid with the new annotation format.
 
+Note that hte `annotation.html.j2` template uses the
+[Jinja2 template specification](https://jinja.palletsprojects.com/en/2.11.x/). Simply speaking, this means any
+variables you wish replaced should be wrapped in double curly braces (`{{ my_var }}`), and in general, any
+Jinja2 template syntax should work. However, it's recommended that you keep the template as pure to variable
+replacement without complex conditionals as possible as this will keep the template easier to debug.
+
+To have additional resources included in the HTML rendering of the annotation (images, etc.), simply place
+the referenced images in the same directory alonside the template file (`config/annotation/`).
+
 ## Testing
 
 If you want to iterate on your annotation without needing to wait for a new pass, you can make modifications

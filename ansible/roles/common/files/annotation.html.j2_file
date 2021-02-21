@@ -11,6 +11,9 @@
     * sun_elevation - elevation of the sun during the capture
     * pass_direction - direction of the satellite pass (relative to ground station)
 
+  To have a variable replaced with the injected variables when this template is called, simply
+  wrap the variable in double curly braces like this: {{ my_var }}
+
   If you want to include any images, place the images in the $NOAA_HOME/config/annotation/
   directory alongside this file.
 -->
