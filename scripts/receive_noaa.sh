@@ -113,19 +113,6 @@ for enhancement in $ENHANCEMENTS; do
   export ENHANCEMENT=$enhancement
   log "Decoding image" "INFO"
 
-  # create annotation string
-  annotation=""
-  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-    annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
-  fi
-  annotation="${annotation}${SAT_NAME} ${enhancement} ${capture_start} Max Elev: ${SAT_MAX_ELEVATION}°"
-  if [ "${SHOW_SUN_ELEVATION}" == "true" ]; then
-    annotation="${annotation} Sun Elevation: ${SUN_ELEV}°"
-  fi
-  if [ "${SHOW_PASS_DIRECTION}" == "true" ]; then
-    annotation="${annotation} | ${PASS_DIRECTION}"
-  fi
-
   # determine what frequency based on NOAA variant
   proc_script=""
   case $enhancement in
@@ -166,18 +153,29 @@ for enhancement in $ENHANCEMENTS; do
   else
     ${IMAGE_PROC_DIR}/${proc_script} $map_overlay "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" >> $NOAA_LOG 2>&1
 
-    ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${annotation}" 90 >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_FILE_BASE}-$enhancement.jpg" 90 >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_THUMB_BASE}-$enhancement.jpg" >> $NOAA_LOG 2>&1
 
     if [ -f "${IMAGE_FILE_BASE}-$enhancement.jpg" ]; then
+      # create push annotation string (annotation in the email subject, discord text, etc.)
+      # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
+      push_annotation=""
+      if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+        push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
+      fi
+      push_annotation="${push_annotation}${SAT_NAME} ${enhancement} ${capture_start}"
+      push_annotation="${push_annotation} Max Elev: ${SAT_MAX_ELEVATION}°"
+      push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
+      push_annotation="${push_annotation} | ${PASS_DIRECTION}"
+
       if [ "${ENABLE_EMAIL_PUSH}" == "true" ]; then
         log "Emailing image enhancement $enhancement" "INFO"
-        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-$enhancement.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-$enhancement.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
       fi
 
       if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
         log "Pushing image enhancement $enhancement to Discord" "INFO"
-        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
       fi
     else
       log "No image with enhancement $enhancement created - not pushing anywhere" "INFO"

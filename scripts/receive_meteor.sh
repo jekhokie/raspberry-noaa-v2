@@ -54,19 +54,6 @@ export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 daylight=0
 if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then daylight=1; fi
 
-# store annotation for images
-annotation=""
-if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-  annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
-fi
-annotation="${annotation}${SAT_NAME} ${capture_start} Max Elev: ${SAT_MAX_ELEVATION}°"
-if [ "${SHOW_SUN_ELEVATION}" == "true" ]; then
-  annotation="${annotation} Sun Elevation: ${SUN_ELEV}°"
-fi
-if [ "${SHOW_PASS_DIRECTION}" == "true" ]; then
-  annotation="${annotation} | ${PASS_DIRECTION}"
-fi
-
 # always kill running captures for NOAA in favor of capture
 # for Meteor, no matter which receive method is being used, in order
 # to avoid resource contention and/or signal interference
@@ -74,6 +61,17 @@ if pgrep "rtl_fm" > /dev/null; then
   log "There is an already running rtl_fm instance but I dont care for now, I prefer this pass" "INFO"
   pkill -9 -f rtl_fm
 fi
+
+# create push annotation string (annotation in the email subject, discord text, etc.)
+# note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
+push_annotation=""
+if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+  push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
+fi
+push_annotation="${push_annotation}${SAT_NAME} ${capture_start}"
+push_annotation="${push_annotation} Max Elev: ${SAT_MAX_ELEVATION}°"
+push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
+push_annotation="${push_annotation} | ${PASS_DIRECTION}"
 
 # TODO: Fix this up - this conditional selection is a massive bit of complexity that
 #       needs to be handled, but in the interest of not breaking everything (at least in
@@ -124,7 +122,8 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     log "Rectifying image to adjust aspect ratio" "INFO"
     python3 "${IMAGE_PROC_DIR}/meteor_rectify.py" "${IMAGE_FILE_BASE}-122.bmp" >> $NOAA_LOG 2>&1
 
-    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+    log "Annotating images and creating thumbnails" "INFO"
+    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${IMAGE_FILE_BASE}-122-rectified.jpg" 100 >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-122-rectified.jpg" "${IMAGE_THUMB_BASE}-122-rectified.jpg" >> $NOAA_LOG 2>&1
     rm "${IMAGE_FILE_BASE}-122.bmp"
     rm "${AUDIO_FILE_BASE}.bmp"
@@ -133,12 +132,12 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     if [ -f "${IMAGE_FILE_BASE}-122-rectified.jpg" ]; then
       if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
         log "Emailing image" "INFO"
-        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
       fi
 
       if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
         log "Pushing image to Discord" "INFO"
-        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
       fi
     else
       log "No image produced - not pushing anywhere" "INFO"
@@ -203,13 +202,15 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     $CONVERT ${RAMFS_AUDIO_BASE}-ir-rectified.jpg $FLIP -normalize -quality 90 ${RAMFS_AUDIO_BASE}-ir.jpg
     $CONVERT ${RAMFS_AUDIO_BASE}-col-rectified.jpg $FLIP -normalize -quality 90 ${RAMFS_AUDIO_BASE}-col.jpg
 
-    log "Annotating images" "INFO"
-    convert "${RAMFS_AUDIO_BASE}.jpg" -gravity $IMAGE_ANNOTATION_LOCATION -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-122-rectified.jpg"
-    convert -thumbnail 300 "${IMAGE_FILE_BASE}-122-rectified.jpg" "${IMAGE_THUMB_BASE}-122-rectified.jpg"
-    convert "${RAMFS_AUDIO_BASE}-ir.jpg" -gravity $IMAGE_ANNOTATION_LOCATION -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-ir-122-rectified.jpg"
-    convert -thumbnail 300 "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${IMAGE_THUMB_BASE}-ir-122-rectified.jpg"
-    convert "${RAMFS_AUDIO_BASE}-col.jpg" -gravity $IMAGE_ANNOTATION_LOCATION -channel rgb -normalize -undercolor black -fill yellow -pointsize 60 -annotate +20+60 "${annotation}" "${IMAGE_FILE_BASE}-col-122-rectified.jpg"
-    convert -thumbnail 300 "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${IMAGE_THUMB_BASE}-col-122-rectified.jpg"
+    log "Annotating images and generating thumbnails" "INFO"
+    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "${RAMFS_AUDIO_BASE}.jpg" "${IMAGE_FILE_BASE}-122-rectified.jpg" >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-122-rectified.jpg" "${IMAGE_THUMB_BASE}-122-rectified.jpg" >> $NOAA_LOG 2>&1
+
+    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "${RAMFS_AUDIO_BASE}-ir.jpg" "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${IMAGE_THUMB_BASE}-ir-122-rectified.jpg" >> $NOAA_LOG 2>&1
+
+    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "${RAMFS_AUDIO_BASE}-col.jpg" "${IMAGE_FILE_BASE}-col-122-rectified.jpg" >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${IMAGE_THUMB_BASE}-col-122-rectified.jpg" >> $NOAA_LOG 2>&1
 
     # insert or replace in case there was already an insert due to the spectrogram creation
     $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram) \
@@ -232,26 +233,26 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
       log "Emailing images" "INFO"
       if [ -f "${IMAGE_FILE_BASE}-122-rectified.jpg" ]; then
-        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
       fi
       if [ -f "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" ]; then
-        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
       fi
       if [ -f "${IMAGE_FILE_BASE}-col-122-rectified.jpg" ]; then
-        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
       fi
     fi
 
     if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
       log "Pushing images to Discord" "INFO"
       if [ -f "${IMAGE_FILE_BASE}-122-rectified.jpg" ]; then
-        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
       fi
       if [ -f "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" ]; then
-        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
       fi
       if [ -f "${IMAGE_FILE_BASE}-col-122-rectified.jpg" ]; then
-        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
       fi
     fi
 
