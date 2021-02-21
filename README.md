@@ -152,6 +152,7 @@ git pull
 There are and will be future "optional" features for this framework. Below is a list of optional capabilities that you may wish
 to enable/configure with links to the respective instructions:
 
+* [Update Image Annotation Overlay](docs/annotation.md)
 * [Pruning Old Images](docs/pruning.md)
 * [Database Backups](docs/db_backups.md)
 * [Emailing Images (IFTTT)](docs/emailing.md)
