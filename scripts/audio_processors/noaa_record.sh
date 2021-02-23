@@ -41,6 +41,7 @@ if [ ${OUT_FILE: -4} != ".wav" ]; then
   exit 1
 fi
 
+# check if we have a gain value
 if [ $GAIN == 0 ];then
   gainstring = ""
   else
