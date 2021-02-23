@@ -68,9 +68,9 @@ jobs for each pass for the current day.
 
 To view the jobs created for each of the passes, execute the `atq` command. This will list all of the jobs and their
 respective job ID. You can get specific details about the job (such as the command being executed) by running
-`at -c <job_id>`, where `<job_id>` is the ID of the job from the `atq` command you wish to inspect.
+`at -c <job_id>`, where `<job_id>` is the ID of the job from the `atq` command you wish to inspect. The time listed is the start time of the pass.
 
-`arrm <job_id>` will remove a pass
+`arrm <job_id>` will remove a pass.
 
 
 # Setting Gain
