@@ -55,7 +55,7 @@ search is likely your next best bet.
 
 If you just want to hear from the pi itself you can plug in headphones to the pi and enter:
 
-'''rtl_fm -f 97.3e6 -M wbfm -s 200000 -r 48000 - | aplay -r 48000 -f S16_LE'''
+'rtl_fm -f 97.3e6 -M wbfm -s 200000 -r 48000 - | aplay -r 48000 -f S16_LE'
 
 Replace 97.3 with a strong local FM station. If you have an FM trap or LNA you may need to remove them from the antenna feed.
 
