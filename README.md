@@ -129,6 +129,11 @@ and all of your content will automatically upgrade (obviously you'll want to do 
 or about to occur). Note that once you pull the latest code down using git, you'll likely want to compare your `config/settings.yml`
 file with the new code `config/settings.yml.sample` and include/incorporate any new or renamed configuration parameters.
 
+**Note**: You can double-check that the configuration parameters required exist in your configuration file (this is done by default
+now as part of the `install_and_upgrade.sh` script) by running `./scripts/tools/diff_yaml_configs.py config/settings.yml config/settings.yml.sample`.
+The output of this script will inform you whether there are any new configs that you need to add to your `config/settings.yml` file
+to help with reducing the strain on your eyes in comparing the files.
+
 ```bash
 # pull down new code
 cd $HOME/raspberry-noaa-v2/
@@ -149,6 +154,8 @@ to enable/configure with links to the respective instructions:
 
 * [Pruning Old Images](docs/pruning.md)
 * [Database Backups](docs/db_backups.md)
+* [Emailing Images (IFTTT)](docs/emailing.md)
+* [Pushing Images to Discord](docs/discord_push.md)
 
 ## Changing Configurations After Install
 

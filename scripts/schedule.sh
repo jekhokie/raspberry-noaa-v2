@@ -45,3 +45,28 @@ if [ "$SCHEDULE_METEOR" == "true" ]; then
   $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M 2" "receive_meteor.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
 fi
 log "Done scheduling jobs!" "INFO"
+
+if [ "${ENABLE_EMAIL_SCHEDULE_PUSH}" == "true" ]; then
+  # create annotation to send as subject for email
+  annotation="Scheduled Passes | "
+  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+    annotation="${annotation}Ground Station: ${GROUND_STATION_LOCATION} | "
+  fi
+  annotation="${annotation}Timezone Offset: ${TZ_OFFSET}"
+
+  log "Generating image of pass list schedule for email" "INFO"
+  pass_image="${NOAA_HOME}/tmp/pass-list.jpg"
+  $WKHTMLTOIMG --format jpg --quality 100 "http://localhost:${WEBPANEL_PORT}/" "${pass_image}" >> $NOAA_LOG 2>&1
+
+  # crop the header (and optionally, satvis iframe, if enabled) out of pass list
+  log "Removing header from pass list image" "INFO"
+  $CONVERT "${pass_image}" -gravity North -chop 0x190 "${pass_image}" >> $NOAA_LOG 2>&1
+
+  if [ "${ENABLE_SATVIS}" == "true" ]; then
+    log "Removing Satvis iFrame from pass list image" "INFO"
+    $CONVERT "${pass_image}" -gravity North -chop 0x510 "${pass_image}" >> $NOAA_LOG 2>&1
+  fi
+
+  log "Emailing pass list schedule to destination address" "INFO"
+  ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${pass_image}" "${annotation}"
+fi

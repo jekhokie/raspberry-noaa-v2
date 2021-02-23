@@ -1,0 +1,27 @@
+<?php
+return array(
+  "admin" => "Beheerder",
+  "admin_delete_confirm_header" => "Bevestig verwijderen",
+  "admin_delete_warning" => "Klik op 'X' naast de opname/passage die u wilt verwijderen. Alle gerelateerde afbeeldingen worden verwijderd. **WAARSCHUWING**: Dit kan niet worden hersteld dus ben er zeker van dat dit is wat u wilt!",
+  "cancel" => "Annuleer",
+  "captures" => "Opnames",
+  "confirm" => "Bevestig",
+  "conflicting_pass" => "Conflict met voorgaande passage",
+  "elev" => "Elevatie",
+  "fail_delete_missing_id" => "Verwijderen mislukt - 'id' parameter ontbreekt",
+  "image" => "Afbeelding",
+  "images" => "Afbeeldingen",
+  "max_elev" => "Max Elevatie",
+  "next" => "Volgende",
+  "of" => "van",
+  "page" => "Pagina",
+  "pass_end" => "Einde passage",
+  "pass_start" => "Start passage",
+  "pass_start_azimuth" => "Azimuth",
+  "passes" => "Passages",
+  "prev" => "Vorige",
+  "satellite" => "Satelliet",
+  "successful_delete_capture" => "Opname successvol verwijderd",
+  "travel_direction" => "Richting",
+);
+?>

@@ -20,6 +20,8 @@
         <th scope="col">{{ lang['pass_start'] }}</th>
         <th scope="col">{{ lang['pass_end'] }}</th>
         <th scope="col">{{ lang['max_elev'] }}</th>
+        <th scope="col" class="d-none d-sm-table-cell">{{ lang['pass_start_azimuth'] }}</th>
+        <th scope="col" class="d-none d-sm-table-cell">{{ lang['travel_direction'] }}</th>
       </tr>
     </thead>
     <tbody>
@@ -33,13 +35,20 @@
           {% set pass_start = pass.pass_start|date('H:i:s') %}
           {% set pass_end = pass.pass_end|date('H:i:s') %}
 
-          <tr {% if pass.is_active == false or pass_end < now %} class="inactive" {% endif %}>
-            <td scope="row" class="{% if prev_pass_end >= pass.pass_start %}conflict{% endif %}">
-              {% if prev_pass_end >= pass.pass_start %}<i class="fa fa-exclamation-triangle conflict-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['conflicting_pass'] }}"></i>{% endif %} {{ pass.sat_name }}
+          <tr{% if pass.is_active == false or pass_end < now %} class="inactive"{% endif %}>
+            <td{% if prev_pass_end >= pass.pass_start %} class="conflict"{% endif %}>
+              {% if prev_pass_end >= pass.pass_start %}<i class="fa fa-exclamation-triangle conflict-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['conflicting_pass'] }}"></i>{% endif %}
+              {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
+                <a href='https://satvis.space/?elements=Point,Label,Orbit%20track,Sensor%20cone&layers=OfflineHighres&tags=Weather&sat={{ pass.sat_name }}&gs={{ constant('Config\\Config::BASE_STATION_LAT') }},{{ constant('Config\\Config::BASE_STATION_LON') }}' target='satvis'>{{ pass.sat_name }}</a>
+              {% else %}
+                {{ pass.sat_name }}
+              {% endif %}
             </td>
-            <td scope="row" class="text-center">{{ pass_start }}</td>
-            <td scope="row" class="text-center">{{ pass_end }}</td>
-            <td scope="row" class="text-center">{{ pass.max_elev }}</td>
+            <td class="text-center">{{ pass_start }}</td>
+            <td class="text-center">{{ pass_end }}</td>
+            <td class="text-center">{{ pass.max_elev }}&#176;</td>
+            <td class="text-center d-none d-sm-table-cell">{% if pass.pass_start_azimuth != "" %}{{ pass.pass_start_azimuth }}&#176;{% endif %}</td>
+            <td class="text-center d-none d-sm-table-cell">{% if pass.direction != "" %}{{ pass.direction }}{% endif %}</td>
           </tr>
 
           {% set prev_pass_end = pass.pass_end %}

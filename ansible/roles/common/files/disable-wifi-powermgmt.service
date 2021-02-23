@@ -1,0 +1,10 @@
+[Unit]
+Description=Disable WiFi Power Management Feature
+After=multi-user.target
+ 
+[Service]
+Type=idle
+ExecStart=/usr/local/sbin/disable-wifi-powermgmt.sh
+ 
+[Install]
+WantedBy=multi-user.target

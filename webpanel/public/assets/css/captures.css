@@ -1,12 +1,12 @@
 div.card-group.capture-image-cards div.image-card {
   display: block;
-  text-align: center;
   border: 1px solid rgba(0,0,0,.125);
   border-radius: 0.25rem;
 }
 
-div.card-group.capture-image-cards a {
+div.card-group.capture-image-cards div.image-card a {
   display: block;
+  text-align: center;
   height: 180px;
 }
 
@@ -16,6 +16,6 @@ div.card-group.capture-image-cards div.image-card img.card-img-top {
   width: unset;
 }
 
-div.card-group.capture-image-cards div.image-card p.card-text {
+div.card-group.capture-image-cards div.image-card div.card-body {
   text-align: left;
 }

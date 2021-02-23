@@ -23,6 +23,7 @@ predict_start=$($PREDICT -t $TLE_FILE -p "${OBJ_NAME}" | head -1)
 predict_end=$($PREDICT   -t $TLE_FILE -p "${OBJ_NAME}" | tail -1)
 max_elev=$($PREDICT      -t $TLE_FILE -p "${OBJ_NAME}" | awk -v max=0 '{if($5>max){max=$5}}END{print max}')
 end_epoch_time=$(echo "${predict_end}" | cut -d " " -f 1)
+starting_azimuth=$(echo "${predict_start}" | awk '{print $6}')
 
 # TLE file isn't needed for running meteor captures
 receiver_tle_file=$TLE_FILE
@@ -39,13 +40,22 @@ while [ "$(date --date="@${end_epoch_time}" +%D)" = "$(date +%D)" ]; do
 
   # schedule capture if elevation is above configured minimum
   if [ "${max_elev}" -gt "${SAT_MIN_ELEV}" ]; then
+    direction="null"
+
+    # calculate travel direction
+    if [ $starting_azimuth -le 90 ] || [ $starting_azimuth -ge 270 ]; then
+      direction="Southbound"
+    else
+      direction="Northbound"
+    fi
+
     printf -v safe_obj_name "%q" $(echo "${OBJ_NAME}" | sed "s/ /-/g")
     log "Scheduling capture for: ${safe_obj_name} ${file_date_ext} ${max_elev}" "INFO"
-    echo "${NOAA_HOME}/scripts/${RECEIVE_SCRIPT} \"${OBJ_NAME}\" ${safe_obj_name}-${file_date_ext} "${receiver_tle_file}" \
-${start_epoch_time} ${timer} ${max_elev}" | at "$(date --date="TZ=\"UTC\" ${start_datetime}" +"%H:%M %D")"
+    echo "${NOAA_HOME}/scripts/${RECEIVE_SCRIPT} \"${OBJ_NAME}\" ${safe_obj_name}-${file_date_ext} ${receiver_tle_file} \
+${start_epoch_time} ${timer} ${max_elev} ${direction}" | at "$(date --date="TZ=\"UTC\" ${start_datetime}" +"%H:%M %D")"
 
     # update database with scheduled pass
-    $SQLITE3 $DB_FILE "insert or replace into predict_passes (sat_name,pass_start,pass_end,max_elev,is_active) values (\"${OBJ_NAME}\",$start_epoch_time,$end_epoch_time,$max_elev,1);"
+    $SQLITE3 $DB_FILE "insert or replace into predict_passes (sat_name,pass_start,pass_end,max_elev,is_active,pass_start_azimuth,direction) values (\"${OBJ_NAME}\",$start_epoch_time,$end_epoch_time,$max_elev,1,$starting_azimuth,'$direction');"
   fi
 
   next_predict=$(expr "${end_epoch_time}" + 60)
@@ -53,4 +63,5 @@ ${start_epoch_time} ${timer} ${max_elev}" | at "$(date --date="TZ=\"UTC\" ${star
   predict_end=$($PREDICT   -t $TLE_FILE -p "${OBJ_NAME}" "${next_predict}" | tail -1)
   max_elev=$($PREDICT      -t $TLE_FILE -p "${OBJ_NAME}" "${next_predict}" | awk -v max=0 '{if($5>max){max=$5}}END{print max}')
   end_epoch_time=$(echo "${predict_end}" | cut -d " " -f 1)
+  starting_azimuth=$(echo "${predict_start}" | awk '{print $6}')
 done

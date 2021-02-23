@@ -39,11 +39,13 @@ SOX="/usr/bin/sox"
 SQLITE3="/usr/bin/sqlite3"
 WXMAP="/usr/local/bin/wxmap"
 WXTOIMG="/usr/local/bin/wxtoimg"
+WKHTMLTOIMG="/usr/local/bin/wkhtmltoimage"
 
 # base directories for scripts
 SCRIPTS_DIR="${NOAA_HOME}/scripts"
 AUDIO_PROC_DIR="${SCRIPTS_DIR}/audio_processors"
 IMAGE_PROC_DIR="${SCRIPTS_DIR}/image_processors"
+PUSH_PROC_DIR="${SCRIPTS_DIR}/push_processors"
 
 # frequency ranges for objects
 METEOR_FREQ="137.1000"

@@ -8,6 +8,11 @@ longitude: -74.005974
 # time zone offset from UTC (for example, '-5' for US Eastern)
 timezone_offset: -5
 
+# ntp configurations
+#   ntp_server - if you have a local server (e.g. stratum1), you can use this setting
+#        to specify a hostname or ip address to communicate with the ntp server
+ntp_server: ''
+
 # receiver settings
 #   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'gnuradio')
 #     **WARNING**: 'gnuradio' does not work with certain SDR devices (e.g. it will not currently
@@ -35,10 +40,26 @@ delete_audio: false
 #   noaa_crop_telemetry - whether to crop the left/right telemetry in image captures
 #   image_annotation_location - where to place the annotation in images - valid options are:
 #        NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
+#   produce_noaa_pristine_image - whether to produce a pristine image (unmodified) for larger
+#        composite-based use cases
+#   ground_station_location - free-form text for indicating ground station location in image
+#        annotation (leave blank if you wish to exclude the ground station annotation)
+#   show_sun_elevation - whether to show sun elevation in annotation
+#   show_pass_direction - show which direction the satellite is moving in the image annotation
+#   noaa_daytime_enhancements - list of enhancements to create images using during daytime captures
+#        (note: default value is total list of supported image processors)
+#   noaa_nighttime_enhancements - list of enhancements to create images using during nighttime captures
+#        (note: default value is total list of supported image processors)
 flip_meteor_image: true
 produce_spectrogram: true
 noaa_crop_telemetry: false
 image_annotation_location: 'NorthWest'
+produce_noaa_pristine_image: false
+ground_station_location: ''
+show_sun_elevation: false
+show_pass_direction: false
+noaa_daytime_enhancements: 'ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT therm'
+noaa_nighttime_enhancements: 'ZA MCIR MCIR-precip therm'
 
 # thresholds for scheduling captures - enables avoiding an attempt
 # to capture imagery if objects are lower than these degree elevation thresholds
@@ -65,22 +86,23 @@ sun_min_elevation: 10
 #   noaa_map_crosshair_color - color of base station crosshair
 #   noaa_map_grid_degrees - latitude/longitude lines drawn every grid degrees (default 10.0, 0.0 to disable)
 #   noaa_map_grid_color - color of gridlines for latitude/longitude
+#   noaa_map_country_border_enable - whether to enable country borders in images
 #   noaa_map_country_border_color - color of country borders
-#   noaa_map_state_border_color - color of state borders
+#   noaa_map_state_border_enable - whether to enable state borders in images (Americas only)
+#   noaa_map_state_border_color - color of state borders (Americas only)
 noaa_map_crosshair_enable: false
 noaa_map_crosshair_color: "0xffff00"
 noaa_map_grid_degrees: 10.0
 noaa_map_grid_color: "0xff0000"
-noaa_map_country_border_color: "0xff0000"
-noaa_map_state_border_color: "0xff0000"
-
-#ground station location for annotation
-ground_station_location: ""
+noaa_map_country_border_enable: true
+noaa_map_country_border_color: "0xffff00"
+noaa_map_state_border_enable: true
+noaa_map_state_border_color: "0xffff00"
 
 # locale settings for timezone and language
 #   timezone: see https://www.php.net/manual/en/timezones.php
 #   lang_setting: see the 'webpanel/App/Lang' folder for available
-#                 languages (2-letter filename - e.g. ar, de, en, es, sr)
+#                 languages (2-letter filename - e.g. ar, bg, de, en, es, nl, sr)
 timezone: America/New_York
 lang_setting: en
 
@@ -101,4 +123,24 @@ enable_satvis: true
 #   delete_older_than_n - delete all images older than this many days
 delete_oldest_n: 0
 delete_older_than_n: 0
+
+# operating system configurations
+#   disable_wifi_power_mgmt - if running wireless internet and you want to
+#       disable "sleep" mode of your wifi device (assuming it's wlan0), set
+#       this to true (note: updating this requires a reboot)
+disable_wifi_power_mgmt: false
+
+# push processing settings for sending images elsewhere
+#   * NOTE: Make sure you set up your ~/.msmtprc file before enabling email push!
+#   enable_email_push - whether to send all images to an external email
+#   email_push_address - if enabled, address to send all images to
+#   enable_email_schedule_push - whether to email an image of the nightly-created
+#       pass-list schedule to the email destination
+#   enable_discord_push - whether to push images to a Discord channel
+#   discord_webhook_url - webhook url for the Discord channel
+enable_email_push: false
+email_push_address: test@ifttt.com
+enable_email_schedule_push: false
+enable_discord_push: false
+discord_webhook_url: ''
 ...
