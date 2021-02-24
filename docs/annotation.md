@@ -26,8 +26,19 @@ that you would see during a pass capture. For example, run the following command
 ```
 
 After running the above command, open the file `/tmp/output.png` to see what your HTML-driven annotation would
-look like. If you are on a remote Linix-based machine, you can copy the file from your remote Raspberry Pi instance
-via `scp pi@<your_pi_ip_address>:/tmp/output.png`, where `<your_pi_ip_address>` is the IP or hostname of your remote
-Pi instance. This is the image that will be overlaid in the location specified on your capture images. Note that
+look like. You can go about this in a couple different ways, but below are a couple helpful methods depending on your
+scenario:
+
+1. If you are on a remote Linix-based machine, you can copy the file from your remote Raspberry Pi instance to your
+local machine via executing (from your local machine) `scp pi@<your_pi_ip_address>:/tmp/output.png`, where
+`<your_pi_ip_address>` is the IP or hostname of your remote Pi instance. This will place the file `output.png` in the
+local directory on your local machine where you ran the command from.
+2. If you're running on a Windows-based machine, you can hack around needing any kind of FTP-based transfer by copying
+the file into the assets directory of the webpanel on your Raspberry Pi, and then viewing it from your local machine
+browser. Copy the file to the asset directory using `cp output.png /var/www/wx-new/public/assets/` and then open
+a browser on your local machine pointed to the webpanel on your remote Pi at this address:
+`http://<your_pi_ip_or_hostname>/assets/output.png`.
+
+This is the image that will be overlaid in the location specified on your capture images. Note that
 the background is by default transparent to ensure that the image does not block any more of the capture image
 than it needs to.
