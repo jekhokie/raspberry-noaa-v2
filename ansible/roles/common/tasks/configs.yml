@@ -127,4 +127,13 @@
     owner: pi
     group: pi
     mode: 0600
+
+- name: annotation file image (sample for modification)
+  copy:
+    src: raspberry-noaa-v2-logo.png
+    dest: ~pi/raspberry-noaa-v2/config/annotation/raspberry-noaa-v2-logo.png
+    force: no
+    owner: pi
+    group: pi
+    mode: 0600
 ...
