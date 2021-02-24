@@ -33,7 +33,7 @@ def main():
 
   # check that files specified exist/are accessible
   if (not path.exists(j2_template)):
-    print("ERROR: Jinja2 template '%s' not found or inaccessible" % j4_template)
+    print("ERROR: Jinja2 template '%s' not found or inaccessible" % j2_template)
     exit(1)
 
   # load configs to make them available
