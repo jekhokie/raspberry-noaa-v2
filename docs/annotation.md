@@ -26,6 +26,8 @@ that you would see during a pass capture. For example, run the following command
 ```
 
 After running the above command, open the file `/tmp/output.png` to see what your HTML-driven annotation would
-look like. This is the image that will be overlaid in the location specified on your capture images. Note that
+look like. If you are on a remote Linix-based machine, you can copy the file from your remote Raspberry Pi instance
+via `scp pi@<your_pi_ip_address>:/tmp/output.png`, where `<your_pi_ip_address>` is the IP or hostname of your remote
+Pi instance. This is the image that will be overlaid in the location specified on your capture images. Note that
 the background is by default transparent to ensure that the image does not block any more of the capture image
 than it needs to.
