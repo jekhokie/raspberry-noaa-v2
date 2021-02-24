@@ -41,12 +41,11 @@ if [ ${OUT_FILE: -4} != ".wav" ]; then
   exit 1
 fi
 
-# check if we have a gain value
-if [ ${GAIN} == 0 ];then
-  gainstring = ""
-  else
- gainstring = "-g ${GAIN}"
- fi
+# check if we have a gain value or should use auto gain
+gainstring=""
+if [ "${GAIN}" != "0" ];then
+  gainstring="-g ${GAIN}"
+fi
 
 log "Recording at ${freq} MHz..." "INFO"
 timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -f "${freq}"M -s 60k "${gainstring}" -E wav -E deemp -F 9 - | $SOX -t raw -e signed -c 1 -b 16 -r 60000 - "${OUT_FILE}" rate 11025

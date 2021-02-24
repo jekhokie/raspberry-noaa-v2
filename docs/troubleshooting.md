@@ -68,16 +68,18 @@ jobs for each pass for the current day.
 
 To view the jobs created for each of the passes, execute the `atq` command. This will list all of the jobs and their
 respective job ID. You can get specific details about the job (such as the command being executed) by running
-`at -c <job_id>`, where `<job_id>` is the ID of the job from the `atq` command you wish to inspect. The time listed is the start time of the pass.
+`at -c <job_id>`, where `<job_id>` is the ID of the job from the `atq` command you wish to inspect. The time listed is the
+start time of the pass.
 
-`arrm <job_id>` will remove a pass.
-
+`atrm <job_id>` will remove a pass.
 
 # Setting Gain
 
 `rtl_test`
 
-will output all of your SDRs available gain settings.  Pick one that works, start in the middle if you don't have a reference, and put it into your settings.yml file. Setting gain to 0 will enable autogain settings.
+will output all of your SDRs available gain settings. Pick one that works, start in the middle if you don't have a reference,
+and put it into your `config/settings.yml` file, then re-run `./install_and_upgrade.sh`. Setting gain to 0 will enable autogain
+settings.
 
 # Images and Audio
 
@@ -125,18 +127,10 @@ SDR devices (see your device official documentation).
 
 # Logs and settings files
 
-To edit the main configuration file:
-'nano $HOME/raspberry-pi-noaa-v2/config/settings.yml'
+Below are some useful commands in a more summary fashion:
 
-to view the generated file (do not edit this one):
-'sudo nano .noaa/config'
-
-To read the main log:
-
-To see the scheduling job:
-
-To see the scheduled passes:
-
-To cancel a pass:
-
-
+* Edit the main configuration file: `nano $HOME/raspberry-noaa-v2/config/settings.yml`
+* View the generated configuration (do not edit this one): `less ~/.noaa-v2.conf`
+* Read the main log file: `less /var/log/raspberry-noaa-v2/output.log`
+* List the scheduled passes: `atq`
+* Cancel a pass: `atrm <job_id>`
