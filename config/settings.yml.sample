@@ -19,7 +19,7 @@ ntp_server: ''
 #                  work with a RTL-SDR v3 dongle, as no image will be decoded from the bitstream)
 #   sdr_device_id - which SDR device to use (use rtl_eeprom to see available devices)
 #   enable_bias_tee - driving power to LNA, for example
-#   receiver_gain - receiver gain
+#   receiver_gain - receiver gain - if gain = 0 it will enable autogain on SDRs that support the feature.
 #   receiver_freq_offset - receiver frequency offset (PPM)
 meteor_receiver: 'rtl_fm'
 sdr_device_id: 0

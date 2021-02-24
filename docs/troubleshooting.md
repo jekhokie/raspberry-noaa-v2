@@ -53,6 +53,12 @@ The frequency used for the `test_reception.sh` script should be heard and can be
 anything, it's possible one of several things is wrong such as driver installation, USB configuration, etc. and a Google
 search is likely your next best bet.
 
+If you just want to hear from the pi itself you can plug in headphones to the pi and enter:
+
+```rtl_fm -f 97.3e6 -M wbfm -s 200000 -r 48000 - | aplay -r 48000 -f S16_LE```
+
+Replace 97.3 with a strong local FM station. If you have an FM trap or LNA you may need to remove them from the antenna feed.
+
 # Schedule
 
 This project uses [crontab](https://crontab.guru/) to schedule pass collections. To view the schedule of the scheduler,
@@ -62,7 +68,18 @@ jobs for each pass for the current day.
 
 To view the jobs created for each of the passes, execute the `atq` command. This will list all of the jobs and their
 respective job ID. You can get specific details about the job (such as the command being executed) by running
-`at -c <job_id>`, where `<job_id>` is the ID of the job from the `atq` command you wish to inspect.
+`at -c <job_id>`, where `<job_id>` is the ID of the job from the `atq` command you wish to inspect. The time listed is the
+start time of the pass.
+
+`atrm <job_id>` will remove a pass.
+
+# Setting Gain
+
+`rtl_test`
+
+will output all of your SDRs available gain settings. Pick one that works, start in the middle if you don't have a reference,
+and put it into your `config/settings.yml` file, then re-run `./install_and_upgrade.sh`. Setting gain to 0 will enable autogain
+settings.
 
 # Images and Audio
 
@@ -107,3 +124,13 @@ supported.
 It's recommended you use the binary installed with this framework. However, if you must install or use another version and
 the version does not support enabling Bias-Tee, there are ways to force Bias-Tee to be on through the SDR drivers for some
 SDR devices (see your device official documentation).
+
+# Logs and settings files
+
+Below are some useful commands in a more summary fashion:
+
+* Edit the main configuration file: `nano $HOME/raspberry-noaa-v2/config/settings.yml`
+* View the generated configuration (do not edit this one): `less ~/.noaa-v2.conf`
+* Read the main log file: `less /var/log/raspberry-noaa-v2/output.log`
+* List the scheduled passes: `atq`
+* Cancel a pass: `atrm <job_id>`
