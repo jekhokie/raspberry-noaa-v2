@@ -182,7 +182,7 @@ for enhancement in $ENHANCEMENTS; do
       fi
      fi 
     else
-      log "No image with enhancement $enhancement created - not pushing anywhere" "INFO
+      log "No image with enhancement $enhancement created - not pushing anywhere" "INFO"
   fi
  done
 
