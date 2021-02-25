@@ -8,6 +8,7 @@ return array(
   "confirm" => "Confirm",
   "conflicting_pass" => "Conflict with previous pass",
   "elev" => "Elevation",
+  "enhancement" => "Enhancement",
   "fail_delete_missing_id" => "Failed to delete - missing 'id' parameter",
   "image" => "Image",
   "images" => "Images",

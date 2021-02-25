@@ -8,6 +8,7 @@ return array(
   "confirm" => "Potvrdi",
   "conflicting_pass" => "Sukob sa prethodnom prolaskom",
   "elev" => "Visina",
+  "enhancement" => "Poboljšanje",
   "fail_delete_missing_id" => "Brisanje nije uspelo - nedostaje parametar „id“",
   "image" => "Slika",
   "images" => "Slike",

@@ -8,6 +8,7 @@ return array(
   "confirm" => "Bevestig",
   "conflicting_pass" => "Conflict met voorgaande passage",
   "elev" => "Elevatie",
+  "enhancement" => "Verbetering",
   "fail_delete_missing_id" => "Verwijderen mislukt - 'id' parameter ontbreekt",
   "image" => "Afbeelding",
   "images" => "Afbeeldingen",

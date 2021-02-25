@@ -8,6 +8,7 @@ return array(
   "confirm" => "تؤكد",
   "conflicting_pass" => "التعارض مع التمريرة السابقة",
   "elev" => "الإرتفاع",
+  "enhancement" => "التعزيز",
   "fail_delete_missing_id" => "فشل الحذف - معلمة "id" مفقودة",
   "images" => "الصور",
   "image" => "صورة",

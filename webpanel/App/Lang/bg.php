@@ -8,6 +8,7 @@ return array(
   "confirm" => "Потвърди",
   "conflicting_pass" => "Конфликт с предишни прелитания",
   "elev" => "Елевация",
+  "enhancement" => "Подобрение",
   "fail_delete_missing_id" => "Изтриването неуспешно - липсващ „id“ параметър",
   "image" => "Изображение",
   "images" => "Изображения",

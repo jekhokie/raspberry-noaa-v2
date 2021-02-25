@@ -8,6 +8,7 @@ return array(
   "confirm" => "Confirmar",
   "conflicting_pass" => "Conflicto con pase anterior",
   "elev" => "Elevación",
+  "enhancement" => "Mejora",
   "fail_delete_missing_id" => "Error al eliminar: falta el parámetro 'id'",
   "image" => "Imagen",
   "images" => "Imagenes",

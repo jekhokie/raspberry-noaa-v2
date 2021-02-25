@@ -8,6 +8,7 @@ return array(
   "confirm" => "Bestätigen",
   "conflicting_pass" => "Konflikt mit vorherigem Pass",
   "elev" => "Erhebung",
+  "enhancement" => "Erweiterung",
   "fail_delete_missing_id" => "Fehler beim Löschen - fehlender 'id'-Parameter",
   "images" => "Bilder",
   "image" => "Bild",
