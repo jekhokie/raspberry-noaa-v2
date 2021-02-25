@@ -144,10 +144,10 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     fi
 
     # store decoded pass
-    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram) \
+    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, gain) \
                                          VALUES ( \
                                            (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
-                                           $EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram \
+                                           $EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $GAIN \
                                          );"
 
     pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
@@ -213,8 +213,8 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${IMAGE_THUMB_BASE}-col-122-rectified.jpg" >> $NOAA_LOG 2>&1
 
     # insert or replace in case there was already an insert due to the spectrogram creation
-    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram) \
-                                         VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram);"
+    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, gain) \
+                                         VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $GAIN);"
 
     pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
     $SQLITE3 $DB_FILE "UPDATE predict_passes \
