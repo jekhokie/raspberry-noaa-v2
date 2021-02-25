@@ -8,7 +8,7 @@ return array(
   "confirm" => "Confirmez",
   "conflicting_pass" => "Conflit avec le passage pécédent",
   "elev" => "Elévation",
-  "fail_delete_missing_id" => "Echec de la suppresion - paramètre "id" manquant",
+  "fail_delete_missing_id" => "Echec de la suppresion - paramètre 'id' manquant",
   "image" => "Image",
   "images" => "Images",
   "max_elev" => "Elévation Max",

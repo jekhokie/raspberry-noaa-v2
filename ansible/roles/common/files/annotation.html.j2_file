@@ -1,0 +1,29 @@
+<!--
+  ANNOTATION TEMPLATE: Update this to generate an annotation for overlay on your
+  captured images - note that you can use ANY of the keys in the file
+  config/settings.yml in addition to the following keys, which will be passed when
+  the script is called during capture image processing:
+
+    * capture_start - start time of the capture
+    * enhancement - name of the enhancement to be used
+    * sat_max_elevation - maximum elevation that the satellite reaches
+    * sat_name - name of the satellite
+    * sun_elevation - elevation of the sun during the capture
+    * pass_direction - direction of the satellite pass (relative to ground station)
+
+  To have a variable replaced with the injected variables when this template is called, simply
+  wrap the variable in double curly braces like this: {{ my_var }}
+
+  If you want to include any images, place the images in the $NOAA_HOME/config/annotation/
+  directory alongside this file.
+-->
+
+<div style="text-align: left;">
+  <img src="./raspberry-noaa-v2-logo.png">
+</div>
+
+<p style="color: yellow; font-weight: bold;">
+  Ground Station: {{ ground_station_location }}<br>
+  {{ sat_name }} {{ enhancement }} {{ capture_start }} Max Elev: {{ sat_max_elevation }}&#176;
+  Sun Elevation: {{ sun_elevation }}&#176; | {{ pass_direction }}
+</p>
