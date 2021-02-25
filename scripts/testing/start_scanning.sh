@@ -6,7 +6,7 @@
 
 [ $# -lt 1 ] && outfile=scan_$(date  +"%d.%m.%y-%H.%M").csv.gz || outfile=$1	#important: outfile needs to end with csv.gz
 
-range="137M:138M:1.5k" #"130M:140M:5k"
+range="137M:138M:1k" #"130M:140M:5k"
 
 echo "$(tput setaf 2)
 	Scanning in range $range, output file is $outfile.

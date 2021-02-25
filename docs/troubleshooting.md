@@ -60,7 +60,7 @@ If you just want to hear from the pi itself you can plug in headphones to the pi
 
 Replace 97.3 with a strong local FM station. If you have an FM trap or LNA you may need to remove them from the antenna feed.
 
-## Noise level and interference sources
+# Noise level and interference sources
 
 If you experience strange interference patterns or otherwise a bad reception,
 it may come from strong FM Radio stations, PC switchmode powersupplies, or nearly anything else.
@@ -76,7 +76,7 @@ Alternatively, you can call `start_scanning.sh` manually.
 If required (or curious), you can change the freqency to scan there, too.
 
 Example analysis:
-![waterfall analysis](./assets/images/scan_annotated.jpg)
+[waterfall analysis](./assets/images/scan_annotated.jpg)
 
 # Schedule
 
