@@ -21,7 +21,15 @@
       </a>
       <div class="card-body">
         <p class="card-text">
-          <strong>Enhancement: </strong>{{ enhancement|trim('-', side='left')|split('.')|slice(0,-1)|join }}
+          <strong>{{ lang.enhancement }}: </strong>{{ enhancement|trim('-', side='left')|split('.')|slice(0,-1)|join }}<br>
+          <strong>{{ lang.gain }}: </strong>
+            {% if capture.gain == '0' %}
+              Auto
+            {% elseif capture.gain == '' %}
+              Unknown
+            {% else %}
+              {{ capture.gain }}
+            {% endif %}
         </p>
       </div>
     </div>
