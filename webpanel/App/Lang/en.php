@@ -10,6 +10,7 @@ return array(
   "elev" => "Elevation",
   "enhancement" => "Enhancement",
   "fail_delete_missing_id" => "Failed to delete - missing 'id' parameter",
+  "gain" => "Gain",
   "image" => "Image",
   "images" => "Images",
   "max_elev" => "Max Elevation",

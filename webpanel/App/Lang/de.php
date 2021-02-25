@@ -10,6 +10,7 @@ return array(
   "elev" => "Erhebung",
   "enhancement" => "Erweiterung",
   "fail_delete_missing_id" => "Fehler beim Löschen - fehlender 'id'-Parameter",
+  "gain" => "Dazugewinnen",
   "images" => "Bilder",
   "image" => "Bild",
   "max_elev" => "Maximale Erhebung",

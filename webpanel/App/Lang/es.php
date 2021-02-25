@@ -10,6 +10,7 @@ return array(
   "elev" => "Elevación",
   "enhancement" => "Mejora",
   "fail_delete_missing_id" => "Error al eliminar: falta el parámetro 'id'",
+  "gain" => "Ganar",
   "image" => "Imagen",
   "images" => "Imagenes",
   "max_elev" => "Elevación",

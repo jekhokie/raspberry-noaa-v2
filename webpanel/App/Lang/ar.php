@@ -10,6 +10,7 @@ return array(
   "elev" => "الإرتفاع",
   "enhancement" => "التعزيز",
   "fail_delete_missing_id" => "فشل الحذف - معلمة "id" مفقودة",
+  "gain" => "مكسب",
   "images" => "الصور",
   "image" => "صورة",
   "max_elev" => "أقصى إرتفاع",

@@ -10,6 +10,7 @@ return array(
   "elev" => "Visina",
   "enhancement" => "Poboljšanje",
   "fail_delete_missing_id" => "Brisanje nije uspelo - nedostaje parametar „id“",
+  "gain" => "Dobitak",
   "image" => "Slika",
   "images" => "Slike",
   "max_elev" => "Maksimalna visina",

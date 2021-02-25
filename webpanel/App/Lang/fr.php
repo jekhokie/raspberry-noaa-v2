@@ -10,6 +10,7 @@ return array(
   "elev" => "Elévation",
   "enhancement" => "Renforcement",
   "fail_delete_missing_id" => "Echec de la suppresion - paramètre 'id' manquant",
+  "gain" => "Gagner",
   "image" => "Image",
   "images" => "Images",
   "max_elev" => "Elévation Max",
