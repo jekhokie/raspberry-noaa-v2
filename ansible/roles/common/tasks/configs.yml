@@ -110,4 +110,30 @@
     name: disable-wifi-powermgmt.service
     enabled: yes
   when: (wifi_powermgmt_script.changed or wifi_powermgmt_service.changed) and (disable_wifi_power_mgmt|bool)
+
+- name: annotation directory
+  file:
+    path: ~pi/config/annotation
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0755
+
+- name: annotation file (sample for modification)
+  copy:
+    src: annotation.html.j2_file
+    dest: ~pi/raspberry-noaa-v2/config/annotation/annotation.html.j2
+    force: no
+    owner: pi
+    group: pi
+    mode: 0600
+
+- name: annotation file image (sample for modification)
+  copy:
+    src: raspberry-noaa-v2-logo.png
+    dest: ~pi/raspberry-noaa-v2/config/annotation/raspberry-noaa-v2-logo.png
+    force: no
+    owner: pi
+    group: pi
+    mode: 0600
 ...

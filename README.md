@@ -152,6 +152,7 @@ git pull
 There are and will be future "optional" features for this framework. Below is a list of optional capabilities that you may wish
 to enable/configure with links to the respective instructions:
 
+* [Update Image Annotation Overlay](docs/annotation.md)
 * [Pruning Old Images](docs/pruning.md)
 * [Database Backups](docs/db_backups.md)
 * [Emailing Images (IFTTT)](docs/emailing.md)
@@ -187,6 +188,9 @@ or form to the success of this repository/framework. Below are some direct contr
     * [Instructables](https://www.instructables.com/Raspberry-Pi-NOAA-and-Meteor-M-2-Receiver/) post had the details behind creating the advanced functionality.
 * **[Dom Robinson](https://www.facebook.com/d2consulting.co.uk)**: Meteor enhancements, Satvis visualizations, and overall great code written that were incorporated into the repo.
     * Merge of functionality into this repo was partially created using his excellent fork of the original raspberry-noaa repo [here](https://github.com/dom-robinson/raspberry-noaa).
+    * Continued pushing the boundaries on the framework capabilities.
+* **[Colin Kaminski](https://www.facebook.com/holography)**: MAJOR testing assistance and submission of various enhancements and documentation.
+    * Continuous assistance of community members in their search for perfect imagery.
 * **[Mohamed Anjum Abdullah](https://www.facebook.com/MohamedAnjum9694/)**: Initial testing of the first release.
 
 ## Contributing
