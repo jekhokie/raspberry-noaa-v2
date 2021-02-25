@@ -192,6 +192,7 @@ or form to the success of this repository/framework. Below are some direct contr
 * **[Colin Kaminski](https://www.facebook.com/holography)**: MAJOR testing assistance and submission of various enhancements and documentation.
     * Continuous assistance of community members in their search for perfect imagery.
 * **[Mohamed Anjum Abdullah](https://www.facebook.com/MohamedAnjum9694/)**: Initial testing of the first release.
+* **[Kyle Keen](http://kmkeen.com/rtl-power/)**: Programming a lot of features for our RTL-SDR Drivers.
 
 ## Contributing
 
