@@ -53,6 +53,26 @@ The frequency used for the `test_reception.sh` script should be heard and can be
 anything, it's possible one of several things is wrong such as driver installation, USB configuration, etc. and a Google
 search is likely your next best bet.
 
+
+## Noise level and interference sources
+
+If you experience strange interference patterns or otherwise a bad reception,
+it may come from strong FM Radio stations, PC switchmode powersupplies, or nearly anything else.
+If you want to analyze this, you can run these scripts overnight to see whats floating around.
+
+```bash
+cd $HOME/raspberry-noaa-v2/scripts/testing
+
+./scan_for.sh 5h
+```
+This will scan a range for five hours and produce a heatmap waterfall image afterwards.
+Alternatively, you can call `start_scanning.sh` manually.
+If required (or curious), you can change the freqency to scan there, too.
+
+Example analysis:
+![waterfall analysis](./assets/images/scan_annotated.jpg)
+
+
 # Schedule
 
 This project uses [crontab](https://crontab.guru/) to schedule pass collections. To view the schedule of the scheduler,
