@@ -20,13 +20,13 @@
 capture_start=$START_DATE
 
 # input params
-SAT_NAME=$1
-FILENAME_BASE=$2
-TLE_FILE=$3
-EPOCH_START=$4
-CAPTURE_TIME=$5
-SAT_MAX_ELEVATION=$6
-PASS_DIRECTION=$7
+export SAT_NAME=$1
+export FILENAME_BASE=$2
+export TLE_FILE=$3
+export EPOCH_START=$4
+export CAPTURE_TIME=$5
+export SAT_MAX_ELEVATION=$6
+export PASS_DIRECTION=$7
 
 # base directory plus filename helper variables
 AUDIO_FILE_BASE="${NOAA_AUDIO_OUTPUT}/${FILENAME_BASE}"
@@ -35,7 +35,7 @@ IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
-SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
+export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 
 if pgrep "rtl_fm" > /dev/null; then
   log "There is an existing rtl_fm instance running, I quit" "ERROR"
@@ -110,20 +110,8 @@ fi
 
 # build images based on enhancements defined
 for enhancement in $ENHANCEMENTS; do
+  export ENHANCEMENT=$enhancement
   log "Decoding image" "INFO"
-
-  # create annotation string
-  annotation=""
-  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-    annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
-  fi
-  annotation="${annotation}${SAT_NAME} ${enhancement} ${capture_start} Max Elev: ${SAT_MAX_ELEVATION}°"
-  if [ "${SHOW_SUN_ELEVATION}" == "true" ]; then
-    annotation="${annotation} Sun Elevation: ${SUN_ELEV}°"
-  fi
-  if [ "${SHOW_PASS_DIRECTION}" == "true" ]; then
-    annotation="${annotation} | ${PASS_DIRECTION}"
-  fi
 
   # determine what frequency based on NOAA variant
   proc_script=""
@@ -165,18 +153,29 @@ for enhancement in $ENHANCEMENTS; do
   else
     ${IMAGE_PROC_DIR}/${proc_script} $map_overlay "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" >> $NOAA_LOG 2>&1
 
-    ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${annotation}" 90 >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_FILE_BASE}-$enhancement.jpg" 90 >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_THUMB_BASE}-$enhancement.jpg" >> $NOAA_LOG 2>&1
 
     if [ -f "${IMAGE_FILE_BASE}-$enhancement.jpg" ]; then
+      # create push annotation string (annotation in the email subject, discord text, etc.)
+      # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
+      push_annotation=""
+      if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+        push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
+      fi
+      push_annotation="${push_annotation}${SAT_NAME} ${enhancement} ${capture_start}"
+      push_annotation="${push_annotation} Max Elev: ${SAT_MAX_ELEVATION}°"
+      push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
+      push_annotation="${push_annotation} | ${PASS_DIRECTION}"
+
       if [ "${ENABLE_EMAIL_PUSH}" == "true" ]; then
         log "Emailing image enhancement $enhancement" "INFO"
-        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-$enhancement.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-$enhancement.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
       fi
 
       if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
         log "Pushing image enhancement $enhancement to Discord" "INFO"
-        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${annotation}" >> $NOAA_LOG 2>&1
+        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
       fi
     else
       log "No image with enhancement $enhancement created - not pushing anywhere" "INFO"
@@ -187,8 +186,11 @@ done
 rm "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
 
 # store enhancements
-$SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine) \
-                                     VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine);"
+$SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine) \
+                                     VALUES ( \
+                                       (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
+                                       $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine \
+                                     );"
 
 pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
 $SQLITE3 $DB_FILE "UPDATE predict_passes \

@@ -73,6 +73,14 @@
     group: pi
     mode: 0755
 
+- name: create annotation directory
+  file:
+    path: "{{ noaa_home }}/tmp/annotation"
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0755
+
 - name: create images directory
   become: yes
   file:
