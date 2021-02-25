@@ -8,6 +8,7 @@ class Capture extends \Lib\Model {
   public $image_path;
   public $start_epoch;
   public $travel_direction;
+  public $gain;
 
   # get a list of captures for the given page and total number
   # of configured images per page
@@ -16,6 +17,7 @@ class Capture extends \Lib\Model {
                                              predict_passes.pass_start,
                                              file_path,
                                              sat_type,
+                                             gain,
                                              predict_passes.sat_name,
                                              predict_passes.max_elev,
                                              predict_passes.pass_start_azimuth,
@@ -94,7 +96,7 @@ class Capture extends \Lib\Model {
     $this->enhancements = $enhancements;
   }
 
-  # get the image path for the specific image
+  # get the image path for the specific capture
   public function getImagePath($id) {
     $query = $this->db_conn->prepare('SELECT file_path FROM decoded_passes WHERE id = ?;');
     $query->bindValue(1, $id);
@@ -102,6 +104,16 @@ class Capture extends \Lib\Model {
     $image = $result->fetchArray();
 
     $this->image_path = $image['file_path'];
+  }
+
+  # get the gain for the specific capture
+  public function getGain($id) {
+    $query = $this->db_conn->prepare('SELECT gain FROM decoded_passes WHERE id = ?;');
+    $query->bindValue(1, $id);
+    $result = $query->execute();
+    $image = $result->fetchArray();
+
+    $this->gain = $image['gain'];
   }
 
   # get the epoch start time for the capture

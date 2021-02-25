@@ -186,10 +186,10 @@ done
 rm "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
 
 # store enhancements
-$SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine) \
+$SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine, gain) \
                                      VALUES ( \
                                        (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
-                                       $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine \
+                                       $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $GAIN \
                                      );"
 
 pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")

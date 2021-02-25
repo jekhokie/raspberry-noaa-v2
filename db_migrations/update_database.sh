@@ -52,4 +52,13 @@ else
   log "  - ${script} already applied" "INFO"
 fi
 
+script="04_add_capture_gain.sql"
+check=$($SQL_CMD $NOAA_HOME/db/panel.db ".schema decoded_passes" | grep 'gain')
+if [ -z "${check}" ]; then
+  log "  - applying ${script}" "INFO"
+  $SQL_CMD $NOAA_HOME/db/panel.db < $NOAA_HOME/db_migrations/$script
+else
+  log "  - ${script} already applied" "INFO"
+fi
+
 log "Schema updates complete!" "INFO"
