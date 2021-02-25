@@ -1,4 +1,11 @@
 #!/bin/bash
+# Purpose:
+#	Starts scanning on specified freqency range with rtl_power.
+#
+# Example:
+#   ./start_scanning.sh my_scan.csv.gz
+#   ...
+#   ./stop_and_finalize_scanning.sh my_scan.csv.gz
 
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
@@ -18,4 +25,4 @@ $(tput setaf 3)
 
 $(tput sgr0)"
 
-nohup rtl_power ${BIAS_TEE} -f $range -g $GAIN -c 25% -d 0 2>> nohup.out | gzip > $outfile &
+nohup rtl_power ${BIAS_TEE} -f $range -g $GAIN -c 25% -d 0 2> /dev/null | gzip > $outfile &

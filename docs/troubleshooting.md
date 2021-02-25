@@ -67,11 +67,12 @@ it may come from strong FM Radio stations, PC switchmode powersupplies, or nearl
 If you want to analyze this, you can run these scripts overnight to see whats floating around.
 
 ```bash
-cd $HOME/raspberry-noaa-v2/scripts/testing
+cd $HOME
 
-./scan_for.sh 5h
+raspberry-noaa-v2/scripts/testing/scan_for.sh 5h
 ```
-This will scan a range for five hours and produce a heatmap waterfall image afterwards.
+This will scan a range for five hours and produce a heatmap waterfall image in your current working directory afterwards.
+
 Alternatively, you can call `start_scanning.sh` manually.
 If required (or curious), you can change the freqency to scan there, too.
 

@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# Original from https://github.com/keenerd/rtl-sdr-misc/blob/master/heatmap/heatmap.py
 
 from PIL import Image, ImageDraw, ImageFont
 import os, sys, gzip, math, argparse, colorsys, datetime
@@ -622,4 +623,3 @@ create_labels(args, img)
 
 print("saving")
 img.save(args.output_path)
-
