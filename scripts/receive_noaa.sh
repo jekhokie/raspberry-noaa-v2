@@ -109,6 +109,7 @@ else
 fi
 
 # build images based on enhancements defined
+has_one_image=0
 for enhancement in $ENHANCEMENTS; do
   export ENHANCEMENT=$enhancement
   log "Decoding image" "INFO"
@@ -156,53 +157,63 @@ for enhancement in $ENHANCEMENTS; do
     ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_FILE_BASE}-$enhancement.jpg" 90 >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_THUMB_BASE}-$enhancement.jpg" >> $NOAA_LOG 2>&1
 
+    filesize=$(wc -c "${IMAGE_FILE_BASE}-$enhancement.jpg" | awk '{print $1}')
     if [ -f "${IMAGE_FILE_BASE}-$enhancement.jpg" ]; then
-      # create push annotation string (annotation in the email subject, discord text, etc.)
-      # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
-      push_annotation=""
-      if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-        push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
-      fi
-      push_annotation="${push_annotation}${SAT_NAME} ${enhancement} ${capture_start}"
-      push_annotation="${push_annotation} Max Elev: ${SAT_MAX_ELEVATION}°"
-      push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
-      push_annotation="${push_annotation} | ${PASS_DIRECTION}"
+      # check that the file actually has content
+      if [ $filesize -gt 20480 ]; then
+        # at least one good image
+        has_one_image=1
 
-      if [ "${ENABLE_EMAIL_PUSH}" == "true" ]; then
-        log "Emailing image enhancement $enhancement" "INFO"
-        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-$enhancement.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
-      fi
+        # create push annotation string (annotation in the email subject, discord text, etc.)
+        # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
+        push_annotation=""
+        if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+          push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
+        fi
+        push_annotation="${push_annotation}${SAT_NAME} ${enhancement} ${capture_start}"
+        push_annotation="${push_annotation} Max Elev: ${SAT_MAX_ELEVATION}°"
+        push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
+        push_annotation="${push_annotation} | ${PASS_DIRECTION}"
 
-      if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
-        log "Pushing image enhancement $enhancement to Discord" "INFO"
-        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
+        if [ "${ENABLE_EMAIL_PUSH}" == "true" ]; then
+          log "Emailing image enhancement $enhancement" "INFO"
+          ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-$enhancement.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
+        fi
+
+        if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
+          log "Pushing image enhancement $enhancement to Discord" "INFO"
+          ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
+        fi
+      else
+        log "No image with enhancement $enhancement created - not pushing anywhere" "INFO"
+        rm "${IMAGE_FILE_BASE}-$enhancement.jpg"
       fi
-    else
-      log "No image with enhancement $enhancement created - not pushing anywhere" "INFO"
     fi
   fi
 done
 
 rm "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
 
-# store enhancements
-$SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine, gain) \
-                                     VALUES ( \
-                                       (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
-                                       $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $GAIN \
-                                     );"
+# store enhancements if there was at least 1 good image created
+if [ $has_one_image -eq 1 ]; then
+  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine, gain) \
+                                       VALUES ( \
+                                         (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
+                                         $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $GAIN \
+                                       );"
 
-pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
-$SQLITE3 $DB_FILE "UPDATE predict_passes \
-                   SET is_active = 0 \
-                   WHERE (predict_passes.pass_start) \
-                   IN ( \
-                     SELECT predict_passes.pass_start \
-                     FROM predict_passes \
-                     INNER JOIN decoded_passes \
-                     ON predict_passes.pass_start = decoded_passes.pass_start \
-                     WHERE decoded_passes.id = $pass_id \
-                   );"
+  pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
+  $SQLITE3 $DB_FILE "UPDATE predict_passes \
+                     SET is_active = 0 \
+                     WHERE (predict_passes.pass_start) \
+                     IN ( \
+                       SELECT predict_passes.pass_start \
+                       FROM predict_passes \
+                       INNER JOIN decoded_passes \
+                       ON predict_passes.pass_start = decoded_passes.pass_start \
+                       WHERE decoded_passes.id = $pass_id \
+                     );"
+fi
 
 if [ "$DELETE_AUDIO" = true ]; then
   log "Deleting audio files" "INFO"
