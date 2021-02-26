@@ -53,11 +53,32 @@ The frequency used for the `test_reception.sh` script should be heard and can be
 anything, it's possible one of several things is wrong such as driver installation, USB configuration, etc. and a Google
 search is likely your next best bet.
 
+
 If you just want to hear from the pi itself you can plug in headphones to the pi and enter:
 
 ```rtl_fm -f 97.3e6 -M wbfm -s 200000 -r 48000 - | aplay -r 48000 -f S16_LE```
 
 Replace 97.3 with a strong local FM station. If you have an FM trap or LNA you may need to remove them from the antenna feed.
+
+# Noise level and interference sources
+
+If you experience strange interference patterns or otherwise a bad reception, it may come from strong FM Radio stations,
+PC switchmode powersupplies, or nearly anything else. If you want to analyze this, you can run these scripts overnight to see
+whats floating around.
+
+```bash
+cd $HOME
+
+raspberry-noaa-v2/scripts/testing/scan_for.sh 5h
+```
+
+This will scan a range for five hours and produce a heatmap waterfall image in your current working directory afterwards.
+The output of the script will show the file that will be created.
+
+Alternatively, you can call `start_scanning.sh` manually. If required (or curious), you can change the freqency to scan
+there, too.
+
+See [this link](./assets/images/scan_annotated.jpg) for an example output of the frequency analysis.
 
 # Schedule
 
