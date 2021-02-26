@@ -62,22 +62,23 @@ Replace 97.3 with a strong local FM station. If you have an FM trap or LNA you m
 
 # Noise level and interference sources
 
-If you experience strange interference patterns or otherwise a bad reception,
-it may come from strong FM Radio stations, PC switchmode powersupplies, or nearly anything else.
-If you want to analyze this, you can run these scripts overnight to see whats floating around.
+If you experience strange interference patterns or otherwise a bad reception, it may come from strong FM Radio stations,
+PC switchmode powersupplies, or nearly anything else. If you want to analyze this, you can run these scripts overnight to see
+whats floating around.
 
 ```bash
 cd $HOME
 
 raspberry-noaa-v2/scripts/testing/scan_for.sh 5h
 ```
+
 This will scan a range for five hours and produce a heatmap waterfall image in your current working directory afterwards.
+The output of the script will show the file that will be created.
 
-Alternatively, you can call `start_scanning.sh` manually.
-If required (or curious), you can change the freqency to scan there, too.
+Alternatively, you can call `start_scanning.sh` manually. If required (or curious), you can change the freqency to scan
+there, too.
 
-Example analysis:
-[waterfall analysis](./assets/images/scan_annotated.jpg)
+See [this link](./assets/images/scan_annotated.jpg) for an example output of the frequency analysis.
 
 # Schedule
 
