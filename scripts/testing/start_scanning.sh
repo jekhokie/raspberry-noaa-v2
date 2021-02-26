@@ -3,7 +3,7 @@
 # Purpose: Starts scanning on specified freqency range with rtl_power.
 #
 # Inputs:
-#    1. GZip file to store CSV scan data (must have .csv.gz extension)
+#    1. (Optional) GZip file to store CSV scan data (must have .csv.gz extension)
 #
 # Example:
 #   ./start_scanning.sh my_scan.csv.gz
