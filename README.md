@@ -193,6 +193,7 @@ or form to the success of this repository/framework. Below are some direct contr
     * Continuous assistance of community members in their search for perfect imagery.
 * **[Mohamed Anjum Abdullah](https://www.facebook.com/MohamedAnjum9694/)**: Initial testing of the first release.
 * **[Kyle Keen](http://kmkeen.com/rtl-power/)**: Programming a lot of features for our RTL-SDR Drivers.
+* **[Pascal P.](https://github.com/Cirromulus)**: Frequency/spectrum analysis test scripts for visualizing frequency spectrum of environment.
 
 ## Contributing
 
