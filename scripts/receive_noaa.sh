@@ -10,9 +10,10 @@
 #   5. Duration of capture (seconds)
 #   6. Max angle elevation for satellite
 #   7. Direction of pass
+#   8. Side of pass (W=West, E=East) relative to base station
 #
 # Example:
-#   ./receive_noaa.sh "NOAA 18" NOAA1820210208-194829 ./orbit.tle 1612831709 919 31 Southbound
+#   ./receive_noaa.sh "NOAA 18" NOAA1820210208-194829 ./orbit.tle 1612831709 919 31 Southbound E
 
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
@@ -27,6 +28,7 @@ export EPOCH_START=$4
 export CAPTURE_TIME=$5
 export SAT_MAX_ELEVATION=$6
 export PASS_DIRECTION=$7
+export PASS_SIDE=$8
 
 # base directory plus filename helper variables
 AUDIO_FILE_BASE="${NOAA_AUDIO_OUTPUT}/${FILENAME_BASE}"

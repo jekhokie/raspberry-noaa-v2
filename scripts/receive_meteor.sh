@@ -9,9 +9,10 @@
 #   4. Duration of capture (seconds)
 #   5. Max angle elevation for satellite
 #   6. Direction of pass
+#   7. Side of pass (W=West, E=East) relative to base station
 #
 # Example:
-#   ./receive_meteor.sh "METEOR-M 2" METEOR-M220210205-192623 1612571183 922 39 Northbound
+#   ./receive_meteor.sh "METEOR-M 2" METEOR-M220210205-192623 1612571183 922 39 Northbound W
 
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
@@ -25,6 +26,7 @@ export EPOCH_START=$3
 export CAPTURE_TIME=$4
 export SAT_MAX_ELEVATION=$5
 export PASS_DIRECTION=$6
+export PASS_SIDE=$7
 
 # base directory plus filename_base for re-use
 RAMFS_AUDIO_BASE="${RAMFS_AUDIO}/${FILENAME_BASE}"
