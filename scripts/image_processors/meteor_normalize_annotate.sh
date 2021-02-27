@@ -20,6 +20,12 @@ INPUT_JPG=$1
 OUTPUT_JPG=$2
 QUALITY=$3
 
+# provide a long-form pass side
+pass_side_long="West"
+if [ "${PASS_SIDE}" == "E" ]; then
+  pass_side_long="East"
+fi
+
 # get the base config and append vars as needed
 yml_config=$(cat "${NOAA_HOME}/config/settings.yml")
 yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/sat_name: '$SAT_NAME'\n.../")                   # sat_name
@@ -28,6 +34,8 @@ yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/enhancement: '$ENHANCEMENT
 yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/sat_max_elevation: '$SAT_MAX_ELEVATION'\n.../") # sat_max_elevation
 yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/sun_elevation: '$SUN_ELEV'\n.../")              # sun_elevation
 yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/pass_direction: $PASS_DIRECTION\n.../")         # pass_direction
+yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/pass_side: $PASS_SIDE\n.../")                   # pass_side
+yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/pass_side_long: $pass_side_long\n.../")         # pass_side_long
 
 # vars for image manipulation
 tmp_dir="${NOAA_HOME}/tmp/annotation"

@@ -10,6 +10,8 @@
     * sat_name - name of the satellite
     * sun_elevation - elevation of the sun during the capture
     * pass_direction - direction of the satellite pass (relative to ground station)
+    * pass_side - whether the pass was east/west of the base station (represented as "E" or "W")
+    * pass_side_long - long form of whether the pass was east/west of the base station (represented as "East" or "West")
 
   To have a variable replaced with the injected variables when this template is called, simply
   wrap the variable in double curly braces like this: {{ my_var }}
@@ -24,6 +26,6 @@
 
 <p style="color: yellow; font-weight: bold;">
   Ground Station: {{ ground_station_location }}<br>
-  {{ sat_name }} {{ enhancement }} {{ capture_start }} Max Elev: {{ sat_max_elevation }}&#176;
+  {{ sat_name }} {{ enhancement }} {{ capture_start }} Max Elev: {{ sat_max_elevation }}&#176; {{ pass_side }}
   Sun Elevation: {{ sun_elevation }}&#176; | {{ pass_direction }}
 </p>

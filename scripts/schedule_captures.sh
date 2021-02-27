@@ -22,6 +22,7 @@ TLE_FILE=$3
 predict_start=$($PREDICT -t $TLE_FILE -p "${OBJ_NAME}" | head -1)
 predict_end=$($PREDICT   -t $TLE_FILE -p "${OBJ_NAME}" | tail -1)
 max_elev=$($PREDICT      -t $TLE_FILE -p "${OBJ_NAME}" | awk -v max=0 '{if($5>max){max=$5}}END{print max}')
+azimuth_at_max=$($PREDICT   -t $TLE_FILE -p "${OBJ_NAME}" | awk -v max=0 -v az=0 '{if($5>max){max=$5;az=$6}}END{print az}')
 end_epoch_time=$(echo "${predict_end}" | cut -d " " -f 1)
 starting_azimuth=$(echo "${predict_start}" | awk '{print $6}')
 
@@ -49,19 +50,26 @@ while [ "$(date --date="@${end_epoch_time}" +%D)" = "$(date +%D)" ]; do
       direction="Northbound"
     fi
 
+    # calculate side of travel
+    pass_side="W"
+    if [ $azimuth_at_max -ge 0 ] && [ $azimuth_at_max -le 180 ]; then
+      pass_side="E"
+    fi
+
     printf -v safe_obj_name "%q" $(echo "${OBJ_NAME}" | sed "s/ /-/g")
     log "Scheduling capture for: ${safe_obj_name} ${file_date_ext} ${max_elev}" "INFO"
     echo "${NOAA_HOME}/scripts/${RECEIVE_SCRIPT} \"${OBJ_NAME}\" ${safe_obj_name}-${file_date_ext} ${receiver_tle_file} \
-${start_epoch_time} ${timer} ${max_elev} ${direction}" | at "$(date --date="TZ=\"UTC\" ${start_datetime}" +"%H:%M %D")"
+${start_epoch_time} ${timer} ${max_elev} ${direction} ${pass_side}" | at "$(date --date="TZ=\"UTC\" ${start_datetime}" +"%H:%M %D")"
 
     # update database with scheduled pass
-    $SQLITE3 $DB_FILE "insert or replace into predict_passes (sat_name,pass_start,pass_end,max_elev,is_active,pass_start_azimuth,direction) values (\"${OBJ_NAME}\",$start_epoch_time,$end_epoch_time,$max_elev,1,$starting_azimuth,'$direction');"
+    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO predict_passes (sat_name,pass_start,pass_end,max_elev,is_active,pass_start_azimuth,azimuth_at_max,direction) VALUES (\"${OBJ_NAME}\",$start_epoch_time,$end_epoch_time,$max_elev,1,$starting_azimuth,$azimuth_at_max,'$direction');"
   fi
 
   next_predict=$(expr "${end_epoch_time}" + 60)
   predict_start=$($PREDICT -t $TLE_FILE -p "${OBJ_NAME}" "${next_predict}" | head -1)
   predict_end=$($PREDICT   -t $TLE_FILE -p "${OBJ_NAME}" "${next_predict}" | tail -1)
   max_elev=$($PREDICT      -t $TLE_FILE -p "${OBJ_NAME}" "${next_predict}" | awk -v max=0 '{if($5>max){max=$5}}END{print max}')
+  azimuth_at_max=$($PREDICT   -t $TLE_FILE -p "${OBJ_NAME}" "${next_predict}" | awk -v max=0 -v az=0 '{if($5>max){max=$5;az=$6}}END{print az}')
   end_epoch_time=$(echo "${predict_end}" | cut -d " " -f 1)
   starting_azimuth=$(echo "${predict_start}" | awk '{print $6}')
 done

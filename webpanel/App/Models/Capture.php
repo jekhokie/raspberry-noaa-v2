@@ -21,7 +21,8 @@ class Capture extends \Lib\Model {
                                              predict_passes.sat_name,
                                              predict_passes.max_elev,
                                              predict_passes.pass_start_azimuth,
-                                             predict_passes.direction
+                                             predict_passes.direction,
+                                             predict_passes.azimuth_at_max
                                              FROM decoded_passes
                                              INNER JOIN predict_passes
                                                ON predict_passes.pass_start = decoded_passes.pass_start

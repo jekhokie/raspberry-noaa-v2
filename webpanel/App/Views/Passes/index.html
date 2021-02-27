@@ -46,7 +46,12 @@
             </td>
             <td class="text-center">{{ pass_start }}</td>
             <td class="text-center">{{ pass_end }}</td>
-            <td class="text-center">{{ pass.max_elev }}&#176;</td>
+            <td class="text-center">
+              {{ pass.max_elev }}&#176;
+              {% if pass.azimuth_at_max != "" %}
+                {% if pass.azimuth_at_max >= 0 and pass.azimuth_at_max <= 180 %}E{% else %}W{% endif %}
+              {% endif %}
+            </td>
             <td class="text-center d-none d-sm-table-cell">{% if pass.pass_start_azimuth != "" %}{{ pass.pass_start_azimuth }}&#176;{% endif %}</td>
             <td class="text-center d-none d-sm-table-cell">{% if pass.direction != "" %}{{ pass.direction }}{% endif %}</td>
           </tr>
