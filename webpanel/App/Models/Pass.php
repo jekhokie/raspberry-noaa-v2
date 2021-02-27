@@ -14,6 +14,7 @@ class Pass extends \Lib\Model {
                                            pass_end,
                                            max_elev,
                                            pass_start_azimuth,
+                                           azimuth_at_max,
                                            direction
                                     FROM predict_passes
                                     WHERE (pass_start > $today)
