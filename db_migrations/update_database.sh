@@ -61,4 +61,13 @@ else
   log "  - ${script} already applied" "INFO"
 fi
 
+script="05_add_pass_azimuth_at_max.sql"
+check=$($SQL_CMD $NOAA_HOME/db/panel.db ".schema predict_passes" | grep 'azimuth_at_max')
+if [ -z "${check}" ]; then
+  log "  - applying ${script}" "INFO"
+  $SQL_CMD $NOAA_HOME/db/panel.db < $NOAA_HOME/db_migrations/$script
+else
+  log "  - ${script} already applied" "INFO"
+fi
+
 log "Schema updates complete!" "INFO"
