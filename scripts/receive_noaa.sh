@@ -75,9 +75,13 @@ epoch_adjusted=$(($PASS_START + 10))
 extra_map_opts=""
 if [ "${NOAA_MAP_CROSSHAIR_ENABLE}" == "true" ]; then
   extra_map_opts="${extra_map_opts} -l 1 -c l:${NOAA_MAP_CROSSHAIR_COLOR}"
+else
+  extra_map_opts="${extra_map_opts} -l 0"
 fi
 if [ "${NOAA_MAP_GRID_DEGREES}" != "0.0" ]; then
   extra_map_opts="${extra_map_opts} -g ${NOAA_MAP_GRID_DEGREES} -c g:${NOAA_MAP_GRID_COLOR}"
+else
+  extra_map_opts="${extra_map_opts} -g 0.0"
 fi
 if [ "${NOAA_MAP_COUNTRY_BORDER_COLOR}" != "" ]; then 
    extra_map_opts="${extra_map_opts} -c C:${NOAA_MAP_COUNTRY_BORDER_COLOR}"
