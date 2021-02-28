@@ -177,7 +177,7 @@ for enhancement in $ENHANCEMENTS; do
           push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
         fi
         push_annotation="${push_annotation}${SAT_NAME} ${enhancement} ${capture_start}"
-        push_annotation="${push_annotation} Max Elev: ${SAT_MAX_ELEVATION}°"
+        push_annotation="${push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
         push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
         push_annotation="${push_annotation} | ${PASS_DIRECTION}"
 
