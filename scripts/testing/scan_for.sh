@@ -15,8 +15,16 @@ outfile=timed_scan_$(date  +"%d.%m.%y-%H.%M").csv.gz
 
 echo "
 $(tput setaf 2)
-        Scanning for $duration, output file is $outfile .
+        Scanning for $duration, expect a $outfile.png in $(pwd) afterwards.
 $(tput sgr0)"
 
 $scriptpath/start_scanning.sh $outfile
-nohup bash -c "sleep $duration; $scriptpath/stop_and_finalize_scanning.sh $outfile" 2> /dev/null &
+if ! pidof rtl_power >/dev/null ; then
+	echo "
+	$(tput setaf 2)
+		Start of scan was not successful. Are any captures running?
+	$(tput sgr0)"
+	exit -1
+fi
+
+nohup &>/dev/null bash -c "sleep $duration; $scriptpath/stop_and_finalize_scanning.sh $outfile" &

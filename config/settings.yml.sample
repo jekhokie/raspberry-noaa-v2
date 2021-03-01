@@ -44,6 +44,8 @@ delete_audio: false
 #        composite-based use cases
 #   ground_station_location - free-form text for indicating ground station location in image
 #        annotation (leave blank if you wish to exclude the ground station annotation)
+#   show_sun_elevation - whether to show sun elevation in annotation
+#   show_pass_direction - show which direction the satellite is moving in the image annotation
 #   noaa_daytime_enhancements - list of enhancements to create images using during daytime captures
 #        (note: default value is total list of supported image processors)
 #   noaa_nighttime_enhancements - list of enhancements to create images using during nighttime captures
@@ -54,6 +56,8 @@ noaa_crop_telemetry: false
 image_annotation_location: 'NorthWest'
 produce_noaa_pristine_image: false
 ground_station_location: ''
+show_sun_elevation: true
+show_pass_direction: true
 noaa_daytime_enhancements: 'ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT therm'
 noaa_nighttime_enhancements: 'ZA MCIR MCIR-precip therm'
 

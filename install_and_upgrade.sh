@@ -64,11 +64,11 @@ else
 fi
 
 log_running "Checking configuration files..."
-python3 scripts/tools/diff_yaml_configs.py config/settings.yml.sample config/settings.yml
+python3 scripts/tools/validate_yaml.py config/settings.yml config/settings_schema.json
 if [ $? -eq 0 ]; then
   log_done "  Config check complete!"
 else
-  die "  Please update your config/settings.yml file to include the missing parameters from config/settings.yml.sample"
+  die "  Please update your config/settings.yml file to accommodate the above errors"
 fi
 
 # install ansible
