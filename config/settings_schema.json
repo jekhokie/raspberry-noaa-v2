@@ -1,0 +1,122 @@
+{
+  "type": "object",
+  "properties": {
+    "latitude":                       { "type": "number" },
+    "longitude":                      { "type": "number" },
+    "timezone_offset":                { "type": "number" },
+    "ntp_server":                     { "type": "string" },
+    "meteor_receiver": {
+      "type": "string"
+    },
+    "sdr_device_id":                  { "type": "number" },
+    "enable_bias_tee":                { "type": "boolean" },
+    "receiver_gain":                  { "type": "number" },
+    "receiver_freq_offset":           { "type": "number" },
+    "schedule_noaa":                  { "type": "boolean" },
+    "schedule_meteor":                { "type": "boolean" },
+    "delete_audio":                   { "type": "boolean" },
+    "flip_meteor_image":              { "type": "boolean" },
+    "produce_spectrogram":            { "type": "boolean" },
+    "noaa_crop_telemetry":            { "type": "boolean" },
+    "image_annotation_location": {
+      "type": "string"
+    },
+    "produce_noaa_pristine_image":    { "type": "boolean" },
+    "ground_station_location":        { "type": "string" },
+    "show_sun_elevation":             { "type": "boolean" },
+    "show_pass_direction":            { "type": "boolean" },
+    "noaa_daytime_enhancements":      { "type": "string" },
+    "noaa_nighttime_enhancements":    { "type": "string" },
+    "sat_min_elevation": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 90
+    },
+    "sun_min_elevation": {
+      "type": "number",
+      "minimum": -90,
+      "maximum": 90
+    },
+    "noaa_map_crosshair_enable":      { "type": "boolean" },
+    "noaa_map_crosshair_color":       { "type": "string" },
+    "noaa_map_grid_degrees":          { "type": "number" },
+    "noaa_map_grid_color":            { "type": "string" },
+    "noaa_map_country_border_enable": { "type": "boolean" },
+    "noaa_map_country_border_color":  { "type": "string" },
+    "noaa_map_state_border_enable":   { "type": "boolean" },
+    "noaa_map_state_border_color":    { "type": "string" },
+    "timezone":                       { "type": "string" },
+    "lang_setting": {
+      "type": "string",
+      "enum": [ "ar", "bg", "de", "en", "es", "fr", "nl", "sr" ]
+    },
+    "web_port": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 65534
+    },
+    "log_level": {
+      "type": "string",
+      "enum": [ "DEBUG", "WARN", "INFO", "ERROR" ]
+    },
+    "enable_satvis":           { "type": "boolean" },
+    "delete_oldest_n":         { "type": "number" },
+    "delete_older_than_n":     { "type": "number" },
+    "disable_wifi_power_mgmt": { "type": "boolean" },
+    "enable_email_push":       { "type": "boolean" },
+    "email_push_address": {
+      "type": "string",
+      "required": "false"
+    },
+    "enable_email_schedule_push": { "type": "boolean" },
+    "enable_discord_push":        { "type": "boolean" },
+    "discord_webhook_url":        { "type": "string" }
+  },
+  "required": [
+    "latitude",
+    "longitude",
+    "timezone_offset",
+    "ntp_server",
+    "meteor_receiver",
+    "sdr_device_id",
+    "enable_bias_tee",
+    "receiver_gain",
+    "receiver_freq_offset",
+    "schedule_noaa",
+    "schedule_meteor",
+    "delete_audio",
+    "flip_meteor_image",
+    "produce_spectrogram",
+    "noaa_crop_telemetry",
+    "image_annotation_location",
+    "produce_noaa_pristine_image",
+    "ground_station_location",
+    "show_sun_elevation",
+    "show_pass_direction",
+    "noaa_daytime_enhancements",
+    "noaa_nighttime_enhancements",
+    "sat_min_elevation",
+    "sun_min_elevation",
+    "noaa_map_crosshair_enable",
+    "noaa_map_crosshair_color",
+    "noaa_map_grid_degrees",
+    "noaa_map_grid_color",
+    "noaa_map_country_border_enable",
+    "noaa_map_country_border_color",
+    "noaa_map_state_border_enable",
+    "noaa_map_state_border_color",
+    "timezone",
+    "lang_setting",
+    "web_port",
+    "log_level",
+    "enable_satvis",
+    "delete_oldest_n",
+    "delete_older_than_n",
+    "disable_wifi_power_mgmt",
+    "enable_email_push",
+    "email_push_address",
+    "enable_email_schedule_push",
+    "enable_discord_push",
+    "discord_webhook_url"
+  ]
+}
