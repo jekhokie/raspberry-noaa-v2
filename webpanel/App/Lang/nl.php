@@ -10,7 +10,7 @@ return array(
   "elev" => "Elevatie",
   "enhancement" => "Verbetering",
   "fail_delete_missing_id" => "Verwijderen mislukt - 'id' parameter ontbreekt",
-  "gain" => "Krijgen",
+  "gain" => "Gain",
   "image" => "Afbeelding",
   "images" => "Afbeeldingen",
   "max_elev" => "Max Elevatie",
