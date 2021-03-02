@@ -1,5 +1,10 @@
 server {
-  listen {{ web_port }};
+  listen {{ web_tls_port }};
+
+  ssl on;
+  ssl_certificate {{ tls_cert }};
+  ssl_certificate_key {{ tls_cert_key }};
+
   root {{ web_home }}/public/;
   index index.php index.html index.htm index.nginx-debian.html;
   autoindex on;

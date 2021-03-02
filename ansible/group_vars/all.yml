@@ -21,4 +21,8 @@ ramfs_path: "/var/ramfs"
 
 # log output file
 log_file: "/var/log/raspberry-noaa-v2/output.log"
+
+# TLS self-signed certs
+tls_cert: /etc/ssl/certs/local_server.crt
+tls_cert_key: /etc/ssl/private/local_server.key
 ...

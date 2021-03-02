@@ -50,11 +50,20 @@
       "type": "string",
       "enum": [ "ar", "bg", "de", "en", "es", "fr", "nl", "sr" ]
     },
+    "web_server_name": { "type": "string" },
+    "enable_non_tls":  { "type": "boolean" },
     "web_port": {
       "type": "number",
       "minimum": 1,
       "maximum": 65534
     },
+    "enable_tls": { "type": "boolean" },
+    "web_tls_port": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 65534
+    },
+    "cert_valid_days": { "type": "number" },
     "log_level": {
       "type": "string",
       "enum": [ "DEBUG", "WARN", "INFO", "ERROR" ]
@@ -107,7 +116,12 @@
     "noaa_map_state_border_color",
     "timezone",
     "lang_setting",
+    "web_server_name",
+    "enable_non_tls",
     "web_port",
+    "enable_tls",
+    "web_tls_port",
+    "cert_valid_days",
     "log_level",
     "enable_satvis",
     "delete_oldest_n",
