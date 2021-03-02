@@ -46,9 +46,15 @@
 
 - name: create scheduling cron job
   cron:
-    name: schedule passes
+    name: schedule passes daily
     minute: 1
     hour: 0
+    job: "{{ noaa_home }}/scripts/schedule.sh"
+
+- name: create scheduling cron job @ reboot
+  cron:
+    name: schedule passes after reboot
+    special_time: reboot
     job: "{{ noaa_home }}/scripts/schedule.sh"
 
 - name: create database
