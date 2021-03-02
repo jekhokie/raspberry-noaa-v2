@@ -27,6 +27,7 @@ $(tput setaf 2)
 $(tput sgr0)"
 
 $scriptpath/start_scanning.sh $outfile
+sleep 1
 if ! pidof rtl_power >/dev/null ; then
 	echo "
 	$(tput setaf 2)
