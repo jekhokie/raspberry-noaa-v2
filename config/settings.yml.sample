@@ -116,12 +116,22 @@ lang_setting: en
 #   web_tls_port - port to run the TLS listener on
 #   cert_valid_days - number of days the TLS certificates should be valid for - note that
 #                     you will need to re-install the certificates once this timeline expires
+#   lock_admin_page - whether to require username/password when attempting to access the admin page
+#                     of the webpanel - WARNING: DO NOT SET THIS TO TRUE UNLESS YOU ONLY HAVE A TLS
+#                     ENABLED SITE - SETTING TO TRUE AND RUNNING A CLEARTEXT SITE IS ALMOST CERTAINLY
+#                     ASKING FOR YOUR CREDENTIALS TO BE STOLEN MID-REQUEST
+#   admin_username - username used to access the 'admin' endpoint of the webpanel (WARNING: see 'lock_admin_page' above)
+#   admin_password - password used to access the 'admin' endpoint of the webpanel (WARNING: see 'lock_admin_page' above)
+#                    NOTE: MAKE SURE YOU SET THIS TO SOMETHING REASONABLY COMPLICATED!
 web_server_name: raspberry-noaa.localdomain
 enable_non_tls: false
 web_port: 80
 enable_tls: true
 web_tls_port: 443
 cert_valid_days: 365
+lock_admin_page: false
+admin_username: 'admin'
+admin_password: 'admin'
 
 # log level for output from scripts
 log_level: DEBUG
