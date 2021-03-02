@@ -15,6 +15,9 @@
 # Example:
 #   ./receive_noaa.sh "NOAA 18" NOAA1820210208-194829 ./orbit.tle 1612831709 919 31 Southbound E
 
+# time keeping
+TIMER_START=$(date '+%s')
+
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
@@ -236,3 +239,9 @@ if [ "$DELETE_AUDIO" = true ]; then
   log "Deleting audio files" "INFO"
   rm "${AUDIO_FILE_BASE}.wav"
 fi
+
+# calculate and report total time for capture
+TIMER_END=$(date '+%s')
+DIFF=$(($TIMER_END - $TIMER_START))
+PROC_TIME=$(date -ud "@$DIFF" +'%H:%M.%S')
+log "Total processing time: ${PROC_TIME}" "INFO"

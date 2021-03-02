@@ -14,6 +14,9 @@
 # Example:
 #   ./receive_meteor.sh "METEOR-M 2" METEOR-M220210205-192623 1612571183 922 39 Northbound W
 
+# time keeping
+TIMER_START=$(date '+%s')
+
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
@@ -290,3 +293,9 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 else
   log "Receiver type '$METEOR_RECEIVER' not valid" "ERROR"
 fi
+
+# calculate and report total time for capture
+TIMER_END=$(date '+%s')
+DIFF=$(($TIMER_END - $TIMER_START))
+PROC_TIME=$(date -ud "@$DIFF" +'%H:%M.%S')
+log "Total processing time: ${PROC_TIME}" "INFO"
