@@ -42,3 +42,40 @@ Once a certificate expires, a browser will very likely (and rightfully so) block
 If this occurs, re-run the `./install_and_upgrade.sh` script which has the ability to detect an expired (or expiring
 within the next 24-hours) certificate and re-generate a new certificate/install it for use and automatically
 restart your webpanel services.
+
+## Password Protecting Admin Page
+
+The Admin page in the webpanel allows for destructive activities such as deleting previous captures. In order to
+protect this page, you may elect to enable basic auth with a simple username/password scheme. The method used for
+this implementation is a VERY basic PHP code implementation that forces client authentication according to
+[this post](https://www.php.net/manual/en/features.http-auth.php).
+
+**WARNING**: Only enable this functionality if you are solely running a TLS-enabled web server. Enabling auth
+without having the web server TLS-enabled means that when credentials are entered in the browser, they are sent
+in clear text (non-encrypted), heightening the chances of being seen and stolen. Again (see all warnings above), while
+TLS-enabling your web server should still not be considered "sufficient" for exposing this framework on the public
+internet, you should definitely NOT enable auth on the Admin page *without* at least having TLS enabled.
+
+To enable protection of the admin page, update the following parameters in your `config/settings.yml` file (see the
+`config/settings.yml.sample` file for details on each of the parameters):
+
+```bash
+lock_admin_page: true
+admin_username: 'admin'
+admin_password: 'secretpass'
+```
+
+Obviously update the `admin_username` and `admin_password` to be the credentials you wish to use in order to access
+the page. For the password, ensure you use a reasonably complex password that is hard to guess (and also hard to
+hack via brute-force, rainbow lists, or other means).
+
+Once you've updated the configs appropriately, re-run the `install_and_upgrade.sh` script, at which point a visit to
+your Admin page in the webpanel should prompt you for a username and password. Enter the credentials you specified
+in the above configs and you should be logged in.
+
+As a note - the credentials establish a session for the user on first login. This session does not have an expiry
+unless the session details are removed from the browser or the server is restarted. Different browsers have different
+implementations of expiry and credential handling so there is no easy way to articulate each and every variant. If you
+are wondering whether your Admin page is still secured, you can open an "Incognito" window in a Chrome browser and
+attempt to access the page, which should prompt you for the username and password since incognito sessions do not
+use session variables.

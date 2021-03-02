@@ -51,7 +51,7 @@ Once complete, follow the [migration document](docs/migrate_from_raspberry_noaa.
 to this version 2 (keep your previous captures and make them visible).
 
 In addition, if you have elected to run a TLS-enabled web server, see [THIS LINK](docs/tls_webserver.md) for some additional information
-on how to handle self-signed certificates when attempting to visit your webpanel.
+on how to handle self-signed certificates when attempting to visit your webpanel and enabling auth for the admin pages.
 
 To see what occurred during a capture event, check out the log file `/var/log/raspberry-noaa-v2/output.log`.
 
@@ -126,7 +126,7 @@ Once the script completes, you can either follow the [migration document](docs/m
 been using raspberry-noaa on this device) or, if this is a brand new setup, just visit the webpanel and get going!
 
 **NOTE**: If you have elected to run a TLS-enabled web server, see [THIS LINK](docs/tls_webserver.md) for some additional information
-on how to handle self-signed certificates when attempting to visit your webpanel.
+on how to handle self-signed certificates when attempting to visit your webpanel and enabling auth for the admin pages.
 
 ## Upgrade
 
@@ -155,7 +155,7 @@ git pull
 ```
 
 If you have elected to run a TLS-enabled web server, see [THIS LINK](docs/tls_webserver.md) for some additional information
-on how to handle self-signed certificates when attempting to visit your webpanel.
+on how to handle self-signed certificates when attempting to visit your webpanel and enabling auth for the admin pages.
 
 ## Post Install
 
