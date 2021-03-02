@@ -8,5 +8,11 @@
   post_tasks:
     - name: output web server url
       debug:
-        msg: "Your web server URL is: http://<hostname_or_ip>:{{ web_port }}"
+        msg: "Your non-TLS web server URL is: http://{{ web_server_name }}:{{ web_port }}"
+      when: not enable_tls|bool
+
+    - name: output web server tls url
+      debug:
+        msg: "Your TLS-enabled web server URL is: https://{{ web_server_name }}:{{ web_tls_port }}"
+      when: enable_tls|bool
 ...
