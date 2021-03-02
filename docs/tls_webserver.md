@@ -1,5 +1,14 @@
 ![Raspberry NOAA](../assets/header_1600_v2.png)
 
+**NOTE**: Exposing the raspberry-noaa-v2 framework to the public internet is *NOT* recommended. This frameowrk has
+not been penetration or otherwise security tested for vulnerabilities and dangerous attack vectors. Exposing the
+webpanel to the public internet is done at your own risk and should be assumed to have no reasonable safeguards that
+can protect you from malicious actors. At a minimum, ensure your Raspberry Pi is residing on an isolated VLAN that
+has no access into your other networks (completely isolated) to help reduce the blast radius of a break-in, and follow
+the general guidance of providing reasonable security for your Pi instance (changing default `pi` user password, etc.).
+Again, even in doing these things, it should be assumed that you can and potentially will be hacked at some point due
+to the lack of security testing/analysis performed on this framework.
+
 ## TLS-Enabling Your Webpanel
 
 This framework includes the ability to run your web server using TLS for encryption using self-signed certificates.
