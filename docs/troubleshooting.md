@@ -80,6 +80,8 @@ there, too.
 
 See [this link](./assets/images/scan_annotated.jpg) for an example output of the frequency analysis.
 
+Please note that scanning will take precedence over scheduled tasks!
+
 # Schedule
 
 This project uses [crontab](https://crontab.guru/) to schedule pass collections. To view the schedule of the scheduler,
