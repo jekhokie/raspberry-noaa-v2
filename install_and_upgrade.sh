@@ -131,10 +131,9 @@ echo "--------------------------------------------------------------------------
 log_finished "CONGRATULATIONS!"
 echo ""
 log_finished "raspberry-noaa-v2 has been successfully installed/upgraded!"
-log_finished "You can view the webpanel updates by visiting the following URL in a web browser:"
-log_finished "http://<YOUR_IP_OR_HOSTNAME>:<CONFIGURED_PORT>/"
 echo ""
-log_finished "You can also see the URL listed in the 'output web server url' play output above."
+log_finished "You can view the webpanel updates by visiting the URL(s) listed in the"
+log_finished "'output web server url' and 'output web server tls url' play outputs above."
 echo "-------------------------------------------------------------------------------"
 echo ""
 
