@@ -28,6 +28,10 @@ export SAT_MAX_ELEVATION=$5
 export PASS_DIRECTION=$6
 export PASS_SIDE=$7
 
+# export some variables for use in the annotation - note that we do not
+# want to export all of .noaa-v2.conf because it contains sensitive info
+export GAIN=$GAIN
+
 # base directory plus filename_base for re-use
 RAMFS_AUDIO_BASE="${RAMFS_AUDIO}/${FILENAME_BASE}"
 AUDIO_FILE_BASE="${METEOR_AUDIO_OUTPUT}/${FILENAME_BASE}"
@@ -64,6 +68,12 @@ if pgrep "rtl_fm" > /dev/null; then
   pkill -9 -f rtl_fm
 fi
 
+# determine if auto-gain is set - handles "0" and "0.0" floats
+gain=$GAIN
+if [ $(echo "$GAIN==0"|bc) -eq 1 ]; then
+  gain='Automatic'
+fi
+
 # create push annotation string (annotation in the email subject, discord text, etc.)
 # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
 push_annotation=""
@@ -73,6 +83,7 @@ fi
 push_annotation="${push_annotation}${SAT_NAME} ${capture_start}"
 push_annotation="${push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
 push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
+push_annotation="${push_annotation} Gain: ${gain}"
 push_annotation="${push_annotation} | ${PASS_DIRECTION}"
 
 # TODO: Fix this up - this conditional selection is a massive bit of complexity that
