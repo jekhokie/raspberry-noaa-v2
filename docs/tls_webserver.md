@@ -24,3 +24,12 @@ TLS-enabled site (or when certificates are rotated):
 Note that the above are know to work at the time of this article being written but may change, and are obviously
 not applicable for other browsers. See the browser documentation for the browser you are using in order to figure
 out how to access the site with the self-signed certificate.
+
+## TLS Certificate Rotation
+
+By default, the configuration parameter `cert_valid_days` is set to `365` unless configured differently in your
+`config/settings.yml` file. This is the number of days the TLS certificate will be valid for before expiring.
+Once a certificate expires, a browser will very likely (and rightfully so) block you from accessing the webpanel.
+If this occurs, re-run the `./install_and_upgrade.sh` script which has the ability to detect an expired (or expiring
+within the next 24-hours) certificate and re-generate a new certificate/install it for use and automatically
+restart your webpanel services.
