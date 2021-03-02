@@ -139,7 +139,7 @@
 - name: create self-signed certificate
   become: yes
   command: >
-    openssl req -x509 -nodes -subj '/CN={{ web_hostname }}' -days {{ cert_valid_days }}
+    openssl req -x509 -nodes -subj '/CN={{ web_server_name }}' -days {{ cert_valid_days }}
     -newkey rsa:4096 -sha256 -keyout {{ tls_cert_key }} -out {{ tls_cert }}
   when: enable_tls|bool and cert_valid.rc != 0
 
