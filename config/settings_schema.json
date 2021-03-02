@@ -64,6 +64,9 @@
       "maximum": 65534
     },
     "cert_valid_days": { "type": "number" },
+    "lock_admin_page": { "type": "boolean" },
+    "admin_username":  { "type": "string" },
+    "admin_password":  { "type": "string" },
     "log_level": {
       "type": "string",
       "enum": [ "DEBUG", "WARN", "INFO", "ERROR" ]
@@ -122,6 +125,9 @@
     "enable_tls",
     "web_tls_port",
     "cert_valid_days",
+    "lock_admin_page",
+    "admin_username",
+    "admin_password",
     "log_level",
     "enable_satvis",
     "delete_oldest_n",
