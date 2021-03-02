@@ -18,14 +18,16 @@
 
 range="137M:138M:1k" #"130M:140M:5k"
 
-echo "$(tput setaf 2)
+echo "
+$(tput setaf 2)
 	Scanning in range $range, output file is $outfile.
+$(tput setaf 1)
+	Please note that this script will take precedence over all scheduled capture jobs!
 $(tput setaf 3)
 	To stop scanning, either type \`killall rtl_power\`
-	or use the script \`./stop_and_finalize_scanning.sh $outfile\`.
-	You can 'peek' while scanning with \`./generate_waterfall $outfile\`.
+	or use the script \`$scriptpath/stop_and_finalize_scanning.sh $outfile\`.
+	You can 'peek' while scanning with \`$scriptpath/generate_waterfall $outfile\`.
 	(note that gzip output is buffered in chunks, so it won't be updated immediately)
-
 $(tput sgr0)"
 
 nohup rtl_power ${BIAS_TEE} -f $range -g $GAIN -c 25% -d 0 2> /dev/null | gzip > $outfile &
