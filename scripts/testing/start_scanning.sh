@@ -21,7 +21,13 @@ scriptpath="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 # Change frequency here if you want to scan more/less.
 range="137M:138M:1k" # Format: StartFreq:StopFreq:Resolution
 
+echo "Start scanning at:"
+date
+
+
 echo "
+$(tput setaf 2)
+        
 $(tput setaf 2)
 	Scanning in range $range, output file is $outfile.
 $(tput setaf 1)
@@ -29,7 +35,7 @@ $(tput setaf 1)
 $(tput setaf 3)
 	To stop scanning, either type \`killall rtl_power\`
 	or use the script \`$scriptpath/stop_and_finalize_scanning.sh $outfile\`.
-	You can 'peek' while scanning with \`$scriptpath/generate_waterfall $outfile\`.
+	You can 'peek' while scanning with \`$scriptpath/generate_waterfall.sh $outfile\`.
 	(note that gzip output is buffered in chunks, so it won't be updated immediately)
 $(tput sgr0)"
 
