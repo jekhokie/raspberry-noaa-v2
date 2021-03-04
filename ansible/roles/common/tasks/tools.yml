@@ -44,11 +44,25 @@
     mode: 0755
     remote_src: yes
 
-- name: create scheduling cron job
+- name: remove old scheduling cron job
   cron:
+    disabled: yes
     name: schedule passes
     minute: 1
     hour: 0
+    job: "{{ noaa_home }}/scripts/schedule.sh"
+
+- name: create scheduling cron job
+  cron:
+    name: schedule passes daily
+    minute: 1
+    hour: 0
+    job: "{{ noaa_home }}/scripts/schedule.sh"
+
+- name: create scheduling cron job @ reboot
+  cron:
+    name: schedule passes after reboot
+    special_time: reboot
     job: "{{ noaa_home }}/scripts/schedule.sh"
 
 - name: create database

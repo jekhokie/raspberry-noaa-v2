@@ -82,6 +82,25 @@
     mode: 0644
   notify: restart nginx
 
+- name: nginx non-tls config symlink
+  become: yes
+  file:
+    src: /etc/nginx/sites-available/default
+    dest: /etc/nginx/sites-enabled/default
+    state: link
+    owner: root
+    group: root
+  when: enable_non_tls|bool
+  notify: restart nginx
+
+- name: remove non-tls site enable if disabled
+  become: yes
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  when: not enable_non_tls|bool
+  notify: restart nginx
+
 - name: update images directory group
   become: yes
   file:
@@ -109,4 +128,54 @@
     path: "{{ noaa_home }}/db/panel.db"
     group: www-data
     mode: 0770
+
+- name: check if self-signed certificate is expired
+  command: openssl x509 -checkend 86400 -noout -in /etc/ssl/certs/local_server.crt
+  register: cert_valid
+  failed_when: no
+  changed_when: no
+  when: enable_tls|bool
+
+- name: create self-signed certificate
+  become: yes
+  command: >
+    openssl req -x509 -nodes -subj '/CN={{ web_server_name }}' -days {{ cert_valid_days }}
+    -newkey rsa:4096 -sha256 -keyout {{ tls_cert_key }} -out {{ tls_cert }}
+  when: enable_tls|bool and cert_valid.rc != 0
+
+- name: nginx tls config file
+  become: yes
+  template:
+    src: nginx_tls_default.j2
+    dest: /etc/nginx/sites-available/default-tls
+    owner: root
+    group: root
+    mode: 0644
+  when: enable_tls|bool
+  notify: restart nginx
+
+- name: nginx tls config symlink
+  become: yes
+  file:
+    src: /etc/nginx/sites-available/default-tls
+    dest: /etc/nginx/sites-enabled/default-tls
+    state: link
+    owner: root
+    group: root
+  when: enable_tls|bool
+  notify: restart nginx
+
+- name: remove tls site enable if disabled
+  become: yes
+  file:
+    path: /etc/nginx/sites-enabled/default-tls
+    state: absent
+  when: not enable_tls|bool
+  notify: restart nginx
+
+- name: ensure nginx is running
+  become: yes
+  service:
+    name: nginx
+    state: started
 ...

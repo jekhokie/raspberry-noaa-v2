@@ -80,6 +80,8 @@ there, too.
 
 See [this link](./assets/images/scan_annotated.jpg) for an example output of the frequency analysis.
 
+Please note that scanning will take precedence over scheduled tasks!
+
 # Schedule
 
 This project uses [crontab](https://crontab.guru/) to schedule pass collections. To view the schedule of the scheduler,
@@ -155,3 +157,12 @@ Below are some useful commands in a more summary fashion:
 * Read the main log file: `less /var/log/raspberry-noaa-v2/output.log`
 * List the scheduled passes: `atq`
 * Cancel a pass: `atrm <job_id>`
+
+# Webpanel Expired Certificate
+
+If you have enabled TLS for your webpanel and when visiting your webpanel the browser blocks you due to an expired certificate,
+simply re-run the `install_and_upgrade.sh` script. This script has the ability to detect expired certificates (or expiring
+within the next 24 hours) and will automatically remediate the problem by creating new certificates and installing them
+appropriately. After running this script, you should be able to resume accessing the webpanel, but you will also likely need
+to follw the instructions in the [TLS Webserver](tls_webserver.md) document regarding bypassing self-signed blocks in certain
+browsers the very first time you access the webpanel since the certificate will be brand new to the browser.

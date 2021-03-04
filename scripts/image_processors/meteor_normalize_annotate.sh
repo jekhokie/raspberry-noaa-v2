@@ -20,10 +20,18 @@ INPUT_JPG=$1
 OUTPUT_JPG=$2
 QUALITY=$3
 
+# TODO: DRY this up - it's the same between meteor/noaa normalization scripts
+
 # provide a long-form pass side
 pass_side_long="West"
 if [ "${PASS_SIDE}" == "E" ]; then
   pass_side_long="East"
+fi
+
+# determine if auto-gain is set - handles "0" and "0.0" floats
+gain=$GAIN
+if [ $(echo "$GAIN==0"|bc) -eq 1 ]; then
+  gain='Automatic'
 fi
 
 # get the base config and append vars as needed
@@ -36,6 +44,7 @@ yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/sun_elevation: '$SUN_ELEV'
 yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/pass_direction: $PASS_DIRECTION\n.../")         # pass_direction
 yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/pass_side: $PASS_SIDE\n.../")                   # pass_side
 yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/pass_side_long: $pass_side_long\n.../")         # pass_side_long
+yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/gain: $gain\n.../")                             # gain
 
 # vars for image manipulation
 tmp_dir="${NOAA_HOME}/tmp/annotation"

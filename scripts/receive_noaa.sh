@@ -15,6 +15,9 @@
 # Example:
 #   ./receive_noaa.sh "NOAA 18" NOAA1820210208-194829 ./orbit.tle 1612831709 919 31 Southbound E
 
+# time keeping
+TIMER_START=$(date '+%s')
+
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
@@ -29,6 +32,10 @@ export CAPTURE_TIME=$5
 export SAT_MAX_ELEVATION=$6
 export PASS_DIRECTION=$7
 export PASS_SIDE=$8
+
+# export some variables for use in the annotation - note that we do not
+# want to export all of .noaa-v2.conf because it contains sensitive info
+export GAIN=$GAIN
 
 # base directory plus filename helper variables
 AUDIO_FILE_BASE="${NOAA_AUDIO_OUTPUT}/${FILENAME_BASE}"
@@ -170,6 +177,12 @@ for enhancement in $ENHANCEMENTS; do
         # at least one good image
         has_one_image=1
 
+        # determine if auto-gain is set - handles "0" and "0.0" floats
+        gain=$GAIN
+        if [ $(echo "$GAIN==0"|bc) -eq 1 ]; then
+          gain='Automatic'
+        fi
+
         # create push annotation string (annotation in the email subject, discord text, etc.)
         # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
         push_annotation=""
@@ -179,6 +192,7 @@ for enhancement in $ENHANCEMENTS; do
         push_annotation="${push_annotation}${SAT_NAME} ${enhancement} ${capture_start}"
         push_annotation="${push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
         push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
+        push_annotation="${push_annotation} Gain: ${gain}"
         push_annotation="${push_annotation} | ${PASS_DIRECTION}"
 
         if [ "${ENABLE_EMAIL_PUSH}" == "true" ]; then
@@ -225,3 +239,9 @@ if [ "$DELETE_AUDIO" = true ]; then
   log "Deleting audio files" "INFO"
   rm "${AUDIO_FILE_BASE}.wav"
 fi
+
+# calculate and report total time for capture
+TIMER_END=$(date '+%s')
+DIFF=$(($TIMER_END - $TIMER_START))
+PROC_TIME=$(date -ud "@$DIFF" +'%H:%M.%S')
+log "Total processing time: ${PROC_TIME}" "INFO"

@@ -106,8 +106,32 @@ noaa_map_state_border_color: "0xffff00"
 timezone: America/New_York
 lang_setting: en
 
-# port to run the webpanel on
+# web server configuration settings
+#   web_server_name - server name to use for the TLS certs and web endpoint - this MUST be
+#                     resolvable to the IP of this host (if you don't have DNS, simply use
+#                     the IP of the Raspberry Pi host)
+#   enable_non_tls - whether to enable a clear-text web listener (default port 80)
+#   web_port - port to run the web server clear-text (non-encrypted) endpoint on
+#   enable_tls - whether to enable the TLS-encrypted web listener (default port 443)
+#   web_tls_port - port to run the TLS listener on
+#   cert_valid_days - number of days the TLS certificates should be valid for - note that
+#                     you will need to re-install the certificates once this timeline expires
+#   lock_admin_page - whether to require username/password when attempting to access the admin page
+#                     of the webpanel - WARNING: DO NOT SET THIS TO TRUE UNLESS YOU ONLY HAVE A TLS
+#                     ENABLED SITE - SETTING TO TRUE AND RUNNING A CLEARTEXT SITE IS ALMOST CERTAINLY
+#                     ASKING FOR YOUR CREDENTIALS TO BE STOLEN MID-REQUEST
+#   admin_username - username used to access the 'admin' endpoint of the webpanel (WARNING: see 'lock_admin_page' above)
+#   admin_password - password used to access the 'admin' endpoint of the webpanel (WARNING: see 'lock_admin_page' above)
+#                    NOTE: MAKE SURE YOU SET THIS TO SOMETHING REASONABLY COMPLICATED!
+web_server_name: raspberry-noaa.localdomain
+enable_non_tls: false
 web_port: 80
+enable_tls: true
+web_tls_port: 443
+cert_valid_days: 365
+lock_admin_page: false
+admin_username: 'admin'
+admin_password: 'admin'
 
 # log level for output from scripts
 log_level: DEBUG
