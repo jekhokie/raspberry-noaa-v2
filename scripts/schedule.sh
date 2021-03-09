@@ -56,7 +56,14 @@ if [ "${ENABLE_EMAIL_SCHEDULE_PUSH}" == "true" ]; then
 
   log "Generating image of pass list schedule for email" "INFO"
   pass_image="${NOAA_HOME}/tmp/pass-list.jpg"
-  $WKHTMLTOIMG --format jpg --quality 100 "http://localhost:${WEBPANEL_PORT}/" "${pass_image}" >> $NOAA_LOG 2>&1
+
+  # determine if https or http supported
+  web_addr="http://localhost:${WEBPANEL_PORT}"
+  if [ "$ENABLE_NON_TLS" == "false" ]; then
+    # assume user has enabled TLS
+    web_addr="https://localhost:${WEBPANEL_TLS_PORT}"
+  fi
+  $WKHTMLTOIMG --format jpg --quality 100 $web_addr "${pass_image}" >> $NOAA_LOG 2>&1
 
   # crop the header (and optionally, satvis iframe, if enabled) out of pass list
   log "Removing header from pass list image" "INFO"
