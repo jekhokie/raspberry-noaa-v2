@@ -90,12 +90,6 @@ if [ "${NOAA_MAP_GRID_DEGREES}" != "0.0" ]; then
 else
   extra_map_opts="${extra_map_opts} -g 0.0"
 fi
-if [ "${NOAA_MAP_COUNTRY_BORDER_COLOR}" != "" ]; then 
-   extra_map_opts="${extra_map_opts} -c C:${NOAA_MAP_COUNTRY_BORDER_COLOR}"
-fi
-if [ "${NOAA_MAP_STATE_BORDER_COLOR}" != "" ]; then 
-   extra_map_opts="${extra_map_opts} -c S:${NOAA_MAP_STATE_BORDER_COLOR}"
-fi
 if [ "${NOAA_MAP_COUNTRY_BORDER_ENABLE}" == "true" ]; then
   extra_map_opts="${extra_map_opts} -C 1 -c C:${NOAA_MAP_COUNTRY_BORDER_COLOR}"
 else
