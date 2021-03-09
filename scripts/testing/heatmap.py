@@ -24,7 +24,7 @@ tape_height = 25
 tape_pt = 10
 
 try:
-    font = ImageFont.truetype(vera_path, 10)
+    font = ImageFont.truetype(vera_path, 18)
 except:
     print('Please download the Vera.ttf font and place it in the current directory.')
     sys.exit(1)
@@ -59,6 +59,8 @@ def build_parser():
         help='Duration to use, stopping at the end.')
     parser.add_argument('--palette', dest='palette', default='default',
         help='Set Color Palette: default, extended, charolastra, twente')
+    parser.add_argument('--gain', dest='gain', default=None,
+        help='Configured gain setting for display in heatmap annotation.')
     return parser
 
 def frange(start, stop, step):
@@ -533,7 +535,7 @@ def shadow_text(draw, x, y, s, font, fg_color='white', bg_color='black'):
 
 def create_labels(args, img):
     draw = ImageDraw.Draw(img)
-    font = ImageFont.load_default()
+    font = ImageFont.truetype(vera_path, 16)
     pixel_bandwidth = args.pixel_bandwidth
 
     draw.rectangle([0,0,img.size[0],tape_height], fill='yellow')
@@ -595,10 +597,13 @@ def create_labels(args, img):
     margin = 2
     if args.time_tick:
         margin = 60
-    shadow_text(draw, margin, img.size[1] - 45, 'Duration: %i:%02i' % (hours, minutes), font)
-    shadow_text(draw, margin, img.size[1] - 35, 'Range: %.2fMHz - %.2fMHz' % (min_freq/1e6, (max_freq+pixel_bandwidth)/1e6), font)
-    shadow_text(draw, margin, img.size[1] - 25, 'Pixel: %.2fHz x %is' % (pixel_bandwidth, int(round(pixel_height))), font)
-    shadow_text(draw, margin,  img.size[1] - 15, 'Started: {0}'.format(start), font)
+
+    font = ImageFont.truetype(vera_path, 18)
+    shadow_text(draw, margin, img.size[1] - 100, 'Duration: %i:%02i' % (hours, minutes), font)
+    shadow_text(draw, margin, img.size[1] - 80, 'Range: %.2fMHz - %.2fMHz' % (min_freq/1e6, (max_freq+pixel_bandwidth)/1e6), font)
+    shadow_text(draw, margin, img.size[1] - 60, 'Pixel: %.2fHz x %is' % (pixel_bandwidth, int(round(pixel_height))), font)
+    shadow_text(draw, margin, img.size[1] - 40, 'Started: {0}'.format(start), font)
+    shadow_text(draw, margin, img.size[1] - 20, 'Gain: {0}'.format(args.gain), font)
     # bin size
 
 print("loading")
