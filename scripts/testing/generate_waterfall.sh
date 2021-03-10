@@ -19,5 +19,5 @@ scriptpath=$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )
 
 echo "generating $outfile from $infile.
 This may take a while, maybe get a coffee?"
-$scriptpath/heatmap.py --ytick 60m --gain $GAIN $infile $outfile
+$scriptpath/heatmap.py --ytick 60m --gain $TEST_GAIN $infile $outfile
 echo "done."

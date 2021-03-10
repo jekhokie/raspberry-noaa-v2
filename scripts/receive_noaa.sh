@@ -35,7 +35,27 @@ export PASS_SIDE=$8
 
 # export some variables for use in the annotation - note that we do not
 # want to export all of .noaa-v2.conf because it contains sensitive info
-export GAIN=$GAIN
+if [ "$SAT_NAME" == "NOAA 15" ]; then
+  export GAIN=$NOAA_15_GAIN
+  export SUN_MIN_ELEV=$NOAA_15_SUN_MIN_ELEV
+  export SDR_DEVICE_ID=$NOAA_15_SDR_DEVICE_ID
+  export BIAS_TEE=$NOAA_15_ENABLE_BIAS_TEE
+  export FREQ_OFFSET=$NOAA_15_FREQ_OFFSET
+fi
+if [ "$SAT_NAME" == "NOAA 18" ]; then
+  export GAIN=$NOAA_18_GAIN
+  export SUN_MIN_ELEV=$NOAA_18_SUN_MIN_ELEV
+  export SDR_DEVICE_ID=$NOAA_18_SDR_DEVICE_ID
+  export BIAS_TEE=$NOAA_18_ENABLE_BIAS_TEE
+  export FREQ_OFFSET=$NOAA_18_FREQ_OFFSET
+fi
+if [ "$SAT_NAME" == "NOAA 19" ]; then
+  export GAIN=$NOAA_19_GAIN
+  export SUN_MIN_ELEV=$NOAA_19_SUN_MIN_ELEV
+  export SDR_DEVICE_ID=$NOAA_19_SDR_DEVICE_ID
+  export BIAS_TEE=$NOAA_19_ENABLE_BIAS_TEE
+  export FREQ_OFFSET=$NOAA_19_FREQ_OFFSET
+fi
 
 # base directory plus filename helper variables
 AUDIO_FILE_BASE="${NOAA_AUDIO_OUTPUT}/${FILENAME_BASE}"
