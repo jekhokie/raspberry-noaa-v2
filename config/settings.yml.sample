@@ -28,8 +28,14 @@ receiver_gain: 50
 receiver_freq_offset: -6
 
 # whether to schedule specific orbiting objects for capture
-schedule_noaa: true
-schedule_meteor: true
+#   noaa_15_schedule - whether to schedule NOAA 15 captures
+#   noaa_18_schedule - whether to schedule NOAA 18 captures
+#   noaa_19_schedule - whether to schedule NOAA 19 captures
+#   meteor_m2_schedule - whether to schedule Meteor-M 2 captures
+noaa_15_schedule: true
+noaa_18_schedule: true
+noaa_19_schedule: true
+meteor_m2_schedule: true
 
 # whether audio files should be deleted after images are created
 delete_audio: false
