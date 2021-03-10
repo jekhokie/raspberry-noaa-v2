@@ -3,7 +3,7 @@ name: Error
 about: Create a report to help us improve
 title: "[Error]"
 labels: ''
-assignees: reynico
+assignees: jekhokie
 
 ---
 
@@ -11,7 +11,10 @@ assignees: reynico
 A clear and concise description of what the bug is.
 
 **Screenshots and/or logs**
-If applicable, add screenshots to help explain your problem. Logs are always welcome as well
+If applicable, add screenshots to help explain your problem. Logs are always welcome as well.
+
+**Support Output**
+Paste the output of running the `./support.sh` script here.
 
 **Server information (please complete the following information):**
  - OS: [e.g. Raspbian]
