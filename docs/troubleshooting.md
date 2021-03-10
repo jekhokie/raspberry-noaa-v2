@@ -1,6 +1,8 @@
 ![Raspberry NOAA](../assets/header_1600_v2.png)
 
-If you're running into issues, there are some steps you can follow to troubleshoot.
+If you're running into issues, there are some steps you can follow to troubleshoot. Worst case, run the support
+script as `./support.sh` and paste the output into a GitHub issue against the repository, or better, visit us
+on the Discord app [here](https://discord.gg/NywJEPP5) and paste the output so we can help you!
 
 # Log Output
 
