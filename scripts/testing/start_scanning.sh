@@ -33,4 +33,4 @@ $(tput setaf 3)
 	(note that gzip output is buffered in chunks, so it won't be updated immediately)
 $(tput sgr0)"
 
-nohup rtl_power ${BIAS_TEE} -f $range -g $GAIN -c 25% -d ${SDR_DEVICE_ID} 2> /dev/null | gzip > $outfile &
+nohup rtl_power ${TEST_ENABLE_BIAS_TEE} -f $range -g $TEST_GAIN -c 25% -d ${TEST_SDR_DEVICE_ID} 2> /dev/null | gzip > $outfile &

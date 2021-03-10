@@ -33,7 +33,11 @@ export PASS_SIDE=$7
 
 # export some variables for use in the annotation - note that we do not
 # want to export all of .noaa-v2.conf because it contains sensitive info
-export GAIN=$GAIN
+export GAIN=$METEOR_M2_GAIN
+export SUN_MIN_ELEV=$METEOR_M2_SUN_MIN_ELEV
+export SDR_DEVICE_ID=$METEOR_M2_SDR_DEVICE_ID
+export BIAS_TEE=$METEOR_M2_ENABLE_BIAS_TEE
+export FREQ_OFFSET=$METEOR_M2_FREQ_OFFSET
 
 # base directory plus filename_base for re-use
 RAMFS_AUDIO_BASE="${RAMFS_AUDIO}/${FILENAME_BASE}"
