@@ -35,13 +35,20 @@ done
 
 # create schedules to call respective receive scripts
 log "Scheduling new capture jobs..." "INFO"
-if [ "$SCHEDULE_NOAA" == "true" ]; then
+if [ "$NOAA_15_SCHEDULE" == "true" ]; then
+  log "Scheduling NOAA 15 captures..." "INFO"
   $NOAA_HOME/scripts/schedule_captures.sh "NOAA 15" "receive_noaa.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
+fi
+if [ "$NOAA_18_SCHEDULE" == "true" ]; then
+  log "Scheduling NOAA 18 captures..." "INFO"
   $NOAA_HOME/scripts/schedule_captures.sh "NOAA 18" "receive_noaa.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
+fi
+if [ "$NOAA_19_SCHEDULE" == "true" ]; then
+  log "Scheduling NOAA 19 captures..." "INFO"
   $NOAA_HOME/scripts/schedule_captures.sh "NOAA 19" "receive_noaa.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
 fi
-
-if [ "$SCHEDULE_METEOR" == "true" ]; then
+if [ "$METEOR_M2_SCHEDULE" == "true" ]; then
+  log "Scheduling Meteor-M 2 captures..." "INFO"
   $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M 2" "receive_meteor.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
 fi
 log "Done scheduling jobs!" "INFO"
