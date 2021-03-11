@@ -96,6 +96,7 @@ push_annotation="${push_annotation} | ${PASS_DIRECTION}"
 # TODO: Fix this up - this conditional selection is a massive bit of complexity that
 #       needs to be handled, but in the interest of not breaking everything (at least in
 #       the first round), keeping it simple.
+push_file_list=""
 spectrogram=0
 if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   log "Starting rtl_fm record" "INFO"
@@ -159,6 +160,9 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
         log "Pushing image to Discord" "INFO"
         ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
       fi
+
+      # capture list of files to push to Twitter
+      push_file_list="${IMAGE_FILE_BASE}-122-rectified.jpg"
     else
       log "No image produced - not pushing anywhere" "INFO"
     fi
@@ -232,6 +236,11 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "${RAMFS_AUDIO_BASE}-col.jpg" "${IMAGE_FILE_BASE}-col-122-rectified.jpg" >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${IMAGE_THUMB_BASE}-col-122-rectified.jpg" >> $NOAA_LOG 2>&1
 
+    # capture list of files to push to Twitter
+    push_file_list="${IMAGE_FILE_BASE}-122-rectified.jpg"
+    push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-ir-122-rectified.jpg"
+    push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-col-122-rectified.jpg"
+
     # insert or replace in case there was already an insert due to the spectrogram creation
     $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, gain) \
                                          VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $GAIN);"
@@ -296,6 +305,24 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
   fi
 else
   log "Receiver type '$METEOR_RECEIVER' not valid" "ERROR"
+fi
+
+# handle twitter pushing if enabled
+if [ "${ENABLE_TWITTER_PUSH}" == "true" ]; then
+  # create push annotation specific to twitter
+  # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
+  twitter_push_annotation=""
+  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+    twitter_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
+  fi
+  twitter_push_annotation="${twitter_push_annotation}${SAT_NAME} ${capture_start}"
+  twitter_push_annotation="${twitter_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
+  twitter_push_annotation="${twitter_push_annotation} Sun Elevation: ${SUN_ELEV}°"
+  twitter_push_annotation="${twitter_push_annotation} Gain: ${gain}"
+  twitter_push_annotation="${twitter_push_annotation} | ${PASS_DIRECTION}"
+
+  log "Pushing image enhancements to Twitter" "INFO"
+  ${PUSH_PROC_DIR}/push_twitter.sh "${twitter_push_annotation}" $push_file_list
 fi
 
 # calculate and report total time for capture
