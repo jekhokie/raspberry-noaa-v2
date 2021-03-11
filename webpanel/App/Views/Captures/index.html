@@ -48,7 +48,7 @@
               {% if capture.direction != '' %}
                 <strong>{{ lang.travel_direction }}: </strong>{{ capture.direction }}<br>
               {% endif %}
-              <strong>{{ lang.pass_start }}: </strong>{{ capture.pass_start|date('m/d/Y H:i:s') }}<br>
+              <strong>{{ lang.pass_start }}: </strong>{{ capture.pass_start|date(constant('Config\\Config::DATETIME_FORMAT')) }}<br>
               <strong>{{ lang.gain }}: </strong>
                 {% if capture.gain == '0' %}
                   Auto

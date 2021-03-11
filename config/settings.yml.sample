@@ -156,6 +156,8 @@ lang_setting: en
 #   admin_username - username used to access the 'admin' endpoint of the webpanel (WARNING: see 'lock_admin_page' above)
 #   admin_password - password used to access the 'admin' endpoint of the webpanel (WARNING: see 'lock_admin_page' above)
 #                    NOTE: MAKE SURE YOU SET THIS TO SOMETHING REASONABLY COMPLICATED!
+#   web_datetime_format - format to display date and time in the web interface - note that this MUST conform to
+#                         https://www.php.net/manual/en/datetime.format.php or else bad things will happen
 web_server_name: raspberry-noaa.localdomain
 enable_non_tls: false
 web_port: 80
@@ -165,6 +167,7 @@ cert_valid_days: 365
 lock_admin_page: false
 admin_username: 'admin'
 admin_password: 'admin'
+web_datetime_format: 'm/d/Y H:i:s'
 
 # log level for output from scripts
 log_level: DEBUG
