@@ -1,7 +1,5 @@
 ![Raspberry NOAA](../assets/header_1600_v2.png)
 
-#   enable_discord_push - whether to push images to a Discord channel
-#   discord_webhook_url - webhook url for the Discord channel
 In `config/settings.yml`, setting `enable_discord_push: true` and configuring an `discord_webhook_url` will enable pushing all
 captured, processed images to a destination Discord webhook.
 

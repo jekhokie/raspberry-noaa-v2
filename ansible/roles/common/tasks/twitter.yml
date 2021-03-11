@@ -1,0 +1,19 @@
+---
+- name: install tweepy if twitter push is enabled
+  become: yes
+  pip:
+    name: tweepy
+    executable: pip3
+    state: present
+  when: enable_twitter_push | bool
+
+- name: drop template twitter tweepy config file
+  copy:
+    src: tweepy.conf
+    dest: /home/pi/.tweepy.conf
+    force: no
+    owner: pi
+    group: pi
+    mode: 0600
+  when: enable_twitter_push | bool
+...
