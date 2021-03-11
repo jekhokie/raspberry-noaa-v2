@@ -12,14 +12,35 @@ ARCH=$(uname -a)
 CPUS=$(lscpu | grep "CPU(s):" | awk '{print $2}')
 GIT_CHANGES=$(git diff --name-only)
 SDR_INFO=$(rtl_eeprom 2>&1)
+RPI_MODEL=$(cat /proc/device-tree/model)
+DISK_LAYOUT=$(lsblk)
 
 echo "============================================="
 echo "Details about environment"
 echo "============================================="
 echo "Current date/time:  ${START_TIME}"
 echo "Repo git hash:      ${LATEST_GIT_HASH}"
+echo "Raspberry Pi Model: ${RPI_MODEL}"
 echo "Architecture:       ${ARCH}"
 echo "Num CPUs:           ${CPUS}"
+
+echo "---------------------------------------------"
+echo "USB Device Map:"
+while IFS= read -r res; do
+  echo "  $res"
+done < <(lsusb)
+
+echo "---------------------------------------------"
+echo "Disk Info:"
+while IFS= read -r res; do
+  echo "  $res"
+done < <(lsblk)
+
+echo "---------------------------------------------"
+echo "Disk Usage Info:"
+while IFS= read -r res; do
+  echo "  $res"
+done < <(df)
 
 echo "---------------------------------------------"
 echo "Memory Info:"
