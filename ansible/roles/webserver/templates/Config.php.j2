@@ -12,6 +12,10 @@ class Config {
   # see files in App/Lang directory for available translations
   const LANG = '{{ lang_setting }}';
 
+  # configure time output format on all web pages - note this must follow
+  # a format that conforms to https://www.php.net/manual/en/datetime.format.php
+  const DATETIME_FORMAT = '{{ web_datetime_format }}';
+
   # use https://www.php.net/manual/en/timezones.php
   const TIMEZONE = '{{ timezone }}';
 
