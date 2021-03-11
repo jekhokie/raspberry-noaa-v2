@@ -18,6 +18,19 @@ OBJ_NAME=$1
 RECEIVE_SCRIPT=$2
 TLE_FILE=$3
 
+if [ "$OBJ_NAME" == "NOAA 15" ]; then
+  SAT_MIN_ELEV=$NOAA_15_SAT_MIN_ELEV
+fi
+if [ "$OBJ_NAME" == "NOAA 18" ]; then
+  SAT_MIN_ELEV=$NOAA_18_SAT_MIN_ELEV
+fi
+if [ "$OBJ_NAME" == "NOAA 19" ]; then
+  SAT_MIN_ELEV=$NOAA_19_SAT_MIN_ELEV
+fi
+if [ "$OBJ_NAME" == "METEOR-M 2" ]; then
+  SAT_MIN_ELEV=$METEOR_M2_SAT_MIN_ELEV
+fi
+
 # come up with prediction start/end timings for pass
 predict_start=$($PREDICT -t $TLE_FILE -p "${OBJ_NAME}" | head -1)
 predict_end=$($PREDICT   -t $TLE_FILE -p "${OBJ_NAME}" | tail -1)

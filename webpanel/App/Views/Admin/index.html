@@ -58,7 +58,7 @@
           </td>
           <td class="capture-sat-name text-center align-middle">{{ capture.sat_name }}</td>
           <td class="capture-pass-start-elev text-center align-middle">
-            {{ capture.pass_start|date('m/d/y H:i:s') }} @ 
+            {{ capture.pass_start|date(constant('Config\\Config::DATETIME_FORMAT')) }} @
             {{ capture.max_elev }}&#176;
           </td>
           <td class="capture-thumbnail text-center align-middle">

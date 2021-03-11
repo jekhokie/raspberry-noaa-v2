@@ -8,15 +8,40 @@ RAMFS_AUDIO={{ ramfs_path }}
 NOAA_LOG={{ log_file }}
 LAT={{ latitude }}
 LON={{ longitude }}
-SCHEDULE_NOAA={{ schedule_noaa|lower }}
-SCHEDULE_METEOR={{ schedule_meteor|lower }}
-SAT_MIN_ELEV={{ sat_min_elevation }}
-SUN_MIN_ELEV={{ sun_min_elevation }}
+TEST_GAIN={{ test_gain }}
+TEST_SDR_DEVICE_ID={{ test_sdr_device_id }}
+TEST_ENABLE_BIAS_TEE="{% if test_enable_bias_tee|lower == 'true' %}-T{% endif %}"
+TEST_FREQ_OFFSET={{ test_freq_offset }}
+NOAA_15_SCHEDULE={{ noaa_15_schedule|lower }}
+NOAA_15_SDR_DEVICE_ID={{ noaa_15_sdr_device_id }}
+NOAA_15_FREQ_OFFSET={{ noaa_15_freq_offset }}
+NOAA_15_ENABLE_BIAS_TEE="{% if noaa_15_enable_bias_tee|lower == 'true' %}-T{% endif %}"
+NOAA_15_GAIN={{ noaa_15_gain }}
+NOAA_15_SUN_MIN_ELEV={{ noaa_15_sun_min_elevation }}
+NOAA_15_SAT_MIN_ELEV={{ noaa_15_sat_min_elevation }}
+NOAA_18_SCHEDULE={{ noaa_18_schedule|lower }}
+NOAA_18_SDR_DEVICE_ID={{ noaa_18_sdr_device_id }}
+NOAA_18_FREQ_OFFSET={{ noaa_18_freq_offset }}
+NOAA_18_ENABLE_BIAS_TEE="{% if noaa_18_enable_bias_tee|lower == 'true' %}-T{% endif %}"
+NOAA_18_GAIN={{ noaa_18_gain }}
+NOAA_18_SUN_MIN_ELEV={{ noaa_18_sun_min_elevation }}
+NOAA_18_SAT_MIN_ELEV={{ noaa_18_sat_min_elevation }}
+NOAA_19_SCHEDULE={{ noaa_19_schedule|lower }}
+NOAA_19_SDR_DEVICE_ID={{ noaa_19_sdr_device_id }}
+NOAA_19_FREQ_OFFSET={{ noaa_19_freq_offset }}
+NOAA_19_ENABLE_BIAS_TEE="{% if noaa_19_enable_bias_tee|lower == 'true' %}-T{% endif %}"
+NOAA_19_GAIN={{ noaa_19_gain }}
+NOAA_19_SUN_MIN_ELEV={{ noaa_19_sun_min_elevation }}
+NOAA_19_SAT_MIN_ELEV={{ noaa_19_sat_min_elevation }}
+METEOR_M2_SCHEDULE={{ meteor_m2_schedule|lower }}
+METEOR_M2_SDR_DEVICE_ID={{ meteor_m2_sdr_device_id }}
+METEOR_M2_FREQ_OFFSET={{ meteor_m2_freq_offset }}
+METEOR_M2_ENABLE_BIAS_TEE="{% if meteor_m2_enable_bias_tee|lower == 'true' %}-T{% endif %}"
+METEOR_M2_GAIN={{ meteor_m2_gain }}
+METEOR_M2_SUN_MIN_ELEV={{ meteor_m2_sun_min_elevation }}
+METEOR_M2_SAT_MIN_ELEV={{ meteor_m2_sat_min_elevation }}
 DELETE_AUDIO={{ delete_audio|lower }}
-BIAS_TEE="{% if enable_bias_tee|lower == 'true' %}-T{% endif %}"
-SDR_DEVICE_ID={{ sdr_device_id }}
 FLIP_METEOR_IMG={{ flip_meteor_image|lower }}
-GAIN={{ receiver_gain }}
 TZ_OFFSET={{ timezone_offset }}
 LOG_LEVEL={{ log_level }}
 NOAA_MAP_CROSSHAIR_ENABLE={{ noaa_map_crosshair_enable|lower }}
@@ -32,7 +57,6 @@ PRODUCE_NOAA_PRISTINE={{ produce_noaa_pristine_image|lower }}
 PRUNE_OLDER_THAN={{ delete_older_than_n }}
 PRUNE_OLDEST={{ delete_oldest_n }}
 METEOR_RECEIVER={{ meteor_receiver }}
-FREQ_OFFSET={{ receiver_freq_offset }}
 NOAA_CROP_TELEMETRY={{ noaa_crop_telemetry|lower }}
 IMAGE_ANNOTATION_LOCATION={{ image_annotation_location }}
 GROUND_STATION_LOCATION='{{ ground_station_location }}'
@@ -43,6 +67,9 @@ EMAIL_PUSH_ADDRESS={{ email_push_address }}
 ENABLE_EMAIL_SCHEDULE_PUSH={{ enable_email_schedule_push|lower }}
 ENABLE_DISCORD_PUSH={{ enable_discord_push|lower }}
 DISCORD_WEBHOOK='{{ discord_webhook_url }}'
+ENABLE_TWITTER_PUSH={{ enable_twitter_push|lower }}
 NTP_SERVER={{ ntp_server }}
 WEBPANEL_PORT={{ web_port }}
+WEBPANEL_TLS_PORT={{ web_tls_port }}
 ENABLE_SATVIS={{ enable_satvis|lower }}
+ENABLE_NON_TLS={{ enable_non_tls|lower }}

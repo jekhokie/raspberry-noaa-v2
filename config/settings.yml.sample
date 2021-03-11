@@ -13,23 +13,61 @@ timezone_offset: -5
 #        to specify a hostname or ip address to communicate with the ntp server
 ntp_server: ''
 
+# test settings when running test scripts
+#   test_gain - gain to use for scanner test scripts
+#   test_sdr_device_id - device ID of the SDR device to be used for scanner test scripts
+#   test_enable_bias_tee - whether to enable bias tee when running scanner test scripts
+#   test_freq_offset - receiver frequency offset (PPM)
+test_gain: 7.7
+test_sdr_device_id: 0
+test_enable_bias_tee: true
+test_freq_offset: -6
+
 # receiver settings
 #   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'gnuradio')
 #     **WARNING**: 'gnuradio' does not work with certain SDR devices (e.g. it will not currently
 #                  work with a RTL-SDR v3 dongle, as no image will be decoded from the bitstream)
-#   sdr_device_id - which SDR device to use (use rtl_eeprom to see available devices)
-#   enable_bias_tee - driving power to LNA, for example
-#   receiver_gain - receiver gain - if gain = 0 it will enable autogain on SDRs that support the feature.
-#   receiver_freq_offset - receiver frequency offset (PPM)
 meteor_receiver: 'rtl_fm'
-sdr_device_id: 0
-enable_bias_tee: false
-receiver_gain: 50
-receiver_freq_offset: -6
 
 # whether to schedule specific orbiting objects for capture
-schedule_noaa: true
-schedule_meteor: true
+#   <satellite_name>_schedule - whether to schedule captures for the satellite
+#   <satellite_name>_sdr_device_id - device ID of the SDR device to be used for recording for the satellite
+#   <satellite_name>_freq_offset - receiver frequency offset (PPM) for the satellite capture
+#   <satellite_name>_enable_bias_tee - whether to enable bias tee for the recording of the satellite
+#   <satellite_name>_gain - gain setting for specific satellite captures
+#   <satellite_name>_sun_min_elevation - threshold for sun elevation for specific satellite captures
+#   <satellite_name>_sat_min_elevation - threshold for sat elevation for specific satellite captures
+noaa_15_schedule: true
+noaa_15_sdr_device_id: 0
+noaa_15_freq_offset: -6
+noaa_15_enable_bias_tee: true
+noaa_15_gain: 7.7
+noaa_15_sun_min_elevation: 6
+noaa_15_sat_min_elevation: 30
+
+noaa_18_schedule: true
+noaa_18_sdr_device_id: 0
+noaa_18_freq_offset: -6
+noaa_18_enable_bias_tee: true
+noaa_18_gain: 8.7
+noaa_18_sun_min_elevation: 6
+noaa_18_sat_min_elevation: 30
+
+noaa_19_schedule: true
+noaa_19_sdr_device_id: 0
+noaa_19_freq_offset: -6
+noaa_19_enable_bias_tee: true
+noaa_19_gain: 7.7
+noaa_19_sun_min_elevation: 6
+noaa_19_sat_min_elevation: 30
+
+meteor_m2_schedule: true
+meteor_m2_sdr_device_id: 0
+meteor_m2_freq_offset: -6
+meteor_m2_enable_bias_tee: true
+meteor_m2_gain: 7.7
+meteor_m2_sun_min_elevation: 6
+meteor_m2_sat_min_elevation: 30
 
 # whether audio files should be deleted after images are created
 delete_audio: false
@@ -60,11 +98,6 @@ show_sun_elevation: true
 show_pass_direction: true
 noaa_daytime_enhancements: 'ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT therm'
 noaa_nighttime_enhancements: 'ZA MCIR MCIR-precip therm'
-
-# thresholds for scheduling captures - enables avoiding an attempt
-# to capture imagery if objects are lower than these degree elevation thresholds
-sat_min_elevation: 30
-sun_min_elevation: 10
 
 # noaa map configurations
 # http://usradioguy.com/wp-content/uploads/2020/05/wxtoimgcommand-line.pdf
@@ -123,6 +156,8 @@ lang_setting: en
 #   admin_username - username used to access the 'admin' endpoint of the webpanel (WARNING: see 'lock_admin_page' above)
 #   admin_password - password used to access the 'admin' endpoint of the webpanel (WARNING: see 'lock_admin_page' above)
 #                    NOTE: MAKE SURE YOU SET THIS TO SOMETHING REASONABLY COMPLICATED!
+#   web_datetime_format - format to display date and time in the web interface - note that this MUST conform to
+#                         https://www.php.net/manual/en/datetime.format.php or else bad things will happen
 web_server_name: raspberry-noaa.localdomain
 enable_non_tls: false
 web_port: 80
@@ -132,6 +167,7 @@ cert_valid_days: 365
 lock_admin_page: false
 admin_username: 'admin'
 admin_password: 'admin'
+web_datetime_format: 'm/d/Y H:i:s'
 
 # log level for output from scripts
 log_level: DEBUG
@@ -162,9 +198,11 @@ disable_wifi_power_mgmt: false
 #       pass-list schedule to the email destination
 #   enable_discord_push - whether to push images to a Discord channel
 #   discord_webhook_url - webhook url for the Discord channel
+#   enable_twitter_push - whether to push images to a Twitter feed
 enable_email_push: false
 email_push_address: test@ifttt.com
 enable_email_schedule_push: false
 enable_discord_push: false
 discord_webhook_url: ''
+enable_twitter_push: false
 ...

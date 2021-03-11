@@ -35,13 +35,20 @@ done
 
 # create schedules to call respective receive scripts
 log "Scheduling new capture jobs..." "INFO"
-if [ "$SCHEDULE_NOAA" == "true" ]; then
+if [ "$NOAA_15_SCHEDULE" == "true" ]; then
+  log "Scheduling NOAA 15 captures..." "INFO"
   $NOAA_HOME/scripts/schedule_captures.sh "NOAA 15" "receive_noaa.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
+fi
+if [ "$NOAA_18_SCHEDULE" == "true" ]; then
+  log "Scheduling NOAA 18 captures..." "INFO"
   $NOAA_HOME/scripts/schedule_captures.sh "NOAA 18" "receive_noaa.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
+fi
+if [ "$NOAA_19_SCHEDULE" == "true" ]; then
+  log "Scheduling NOAA 19 captures..." "INFO"
   $NOAA_HOME/scripts/schedule_captures.sh "NOAA 19" "receive_noaa.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
 fi
-
-if [ "$SCHEDULE_METEOR" == "true" ]; then
+if [ "$METEOR_M2_SCHEDULE" == "true" ]; then
+  log "Scheduling Meteor-M 2 captures..." "INFO"
   $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M 2" "receive_meteor.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
 fi
 log "Done scheduling jobs!" "INFO"
@@ -56,7 +63,14 @@ if [ "${ENABLE_EMAIL_SCHEDULE_PUSH}" == "true" ]; then
 
   log "Generating image of pass list schedule for email" "INFO"
   pass_image="${NOAA_HOME}/tmp/pass-list.jpg"
-  $WKHTMLTOIMG --format jpg --quality 100 "http://localhost:${WEBPANEL_PORT}/" "${pass_image}" >> $NOAA_LOG 2>&1
+
+  # determine if https or http supported
+  web_addr="http://localhost:${WEBPANEL_PORT}"
+  if [ "$ENABLE_NON_TLS" == "false" ]; then
+    # assume user has enabled TLS
+    web_addr="https://localhost:${WEBPANEL_TLS_PORT}"
+  fi
+  $WKHTMLTOIMG --format jpg --quality 100 $web_addr "${pass_image}" >> $NOAA_LOG 2>&1
 
   # crop the header (and optionally, satvis iframe, if enabled) out of pass list
   log "Removing header from pass list image" "INFO"

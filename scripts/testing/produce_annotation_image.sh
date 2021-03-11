@@ -33,6 +33,9 @@ yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/enhancement: 'MVC'\n.../")
 yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/sat_max_elevation: '42'\n.../")            # sat_max_elevation
 yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/sun_elevation: '56'\n.../")                # sun_elevation
 yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/pass_direction: Northbound\n.../")         # pass_direction
+yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/pass_side: 'E'\n.../")                     # pass_side
+yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/pass_side_long: 'East'\n.../")             # pass_side_long
+yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/gain: 40.2\n.../")                         # gain
 
 # render j2 to file
 tmp_dir="${NOAA_HOME}/tmp/annotation"

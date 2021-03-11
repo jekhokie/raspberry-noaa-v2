@@ -14,11 +14,11 @@ duration=$1
 outfile=timed_scan_$(date  +"%d.%m.%y-%H.%M").csv.gz
 
 if ! [[ "$duration" =~ ^[0-9]+[s,m,h]*$ ]] ; then
-       echo "
-       Invalid parameter $duration.
-       usage: $0 time (e.g. 1s, 10m, 2h)
-       "
-       exit -1
+  echo "
+  Invalid parameter $duration.
+  usage: $0 time (e.g. 1s, 10m, 2h)
+  "
+  exit -1
 fi
 
 echo "
@@ -29,11 +29,11 @@ $(tput sgr0)"
 $scriptpath/start_scanning.sh $outfile
 sleep 1
 if ! pidof rtl_power >/dev/null ; then
-	echo "
-	$(tput setaf 2)
-		Start of scan was not successful. Are any captures running?
-	$(tput sgr0)"
-	exit -1
+  echo "
+  $(tput setaf 2)
+        Start of scan was not successful. Are any captures running?
+  $(tput sgr0)"
+  exit -1
 fi
 
 nohup &>/dev/null bash -c "sleep $duration; $scriptpath/stop_and_finalize_scanning.sh $outfile" &

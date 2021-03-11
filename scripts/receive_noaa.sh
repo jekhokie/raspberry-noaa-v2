@@ -35,7 +35,27 @@ export PASS_SIDE=$8
 
 # export some variables for use in the annotation - note that we do not
 # want to export all of .noaa-v2.conf because it contains sensitive info
-export GAIN=$GAIN
+if [ "$SAT_NAME" == "NOAA 15" ]; then
+  export GAIN=$NOAA_15_GAIN
+  export SUN_MIN_ELEV=$NOAA_15_SUN_MIN_ELEV
+  export SDR_DEVICE_ID=$NOAA_15_SDR_DEVICE_ID
+  export BIAS_TEE=$NOAA_15_ENABLE_BIAS_TEE
+  export FREQ_OFFSET=$NOAA_15_FREQ_OFFSET
+fi
+if [ "$SAT_NAME" == "NOAA 18" ]; then
+  export GAIN=$NOAA_18_GAIN
+  export SUN_MIN_ELEV=$NOAA_18_SUN_MIN_ELEV
+  export SDR_DEVICE_ID=$NOAA_18_SDR_DEVICE_ID
+  export BIAS_TEE=$NOAA_18_ENABLE_BIAS_TEE
+  export FREQ_OFFSET=$NOAA_18_FREQ_OFFSET
+fi
+if [ "$SAT_NAME" == "NOAA 19" ]; then
+  export GAIN=$NOAA_19_GAIN
+  export SUN_MIN_ELEV=$NOAA_19_SUN_MIN_ELEV
+  export SDR_DEVICE_ID=$NOAA_19_SDR_DEVICE_ID
+  export BIAS_TEE=$NOAA_19_ENABLE_BIAS_TEE
+  export FREQ_OFFSET=$NOAA_19_FREQ_OFFSET
+fi
 
 # base directory plus filename helper variables
 AUDIO_FILE_BASE="${NOAA_AUDIO_OUTPUT}/${FILENAME_BASE}"
@@ -90,12 +110,6 @@ if [ "${NOAA_MAP_GRID_DEGREES}" != "0.0" ]; then
 else
   extra_map_opts="${extra_map_opts} -g 0.0"
 fi
-if [ "${NOAA_MAP_COUNTRY_BORDER_COLOR}" != "" ]; then 
-   extra_map_opts="${extra_map_opts} -c C:${NOAA_MAP_COUNTRY_BORDER_COLOR}"
-fi
-if [ "${NOAA_MAP_STATE_BORDER_COLOR}" != "" ]; then 
-   extra_map_opts="${extra_map_opts} -c S:${NOAA_MAP_STATE_BORDER_COLOR}"
-fi
 if [ "${NOAA_MAP_COUNTRY_BORDER_ENABLE}" == "true" ]; then
   extra_map_opts="${extra_map_opts} -C 1 -c C:${NOAA_MAP_COUNTRY_BORDER_COLOR}"
 else
@@ -123,6 +137,7 @@ fi
 
 # build images based on enhancements defined
 has_one_image=0
+push_file_list=""
 for enhancement in $ENHANCEMENTS; do
   export ENHANCEMENT=$enhancement
   log "Decoding image" "INFO"
@@ -177,6 +192,9 @@ for enhancement in $ENHANCEMENTS; do
         # at least one good image
         has_one_image=1
 
+        # capture list of files to push to Twitter
+        push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-$enhancement.jpg"
+
         # determine if auto-gain is set - handles "0" and "0.0" floats
         gain=$GAIN
         if [ $(echo "$GAIN==0"|bc) -eq 1 ]; then
@@ -211,6 +229,24 @@ for enhancement in $ENHANCEMENTS; do
     fi
   fi
 done
+
+# handle twitter pushing if enabled
+if [ "${ENABLE_TWITTER_PUSH}" == "true" ]; then
+  # create push annotation specific to twitter
+  # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
+  twitter_push_annotation=""
+  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+    twitter_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
+  fi
+  twitter_push_annotation="${twitter_push_annotation}${SAT_NAME} ${capture_start}"
+  twitter_push_annotation="${twitter_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
+  twitter_push_annotation="${twitter_push_annotation} Sun Elevation: ${SUN_ELEV}°"
+  twitter_push_annotation="${twitter_push_annotation} Gain: ${gain}"
+  twitter_push_annotation="${twitter_push_annotation} | ${PASS_DIRECTION}"
+
+  log "Pushing image enhancements to Twitter" "INFO"
+  ${PUSH_PROC_DIR}/push_twitter.sh "${twitter_push_annotation}" $push_file_list
+fi
 
 rm "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
 
