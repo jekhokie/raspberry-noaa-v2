@@ -24,7 +24,7 @@ fi
 startdate=$(date)
 secs=$(./t2sec.sh $duration)
 echo -n "Starting at "
-echo $start
+echo $startdate
 echo -n "Finishing at "
 date --date "$start $secs sec"
 
