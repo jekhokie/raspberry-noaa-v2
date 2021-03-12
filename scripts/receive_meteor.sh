@@ -25,11 +25,12 @@ capture_start=$START_DATE
 # input params
 export SAT_NAME=$1
 export FILENAME_BASE=$2
-export EPOCH_START=$3
-export CAPTURE_TIME=$4
-export SAT_MAX_ELEVATION=$5
-export PASS_DIRECTION=$6
-export PASS_SIDE=$7
+export TLE_FILE=$3
+export EPOCH_START=$4
+export CAPTURE_TIME=$5
+export SAT_MAX_ELEVATION=$6
+export PASS_DIRECTION=$7
+export PASS_SIDE=$8
 
 # export some variables for use in the annotation - note that we do not
 # want to export all of .noaa-v2.conf because it contains sensitive info
