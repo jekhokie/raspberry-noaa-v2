@@ -106,6 +106,7 @@ def main():
   p = plt.subplot(111, projection='polar')
   p.set_theta_zero_location('N')
   p.set_rlim(0, 92)
+  p.set_theta_direction(-1)
   p.plot(np.deg2rad(azimuth_pos), np.array(elevation_pos))
   p.annotate(graph_title, xy=(0.02, 0.93), xycoords='figure fraction')
   
