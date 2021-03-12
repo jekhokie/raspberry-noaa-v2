@@ -30,6 +30,45 @@ import sys
 import time
 from math import degrees
 
+def constructAzElPlot(pass_start_ms, azimuth_pos, elevation_pos, sat, out_file):
+  '''
+  Generate the polar plot given the elevation and azimuth coordinates
+  '''
+  # find the max elevation and coordinates
+  max_elev_pos = elevation_pos.index(max(elevation_pos))
+  max_elev = elevation_pos[max_elev_pos]
+  az_at_max_elev = np.deg2rad(azimuth_pos)[max_elev_pos]
+
+  # start to construct the title for the plot
+  start_datetime = datetime.datetime.fromtimestamp(pass_start_ms)
+  graph_title =  "Azimuth/Elevation\n"
+  graph_title += "{}\n".format(sat.name)
+  graph_title += "{}\n".format(start_datetime.strftime('%m/%d/%Y @ %H:%M:%S'))
+  graph_title += "{:.0f}° max elevation".format(max_elev)
+
+  # create a polar plot of the azimuth and elevation
+  p = plt.subplot(111, projection='polar')
+  p.set_theta_zero_location('N')
+  p.set_rlim(0, 92)
+  p.set_theta_direction(-1)
+  p.plot(np.deg2rad(azimuth_pos), np.array(elevation_pos))
+  p.annotate(graph_title, xy=(0.02, 0.86), xycoords='figure fraction')
+
+  # calculate and plot start and end points, as well
+  # as location and value of max elevation
+  start_az = np.deg2rad(azimuth_pos)[0]
+  start_el = np.array(elevation_pos)[0]
+  end_az = np.deg2rad(azimuth_pos)[len(azimuth_pos)-1]
+  end_el = np.array(elevation_pos)[len(elevation_pos)-1]
+
+  p.plot(start_az, start_el, 'g', marker="P", markersize=12)
+  p.plot(end_az, end_el, 'r', marker="X", markersize=12)
+  p.plot(az_at_max_elev, max_elev, 'o', marker="*", markersize=12)
+  p.text(az_at_max_elev, max_elev-7, '{:.0f}°'.format(max_elev), fontweight="bold")
+
+  # save the file
+  plt.savefig(out_file)
+
 def getSat(filename, sat_name):
   '''
   Load specific satellite TLE data from a file and return
@@ -91,39 +130,8 @@ def main():
     if degrees(sat.alt) > sat_min_elev:
       azimuth_pos.append(degrees(sat.az))
       elevation_pos.append(degrees(sat.alt))
-  
-  # find the max elevation and coordinates
-  max_elev_pos = elevation_pos.index(max(elevation_pos))
-  max_elev = elevation_pos[max_elev_pos]
-  az_at_max_elev = np.deg2rad(azimuth_pos)[max_elev_pos]
-  
-  # start to construct the title for the plot
-  start_datetime = datetime.datetime.fromtimestamp(start_ms)
-  graph_title = "{}\n".format(sat.name)
-  graph_title += "{}".format(start_datetime.strftime('%m/%d/%Y @ %H:%M:%S'))
-  
-  # create a polar plot of the azimuth and elevation
-  p = plt.subplot(111, projection='polar')
-  p.set_theta_zero_location('N')
-  p.set_rlim(0, 92)
-  p.set_theta_direction(-1)
-  p.plot(np.deg2rad(azimuth_pos), np.array(elevation_pos))
-  p.annotate(graph_title, xy=(0.02, 0.93), xycoords='figure fraction')
-  
-  # calculate and plot start and end points, as well
-  # as location and value of max elevation
-  start_az = np.deg2rad(azimuth_pos)[0]
-  start_el = np.array(elevation_pos)[0]
-  end_az = np.deg2rad(azimuth_pos)[len(azimuth_pos)-1]
-  end_el = np.array(elevation_pos)[len(elevation_pos)-1]
-  
-  p.plot(start_az, start_el, 'g', marker="P", markersize=12)
-  p.plot(end_az, end_el, 'r', marker="X", markersize=12)
-  p.plot(az_at_max_elev, max_elev, 'o', marker="*", markersize=12)
-  p.text(az_at_max_elev, max_elev-7, '{:.0f}°'.format(max_elev), fontweight="bold")
-  
-  # save the file
-  plt.savefig(out_file)
+
+  constructAzElPlot(start_ms, azimuth_pos, elevation_pos, sat, out_file)
 
 if __name__ == '__main__':
   main()
