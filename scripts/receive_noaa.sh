@@ -41,6 +41,7 @@ if [ "$SAT_NAME" == "NOAA 15" ]; then
   export SDR_DEVICE_ID=$NOAA_15_SDR_DEVICE_ID
   export BIAS_TEE=$NOAA_15_ENABLE_BIAS_TEE
   export FREQ_OFFSET=$NOAA_15_FREQ_OFFSET
+  export SAT_MIN_ELEV=$NOAA_15_SAT_MIN_ELEV
 fi
 if [ "$SAT_NAME" == "NOAA 18" ]; then
   export GAIN=$NOAA_18_GAIN
@@ -48,6 +49,7 @@ if [ "$SAT_NAME" == "NOAA 18" ]; then
   export SDR_DEVICE_ID=$NOAA_18_SDR_DEVICE_ID
   export BIAS_TEE=$NOAA_18_ENABLE_BIAS_TEE
   export FREQ_OFFSET=$NOAA_18_FREQ_OFFSET
+  export SAT_MIN_ELEV=$NOAA_18_SAT_MIN_ELEV
 fi
 if [ "$SAT_NAME" == "NOAA 19" ]; then
   export GAIN=$NOAA_19_GAIN
@@ -55,6 +57,7 @@ if [ "$SAT_NAME" == "NOAA 19" ]; then
   export SDR_DEVICE_ID=$NOAA_19_SDR_DEVICE_ID
   export BIAS_TEE=$NOAA_19_ENABLE_BIAS_TEE
   export FREQ_OFFSET=$NOAA_19_FREQ_OFFSET
+  export SAT_MIN_ELEV=$NOAA_19_SAT_MIN_ELEV
 fi
 
 # base directory plus filename helper variables
@@ -89,6 +92,22 @@ if [[ "${PRODUCE_NOAA_PRISTINE}" == "true" ]]; then
   pristine=1
   ${IMAGE_PROC_DIR}/noaa_pristine.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.jpg"
   ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_THUMB_BASE}-pristine.jpg"
+fi
+
+polar_az_el=0
+if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
+  log "Producing polar graph of azimuth and elevation for pass" "INFO"
+  polar_az_el=1
+  epoch_end=$((EPOCH_START + CAPTURE_TIME))
+  ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
+                                  "${TLE_FILE}" \
+                                  $EPOCH_START \
+                                  $epoch_end \
+                                  $LAT \
+                                  $LON \
+                                  $SAT_MIN_ELEV \
+                                  "${IMAGE_FILE_BASE}-polar-azel.jpg"
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-azel.jpg" "${IMAGE_THUMB_BASE}-polar-azel.jpg"
 fi
 
 log "Bulding pass map" "INFO"
@@ -252,10 +271,10 @@ rm "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
 
 # store enhancements if there was at least 1 good image created
 if [ $has_one_image -eq 1 ]; then
-  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine, gain) \
+  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine, has_polar_az_el, gain) \
                                        VALUES ( \
                                          (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
-                                         $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $GAIN \
+                                         $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $polar_az_el, $GAIN \
                                        );"
 
   pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")

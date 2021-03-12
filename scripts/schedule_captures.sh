@@ -39,12 +39,6 @@ azimuth_at_max=$($PREDICT   -t $TLE_FILE -p "${OBJ_NAME}" | awk -v max=0 -v az=0
 end_epoch_time=$(echo "${predict_end}" | cut -d " " -f 1)
 starting_azimuth=$(echo "${predict_start}" | awk '{print $6}')
 
-# TLE file isn't needed for running meteor captures
-receiver_tle_file=$TLE_FILE
-if [ "${OBJ_NAME}" = "METEOR-M 2" ]; then
-  receiver_tle_file=""
-fi
-
 while [ "$(date --date="@${end_epoch_time}" +%D)" = "$(date +%D)" ]; do
   start_datetime=$(echo "$predict_start" | cut -d " " -f 3-4)
   start_epoch_time=$(echo "$predict_start" | cut -d " " -f 1)
@@ -71,7 +65,7 @@ while [ "$(date --date="@${end_epoch_time}" +%D)" = "$(date +%D)" ]; do
 
     printf -v safe_obj_name "%q" $(echo "${OBJ_NAME}" | sed "s/ /-/g")
     log "Scheduling capture for: ${safe_obj_name} ${file_date_ext} ${max_elev}" "INFO"
-    echo "${NOAA_HOME}/scripts/${RECEIVE_SCRIPT} \"${OBJ_NAME}\" ${safe_obj_name}-${file_date_ext} ${receiver_tle_file} \
+    echo "${NOAA_HOME}/scripts/${RECEIVE_SCRIPT} \"${OBJ_NAME}\" ${safe_obj_name}-${file_date_ext} ${TLE_FILE} \
 ${start_epoch_time} ${timer} ${max_elev} ${direction} ${pass_side}" | at "$(date --date="TZ=\"UTC\" ${start_datetime}" +"%H:%M %D")"
 
     # update database with scheduled pass
