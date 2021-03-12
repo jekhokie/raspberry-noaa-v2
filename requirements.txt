@@ -2,8 +2,10 @@ envbash==1.2.0
 ephem==3.7.7.1
 idna==2.8
 jsonschema==3.2.0
+matplotlib==3.3.4
 numpy==1.18.1
 Pillow==7.1.2
+pylab==0.0.1
 pyyaml==5.4.1
 requests==2.25.1
 urllib3==1.26.3

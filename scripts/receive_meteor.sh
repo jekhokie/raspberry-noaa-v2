@@ -25,11 +25,12 @@ capture_start=$START_DATE
 # input params
 export SAT_NAME=$1
 export FILENAME_BASE=$2
-export EPOCH_START=$3
-export CAPTURE_TIME=$4
-export SAT_MAX_ELEVATION=$5
-export PASS_DIRECTION=$6
-export PASS_SIDE=$7
+export TLE_FILE=$3
+export EPOCH_START=$4
+export CAPTURE_TIME=$5
+export SAT_MAX_ELEVATION=$6
+export PASS_DIRECTION=$7
+export PASS_SIDE=$8
 
 # export some variables for use in the annotation - note that we do not
 # want to export all of .noaa-v2.conf because it contains sensitive info
@@ -38,6 +39,7 @@ export SUN_MIN_ELEV=$METEOR_M2_SUN_MIN_ELEV
 export SDR_DEVICE_ID=$METEOR_M2_SDR_DEVICE_ID
 export BIAS_TEE=$METEOR_M2_ENABLE_BIAS_TEE
 export FREQ_OFFSET=$METEOR_M2_FREQ_OFFSET
+export SAT_MIN_ELEV=$METEOR_M2_SAT_MIN_ELEV
 
 # base directory plus filename_base for re-use
 RAMFS_AUDIO_BASE="${RAMFS_AUDIO}/${FILENAME_BASE}"
@@ -98,6 +100,7 @@ push_annotation="${push_annotation} | ${PASS_DIRECTION}"
 #       the first round), keeping it simple.
 push_file_list=""
 spectrogram=0
+polar_az_el=0
 if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   log "Starting rtl_fm record" "INFO"
   ${AUDIO_PROC_DIR}/meteor_record_rtl_fm.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
@@ -113,6 +116,21 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     ${IMAGE_PROC_DIR}/spectrogram.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" spectro_text >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png" >> $NOAA_LOG 2>&1
   fi
+
+	if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
+		log "Producing polar graph of azimuth and elevation for pass" "INFO"
+		polar_az_el=1
+		epoch_end=$((EPOCH_START + CAPTURE_TIME))
+		${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
+																		"${TLE_FILE}" \
+																		$EPOCH_START \
+																		$epoch_end \
+																		$LAT \
+																		$LON \
+																		$SAT_MIN_ELEV \
+																		"${IMAGE_FILE_BASE}-polar-azel.jpg"
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-azel.jpg" "${IMAGE_THUMB_BASE}-polar-azel.jpg"
+	fi
 
   if [ "$DELETE_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
@@ -168,10 +186,10 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     fi
 
     # store decoded pass
-    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, gain) \
+    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, gain) \
                                          VALUES ( \
                                            (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
-                                           $EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $GAIN \
+                                           $EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $GAIN \
                                          );"
 
     pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
@@ -194,6 +212,21 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 
   log "Waiting for files to close" "INFO"
   sleep 2
+
+	if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
+		log "Producing polar graph of azimuth and elevation for pass" "INFO"
+		polar_az_el=1
+		epoch_end=$((EPOCH_START + CAPTURE_TIME))
+		${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
+																		"${TLE_FILE}" \
+																		$EPOCH_START \
+																		$epoch_end \
+																		$LAT \
+																		$LON \
+																		$SAT_MIN_ELEV \
+																		"${IMAGE_FILE_BASE}-polar-azel.jpg"
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-azel.jpg" "${IMAGE_THUMB_BASE}-polar-azel.jpg"
+	fi
 
   log "Decoding in progress (Bitstream to BMP)" "INFO"
   ${IMAGE_PROC_DIR}/meteor_decode_bitstream.sh "${RAMFS_AUDIO_BASE}.s" "${RAMFS_AUDIO_BASE}" >> $NOAA_LOG 2>&1
@@ -242,8 +275,8 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-col-122-rectified.jpg"
 
     # insert or replace in case there was already an insert due to the spectrogram creation
-    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, gain) \
-                                         VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $GAIN);"
+    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, gain) \
+                                         VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $GAIN);"
 
     pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
     $SQLITE3 $DB_FILE "UPDATE predict_passes \

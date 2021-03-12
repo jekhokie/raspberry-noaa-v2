@@ -21,6 +21,13 @@ if ! [[ "$duration" =~ ^[0-9]+[s,m,h]*$ ]] ; then
   exit -1
 fi
 
+startdate=$(date)
+secs=$(./t2sec.sh $duration)
+echo -n "Starting at "
+echo $startdate
+echo -n "Finishing at "
+date --date "$start $secs sec"
+
 echo "
 $(tput setaf 2)
         Scanning for $duration, expect a $outfile.png in $(pwd) afterwards.

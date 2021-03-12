@@ -55,6 +55,7 @@ class Capture extends \Lib\Model {
                                              file_path,
                                              img_count,
                                              has_spectrogram,
+                                             has_polar_az_el,
                                              has_pristine
                                       FROM decoded_passes
                                       WHERE id = ?;');
@@ -88,6 +89,10 @@ class Capture extends \Lib\Model {
     # capture spectrogram if one exists
     if ($pass['has_spectrogram'] == '1') {
       array_push($enhancements, '-spectrogram.png');
+    }
+    # capture polar azimuth elevation graph if one exists
+    if ($pass['has_polar_az_el'] == '1') {
+      array_push($enhancements, '-polar-azel.jpg');
     }
     # capture pristine if one exists
     if ($pass['has_pristine'] == '1') {

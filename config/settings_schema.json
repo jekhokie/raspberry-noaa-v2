@@ -80,6 +80,7 @@
       "type": "string"
     },
     "produce_noaa_pristine_image":    { "type": "boolean" },
+    "produce_polar_az_el_graph":      { "type": "boolean" },
     "ground_station_location":        { "type": "string" },
     "show_sun_elevation":             { "type": "boolean" },
     "show_pass_direction":            { "type": "boolean" },
@@ -176,6 +177,7 @@
     "noaa_crop_telemetry",
     "image_annotation_location",
     "produce_noaa_pristine_image",
+    "produce_polar_az_el_graph",
     "ground_station_location",
     "show_sun_elevation",
     "show_pass_direction",
