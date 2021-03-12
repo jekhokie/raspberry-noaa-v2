@@ -101,6 +101,7 @@ push_annotation="${push_annotation} | ${PASS_DIRECTION}"
 push_file_list=""
 spectrogram=0
 polar_az_el=0
+polar_direction=0
 if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   log "Starting rtl_fm record" "INFO"
   ${AUDIO_PROC_DIR}/meteor_record_rtl_fm.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
@@ -117,20 +118,40 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png" >> $NOAA_LOG 2>&1
   fi
 
-	if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
-		log "Producing polar graph of azimuth and elevation for pass" "INFO"
-		polar_az_el=1
-		epoch_end=$((EPOCH_START + CAPTURE_TIME))
-		${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
-																		"${TLE_FILE}" \
-																		$EPOCH_START \
-																		$epoch_end \
-																		$LAT \
-																		$LON \
-																		$SAT_MIN_ELEV \
-																		"${IMAGE_FILE_BASE}-polar-azel.jpg"
+  if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
+    log "Producing polar graph of azimuth and elevation for pass" "INFO"
+    polar_az_el=1
+    epoch_end=$((EPOCH_START + CAPTURE_TIME))
+    ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
+                                    "${TLE_FILE}" \
+                                    $EPOCH_START \
+                                    $epoch_end \
+                                    $LAT \
+                                    $LON \
+                                    $SAT_MIN_ELEV \
+                                    $PASS_DIRECTION \
+                                    "${IMAGE_FILE_BASE}-polar-azel.jpg" \
+                                    "azel"
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-azel.jpg" "${IMAGE_THUMB_BASE}-polar-azel.jpg"
-	fi
+  fi
+
+  polar_direction=0
+  if [[ "${PRODUCE_POLAR_DIRECTION}" == "true" ]]; then
+    log "Producing polar graph of direction for pass" "INFO"
+    polar_direction=1
+    epoch_end=$((EPOCH_START + CAPTURE_TIME))
+    ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
+                                    "${TLE_FILE}" \
+                                    $EPOCH_START \
+                                    $epoch_end \
+                                    $LAT \
+                                    $LON \
+                                    $SAT_MIN_ELEV \
+                                    $PASS_DIRECTION \
+                                    "${IMAGE_FILE_BASE}-polar-direction.png" \
+                                    "direction"
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png"
+  fi
 
   if [ "$DELETE_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
@@ -186,10 +207,10 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     fi
 
     # store decoded pass
-    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, gain) \
+    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, has_polar_direction, gain) \
                                          VALUES ( \
                                            (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
-                                           $EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $GAIN \
+                                           $EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $polar_direction, $GAIN \
                                          );"
 
     pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
@@ -213,20 +234,40 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
   log "Waiting for files to close" "INFO"
   sleep 2
 
-	if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
-		log "Producing polar graph of azimuth and elevation for pass" "INFO"
-		polar_az_el=1
-		epoch_end=$((EPOCH_START + CAPTURE_TIME))
-		${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
-																		"${TLE_FILE}" \
-																		$EPOCH_START \
-																		$epoch_end \
-																		$LAT \
-																		$LON \
-																		$SAT_MIN_ELEV \
-																		"${IMAGE_FILE_BASE}-polar-azel.jpg"
+  if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
+    log "Producing polar graph of azimuth and elevation for pass" "INFO"
+    polar_az_el=1
+    epoch_end=$((EPOCH_START + CAPTURE_TIME))
+    ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
+                                    "${TLE_FILE}" \
+                                    $EPOCH_START \
+                                    $epoch_end \
+                                    $LAT \
+                                    $LON \
+                                    $SAT_MIN_ELEV \
+                                    $PASS_DIRECTION \
+                                    "${IMAGE_FILE_BASE}-polar-azel.jpg" \
+                                    "azel"
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-azel.jpg" "${IMAGE_THUMB_BASE}-polar-azel.jpg"
-	fi
+  fi
+
+  polar_direction=0
+  if [[ "${PRODUCE_POLAR_DIRECTION}" == "true" ]]; then
+    log "Producing polar graph of direction for pass" "INFO"
+    polar_direction=1
+    epoch_end=$((EPOCH_START + CAPTURE_TIME))
+    ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
+                                    "${TLE_FILE}" \
+                                    $EPOCH_START \
+                                    $epoch_end \
+                                    $LAT \
+                                    $LON \
+                                    $SAT_MIN_ELEV \
+                                    $PASS_DIRECTION \
+                                    "${IMAGE_FILE_BASE}-polar-direction.png" \
+                                    "direction"
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png"
+  fi
 
   log "Decoding in progress (Bitstream to BMP)" "INFO"
   ${IMAGE_PROC_DIR}/meteor_decode_bitstream.sh "${RAMFS_AUDIO_BASE}.s" "${RAMFS_AUDIO_BASE}" >> $NOAA_LOG 2>&1
@@ -275,8 +316,8 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-col-122-rectified.jpg"
 
     # insert or replace in case there was already an insert due to the spectrogram creation
-    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, gain) \
-                                         VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $GAIN);"
+    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, has_polar_direction, gain) \
+                                         VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $polar_direction, $GAIN);"
 
     pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
     $SQLITE3 $DB_FILE "UPDATE predict_passes \
