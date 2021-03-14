@@ -106,8 +106,28 @@ if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
                                   $LAT \
                                   $LON \
                                   $SAT_MIN_ELEV \
-                                  "${IMAGE_FILE_BASE}-polar-azel.jpg"
+                                  $PASS_DIRECTION \
+                                  "${IMAGE_FILE_BASE}-polar-azel.jpg" \
+                                  "azel"
   ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-azel.jpg" "${IMAGE_THUMB_BASE}-polar-azel.jpg"
+fi
+
+polar_direction=0
+if [[ "${PRODUCE_POLAR_DIRECTION}" == "true" ]]; then
+  log "Producing polar graph of direction for pass" "INFO"
+  polar_direction=1
+  epoch_end=$((EPOCH_START + CAPTURE_TIME))
+  ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
+                                  "${TLE_FILE}" \
+                                  $EPOCH_START \
+                                  $epoch_end \
+                                  $LAT \
+                                  $LON \
+                                  $SAT_MIN_ELEV \
+                                  $PASS_DIRECTION \
+                                  "${IMAGE_FILE_BASE}-polar-direction.png" \
+                                  "direction"
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png"
 fi
 
 log "Bulding pass map" "INFO"
@@ -271,10 +291,10 @@ rm "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
 
 # store enhancements if there was at least 1 good image created
 if [ $has_one_image -eq 1 ]; then
-  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine, has_polar_az_el, gain) \
+  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine, has_polar_az_el, has_polar_direction, gain) \
                                        VALUES ( \
                                          (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
-                                         $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $polar_az_el, $GAIN \
+                                         $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $polar_az_el, $polar_direction, $GAIN \
                                        );"
 
   pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")

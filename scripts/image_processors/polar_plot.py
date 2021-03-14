@@ -10,7 +10,9 @@
 #   5. Ground station latitude
 #   6. Ground station longitude
 #   7. Satellite min elevation
-#   8. Output filename
+#   8. Satellite direction of travel
+#   9. Output filename
+#  10. Type of plot ('azel' for Azimuth/Elevation or 'direction' for Directional)
 #
 # Example:
 #   ./scripts/tools/polar_plot.py "NOAA 15" \
@@ -20,7 +22,9 @@
 #                                 40.712776 \
 #                                 -74.005974 \
 #                                 30 \
-#                                 "/tmp/test.png"
+#                                 Northbound \
+#                                 "/tmp/test.png" \
+#                                 azel
 
 import datetime
 import ephem
@@ -28,23 +32,80 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 import time
+import matplotlib.ticker as mticker
 from math import degrees
 
-def constructAzElPlot(pass_start_ms, azimuth_pos, elevation_pos, sat, out_file):
+def genPlotTitle(plot_type, pass_start_ms, sat, max_elev, direction):
   '''
-  Generate the polar plot given the elevation and azimuth coordinates
+  Generate and return a title to be overlaid on the polar plot
+  '''
+  start_datetime = datetime.datetime.fromtimestamp(pass_start_ms)
+  plot_title =  "{}\n".format(plot_type)
+  plot_title += "{}\n".format(sat.name)
+  plot_title += "{}\n".format(start_datetime.strftime('%m/%d/%Y @ %H:%M:%S'))
+  plot_title += "{:.0f}° Max Elevation\n".format(max_elev)
+  plot_title += "{}".format(direction)
+
+  return plot_title
+
+def constructDirectionPlot(pass_start_ms, azimuth_pos, elevation_pos, sat, sat_min_elev, direction, out_file):
+  '''
+  Generate a pass direction polar plot given the elevation and azimuth coordinates
   '''
   # find the max elevation and coordinates
+  # TODO: DRY up code with other function
+  max_elev_pos = elevation_pos.index(max(elevation_pos))
+  max_elev = elevation_pos[max_elev_pos]
+  az_at_max_elev = np.deg2rad(azimuth_pos)[max_elev_pos]
+
+  # capture AOS/LOS based on satellite minimum elevation
+  aos_index = next(x for x,val in enumerate(elevation_pos) if val > sat_min_elev)
+  aos_az = np.deg2rad(azimuth_pos)[aos_index]
+  aos_el = np.array(elevation_pos)[aos_index]
+
+  los_index = len(elevation_pos) - next(x for x,val in enumerate(elevation_pos, start=aos_index) if val < sat_min_elev)
+  los_az = np.deg2rad(azimuth_pos)[los_index]
+  los_el = np.array(elevation_pos)[los_index]
+
+  # start to construct the title for the plot
+  graph_title = genPlotTitle('Direction', pass_start_ms, sat, max_elev, direction)
+
+  # create a polar plot of the direction of travel
+  p = plt.subplot(111, projection='polar')
+  p.set_theta_zero_location('N')
+  p.set_theta_direction(-1)
+  p.set_rlim(90, 0)
+  p.set_yticks(np.arange(90, 0, step=-15))
+  p.set_yticklabels(np.arange(90, 0, step=-15))
+  ticks_loc = p.get_xticks().tolist()
+  p.xaxis.set_major_locator(mticker.FixedLocator(ticks_loc))
+  p.set_xticklabels(['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'])
+  p.plot(np.deg2rad(azimuth_pos), np.array(elevation_pos))
+  p.annotate(graph_title, xy=(0.02, 0.83), xycoords='figure fraction')
+
+  # TODO: calculate and plot AOS/LOS and location and value of max elevation
+  p.plot(aos_az, aos_el, 'g', marker="P", markersize=12, label="AOS")
+  p.plot(los_az, los_el, 'r', marker="X", markersize=12, label="LOS")
+  p.plot(az_at_max_elev, max_elev, 'o', marker="*", markersize=12, label="Max El")
+  p.text(az_at_max_elev, max_elev-7, '{:.0f}°'.format(max_elev), fontweight="bold")
+
+  p.legend(loc="lower left", bbox_to_anchor=(-0.38, -0.14))
+
+  # save the file
+  plt.savefig(out_file)
+
+def constructAzElPlot(pass_start_ms, azimuth_pos, elevation_pos, sat, direction, out_file):
+  '''
+  Generate an azimuth/elevation polar plot given the elevation and azimuth coordinates
+  '''
+  # find the max elevation and coordinates
+  # TODO: DRY up code with other function
   max_elev_pos = elevation_pos.index(max(elevation_pos))
   max_elev = elevation_pos[max_elev_pos]
   az_at_max_elev = np.deg2rad(azimuth_pos)[max_elev_pos]
 
   # start to construct the title for the plot
-  start_datetime = datetime.datetime.fromtimestamp(pass_start_ms)
-  graph_title =  "Azimuth/Elevation\n"
-  graph_title += "{}\n".format(sat.name)
-  graph_title += "{}\n".format(start_datetime.strftime('%m/%d/%Y @ %H:%M:%S'))
-  graph_title += "{:.0f}° max elevation".format(max_elev)
+  graph_title = genPlotTitle('Azimuth/Elevation', pass_start_ms, sat, max_elev, direction)
 
   # create a polar plot of the azimuth and elevation
   p = plt.subplot(111, projection='polar')
@@ -52,7 +113,7 @@ def constructAzElPlot(pass_start_ms, azimuth_pos, elevation_pos, sat, out_file):
   p.set_rlim(0, 92)
   p.set_theta_direction(-1)
   p.plot(np.deg2rad(azimuth_pos), np.array(elevation_pos))
-  p.annotate(graph_title, xy=(0.02, 0.86), xycoords='figure fraction')
+  p.annotate(graph_title, xy=(0.02, 0.83), xycoords='figure fraction')
 
   # calculate and plot start and end points, as well
   # as location and value of max elevation
@@ -89,6 +150,19 @@ def getSat(filename, sat_name):
 
   return None
 
+def displayUsage():
+  print("Usage: ./polar_plot.py <satellite_name> \\")
+  print("                       <tle_file> \\")
+  print("                       <pass_start_ms> \\")
+  print("                       <pass_end_ms> \\")
+  print("                       <ground_station_latitude> \\")
+  print("                       <ground_station_longitude> \\")
+  print("                       <satellite_min_elevation> \\")
+  print("                       <output_image_file> \\")
+  print("                       <plot_type>")
+  print("Where 'plot_type' is one of 'azel' (azimuth/elevation) or 'direction' (pass direction)")
+  exit(1)
+
 def main():
   '''
   Main function to check for usage, accept arguments from command
@@ -96,6 +170,9 @@ def main():
   '''
   
   # parse input arguments
+  if len(sys.argv) != 11:
+    displayUsage()
+
   # TODO: This likely needs some input validation eventually
   satellite = sys.argv[1]
   tle_file = sys.argv[2]
@@ -104,7 +181,13 @@ def main():
   gs_latitude = sys.argv[5]
   gs_longitude = sys.argv[6]
   sat_min_elev = float(sys.argv[7])
-  out_file = sys.argv[8]
+  sat_direction = sys.argv[8]
+  out_file = sys.argv[9]
+  plot_type = sys.argv[10]
+
+  # make sure one of two types is specified
+  if plot_type != "azel" and plot_type != "direction":
+    displayUsage()
   
   # establish ground station coordinates
   gs = ephem.Observer()
@@ -121,17 +204,24 @@ def main():
   # collect azimuth and elevation values
   azimuth_pos = []
   elevation_pos = []
-  max_elevation = []
-  delta_time = end_ms - start_ms
-  for dt in range(0, delta_time):
+  for dt in range(0, (end_ms - start_ms)):
     gs.date = datetime.datetime.utcfromtimestamp(start_ms + dt)
     sat.compute(gs)
 
-    if degrees(sat.alt) > sat_min_elev:
+    # only want to capture values for azimuth/elevation graph that
+    # are above satellite minimum elevation
+    if degrees(sat.alt) > sat_min_elev and plot_type == "azel":
+      azimuth_pos.append(degrees(sat.az))
+      elevation_pos.append(degrees(sat.alt))
+    else:
       azimuth_pos.append(degrees(sat.az))
       elevation_pos.append(degrees(sat.alt))
 
-  constructAzElPlot(start_ms, azimuth_pos, elevation_pos, sat, out_file)
+  # calculate and construct the desired plot
+  if plot_type == "azel":
+    constructAzElPlot(start_ms, azimuth_pos, elevation_pos, sat, sat_direction, out_file)
+  elif plot_type == "direction":
+    constructDirectionPlot(start_ms, azimuth_pos, elevation_pos, sat, sat_min_elev, sat_direction, out_file)
 
 if __name__ == '__main__':
   main()
