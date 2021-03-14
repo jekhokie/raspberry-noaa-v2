@@ -12,6 +12,7 @@ Below are Raspberry Pi models that are in use and confirmed working with this fr
 * Raspberry Pi 4 (2GB)
 * Raspberry Pi 3 B+
 * Raspberry Pi 3 B
+* Raspberry Pi 2 B
 * Raspberry Pi 2
 
 Below are Raspberry Pi models that have been tested but do *not* work with this framework:
