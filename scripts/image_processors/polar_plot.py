@@ -32,6 +32,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 import time
+import matplotlib.ticker as mticker
 from math import degrees
 
 def genPlotTitle(plot_type, pass_start_ms, sat, max_elev, direction):
@@ -54,20 +55,17 @@ def constructDirectionPlot(pass_start_ms, azimuth_pos, elevation_pos, sat, sat_m
   # find the max elevation and coordinates
   # TODO: DRY up code with other function
   max_elev_pos = elevation_pos.index(max(elevation_pos))
-  max_elev = 90-elevation_pos[max_elev_pos]
+  max_elev = elevation_pos[max_elev_pos]
   az_at_max_elev = np.deg2rad(azimuth_pos)[max_elev_pos]
 
   # capture AOS/LOS based on satellite minimum elevation
   aos_index = next(x for x,val in enumerate(elevation_pos) if val > sat_min_elev)
   aos_az = np.deg2rad(azimuth_pos)[aos_index]
-  aos_el = 90-np.array(elevation_pos)[aos_index]
+  aos_el = np.array(elevation_pos)[aos_index]
 
   los_index = len(elevation_pos) - next(x for x,val in enumerate(elevation_pos, start=aos_index) if val < sat_min_elev)
   los_az = np.deg2rad(azimuth_pos)[los_index]
-  los_el = 90-np.array(elevation_pos)[los_index]
-
-  # rewrite elevation to transform for the directional pass prior to plotting
-  elevation_pos = [(90-x) for x in elevation_pos]
+  los_el = np.array(elevation_pos)[los_index]
 
   # start to construct the title for the plot
   graph_title = genPlotTitle('Direction', pass_start_ms, sat, max_elev, direction)
@@ -75,8 +73,13 @@ def constructDirectionPlot(pass_start_ms, azimuth_pos, elevation_pos, sat, sat_m
   # create a polar plot of the direction of travel
   p = plt.subplot(111, projection='polar')
   p.set_theta_zero_location('N')
-  p.set_rlim(0, 92)
   p.set_theta_direction(-1)
+  p.set_rlim(90, 0)
+  p.set_yticks(np.arange(90, 0, step=-15))
+  p.set_yticklabels(np.arange(90, 0, step=-15))
+  ticks_loc = p.get_xticks().tolist()
+  p.xaxis.set_major_locator(mticker.FixedLocator(ticks_loc))
+  p.set_xticklabels(['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'])
   p.plot(np.deg2rad(azimuth_pos), np.array(elevation_pos))
   p.annotate(graph_title, xy=(0.02, 0.83), xycoords='figure fraction')
 
