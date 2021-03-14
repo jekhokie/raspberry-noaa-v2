@@ -271,10 +271,10 @@ rm "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
 
 # store enhancements if there was at least 1 good image created
 if [ $has_one_image -eq 1 ]; then
-  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine, has_polar_az_el, gain) \
+  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine, has_polar_az_el, has_histogram, gain) \
                                        VALUES ( \
                                          (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
-                                         $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $polar_az_el, $GAIN \
+                                         $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $polar_az_el, $histogram, $GAIN \
                                        );"
 
   pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
