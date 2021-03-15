@@ -66,7 +66,7 @@ while [ "$(date --date="@${end_epoch_time}" +%D)" = "$(date +%D)" ]; do
     printf -v safe_obj_name "%q" $(echo "${OBJ_NAME}" | sed "s/ /-/g")
     log "Scheduling capture for: ${safe_obj_name} ${file_date_ext} ${max_elev}" "INFO"
     echo "${NOAA_HOME}/scripts/${RECEIVE_SCRIPT} \"${OBJ_NAME}\" ${safe_obj_name}-${file_date_ext} ${TLE_FILE} \
-${start_epoch_time} ${timer} ${max_elev} ${direction} ${pass_side}" | at "$(date --date="TZ=\"UTC\" ${start_datetime}" +"%H:%M %D")"
+${start_epoch_time} ${timer} ${max_elev} ${direction} ${pass_side}" | at "$(date --date="TZ=\"UTC\" ${start_datetime}" +"%H:%M:%S %D")"
 
     # update database with scheduled pass
     $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO predict_passes (sat_name,pass_start,pass_end,max_elev,is_active,pass_start_azimuth,azimuth_at_max,direction) VALUES (\"${OBJ_NAME}\",$start_epoch_time,$end_epoch_time,$max_elev,1,$starting_azimuth,$azimuth_at_max,'$direction');"
