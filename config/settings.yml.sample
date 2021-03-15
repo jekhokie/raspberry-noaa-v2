@@ -82,6 +82,8 @@ delete_audio: false
 #        composite-based use cases
 #   produce_polar_az_el_graph - whether to produce a polar graph that shows the pass
 #        azimuth and elevation over the course of the pass, truncated to satellite min elevation
+#   produce_polar_direction_graph - whether to produce a polar graph that shows the pass
+#        direction over the course of the pass, including AOS and LOS
 #   ground_station_location - free-form text for indicating ground station location in image
 #        annotation (leave blank if you wish to exclude the ground station annotation)
 #   show_sun_elevation - whether to show sun elevation in annotation
@@ -96,6 +98,7 @@ noaa_crop_telemetry: false
 image_annotation_location: 'NorthWest'
 produce_noaa_pristine_image: false
 produce_polar_az_el_graph: false
+produce_polar_direction_graph: true
 ground_station_location: ''
 show_sun_elevation: true
 show_pass_direction: true
