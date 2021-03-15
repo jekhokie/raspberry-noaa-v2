@@ -94,6 +94,15 @@ if [[ "${PRODUCE_NOAA_PRISTINE}" == "true" ]]; then
   ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_THUMB_BASE}-pristine.jpg"
 fi
 
+histogram=0
+if [[ "${PRODUCE_NOAA_PRISTINE}" == "true"]&&[ "${PRODUCE_NOAA_HISTOGRAM}" == "true" ]]; then
+  log "Producing histogram image" "INFO"
+  histogram=1
+  ${IMAGE_PROC_DIR}/noaa_histogram.sh "${IMAGE_FILE_BASE}-pristine.png" "${SAT_NAME}" spectro_text
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram.jpg" "${IMAGE_THUMB_BASE}-histogram.jpg"
+fi
+
+
 polar_az_el=0
 if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
   log "Producing polar graph of azimuth and elevation for pass" "INFO"
@@ -271,10 +280,10 @@ rm "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
 
 # store enhancements if there was at least 1 good image created
 if [ $has_one_image -eq 1 ]; then
-  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine, has_polar_az_el, has_histogram, gain) \
+  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine, has_polar_az_el, gain) \
                                        VALUES ( \
                                          (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
-                                         $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $polar_az_el, $histogram, $GAIN \
+                                         $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $polar_az_el, $GAIN \
                                        );"
 
   pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
@@ -300,3 +309,4 @@ TIMER_END=$(date '+%s')
 DIFF=$(($TIMER_END - $TIMER_START))
 PROC_TIME=$(date -ud "@$DIFF" +'%H:%M.%S')
 log "Total processing time: ${PROC_TIME}" "INFO"
+
