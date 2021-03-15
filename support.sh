@@ -12,17 +12,44 @@ ARCH=$(uname -a)
 CPUS=$(lscpu | grep "CPU(s):" | awk '{print $2}')
 GIT_CHANGES=$(git diff --name-only)
 SDR_INFO=$(rtl_eeprom 2>&1)
-RPI_MODEL=$(cat /proc/device-tree/model)
+RPI_MODEL=$(cat /proc/device-tree/model | tr -d '\0')
 DISK_LAYOUT=$(lsblk)
 
 echo "============================================="
 echo "Details about environment"
 echo "============================================="
-echo "Current date/time:  ${START_TIME}"
-echo "Repo git hash:      ${LATEST_GIT_HASH}"
-echo "Raspberry Pi Model: ${RPI_MODEL}"
-echo "Architecture:       ${ARCH}"
-echo "Num CPUs:           ${CPUS}"
+echo "Current local date/time: $(date -d @$START_TIME)"
+echo "Current date/time (ms):  ${START_TIME}"
+echo "Repo git hash:           ${LATEST_GIT_HASH}"
+echo "Raspberry Pi Model:      ${RPI_MODEL}"
+echo "Architecture:            ${ARCH}"
+echo "Num CPUs:                ${CPUS}"
+
+echo "---------------------------------------------"
+echo "'at' Scheduled Jobs (Captures):"
+
+# get the at jobs
+atq_jobs=()
+while IFS= read -r res; do
+  atq_jobs+=("${res}")
+done < <(atq)
+
+# parse and save the job information
+AT_COMMANDS=()
+for job in "${atq_jobs[@]}"; do
+  job_id=$(echo "${job}" | awk '{print $1}')
+  cmd=$(at -c $job_id | grep -e "receive_meteor.sh" -e "receive_noaa.sh")
+  AT_COMMANDS+=("[${job}] -> ${cmd}")
+done
+
+# output the job details (if any available)
+if [ "${#AT_COMMANDS[@]}" == "0" ]; then
+  echo "  (None)"
+else
+  for cmd in "${AT_COMMANDS[@]}"; do
+    echo "  * ${cmd}"
+  done
+fi
 
 echo "---------------------------------------------"
 echo "USB Device Map:"
