@@ -56,7 +56,9 @@ class Capture extends \Lib\Model {
                                              img_count,
                                              has_spectrogram,
                                              has_polar_az_el,
-                                             has_pristine
+                                             has_polar_direction,
+                                             has_pristine,
+                                             has_histogram
                                       FROM decoded_passes
                                       WHERE id = ?;');
     $query->bindValue(1, $id);
@@ -94,9 +96,16 @@ class Capture extends \Lib\Model {
     if ($pass['has_polar_az_el'] == '1') {
       array_push($enhancements, '-polar-azel.jpg');
     }
+    # capture polar direction graph if one exists
+    if ($pass['has_polar_direction'] == '1') {
+      array_push($enhancements, '-polar-direction.png');
+    }
     # capture pristine if one exists
     if ($pass['has_pristine'] == '1') {
       array_push($enhancements, '-pristine.jpg');
+    }
+    if ($pass['has_histogram'] == '1') {
+      array_push($enhancements, '-histogram.jpg');
     }
 
     $this->enhancements = $enhancements;

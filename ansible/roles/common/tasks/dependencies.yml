@@ -8,6 +8,7 @@
       - at
       - bc
       - cmake
+      - gmic
       - gnuradio
       - gr-osmosdr
       - imagemagick
