@@ -168,8 +168,10 @@ two-dimensional diagonal. The classification is used to tint the histogram
 equalised channel A image.
 
 histeq Histogram equalisation is performed.
+
 contrast Contrast enhancement is is performed as per -H setting. Using this enhancement
 with -H set to histeq will produce the same results as using the histeq enhancement.
+
 invert Creates a grayscale negative, setting black to white and white to black.
 bw Creates a black and white image, setting darker pixels to black and lighter pixels
 to white.
