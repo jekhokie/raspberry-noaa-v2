@@ -82,7 +82,7 @@ if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
   log "Producing spectrogram" "INFO"
   spectrogram=1
   spectro_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
-  ${IMAGE_PROC_DIR}/spectrogram.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" spectro_text
+  ${IMAGE_PROC_DIR}/spectrogram.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" "${spectro_text}"
   ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png"
 fi
 
@@ -95,10 +95,11 @@ if [[ "${PRODUCE_NOAA_PRISTINE}" == "true" ]]; then
 fi
 
 histogram=0
-if [[ "${PRODUCE_NOAA_PRISTINE}" == "true"]&&[ "${PRODUCE_NOAA_HISTOGRAM}" == "true" ]]; then
-  log "Producing histogram image" "INFO"
+if [ "${PRODUCE_NOAA_PRISTINE}" == "true"] && [ "${PRODUCE_NOAA_PRISTINE_HISTOGRAM}" == "true" ]; then
+  log "Producing histogram of NOAA pristine image" "INFO"
   histogram=1
-  ${IMAGE_PROC_DIR}/noaa_histogram.sh "${IMAGE_FILE_BASE}-pristine.png" "${SAT_NAME}" spectro_text
+  histogram_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
+  ${IMAGE_PROC_DIR}/histogram.sh "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_FILE_BASE}-histogram.jpg" "${SAT_NAME}" "${histogram_text}"
   ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram.jpg" "${IMAGE_THUMB_BASE}-histogram.jpg"
 fi
 
@@ -300,10 +301,10 @@ rm "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
 
 # store enhancements if there was at least 1 good image created
 if [ $has_one_image -eq 1 ]; then
-  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine, has_polar_az_el, has_polar_direction, gain) \
+  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine, has_polar_az_el, has_polar_direction, has_histogram, gain) \
                                        VALUES ( \
                                          (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
-                                         $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $polar_az_el, $polar_direction, $GAIN \
+                                         $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $polar_az_el, $polar_direction, $histogram, $GAIN \
                                        );"
 
   pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
