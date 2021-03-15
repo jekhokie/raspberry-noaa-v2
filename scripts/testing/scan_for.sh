@@ -22,7 +22,7 @@ if ! [[ "$duration" =~ ^[0-9]+[s,m,h]*$ ]] ; then
 fi
 
 startdate=$(date)
-secs=$($scriptppath/t2sec.sh $duration)
+secs=$($scriptpath/t2sec.sh $duration)
 echo -n "Starting at "
 echo $startdate
 echo -n "Finishing at "
