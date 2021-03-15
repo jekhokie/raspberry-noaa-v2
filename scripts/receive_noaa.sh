@@ -82,16 +82,25 @@ if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
   log "Producing spectrogram" "INFO"
   spectrogram=1
   spectro_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
-  ${IMAGE_PROC_DIR}/spectrogram.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" spectro_text
-  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png"
+  ${IMAGE_PROC_DIR}/spectrogram.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" "${spectro_text}" >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png" >> $NOAA_LOG 2>&1
 fi
 
 pristine=0
+histogram=0
 if [[ "${PRODUCE_NOAA_PRISTINE}" == "true" ]]; then
   log "Producing pristine image" "INFO"
   pristine=1
-  ${IMAGE_PROC_DIR}/noaa_pristine.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.jpg"
-  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_THUMB_BASE}-pristine.jpg"
+  ${IMAGE_PROC_DIR}/noaa_pristine.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_THUMB_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
+
+  if [ "${PRODUCE_NOAA_PRISTINE_HISTOGRAM}" == "true" ]; then
+    log "Producing histogram of NOAA pristine image" "INFO"
+    histogram=1
+    histogram_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
+    ${IMAGE_PROC_DIR}/histogram.sh "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_FILE_BASE}-histogram.jpg" "${SAT_NAME}" "${histogram_text}" >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram.jpg" "${IMAGE_THUMB_BASE}-histogram.jpg" >> $NOAA_LOG 2>&1
+  fi
 fi
 
 polar_az_el=0
@@ -108,8 +117,8 @@ if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
                                   $SAT_MIN_ELEV \
                                   $PASS_DIRECTION \
                                   "${IMAGE_FILE_BASE}-polar-azel.jpg" \
-                                  "azel"
-  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-azel.jpg" "${IMAGE_THUMB_BASE}-polar-azel.jpg"
+                                  "azel" >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-azel.jpg" "${IMAGE_THUMB_BASE}-polar-azel.jpg" >> $NOAA_LOG 2>&1
 fi
 
 polar_direction=0
@@ -126,8 +135,8 @@ if [[ "${PRODUCE_POLAR_DIRECTION}" == "true" ]]; then
                                   $SAT_MIN_ELEV \
                                   $PASS_DIRECTION \
                                   "${IMAGE_FILE_BASE}-polar-direction.png" \
-                                  "direction"
-  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png"
+                                  "direction" >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png" >> $NOAA_LOG 2>&1
 fi
 
 log "Bulding pass map" "INFO"
@@ -291,10 +300,10 @@ rm "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
 
 # store enhancements if there was at least 1 good image created
 if [ $has_one_image -eq 1 ]; then
-  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine, has_polar_az_el, has_polar_direction, gain) \
+  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine, has_polar_az_el, has_polar_direction, has_histogram, gain) \
                                        VALUES ( \
                                          (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
-                                         $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $polar_az_el, $polar_direction, $GAIN \
+                                         $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $polar_az_el, $polar_direction, $histogram, $GAIN \
                                        );"
 
   pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
@@ -320,3 +329,4 @@ TIMER_END=$(date '+%s')
 DIFF=$(($TIMER_END - $TIMER_START))
 PROC_TIME=$(date -ud "@$DIFF" +'%H:%M.%S')
 log "Total processing time: ${PROC_TIME}" "INFO"
+

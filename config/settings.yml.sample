@@ -80,6 +80,8 @@ delete_audio: false
 #        NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
 #   produce_noaa_pristine_image - whether to produce a pristine image (unmodified) for larger
 #        composite-based use cases
+#   produce_noaa_pristine_histogram - whether to produce a histogram of the NOAA pristine image
+#        NOTE: produce_noaa_pristine_image MUST BE ENABLED for the histogram to be produced
 #   produce_polar_az_el_graph - whether to produce a polar graph that shows the pass
 #        azimuth and elevation over the course of the pass, truncated to satellite min elevation
 #   produce_polar_direction_graph - whether to produce a polar graph that shows the pass
@@ -97,6 +99,7 @@ produce_spectrogram: true
 noaa_crop_telemetry: false
 image_annotation_location: 'NorthWest'
 produce_noaa_pristine_image: false
+produce_noaa_pristine_histogram: false
 produce_polar_az_el_graph: false
 produce_polar_direction_graph: true
 ground_station_location: ''
