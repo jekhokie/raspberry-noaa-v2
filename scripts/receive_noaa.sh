@@ -82,8 +82,8 @@ if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
   log "Producing spectrogram" "INFO"
   spectrogram=1
   spectro_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
-  ${IMAGE_PROC_DIR}/spectrogram.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" "${spectro_text}"
-  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png"
+  ${IMAGE_PROC_DIR}/spectrogram.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" "${spectro_text}" >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png" >> $NOAA_LOG 2>&1
 fi
 
 pristine=0
@@ -91,15 +91,15 @@ histogram=0
 if [[ "${PRODUCE_NOAA_PRISTINE}" == "true" ]]; then
   log "Producing pristine image" "INFO"
   pristine=1
-  ${IMAGE_PROC_DIR}/noaa_pristine.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.jpg"
-  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_THUMB_BASE}-pristine.jpg"
+  ${IMAGE_PROC_DIR}/noaa_pristine.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_THUMB_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
 
   if [ "${PRODUCE_NOAA_PRISTINE_HISTOGRAM}" == "true" ]; then
     log "Producing histogram of NOAA pristine image" "INFO"
     histogram=1
     histogram_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
-    ${IMAGE_PROC_DIR}/histogram.sh "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_FILE_BASE}-histogram.jpg" "${SAT_NAME}" "${histogram_text}"
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram.jpg" "${IMAGE_THUMB_BASE}-histogram.jpg"
+    ${IMAGE_PROC_DIR}/histogram.sh "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_FILE_BASE}-histogram.jpg" "${SAT_NAME}" "${histogram_text}" >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram.jpg" "${IMAGE_THUMB_BASE}-histogram.jpg" >> $NOAA_LOG 2>&1
   fi
 fi
 
@@ -117,8 +117,8 @@ if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
                                   $SAT_MIN_ELEV \
                                   $PASS_DIRECTION \
                                   "${IMAGE_FILE_BASE}-polar-azel.jpg" \
-                                  "azel"
-  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-azel.jpg" "${IMAGE_THUMB_BASE}-polar-azel.jpg"
+                                  "azel" >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-azel.jpg" "${IMAGE_THUMB_BASE}-polar-azel.jpg" >> $NOAA_LOG 2>&1
 fi
 
 polar_direction=0
@@ -135,8 +135,8 @@ if [[ "${PRODUCE_POLAR_DIRECTION}" == "true" ]]; then
                                   $SAT_MIN_ELEV \
                                   $PASS_DIRECTION \
                                   "${IMAGE_FILE_BASE}-polar-direction.png" \
-                                  "direction"
-  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png"
+                                  "direction" >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png" >> $NOAA_LOG 2>&1
 fi
 
 log "Bulding pass map" "INFO"
