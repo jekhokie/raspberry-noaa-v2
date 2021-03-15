@@ -113,10 +113,11 @@
       "minimum": 1,
       "maximum": 65534
     },
-    "cert_valid_days": { "type": "number" },
-    "lock_admin_page": { "type": "boolean" },
-    "admin_username":  { "type": "string" },
-    "admin_password":  { "type": "string" },
+    "cert_valid_days":     { "type": "number" },
+    "lock_admin_page":     { "type": "boolean" },
+    "admin_username":      { "type": "string" },
+    "admin_password":      { "type": "string" },
+    "web_datetime_format": { "type": "string" },
     "log_level": {
       "type": "string",
       "enum": [ "DEBUG", "WARN", "INFO", "ERROR" ]
@@ -132,7 +133,8 @@
     },
     "enable_email_schedule_push": { "type": "boolean" },
     "enable_discord_push":        { "type": "boolean" },
-    "discord_webhook_url":        { "type": "string" }
+    "discord_webhook_url":        { "type": "string" },
+    "enable_twitter_push":        { "type": "boolean" }
   },
   "required": [
     "latitude",
@@ -204,6 +206,7 @@
     "lock_admin_page",
     "admin_username",
     "admin_password",
+    "web_datetime_format",
     "log_level",
     "enable_satvis",
     "delete_oldest_n",
@@ -213,6 +216,7 @@
     "email_push_address",
     "enable_email_schedule_push",
     "enable_discord_push",
-    "discord_webhook_url"
+    "discord_webhook_url",
+    "enable_twitter_push"
   ]
 }
