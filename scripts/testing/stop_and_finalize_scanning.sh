@@ -11,6 +11,7 @@
 [ $# -lt 1 ] && echo "usage: $0 inputfile" && exit -1
 
 scriptpath=$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )
+outpath="$HOME/raspberry-noaa-v2/tmp/scanner"
 
 # check if existing stop script is already running and
 # terminate that instance of it
