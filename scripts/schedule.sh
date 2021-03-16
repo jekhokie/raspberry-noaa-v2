@@ -12,9 +12,32 @@ WEATHER_TXT="${NOAA_HOME}/tmp/weather.txt"
 AMATEUR_TXT="${NOAA_HOME}/tmp/amateur.txt"
 TLE_OUTPUT="${NOAA_HOME}/tmp/orbit.tle"
 
+# wait for an IP to be assigned/DNS to be available so the TLE can be retrieved
+tle_addr="www.celestrak.com"
+max_iters_sec=60
+sleep_iter_seconds=5
+counter=0
+while [ -z "${ip_addr}" ] && [ $counter -lt $max_iters_sec ]; do
+  ping -c 1 $tle_addr >/dev/null
+  if [ $? -eq 0 ]; then
+    break
+  else
+    log "Scheduler waiting for DNS resolution for TLE files..." "INFO"
+    ((counter+=$sleep_iter_seconds))
+    sleep $sleep_iter_seconds
+  fi
+done
+
+if [ $counter -gt 60 ]; then
+  log "Scheduler failed to resolve TLE endpoint in ${counter} seconds" "ERROR"
+  exit
+else
+  log "Scheduler resolved TLE endpoint in ${counter} seconds" "INFO"
+fi
+
 # get the txt files for orbit information
-wget -qr http://www.celestrak.com/NORAD/elements/weather.txt -O "${WEATHER_TXT}" >> $NOAA_LOG 2>&1
-wget -qr http://www.celestrak.com/NORAD/elements/amateur.txt -O "${AMATEUR_TXT}" >> $NOAA_LOG 2>&1
+wget -r "http://${tle_addr}/NORAD/elements/weather.txt" -O "${WEATHER_TXT}" >> $NOAA_LOG 2>&1
+wget -r "http://${tle_addr}/NORAD/elements/amateur.txt" -O "${AMATEUR_TXT}" >> $NOAA_LOG 2>&1
 
 # create tle files for scheduling
 #   note: it's really unfortunate but a directory structure any deeper than 'tmp' in the
