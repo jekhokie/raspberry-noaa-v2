@@ -138,7 +138,7 @@
     group: pi
     mode: 0775
     
- - name: create scaner directory
+ - name: create scanner directory
   become: yes
   file:
     path: "{{ noaa_home }}/tmp/scanner"
