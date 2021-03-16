@@ -137,4 +137,13 @@
     owner: pi
     group: pi
     mode: 0775
+    
+ - name: create scaner directory
+  become: yes
+  file:
+    path: "{{ noaa_home }}/tmp/scanner"
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0775   
 ...
