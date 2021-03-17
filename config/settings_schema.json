@@ -79,6 +79,7 @@
     "image_annotation_location": {
       "type": "string"
     },
+    "extend_for_annotation":           { "type": "boolean" },
     "produce_noaa_pristine_image":     { "type": "boolean" },
     "produce_noaa_pristine_histogram": { "type": "boolean" },
     "produce_polar_az_el_graph":       { "type": "boolean" },
@@ -180,6 +181,7 @@
     "produce_spectrogram",
     "noaa_crop_telemetry",
     "image_annotation_location",
+    "extend_for_annotation",
     "produce_noaa_pristine_image",
     "produce_noaa_pristine_histogram",
     "produce_polar_az_el_graph",
