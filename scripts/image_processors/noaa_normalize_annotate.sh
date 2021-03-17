@@ -58,9 +58,52 @@ find $NOAA_HOME/config/annotation/* -type f -not -name "*.j2" -exec cp {} "${tmp
 $WKHTMLTOIMG --enable-local-file-access --format png --quality 100 --transparent "file://${rendered_file}" "${tmp_dir}/annotation.png"
 $CONVERT -format png "${tmp_dir}/annotation.png" -background none -flatten -trim +repage "${tmp_dir}/annotation.png"
 
-# generate final image with annotation
-$CONVERT -quality $QUALITY \
-         -format jpg "${INPUT_JPG}" "${tmp_dir}/annotation.png" \
-         -gravity $IMAGE_ANNOTATION_LOCATION \
-         -geometry +10+10 \
-         -composite "${OUTPUT_JPG}"
+# extend the image if the user specified and didn't use
+# one of [West|Center|East] for the annotation location
+annotation_location=$(echo $IMAGE_ANNOTATION_LOCATION | tr '[:upper:]' '[:lower:]')
+extend_annotation=0
+if [ "${EXTEND_FOR_ANNOTATION}" == "true" ]; then
+  if [[ "${annotation_location}" =~ ^(west|center|east)$ ]]; then
+    log "You specified extending the annotation, but your annotation location $annotation_location does not support it" "WARN"
+  else
+    extend_annotation=1
+  fi
+fi
+
+# generate the final image with annotation
+if [ $extend_annotation -eq 1 ]; then
+  # calculate expansion height needed to fit annotation
+  annotation_h=$($IDENTIFY -format "%h" "${tmp_dir}/annotation.png")
+  img_expand_px=$(($annotation_h + 20))
+  out_file=$(basename $OUTPUT_JPG)
+  tmp_out="${NOAA_HOME}/tmp/${out_file%%.*}-tmp.jpg"
+
+  # create pixels north or south depending on annotation location
+  gravity_var="South"
+  if [[ "${annotation_location}" =~ ^(northwest|north|northeast)$ ]]; then
+    gravity_var="North"
+  fi
+
+  $CONVERT -quality 100 \
+           -format jpg "${INPUT_JPG}" \
+           -gravity "${gravity_var}" \
+           -background black \
+           -splice "0x${img_expand_px}" "${tmp_out}"
+
+  # generate final image with annotation
+  $CONVERT -quality $QUALITY \
+           -format jpg "${tmp_out}" "${tmp_dir}/annotation.png" \
+           -gravity $IMAGE_ANNOTATION_LOCATION \
+           -geometry +0+10 \
+           -composite "${OUTPUT_JPG}"
+
+  # clean up
+  rm "${tmp_out}"
+else
+  # generate final image with annotation
+  $CONVERT -quality $QUALITY \
+           -format jpg "${INPUT_JPG}" "${tmp_dir}/annotation.png" \
+           -gravity $IMAGE_ANNOTATION_LOCATION \
+           -geometry +10+10 \
+           -composite "${OUTPUT_JPG}"
+fi
