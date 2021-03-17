@@ -95,6 +95,14 @@
     group: pi
     mode: 0755
 
+- name: create scanner directory
+  file:
+    path: "{{ noaa_home }}/tmp/scanner"
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0755
+
 - name: create images directory
   become: yes
   file:

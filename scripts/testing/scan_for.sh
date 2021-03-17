@@ -12,6 +12,7 @@
 scriptpath="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 duration=$1
 outfile=timed_scan_$(date  +"%d.%m.%y-%H.%M").csv.gz
+outpath=$HOME/raspberry-noaa-v2/tmp/scanner
 
 if ! [[ "$duration" =~ ^[0-9]+[s,m,h]*$ ]] ; then
   echo "
@@ -22,18 +23,19 @@ if ! [[ "$duration" =~ ^[0-9]+[s,m,h]*$ ]] ; then
 fi
 
 startdate=$(date)
-secs=$($scriptppath/t2sec.sh $duration)
-echo -n "Starting at "
+secs=$($scriptpath/t2sec.sh $duration)
+echo ""
+echo -n "     Starting at "
 echo $startdate
-echo -n "Finishing at "
+echo -n "     Finishing at "
 date --date "$start $secs sec"
 
 echo "
 $(tput setaf 2)
-        Scanning for $duration, expect a $outfile.png in $(pwd) afterwards.
+        Scanning for $duration, expect a $outfile.png in $outpath afterwards.
 $(tput sgr0)"
 
-$scriptpath/start_scanning.sh $outfile
+$scriptpath/start_scanning.sh $outpath/$outfile
 sleep 1
 if ! pidof rtl_power >/dev/null ; then
   echo "
@@ -43,4 +45,4 @@ if ! pidof rtl_power >/dev/null ; then
   exit -1
 fi
 
-nohup &>/dev/null bash -c "sleep $duration; $scriptpath/stop_and_finalize_scanning.sh $outfile" &
+nohup &>/dev/null bash -c "sleep $duration; $scriptpath/stop_and_finalize_scanning.sh $outpath/$outfile" &
