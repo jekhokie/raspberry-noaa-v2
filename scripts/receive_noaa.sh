@@ -64,6 +64,7 @@ fi
 AUDIO_FILE_BASE="${NOAA_AUDIO_OUTPUT}/${FILENAME_BASE}"
 IMAGE_FILE_BASE="${IMAGE_OUTPUT}/${FILENAME_BASE}"
 IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
+IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/icon/${FILENAME_BASE}"
 
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
@@ -137,6 +138,7 @@ if [[ "${PRODUCE_POLAR_DIRECTION}" == "true" ]]; then
                                   "${IMAGE_FILE_BASE}-polar-direction.png" \
                                   "direction" >> $NOAA_LOG 2>&1
   ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png" >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/thumbnail.sh 60 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_ICON_BASE}-polar-direction.png" >> $NOAA_LOG 2>&1
 fi
 
 log "Bulding pass map" "INFO"
