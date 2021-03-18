@@ -110,6 +110,14 @@
     state: directory
     owner: pi
     mode: 0775
+    
+- name: create icon directory
+  become: yes
+  file:
+    path: "{{ images_output }}/icon"
+    state: directory
+    owner: pi
+    mode: 0775
 
 - name: create audio root directory
   become: yes
