@@ -208,6 +208,7 @@ disable_wifi_power_mgmt: false
 #   enable_discord_push - whether to push images to a Discord channel
 #   discord_webhook_url - webhook url for the Discord channel
 #   enable_twitter_push - whether to push images to a Twitter feed
+#     * see docs/twitter_push.md for instructions
 enable_email_push: false
 email_push_address: test@ifttt.com
 enable_email_schedule_push: false
