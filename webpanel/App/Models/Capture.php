@@ -16,6 +16,7 @@ class Capture extends \Lib\Model {
     $query = $this->db_conn->prepare("SELECT decoded_passes.id,
                                              predict_passes.pass_start,
                                              file_path,
+                                             daylight_pass,
                                              sat_type,
                                              gain,
                                              predict_passes.sat_name,
