@@ -52,6 +52,12 @@ else
 fi
 
 echo "---------------------------------------------"
+echo "Satellite SDR Settings:"
+while IFS= read -r res; do
+  echo "  $res"
+done < <(grep -E 'noaa_(15|18|19)_|meteor_m2_' config/settings.yml)
+
+echo "---------------------------------------------"
 echo "USB Device Map:"
 while IFS= read -r res; do
   echo "  $res"
