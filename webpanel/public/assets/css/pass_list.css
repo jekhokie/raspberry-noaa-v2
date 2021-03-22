@@ -1,10 +1,8 @@
 div#satvis {
   width: 100%;
-  height: 500px;
 }
 
 div#satvis iframe {
-  border: 0;
   width: 100%;
   height: 100%;
 }
@@ -26,3 +24,17 @@ table#passes td.no-passes {
   font-weight: bold;
   font-style: italic;
 }
+
+.flex-container {
+    display: flex;
+}
+
+.flex-child {
+    flex: 1;
+    border: 2px solid green;
+}  
+
+.flex-child:first-child {
+    margin-right: 20px;
+} 
+
