@@ -90,6 +90,16 @@ if [ $extend_annotation -eq 1 ]; then
            -background black \
            -splice "0x${img_expand_px}" "${tmp_out}"
 
+  # generate image with thermal overlay (if specified)
+  # TODO: DRY this up
+  if [ "${ENHANCEMENT}" == "therm" ] && [ "${NOAA_THERMAL_TEMP_OVERLAY}" == "true" ]; then
+    $CONVERT -quality 100 \
+             -format jpg "${tmp_out}" "${NOAA_HOME}/assets/thermal_gauge.png" \
+             -gravity $NOAA_THERMAL_TEMP_OVERLAY_LOCATION \
+             -geometry +10+10 \
+             -composite "${tmp_out}"
+  fi
+
   # generate final image with annotation
   $CONVERT -quality $QUALITY \
            -format jpg "${tmp_out}" "${tmp_dir}/annotation.png" \
@@ -100,7 +110,17 @@ if [ $extend_annotation -eq 1 ]; then
   # clean up
   rm "${tmp_out}"
 else
-  # generate final image with annotation
+  # generate image with thermal overlay (if specified)
+  # TODO: DRY this up
+  if [ "${ENHANCEMENT}" == "therm" ] && [ "${NOAA_THERMAL_TEMP_OVERLAY}" == "true" ]; then
+    $CONVERT -quality 100 \
+             -format jpg "${OUTPUT_JPG}" "${NOAA_HOME}/assets/thermal_gauge.png" \
+             -gravity $NOAA_THERMAL_TEMP_OVERLAY_LOCATION \
+             -geometry +10+10 \
+             -composite "${OUTPUT_JPG}"
+  fi
+
+  # generate image with annotation
   $CONVERT -quality $QUALITY \
            -format jpg "${INPUT_JPG}" "${tmp_dir}/annotation.png" \
            -gravity $IMAGE_ANNOTATION_LOCATION \
