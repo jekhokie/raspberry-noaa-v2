@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Purpose: Creates a pristine image that can later be used in things such as composite images.
+# Purpose: Creates a raw image that has not been enhanced by wxtoimage.
 #
 # Input parameters:
 #   1. Input .wav file
@@ -19,6 +19,6 @@ INPUT_WAV=$1
 OUTPUT_IMAGE_A=$2
 OUTPUT_IMAGE_B=$3
 
-# produce the output image
-$WXTOIMG -o -a -c -e "pristine" "${INPUT_WAV}" "${OUTPUT_IMAGE_A}"
-$WXTOIMG -o -b -c -e "pristine" "${INPUT_WAV}" "${OUTPUT_IMAGE_B}"
+# produce the raw output image
+$WXTOIMG -o -a -c -r "${INPUT_WAV}" "${OUTPUT_IMAGE_A}"
+$WXTOIMG -o -b -c -r "${INPUT_WAV}" "${OUTPUT_IMAGE_B}"
