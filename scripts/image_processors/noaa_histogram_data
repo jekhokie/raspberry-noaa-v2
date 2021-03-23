@@ -4,11 +4,11 @@
 #
 # Input parameters:
 #   1. Input .wav file
-#   2. Output .a.jpg file
-#   3. Output .b.jpg file
+#   2. Output -a.jpg file
+#   3. Output -b.jpg file
 #
 # Example:
-#   ./noaa_histogram_data.sh  /path/to/input.wav /path/to/output.a.png /path/to/output.b.png 
+#   ./noaa_histogram_data.sh  /path/to/input.wav /path/to/output-a.png /path/to/output-b.png 
 
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
@@ -16,8 +16,9 @@
 
 # input params
 INPUT_WAV=$1
-OUTPUT_IMAGE=$2
+OUTPUT_IMAGE_A=$2
+OUTPUT_IMAGE_B=$3
 
 # produce the output image
-$WXTOIMG -o -a -c -e "pristine" "${INPUT_WAV}" "${OUTPUT_IMAGE}"
-$WXTOIMG -o -b -c -e "pristine" "${INPUT_WAV}" "${OUTPUT_IMAGE}"
+$WXTOIMG -o -a -c -e "pristine" "${INPUT_WAV}" "${OUTPUT_IMAGE_A}"
+$WXTOIMG -o -b -c -e "pristine" "${INPUT_WAV}" "${OUTPUT_IMAGE_B}"
