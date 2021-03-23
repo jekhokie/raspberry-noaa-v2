@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Purpose: Creates a raw image that has not been enhanced by wxtoimage.
+# Purpose: Creates raw images (2) of each channel (A/B) of a NOAA capture.
 #
 # Input parameters:
 #   1. Input .wav file
