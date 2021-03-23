@@ -87,7 +87,6 @@ if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
 fi
 
 pristine=0
-histogram=0
 if [[ "${PRODUCE_NOAA_PRISTINE}" == "true" ]]; then
   log "Producing pristine image" "INFO"
   pristine=1
@@ -95,6 +94,7 @@ if [[ "${PRODUCE_NOAA_PRISTINE}" == "true" ]]; then
   ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_THUMB_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
 fi
 
+histogram=0
 if [ "${PRODUCE_NOAA_PRISTINE_HISTOGRAM}" == "true" ]; then
   log "Generating Data for Histogram" "INFO"
   ${IMAGE_PROC_DIR}/noaa_histogram_data.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-a.png" "${IMAGE_FILE_BASE}-b.png" >> $NOAA_LOG 2>&1
@@ -106,8 +106,8 @@ if [ "${PRODUCE_NOAA_PRISTINE_HISTOGRAM}" == "true" ]; then
   ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram-a.jpg" "${IMAGE_THUMB_BASE}-histogram-a.jpg" >> $NOAA_LOG 2>&1
     
   log "Producing histogram of NOAA pristine image B" "INFO"
-  ${IMAGE_PROC_DIR}/histogram.sh "${IMAGE_FILE_BASE}-b.jpg" "${IMAGE_FILE_BASE}-histogram-b.jpg" "${SAT_NAME}" "${histogram_text}" >> $NOAA_LOG 2>&1
-  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram-b.jpg" "${IMAGE_THUMB_BASE}-histogram.jpg-b" >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/histogram.sh "${IMAGE_FILE_BASE}-b.png" "${IMAGE_FILE_BASE}-histogram-b.jpg" "${SAT_NAME}" "${histogram_text}" >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram-b.jpg" "${IMAGE_THUMB_BASE}-histogram-b.jpg" >> $NOAA_LOG 2>&1
   
   rm "${IMAGE_FILE_BASE}-a.png"
   rm "${IMAGE_FILE_BASE}-b.png"
