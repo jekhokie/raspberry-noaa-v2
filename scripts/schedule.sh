@@ -7,7 +7,7 @@
 . "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
 
-# some constants
+# TLE data files
 WEATHER_TXT="${NOAA_HOME}/tmp/weather.txt"
 AMATEUR_TXT="${NOAA_HOME}/tmp/amateur.txt"
 TLE_OUTPUT="${NOAA_HOME}/tmp/orbit.tle"
@@ -62,6 +62,9 @@ if [ "${update_tle}" == "1" ]; then
   grep "NOAA 18" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
   grep "NOAA 19" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
   grep "METEOR-M 2" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
+elif [ ! -f $WEATHER_TXT ] || [ ! -f $AMATEUR_TXT ] || [ ! -f $TLE_OUTPUT ]; then
+  log "TLE update not specified '-t' but no TLE files present - please re-run with '-t'" "INFO"
+  exit 1
 else
   log "Not updating local copies of TLE files from source" "INFO"
 fi

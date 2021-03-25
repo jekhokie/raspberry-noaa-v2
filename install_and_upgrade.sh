@@ -123,7 +123,13 @@ log_running "Updating web content..."
 
 # run a schedule of passes (as opposed to waiting until cron kicks in the evening)
 log_running "Scheduling first passes for imagery..."
-./scripts/schedule.sh
+if [ ! -f $WEATHER_TXT ] || [ ! -f $AMATEUR_TXT ] || [ ! -f $TLE_OUTPUT ]; then
+  log_running "Scheduling with new TLE downloaded data..."
+  ./scripts/schedule.sh -t
+else
+  log_running "Scheduling with existing TLE data (not downloading new)..."
+  ./scripts/schedule.sh
+fi
 log_running "First passes scheduled!"
 
 echo ""
