@@ -30,8 +30,7 @@ input_fileext="${input_file##*.}"
 gmic_temp_1="${input_path}/_${input_filename}~.${input_fileext}"
 gmic_temp_2="${input_path}/_${input_file}"
 
-# produce the histogram on a pristine image
-# TODO: This should be updated to strip the telemetry first and produce two histograms, one for each channel
+# produce the histogram of a b/w image
 $GMIC "${IN_FILE}" +histogram 256 display_graph[-1] 400,300,1,0,255,0 outputp
 $CONVERT "${gmic_temp_1}" "${OUT_FILE}"
 rm "${gmic_temp_1}"
