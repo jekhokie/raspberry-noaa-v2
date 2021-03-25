@@ -70,13 +70,30 @@ if [ "${EXTEND_FOR_ANNOTATION}" == "true" ]; then
   fi
 fi
 
-# generate the final image with annotation
+# determine offset of annotation based on "expansion", and
+# set up pipeline for input images
+geometry="+10+10"
+next_in="${INPUT_JPG}"
+
+# generate image with thermal overlay (if specified)
+if [ "${ENHANCEMENT}" == "therm" ] && [ "${NOAA_THERMAL_TEMP_OVERLAY}" == "true" ]; then
+  log "Overlaying thermal temperature gauge" "INFO"
+  $CONVERT -quality 100 \
+           -format jpg "${next_in}" "${NOAA_HOME}/assets/thermal_gauge.png" \
+           -gravity $NOAA_THERMAL_TEMP_OVERLAY_LOCATION \
+           -geometry +10+10 \
+           -composite "${OUTPUT_JPG}"
+  next_in=$OUTPUT_JPG
+fi
+
+# extend the image if desired
 if [ $extend_annotation -eq 1 ]; then
+  log "Extending image for annotation" "INFO"
+  geometry="+0+10"
+
   # calculate expansion height needed to fit annotation
   annotation_h=$($IDENTIFY -format "%h" "${tmp_dir}/annotation.png")
   img_expand_px=$(($annotation_h + 20))
-  out_file=$(basename $OUTPUT_JPG)
-  tmp_out="${NOAA_HOME}/tmp/${out_file%%.*}-tmp.jpg"
 
   # create pixels north or south depending on annotation location
   gravity_var="South"
@@ -85,25 +102,17 @@ if [ $extend_annotation -eq 1 ]; then
   fi
 
   $CONVERT -quality 100 \
-           -format jpg "${INPUT_JPG}" \
+           -format jpg "${next_in}" \
            -gravity "${gravity_var}" \
            -background black \
-           -splice "0x${img_expand_px}" "${tmp_out}"
+           -splice "0x${img_expand_px}" "${OUTPUT_JPG}"
 
-  # generate final image with annotation
-  $CONVERT -quality $QUALITY \
-           -format jpg "${tmp_out}" "${tmp_dir}/annotation.png" \
-           -gravity $IMAGE_ANNOTATION_LOCATION \
-           -geometry +0+10 \
-           -composite "${OUTPUT_JPG}"
-
-  # clean up
-  rm "${tmp_out}"
-else
-  # generate final image with annotation
-  $CONVERT -quality $QUALITY \
-           -format jpg "${INPUT_JPG}" "${tmp_dir}/annotation.png" \
-           -gravity $IMAGE_ANNOTATION_LOCATION \
-           -geometry +10+10 \
-           -composite "${OUTPUT_JPG}"
+  next_in=$OUTPUT_JPG
 fi
+
+# generate final image with annotation
+$CONVERT -quality $QUALITY \
+         -format jpg "${next_in}" "${tmp_dir}/annotation.png" \
+         -gravity $IMAGE_ANNOTATION_LOCATION \
+         -geometry $geometry \
+         -composite "${OUTPUT_JPG}"
