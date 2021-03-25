@@ -78,6 +78,9 @@ delete_audio: false
 #   noaa_crop_telemetry - whether to crop the left/right telemetry in image captures
 #   image_annotation_location - where to place the annotation in images - valid options are:
 #        NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
+#   extend_for_annotation - whether to create a black extension on the north/south location of
+#        the image to place the annotation into (vs. overlaying on the captured data)
+#        (note: this will ONLY work if the image_annotation_location is NOT one of [West|Center|East])
 #   produce_noaa_pristine_image - whether to produce a pristine image (unmodified) for larger
 #        composite-based use cases
 #   produce_noaa_pristine_histogram - whether to produce a histogram of the NOAA pristine image
@@ -98,6 +101,7 @@ flip_meteor_image: true
 produce_spectrogram: true
 noaa_crop_telemetry: false
 image_annotation_location: 'NorthWest'
+extend_for_annotation: false
 produce_noaa_pristine_image: false
 produce_noaa_pristine_histogram: false
 produce_polar_az_el_graph: false
@@ -140,6 +144,13 @@ noaa_map_country_border_enable: true
 noaa_map_country_border_color: "0xffff00"
 noaa_map_state_border_enable: true
 noaa_map_state_border_color: "0xffff00"
+
+# settings for thermal map output for NOAA captures
+#   noaa_thermal_temp_overlay - whether to overlay a thermal map for color codes to temperature
+#   noaa_thermal_temp_overlay_location - where to place the thermal map in images - valid options are:
+#        NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
+noaa_thermal_temp_overlay: false
+noaa_thermal_temp_overlay_location: 'NorthEast'
 
 # locale settings for timezone and language
 #   timezone: see https://www.php.net/manual/en/timezones.php
@@ -208,6 +219,7 @@ disable_wifi_power_mgmt: false
 #   enable_discord_push - whether to push images to a Discord channel
 #   discord_webhook_url - webhook url for the Discord channel
 #   enable_twitter_push - whether to push images to a Twitter feed
+#     * see docs/twitter_push.md for instructions
 enable_email_push: false
 email_push_address: test@ifttt.com
 enable_email_schedule_push: false

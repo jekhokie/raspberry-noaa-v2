@@ -79,6 +79,7 @@
     "image_annotation_location": {
       "type": "string"
     },
+    "extend_for_annotation":           { "type": "boolean" },
     "produce_noaa_pristine_image":     { "type": "boolean" },
     "produce_noaa_pristine_histogram": { "type": "boolean" },
     "produce_polar_az_el_graph":       { "type": "boolean" },
@@ -96,6 +97,10 @@
     "noaa_map_country_border_color":   { "type": "string" },
     "noaa_map_state_border_enable":    { "type": "boolean" },
     "noaa_map_state_border_color":     { "type": "string" },
+    "noaa_thermal_temp_overlay":       { "type": "boolean" },
+    "noaa_thermal_temp_overlay_location": {
+      "type": "string"
+    },
     "timezone":                        { "type": "string" },
     "lang_setting": {
       "type": "string",
@@ -180,6 +185,7 @@
     "produce_spectrogram",
     "noaa_crop_telemetry",
     "image_annotation_location",
+    "extend_for_annotation",
     "produce_noaa_pristine_image",
     "produce_noaa_pristine_histogram",
     "produce_polar_az_el_graph",
@@ -197,6 +203,8 @@
     "noaa_map_country_border_color",
     "noaa_map_state_border_enable",
     "noaa_map_state_border_color",
+    "noaa_thermal_temp_overlay",
+    "noaa_thermal_temp_overlay_location",
     "timezone",
     "lang_setting",
     "web_server_name",
