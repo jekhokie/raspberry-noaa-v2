@@ -75,6 +75,12 @@ for i in $(atq | awk '{print $1}'); do
   atrm "$i"
 done
 
+# remove database passes for remainder of day so they can
+# be re-populated with new records
+cur_ms=$(date +"%s")
+log "Clearing existing passes specified in the database for remainder of the day..." "INFO"
+$SQLITE3 $DB_FILE "DELETE FROM predict_passes WHERE pass_start > $cur_ms;"
+
 # create schedules to call respective receive scripts
 log "Scheduling new capture jobs..." "INFO"
 if [ "$NOAA_15_SCHEDULE" == "true" ]; then
