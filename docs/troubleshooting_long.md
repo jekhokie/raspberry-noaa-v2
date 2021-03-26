@@ -2,7 +2,7 @@ It is assumed you have read the main troubleshooting document before getting her
 
 ```./support.sh```
 
-Has needed information for the stato of your install.
+Has needed information for the state of your install.
 
 There can be a few causes for long passes with no data. Normally its a break in the workflow between the antenna and wxtoimg. Hardware causes are lose connections or a bias tee that is not on. 
 
