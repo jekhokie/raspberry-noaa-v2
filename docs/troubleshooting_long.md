@@ -4,7 +4,7 @@ It is assumed you have read the main troubleshooting document before getting her
 
 Has needed information for the state of your install.
 
-There can be a few causes for long passes with no data. Normally its a break in the workflow between the antenna and wxtoimg. Hardware causes are lose connections or a bias tee that is not on. 
+There can be a few causes for long passes with no data. Normally its a break in the workflow between the antenna and wxtoimg. Hardware causes are loose connections or a bias tee that is not on. 
 
 ```rtl_fm -f 97.3e6 -M wbfm -s 200000 -r 48000 - | aplay -r 48000 -f S16_LE```
 
@@ -13,7 +13,7 @@ This will play FM 97.3 through the pi headphones to test hardware. You can chang
 `cd /srv/audio/noaa`
 `ls -s`
 
-will show you if the .wav files recorded have any content. A normal noaa pass is about 20K blocks. No images means there is a break before the line that says Satellite: NOAA, so read the top section carfully.
+will show you if the .wav files recorded have any content. A normal noaa pass is about 20K blocks. 
 
 `rtl_test`
 
@@ -42,7 +42,7 @@ Type ctrl C to exit.
 ```nano /var/log/raspberry-noaa-v2/output.log```
 
 will let you see the log of what was happening durring the pass.
-Here is a sample output. (If you get to the section where starts signal processing without errors then then you are normally fine.
+Here is a sample output. No images means there is a break before the line that says Satellite: NOAA, so read the top section carfully. (If you get to the section where starts signal processing without errors then then you are normally fine.
 
 ```26-03-2021 07:56 /home/pi/raspberry-noaa-v2/scripts/receive_noaa.sh INFO : Starting rtl_fm record
 INFO : Recording at 137.1000 MHz...
