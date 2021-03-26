@@ -4,9 +4,31 @@ There can be a few causes for long passes with no data. Normally its a break in 
 ```rtl_fm -f 97.3e6 -M wbfm -s 200000 -r 48000 - | aplay -r 48000 -f S16_LE```
 This will play FM 97.3 through the pi headphones to test hardware. You can change the part that is ```-f 97.3e6``` to a station that is strong near you.
 
-```cd /srv/audio/noaa
-ls -s```
+`cd /srv/audio/noaa`
+`ls -s`
+
 will show you if the .wav files recorded have any content. A normal noaa pass is about 20K blocks. No images means there is a break before the line tat says Satellite: NOAA, so read the top section carfully.
+
+`rtl_test`
+will driver connection with your rtl. The output should look like this:
+
+```
+Found 1 device(s):
+  0:  Realtek, RTL2838UHIDIR, SN: 00000001
+ 
+Using device 0: Generic RTL2832U OEM
+Found Rafael Micro R820T tuner
+Supported gain values (29): 0.0 0.9 1.4 2.7 3.7 7.7 8.7 12.5 14.4 15.7 16.6 19.7 20.7 22.9 25.4 28.0 29.7 32.8 33.8 36.4 37.2 38.6 40.2 42.1 43.4 43.9 44.5 48.0 49.6
+[R82XX] PLL not locked!
+Sampling at 2048000 S/s.
+
+Info: This tool will continuously read from the device, and report if
+samples get lost. If you observe no further output, everything is fine.
+
+Reading samples in async mode...
+Allocating 15 zero-copy buffers
+lost at least 148 bytes
+```
 
 ```nano /var/log/raspberry-noaa-v2/output.log```
 will let you see the log of what was happening durring the pass.
