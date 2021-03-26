@@ -3,6 +3,7 @@ It is assumed you have read the main troubleshooting document before getting her
 There can be a few causes for long passes with no data. Normally its a break in the workflow between the antenna and wxtoimg. Hardware causes are lose connections or a bias tee that is not on. 
 
 ```rtl_fm -f 97.3e6 -M wbfm -s 200000 -r 48000 - | aplay -r 48000 -f S16_LE```
+
 This will play FM 97.3 through the pi headphones to test hardware. You can change the part that is ```-f 97.3e6``` to a station that is strong near you.
 
 `cd /srv/audio/noaa`
@@ -11,6 +12,7 @@ This will play FM 97.3 through the pi headphones to test hardware. You can chang
 will show you if the .wav files recorded have any content. A normal noaa pass is about 20K blocks. No images means there is a break before the line tat says Satellite: NOAA, so read the top section carfully.
 
 `rtl_test`
+
 will driver connection with your rtl. The output should look like this:
 
 ```
@@ -32,6 +34,7 @@ lost at least 148 bytes
 ```
 
 ```nano /var/log/raspberry-noaa-v2/output.log```
+
 will let you see the log of what was happening durring the pass.
 Here is a sample output. (If you get to the section where starts signal processing without errors then then you are normally fine.
 
