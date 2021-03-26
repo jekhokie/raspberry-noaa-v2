@@ -13,7 +13,7 @@ This will play FM 97.3 through the pi headphones to test hardware. You can chang
 `cd /srv/audio/noaa`
 `ls -s`
 
-will show you if the .wav files recorded have any content. A normal noaa pass is about 20K blocks. No images means there is a break before the line tat says Satellite: NOAA, so read the top section carfully.
+will show you if the .wav files recorded have any content. A normal noaa pass is about 20K blocks. No images means there is a break before the line that says Satellite: NOAA, so read the top section carfully.
 
 `rtl_test`
 
