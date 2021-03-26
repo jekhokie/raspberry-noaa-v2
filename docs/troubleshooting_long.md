@@ -32,7 +32,7 @@ lost at least 148 bytes
 
 ```nano /var/log/raspberry-noaa-v2/output.log```
 will let you see the log of what was happening durring the pass.
-Here is a sample output.
+Here is a sample output. (If you get to the section where starts signal processing without errors then then you are normally fine.
 
 ```26-03-2021 07:56 /home/pi/raspberry-noaa-v2/scripts/receive_noaa.sh INFO : Starting rtl_fm record
 INFO : Recording at 137.1000 MHz...
