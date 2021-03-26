@@ -33,6 +33,8 @@ Allocating 15 zero-copy buffers
 lost at least 148 bytes
 ```
 
+Type ctrl C to exit.
+
 ```nano /var/log/raspberry-noaa-v2/output.log```
 
 will let you see the log of what was happening durring the pass.
