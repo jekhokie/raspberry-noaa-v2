@@ -299,7 +299,7 @@ if [ "${ENABLE_TWITTER_PUSH}" == "true" ]; then
   ${PUSH_PROC_DIR}/push_twitter.sh "${twitter_push_annotation}" $push_file_list
 fi
 
-rm "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
+#rm "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
 
 # store enhancements if there was at least 1 good image created
 if [ $has_one_image -eq 1 ]; then
