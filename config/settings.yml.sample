@@ -180,8 +180,8 @@ enable_tls: false
 web_tls_port: 443
 cert_valid_days: 365
 lock_admin_page: true
-admin_username: 'd2'
-admin_password: 'wrxadmin'
+admin_username: ''
+admin_password: ''
 web_datetime_format: 'm/d/Y H:i:s'
 
 # log level for output from scripts
@@ -218,6 +218,6 @@ enable_email_push: true
 email_push_address: trigger@applet.ifttt.com
 enable_email_schedule_push: true
 enable_discord_push: true
-discord_webhook_url: 'https://discord.com/api/webhooks/811418973593403393/Rwz1jn7IqaepgzfbhfhVpwZSvOvjutc4mq2ERtcHUUyWtpPnjx3w6doU1TOPIa4Nf2RX'
+discord_webhook_url: 'https://discord.com/api/webhooks/....'
 enable_twitter_push: false
 ...
