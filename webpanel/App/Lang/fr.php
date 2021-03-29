@@ -2,7 +2,7 @@
 return array(
   "admin" => "Admin",
   "admin_delete_confirm_header" => "Confirmez Supression",
-  "admin_delete_warning" => "Cliquez syr le 'X' à côté des captures que vous souhaitez supprimer pour que la capture soit supprimée de la base de données et que toutes les images associcées soient supprimées ** ATTENTION ** : Cette action est irréversible, assurez-vous que c'est ce que vous voulez faire !",
+  "admin_capture_delete_warning" => "Cliquez syr le 'X' à côté des captures que vous souhaitez supprimer pour que la capture soit supprimée de la base de données et que toutes les images associcées soient supprimées ** ATTENTION ** : Cette action est irréversible, assurez-vous que c'est ce que vous voulez faire !",
   "cancel" => "Annulez",
   "captures" => "Capture",
   "confirm" => "Confirmez",

@@ -2,7 +2,7 @@
 return array(
   "admin" => "Beheerder",
   "admin_delete_confirm_header" => "Bevestig verwijderen",
-  "admin_delete_warning" => "Klik op 'X' naast de opname/passage die u wilt verwijderen. Alle gerelateerde afbeeldingen worden verwijderd. **WAARSCHUWING**: Dit kan niet worden hersteld dus ben er zeker van dat dit is wat u wilt!",
+  "admin_capture_delete_warning" => "Klik op 'X' naast de opname/passage die u wilt verwijderen. Alle gerelateerde afbeeldingen worden verwijderd. **WAARSCHUWING**: Dit kan niet worden hersteld dus ben er zeker van dat dit is wat u wilt!",
   "cancel" => "Annuleer",
   "captures" => "Opnames",
   "confirm" => "Bevestig",

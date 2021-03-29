@@ -2,7 +2,7 @@
 return array(
   "admin" => "Admin",
   "admin_delete_confirm_header" => "Potvrdite brisanje",
-  "admin_delete_warning" => "Kliknite na „Ks“ pored snimaka koje želite da izbrišete da biste uklonili i dodavanje / snimanje iz baze podataka i sve povezane slike. ** UPOZORENJE **: Ovo je nepovratno, zato se uverite da je to ono što želite!",
+  "admin_capture_delete_warning" => "Kliknite na „Ks“ pored snimaka koje želite da izbrišete da biste uklonili i dodavanje / snimanje iz baze podataka i sve povezane slike. ** UPOZORENJE **: Ovo je nepovratno, zato se uverite da je to ono što želite!",
   "cancel" => "Poništiti, otkazati",
   "captures" => "Hvatanja",
   "confirm" => "Potvrdi",
