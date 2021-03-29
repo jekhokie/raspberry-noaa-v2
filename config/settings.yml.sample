@@ -2,11 +2,11 @@
 # base station configurations
 #   latitude: south values are negative
 #   longitude: west values are negative
-latitude: 50.816368
-longitude: -0.065110
+latitude: 40.712776
+longitude: -74.005974
 
 # time zone offset from UTC (for example, '-5' for US Eastern)
-timezone_offset: 0
+timezone_offset: -5
 
 # ntp configurations
 #   ntp_server - if you have a local server (e.g. stratum1), you can use this setting
@@ -20,14 +20,14 @@ ntp_server: ''
 #   test_freq_offset - receiver frequency offset (PPM)
 test_gain: 7.7
 test_sdr_device_id: 0
-test_enable_bias_tee: false
-test_freq_offset: -0
+test_enable_bias_tee: true
+test_freq_offset: -6
 
 # receiver settings
 #   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'gnuradio')
 #     **WARNING**: 'gnuradio' does not work with certain SDR devices (e.g. it will not currently
 #                  work with a RTL-SDR v3 dongle, as no image will be decoded from the bitstream)
-meteor_receiver: 'gnuradio'
+meteor_receiver: 'rtl_fm'
 
 # whether to schedule specific orbiting objects for capture
 #   <satellite_name>_schedule - whether to schedule captures for the satellite
@@ -39,38 +39,38 @@ meteor_receiver: 'gnuradio'
 #   <satellite_name>_sat_min_elevation - threshold for sat elevation for specific satellite captures
 noaa_15_schedule: true
 noaa_15_sdr_device_id: 0
-noaa_15_freq_offset: -0
-noaa_15_enable_bias_tee: false
+noaa_15_freq_offset: -6
+noaa_15_enable_bias_tee: true
 noaa_15_gain: 7.7
 noaa_15_sun_min_elevation: 6
 noaa_15_sat_min_elevation: 30
 
 noaa_18_schedule: true
 noaa_18_sdr_device_id: 0
-noaa_18_freq_offset: -0
-noaa_18_enable_bias_tee: false
+noaa_18_freq_offset: -6
+noaa_18_enable_bias_tee: true
 noaa_18_gain: 8.7
 noaa_18_sun_min_elevation: 6
 noaa_18_sat_min_elevation: 30
 
 noaa_19_schedule: true
 noaa_19_sdr_device_id: 0
-noaa_19_freq_offset: -0
-noaa_19_enable_bias_tee: false
-noaa_19_gain: 16.3
+noaa_19_freq_offset: -6
+noaa_19_enable_bias_tee: true
+noaa_19_gain: 7.7
 noaa_19_sun_min_elevation: 6
 noaa_19_sat_min_elevation: 30
 
 meteor_m2_schedule: true
 meteor_m2_sdr_device_id: 0
-meteor_m2_freq_offset: -0
-meteor_m2_enable_bias_tee: false
-meteor_m2_gain: 16.3
-meteor_m2_sun_min_elevation: 10
+meteor_m2_freq_offset: -6
+meteor_m2_enable_bias_tee: true
+meteor_m2_gain: 7.7
+meteor_m2_sun_min_elevation: 6
 meteor_m2_sat_min_elevation: 30
 
 # whether audio files should be deleted after images are created
-delete_audio: true
+delete_audio: false
 
 # processing settings
 #   flip_meteor_image - whether the meteor image should be flipped
@@ -97,22 +97,22 @@ delete_audio: true
 #        (note: default value is total list of supported image processors)
 #   noaa_nighttime_enhancements - list of enhancements to create images using during nighttime captures
 #        (note: default value is total list of supported image processors)
-flip_meteor_image: false
+flip_meteor_image: true
 produce_spectrogram: true
 noaa_crop_telemetry: false
-image_annotation_location: 'SouthWest'
-extend_for_annotation: true
-produce_noaa_pristine_image: true
-produce_noaa_pristine_histogram: true
-produce_polar_az_el_graph: true
+image_annotation_location: 'NorthWest'
+extend_for_annotation: false
+produce_noaa_pristine_image: false
+produce_noaa_pristine_histogram: false
+produce_polar_az_el_graph: false
 produce_polar_direction_graph: true
-ground_station_location: 'WRXSEUK'
+ground_station_location: ''
 show_sun_elevation: true
 show_pass_direction: true
 noaa_daytime_enhancements: 'ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT therm avi'
 noaa_nighttime_enhancements: 'ZA MCIR HVCT MCIR-precip therm avi'
 noaa_crop_toptobottom: false
-noaa_interpolate: true
+noaa_interpolate: false
 
 # noaa map configurations
 # http://usradioguy.com/wp-content/uploads/2020/05/wxtoimgcommand-line.pdf
@@ -138,7 +138,7 @@ noaa_interpolate: true
 #   noaa_map_country_border_color - color of country borders
 #   noaa_map_state_border_enable - whether to enable state borders in images (Americas only)
 #   noaa_map_state_border_color - color of state borders (Americas only)
-noaa_map_crosshair_enable: true
+noaa_map_crosshair_enable: false
 noaa_map_crosshair_color: "0xffff00"
 noaa_map_grid_degrees: 10.0
 noaa_map_grid_color: "0xff0000"
@@ -151,7 +151,7 @@ noaa_map_state_border_color: "0xffff00"
 #   timezone: see https://www.php.net/manual/en/timezones.php
 #   lang_setting: see the 'webpanel/App/Lang' folder for available
 #                 languages (2-letter filename - e.g. ar, bg, de, en, es, nl, sr)
-timezone: Europe/London
+timezone: America/New_York
 lang_setting: en
 
 # web server configuration settings
@@ -173,13 +173,13 @@ lang_setting: en
 #                    NOTE: MAKE SURE YOU SET THIS TO SOMETHING REASONABLY COMPLICATED!
 #   web_datetime_format - format to display date and time in the web interface - note that this MUST conform to
 #                         https://www.php.net/manual/en/datetime.format.php or else bad things will happen
-web_server_name: wrx
-enable_non_tls: true
-web_port: 8800
-enable_tls: false
+web_server_name: raspberry-noaa.localdomain
+enable_non_tls: false
+web_port: 80
+enable_tls: true
 web_tls_port: 443
 cert_valid_days: 365
-lock_admin_page: true
+lock_admin_page: false
 admin_username: ''
 admin_password: ''
 web_datetime_format: 'm/d/Y H:i:s'
@@ -197,7 +197,7 @@ enable_satvis: true
 #   delete_oldest_n - how many oldest captures to delete on each run
 #   delete_older_than_n - delete all images older than this many days
 delete_oldest_n: 0
-delete_older_than_n: 30
+delete_older_than_n: 0
 
 # operating system configurations
 #   disable_wifi_power_mgmt - if running wireless internet and you want to
@@ -214,10 +214,10 @@ disable_wifi_power_mgmt: false
 #   enable_discord_push - whether to push images to a Discord channel
 #   discord_webhook_url - webhook url for the Discord channel
 #   enable_twitter_push - whether to push images to a Twitter feed
-enable_email_push: true
-email_push_address: trigger@applet.ifttt.com
-enable_email_schedule_push: true
-enable_discord_push: true
-discord_webhook_url: 'https://discord.com/api/webhooks/....'
+enable_email_push: false
+email_push_address: test@ifttt.com
+enable_email_schedule_push: false
+enable_discord_push: false
+discord_webhook_url: ''
 enable_twitter_push: false
 ...
