@@ -97,4 +97,13 @@ else
   log "  - ${script} already applied" "INFO"
 fi
 
+script="09_add_at_job_id.sql"
+check=$($SQL_CMD $NOAA_HOME/db/panel.db ".schema predict_passes" | grep 'at_job_id')
+if [ -z "${check}" ]; then
+  log "  - applying ${script}" "INFO"
+  $SQL_CMD $NOAA_HOME/db/panel.db < $NOAA_HOME/db_migrations/$script
+else
+  log "  - ${script} already applied" "INFO"
+fi
+
 log "Schema updates complete!" "INFO"
