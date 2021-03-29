@@ -193,6 +193,8 @@
     "show_pass_direction",
     "noaa_daytime_enhancements",
     "noaa_nighttime_enhancements",
+    "noaa_crop_toptobottom",
+    "noaa_interpolate",
     "noaa_map_crosshair_enable",
     "noaa_map_crosshair_color",
     "noaa_map_grid_degrees",
