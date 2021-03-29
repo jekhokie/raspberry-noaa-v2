@@ -180,8 +180,8 @@ enable_tls: true
 web_tls_port: 443
 cert_valid_days: 365
 lock_admin_page: false
-admin_username: ''
-admin_password: ''
+admin_username: 'admin'
+admin_password: 'admin'
 web_datetime_format: 'm/d/Y H:i:s'
 
 # log level for output from scripts
