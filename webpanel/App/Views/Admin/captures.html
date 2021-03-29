@@ -24,8 +24,10 @@
     {% endif %}
   {% endif %}
 
+  {% include('Admin/nav.html') %}
+
   <p class="lead text-center">
-    {{ lang['admin_delete_warning'] }}
+    {{ lang['admin_capture_delete_warning'] }}
   </p>
 
   <nav aria-label="page" id="pagination" class="mb-0">
@@ -39,10 +41,10 @@
   <table class="table table-bordered" id="admin-capture-list">
     <thead class="thead-light">
       <tr>
-        <th scope"col" class="text-center"></th>
-        <th scope"col" class="text-center align-middle">{{ lang['satellite'] }}</th>
-        <th scope"col" class="text-center align-middle">{{ lang['pass_start'] }} / {{ lang['max_elev'] }}</th>
-        <th scope"col" class="text-center align-middle">{{ lang['image'] }}</th>
+        <th scope="col" class="text-center"></th>
+        <th scope="col" class="text-center align-middle">{{ lang['satellite'] }}</th>
+        <th scope="col" class="text-center align-middle">{{ lang['pass_start'] }} / {{ lang['max_elev'] }}</th>
+        <th scope="col" class="text-center align-middle">{{ lang['image'] }}</th>
       </tr>
     </thead>
     <tbody>
