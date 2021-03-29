@@ -4,6 +4,10 @@ It is assumed you have read the main troubleshooting document before getting her
 
 Has needed information for the state of your install.
 
+```lsmod | grep dvb```
+
+Should produce a blank output. It it is not blank you will need to look up the blacklist instructions for your dongle. If you see this please post a bug report to the tracker with the type of dongle you have and a link to the blacklist instructions we can add it to the install script for future users.
+
 There can be a few causes for long passes with no data. Normally its a break in the workflow between the antenna and wxtoimg. Hardware causes are loose connections or a bias tee that is not on. 
 
 ```rtl_fm -f 97.3e6 -M wbfm -s 200000 -r 48000 - | aplay -r 48000 -f S16_LE```
