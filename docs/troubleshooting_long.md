@@ -2,11 +2,15 @@ It is assumed you have read the main troubleshooting document before getting her
 
 ```./support.sh```
 
-Has needed information for the state of your install.
+Has needed information for the state of your install. If you post this information in a bug report or to Discord it will make seeing what you setup looks like much faster.
+
+```./support.sh > support.log```
+
+will push it to a file for easy transfer.
 
 ```lsmod | grep dvb```
 
-Should produce a blank output. It it is not blank you will need to look up the blacklist instructions for your dongle. If you see this please post a bug report to the tracker with the type of dongle you have and a link to the blacklist instructions we can add it to the install script for future users.
+Should produce a blank output. It it is not blank you will need to look up the blacklist instructions for your dongle. If you see this, please post a bug report to the tracker with the type of dongle you have and a link to the blacklist instructions so we can add it to the install script for future users.
 
 There can be a few causes for long passes with no data. Normally its a break in the workflow between the antenna and wxtoimg. Hardware causes are loose connections or a bias tee that is not on. 
 
