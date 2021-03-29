@@ -3,6 +3,7 @@ return array(
   "admin" => "Beheerder",
   "admin_delete_confirm_header" => "Bevestig verwijderen",
   "admin_capture_delete_warning" => "Klik op 'X' naast de opname/passage die u wilt verwijderen. Alle gerelateerde afbeeldingen worden verwijderd. **WAARSCHUWING**: Dit kan niet worden hersteld dus ben er zeker van dat dit is wat u wilt!",
+  "admin_pass_delete_warning" => "Klik op de 'X' naast de passen die u wilt verwijderen, zodat de pas niet wordt gepland en uit de database wordt verwijderd. ** WAARSCHUWING **: dit is onomkeerbaar, dus zorg ervoor dat dit is wat u wilt!",
   "cancel" => "Annuleer",
   "captures" => "Opnames",
   "confirm" => "Bevestig",
@@ -24,6 +25,7 @@ return array(
   "prev" => "Vorige",
   "satellite" => "Satelliet",
   "successful_delete_capture" => "Opname successvol verwijderd",
+  "successful_delete_pass" => "Pas succesvol verwijderd",
   "travel_direction" => "Richting",
 );
 ?>

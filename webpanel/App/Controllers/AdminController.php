@@ -24,10 +24,13 @@ class AdminController extends \Lib\Controller {
   public function passesAction($args) {
     $pass = $this->loadModel('Pass');
     $pass->getActiveList();
-    $args = array_merge($args, array('pass' => $pass));
+    $args = array_merge($args, array('pass' => $pass,
+                                     'admin_action' => 'passes'));
     View::renderTemplate('Admin/passes.html', $args);
   }
 
+  # TODO: This is not very DRY between this and the above function - do
+  #       something about this in the future
   public function deletePassAction($args) {
     $lang = include(__DIR__ . '/../Lang/' . Config::LANG . '.php');
     $pass = $this->loadModel('Pass');
@@ -40,9 +43,7 @@ class AdminController extends \Lib\Controller {
 
       # attempt to remove the job ID
       try {
-        print_r($pass->at_job_id);
-        #echo shell_exec("atrm " . $pass->at_job_id . " 2>&1");
-        echo shell_exec("sudo -u pi whoami 2>&1");
+        echo shell_exec("sudo -u pi atrm " . $pass->at_job_id . " 2>&1");
       } catch (exception $e) {
         error_log("Could not delete pass job ID using atrm for job ID: " . $pass->at_job_id . " - " . $e);
       }
@@ -61,7 +62,8 @@ class AdminController extends \Lib\Controller {
 
     $pass->getActiveList();
     $args = array_merge($args, array('pass' => $pass,
-                                     'status_msg' => $status_msg));
+                                     'status_msg' => $status_msg,
+                                     'admin_action' => 'passes'));
     View::renderTemplate('Admin/passes.html', $args);
   }
 
@@ -77,7 +79,8 @@ class AdminController extends \Lib\Controller {
     $capture->getList($page_number, Config::ADMIN_CAPTURES_PER_PAGE);
     $args = array_merge($args, array('capture' => $capture,
                                      'cur_page' => $page_number,
-                                     'page_count' => $total_pages));
+                                     'page_count' => $total_pages,
+                                     'admin_action' => 'captures'));
 
     View::renderTemplate('Admin/captures.html', $args);
   }
@@ -134,7 +137,8 @@ class AdminController extends \Lib\Controller {
     $args = array_merge($args, array('capture' => $capture,
                                      'cur_page' => $page_number,
                                      'page_count' => $total_pages,
-                                     'status_msg' => $status_msg));
+                                     'status_msg' => $status_msg,
+                                     'admin_action' => 'captures'));
 
     View::renderTemplate('Admin/captures.html', $args);
   }
