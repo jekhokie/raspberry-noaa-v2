@@ -1,8 +1,10 @@
 div#satvis {
   width: 100%;
+  height: 500px;
 }
 
 div#satvis iframe {
+  border: 0;
   width: 100%;
   height: 100%;
 }
