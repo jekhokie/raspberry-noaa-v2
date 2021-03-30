@@ -17,6 +17,9 @@ images_output: "{{ output_root }}/images"
 audio_output: "{{ output_root }}/audio"
 videos_output: "{{ output_root }}/videos"
 
+# file used for NOAA animations
+noaa_animation_output: "{{ videos_output }}/RollingAnimation.mp4"
+
 # ramfs location
 ramfs_path: "/var/ramfs"
 
