@@ -103,6 +103,12 @@ fi
 # source some env vars
 . "$HOME/.noaa-v2.conf"
 
+# TLE data files
+# NOTE: This should be DRY-ed up with the scripts/schedule.sh script
+WEATHER_TXT="${NOAA_HOME}/tmp/weather.txt"
+AMATEUR_TXT="${NOAA_HOME}/tmp/amateur.txt"
+TLE_OUTPUT="${NOAA_HOME}/tmp/orbit.tle"
+
 # run database migrations
 log_running "Updating database schema with any changes..."
 $NOAA_HOME/db_migrations/update_database.sh
