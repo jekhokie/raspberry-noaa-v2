@@ -113,7 +113,7 @@ show_sun_elevation: true
 show_pass_direction: true
 noaa_daytime_enhancements: 'ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT therm avi'
 noaa_nighttime_enhancements: 'ZA MCIR HVCT MCIR-precip therm avi'
-noaa_crop_toptobottom: false
+noaa_crop_toptobottom: true
 noaa_interpolate: false
 
 # noaa map configurations
