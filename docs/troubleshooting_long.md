@@ -47,6 +47,10 @@ lost at least 148 bytes
 
 Type ctrl C to exit.
 
+``` bash $HOME/raspberry-noaa-v2/scripts/testing/scan_for.sh 5m```
+
+Will fire up a scan to sook at the noise around you. It is also a good test to see if your receiver is running properly.
+
 ```nano /var/log/raspberry-noaa-v2/output.log```
 
 will let you see the log of what was happening durring the pass.
