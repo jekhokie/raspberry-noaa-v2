@@ -33,4 +33,5 @@ table#passes td.no-passes {
 
 .flex-child {
   flex: 1;
+  max-height: 500px;
 }  
