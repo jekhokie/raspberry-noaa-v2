@@ -5,16 +5,19 @@
 {% endblock %}
 
 {% block pre_body %}
-  {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
-   <div id="instruments" class="flex-container">
+  <div id="instruments" class="flex-container">
+    {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
       <div id="satvis" class="d-none d-sm-block flex-child">
         <iframe name="satvis" src="https://satvis.space/?elements=Point,Label,Orbit%20track,Sensor%20cone&layers=OfflineHighres&gs={{ constant('Config\\Config::BASE_STATION_LAT') }},{{ constant('Config\\Config::BASE_STATION_LON') }}&tags=Weather"></iframe>
       </div>
-      <div class="d-none d-sm-block flex-child">
-	<video controls="" autoplay="" loop="" src="/images/RollingAnimation.mp4" width="100%" height="100%" type="video/mp4"> </video>
+    {% endif %}
+
+    {% if constant('Config\\Config::ENABLE_ANIMATION') == 'true' %}
+      <div id="noaa-animation" class="d-none d-sm-block flex-child">
+        <video controls="" autoplay="" loop="" src="{{ constant('Config\\Config::ANIMATION_VIDEO_FILE') }}" width="100%" height="100%" type="video/mp4"></video>
       </div>
-    </div>
-  {% endif %}
+    {% endif %}
+  </div>
 {% endblock %}
 
 {% block body %}

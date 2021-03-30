@@ -26,15 +26,9 @@ table#passes td.no-passes {
 }
 
 .flex-container {
-    display: flex;
+  display: flex;
 }
 
 .flex-child {
-    flex: 1;
-    border: 2px solid green;
+  flex: 1;
 }  
-
-.flex-child:first-child {
-    margin-right: 20px;
-} 
-
