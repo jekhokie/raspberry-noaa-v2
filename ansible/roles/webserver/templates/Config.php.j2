@@ -28,6 +28,10 @@ class Config {
   # whether to enable satvis visualization
   const ENABLE_SATVIS = '{{ enable_satvis|lower }}';
 
+  # whether to enable image video
+  const ENABLE_ANIMATION = '{{ enable_animation|lower }}';
+  const ANIMATION_VIDEO_FILE = '{{ videos_output }}/RollingAnimation.mp4';
+
   # lat and lon coordinates of base station
   const BASE_STATION_LAT = '{{ latitude }}';
   const BASE_STATION_LON = '{{ longitude }}';

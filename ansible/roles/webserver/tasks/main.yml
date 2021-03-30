@@ -115,6 +115,13 @@
     state: directory
     group: www-data
 
+- name: update videos directory group
+  become: yes
+  file:
+    path: "{{ videos_output }}"
+    state: directory
+    group: www-data
+
 - name: update database folder permissions
   become: yes
   file:
