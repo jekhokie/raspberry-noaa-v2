@@ -185,4 +185,13 @@
   service:
     name: nginx
     state: started
+
+- name: www-data sudoers atrm as pi user
+  become: yes
+  copy:
+    src: 020_www-data-atrm-nopasswd
+    dest: /etc/sudoers.d/020_www-data-atrm-nopasswd
+    owner: root
+    group: root
+    mode: 0440
 ...

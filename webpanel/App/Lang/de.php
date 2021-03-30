@@ -2,7 +2,8 @@
 return array(
   "admin" => "Administrator",
   "admin_delete_confirm_header" => "Löschung bestätigen",
-  "admin_delete_warning" => "Klicken Sie auf das 'X' neben den zu löschenden Aufnahmen, um sowohl den Durchgang / die Aufnahme aus der Datenbank zu entfernen als auch alle zugehörigen Bilder zu löschen. ** WARNUNG **: Dies ist irreversibel. Bitte stellen Sie sicher, dass dies das ist, was Sie wollen!",
+  "admin_capture_delete_warning" => "Klicken Sie auf das 'X' neben den zu löschenden Aufnahmen, um sowohl den Durchgang / die Aufnahme aus der Datenbank zu entfernen als auch alle zugehörigen Bilder zu löschen. ** WARNUNG **: Dies ist irreversibel. Bitte stellen Sie sicher, dass dies das ist, was Sie wollen!",
+  "admin_pass_delete_warning" => "Klicken Sie auf das 'X' neben den Pässen, die Sie löschen möchten, damit der Pass nicht geplant und aus der Datenbank entfernt wird. ** WARNUNG **: Dies ist irreversibel, stellen Sie also bitte sicher, dass dies das ist, was Sie wollen!",
   "cancel" => "Stornieren",
   "captures" => "Erfasst",
   "confirm" => "Bestätigen",
@@ -24,6 +25,7 @@ return array(
   "prev" => "Vorherig",
   "satellite" => "Satellit",
   "successful_delete_capture" => "Capture erfolgreich gelöscht",
+  "successful_delete_pass" => "Pass erfolgreich gelöscht",
   "travel_direction" => "Richtung",
 );
 ?>

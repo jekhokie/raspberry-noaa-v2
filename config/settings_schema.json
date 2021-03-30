@@ -99,6 +99,10 @@
     "noaa_map_country_border_color":   { "type": "string" },
     "noaa_map_state_border_enable":    { "type": "boolean" },
     "noaa_map_state_border_color":     { "type": "string" },
+    "noaa_thermal_temp_overlay":       { "type": "boolean" },
+    "noaa_thermal_temp_overlay_location": {
+      "type": "string"
+    },
     "timezone":                        { "type": "string" },
     "lang_setting": {
       "type": "string",
@@ -203,6 +207,8 @@
     "noaa_map_country_border_color",
     "noaa_map_state_border_enable",
     "noaa_map_state_border_color",
+    "noaa_thermal_temp_overlay",
+    "noaa_thermal_temp_overlay_location",
     "timezone",
     "lang_setting",
     "web_server_name",

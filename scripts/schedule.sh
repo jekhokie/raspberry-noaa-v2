@@ -7,54 +7,79 @@
 . "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
 
-# some constants
+# TLE data files
 WEATHER_TXT="${NOAA_HOME}/tmp/weather.txt"
 AMATEUR_TXT="${NOAA_HOME}/tmp/amateur.txt"
 TLE_OUTPUT="${NOAA_HOME}/tmp/orbit.tle"
 
-# wait for an IP to be assigned/DNS to be available so the TLE can be retrieved
-tle_addr="www.celestrak.com"
-max_iters_sec=60
-sleep_iter_seconds=5
-counter=0
-while [ -z "${ip_addr}" ] && [ $counter -lt $max_iters_sec ]; do
-  ping -c 1 $tle_addr >/dev/null
-  if [ $? -eq 0 ]; then
-    break
-  else
-    log "Scheduler waiting for DNS resolution for TLE files..." "INFO"
-    ((counter+=$sleep_iter_seconds))
-    sleep $sleep_iter_seconds
-  fi
+# check if TLE file should be updated
+update_tle=0
+while getopts ":t" opt; do
+  case $opt in
+    # update TLE files
+    t )
+      update_tle=1
+      ;;
+  esac
 done
 
-if [ $counter -gt 60 ]; then
-  log "Scheduler failed to resolve TLE endpoint in ${counter} seconds" "ERROR"
-  exit
+if [ "${update_tle}" == "1" ]; then
+  # wait for an IP to be assigned/DNS to be available so the TLE can be retrieved
+  tle_addr="www.celestrak.com"
+  max_iters_sec=60
+  sleep_iter_seconds=5
+  counter=0
+  while [ -z "${ip_addr}" ] && [ $counter -lt $max_iters_sec ]; do
+    ping -c 1 $tle_addr >/dev/null
+    if [ $? -eq 0 ]; then
+      break
+    else
+      log "Scheduler waiting for DNS resolution for TLE files..." "INFO"
+      ((counter+=$sleep_iter_seconds))
+      sleep $sleep_iter_seconds
+    fi
+  done
+
+  if [ $counter -gt 60 ]; then
+    log "Scheduler failed to resolve TLE endpoint in ${counter} seconds" "ERROR"
+    exit
+  else
+    log "Scheduler resolved TLE endpoint in ${counter} seconds" "INFO"
+  fi
+
+  # get the txt files for orbit information
+  log "Downloading new TLE files from source" "INFO"
+  wget -r "http://${tle_addr}/NORAD/elements/weather.txt" -O "${WEATHER_TXT}" >> $NOAA_LOG 2>&1
+  wget -r "http://${tle_addr}/NORAD/elements/amateur.txt" -O "${AMATEUR_TXT}" >> $NOAA_LOG 2>&1
+
+  # create tle files for scheduling
+  #   note: it's really unfortunate but a directory structure any deeper than 'tmp' in the
+  #   below results in a buffer overflow reported by the predict application, presumably
+  #   because it cannot handle that level of sub-directory
+  log "Clearing and re-creating TLE file with latest..." "INFO"
+  echo -n "" > $TLE_OUTPUT
+  grep "NOAA 15" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
+  grep "NOAA 18" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
+  grep "NOAA 19" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
+  grep "METEOR-M 2" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
+elif [ ! -f $WEATHER_TXT ] || [ ! -f $AMATEUR_TXT ] || [ ! -f $TLE_OUTPUT ]; then
+  log "TLE update not specified '-t' but no TLE files present - please re-run with '-t'" "INFO"
+  exit 1
 else
-  log "Scheduler resolved TLE endpoint in ${counter} seconds" "INFO"
+  log "Not updating local copies of TLE files from source" "INFO"
 fi
-
-# get the txt files for orbit information
-wget -r "http://${tle_addr}/NORAD/elements/weather.txt" -O "${WEATHER_TXT}" >> $NOAA_LOG 2>&1
-wget -r "http://${tle_addr}/NORAD/elements/amateur.txt" -O "${AMATEUR_TXT}" >> $NOAA_LOG 2>&1
-
-# create tle files for scheduling
-#   note: it's really unfortunate but a directory structure any deeper than 'tmp' in the
-#   below results in a buffer overflow reported by the predict application, presumably
-#   because it cannot handle that level of sub-directory
-log "Clearing and re-creating TLE file with latest..." "INFO"
-echo -n "" > $TLE_OUTPUT
-grep "NOAA 15" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
-grep "NOAA 18" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
-grep "NOAA 19" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
-grep "METEOR-M 2" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
 
 # remove 'at' jobs to make way for new jobs
 log "Clearing existing scheduled 'at' capture jobs..." "INFO"
 for i in $(atq | awk '{print $1}'); do
   atrm "$i"
 done
+
+# remove database passes for remainder of day so they can
+# be re-populated with new records
+cur_ms=$(date +"%s")
+log "Clearing existing passes specified in the database for remainder of the day..." "INFO"
+$SQLITE3 $DB_FILE "DELETE FROM predict_passes WHERE pass_start > $cur_ms;"
 
 # create schedules to call respective receive scripts
 log "Scheduling new capture jobs..." "INFO"
