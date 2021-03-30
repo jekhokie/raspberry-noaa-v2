@@ -57,7 +57,7 @@
     name: schedule passes daily
     minute: 1
     hour: 0
-    job: "{{ noaa_home }}/scripts/schedule.sh"
+    job: "{{ noaa_home }}/scripts/schedule.sh -t"
 
 - name: create scheduling cron job @ reboot
   cron:
@@ -90,6 +90,14 @@
 - name: create annotation directory
   file:
     path: "{{ noaa_home }}/tmp/annotation"
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0755
+
+- name: create scanner directory
+  file:
+    path: "{{ noaa_home }}/tmp/scanner"
     state: directory
     owner: pi
     group: pi
