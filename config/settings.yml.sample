@@ -97,6 +97,8 @@ delete_audio: false
 #        (note: default value is total list of supported image processors)
 #   noaa_nighttime_enhancements - list of enhancements to create images using during nighttime captures
 #        (note: default value is total list of supported image processors)
+#   noaa_crop_topbottom - whether to crop the top and bottom noise out of the noaa capture
+#   noaa_interpolate - whether to interpolate and oversample the images (larger images produced)
 flip_meteor_image: true
 produce_spectrogram: true
 noaa_crop_telemetry: false
@@ -192,6 +194,11 @@ log_level: DEBUG
 # by default disabled on "extra-small" devices such as phones due to
 # the processing and space requirements
 enable_satvis: true
+
+# whether to enable the image video in the passes view - note that this
+# is by default disabled on "extra-small" devices such as phones due
+# to the processing and space requirements
+enable_animation: false
 
 # pruning capabilities - must be configured in cron (see documentation)
 #   delete_oldest_n - how many oldest captures to delete on each run
