@@ -14,3 +14,10 @@ table#admin-pass-list tr td.conflict i.conflict-icon {
 table#admin-pass-list tr td {
   vertical-align: middle;
 }
+
+table#admin-pass-list tr.date-separator td {
+  background-color: #cce5ff !important;
+  font-size: .95em;
+  font-weight: bold;
+  text-align: center;
+}

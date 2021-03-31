@@ -69,6 +69,16 @@ meteor_m2_gain: 7.7
 meteor_m2_sun_min_elevation: 6
 meteor_m2_sat_min_elevation: 30
 
+# how many days to schedule passes - note this MUST be an even integer,
+# and the current day counts as "1" - passes will be scheduled until midnight
+# of the `days_to_schedule_passes` final day
+#
+# NOTE: If you want to set this value LOWER than a previously configured
+#       value, you must run the schedule script manually and pass the '-x' switch
+#       after re-running the ./install_and_upgrade.sh script to align the variables:
+#           ./scripts/schedule.sh -x
+days_to_schedule_passes: 1
+
 # whether audio files should be deleted after images are created
 delete_audio: false
 
@@ -180,7 +190,9 @@ lang_setting: en
 #   admin_username - username used to access the 'admin' endpoint of the webpanel (WARNING: see 'lock_admin_page' above)
 #   admin_password - password used to access the 'admin' endpoint of the webpanel (WARNING: see 'lock_admin_page' above)
 #                    NOTE: MAKE SURE YOU SET THIS TO SOMETHING REASONABLY COMPLICATED!
-#   web_datetime_format - format to display date and time in the web interface - note that this MUST conform to
+#   web_passes_date_format - format to display the dates in the pass list view - note that this MUST conform to
+#                            https://www.php.net/manual/en/datetime.format.php or else bad things will happen
+#   web_datetime_format - format to display date and time in the web interface for captures - note that this MUST conform to
 #                         https://www.php.net/manual/en/datetime.format.php or else bad things will happen
 web_server_name: raspberry-noaa.localdomain
 enable_non_tls: false
@@ -191,6 +203,7 @@ cert_valid_days: 365
 lock_admin_page: false
 admin_username: 'admin'
 admin_password: 'admin'
+web_passes_date_format: 'm/d/Y'
 web_datetime_format: 'm/d/Y H:i:s'
 
 # log level for output from scripts

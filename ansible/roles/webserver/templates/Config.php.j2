@@ -12,7 +12,11 @@ class Config {
   # see files in App/Lang directory for available translations
   const LANG = '{{ lang_setting }}';
 
-  # configure time output format on all web pages - note this must follow
+  # configure the date output format for the pass list - note that this must follow
+  # a format that conforms to https://www.php.net/manual/en/datetime.format.php
+  const PASSES_DATE_FORMAT = '{{ web_passes_date_format }}';
+
+  # configure time output format on captures web page - note this must follow
   # a format that conforms to https://www.php.net/manual/en/datetime.format.php
   const DATETIME_FORMAT = '{{ web_datetime_format }}';
 
