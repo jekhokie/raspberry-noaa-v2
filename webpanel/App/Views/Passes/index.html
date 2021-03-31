@@ -33,15 +33,26 @@
       </tr>
     </thead>
     <tbody>
-      {% set now = 'now'|date('H:i:s') %}
+      {% set now = 'now'|date('m/d/y H:i:s') %}
+      {% set cur_date = 'now'|date('m/d/y') %}
+      {% set last_date = 0 %}
+
       {% if pass.list|length <= 0 %}
         <tr>
-          <td colspan="4" class="no-passes">0 {{ lang['passes'] }}</td>
+          <td colspan="6" class="no-passes">0 {{ lang['passes'] }}</td>
         </tr>
       {% else %}
         {% for pass in pass.list %}
           {% set pass_start = pass.pass_start|date('H:i:s') %}
           {% set pass_end = pass.pass_end|date('H:i:s') %}
+          {% set cur_date = pass.pass_start|date('m/d/y') %}
+
+          {% if last_date < cur_date %}
+            <tr class="date-separator">
+              <td colspan="6">{{ cur_date }}</td>
+            </tr>
+            {% set last_date = cur_date %}
+          {% endif %}
 
           <tr{% if pass.is_active == false or pass_end < now %} class="inactive"{% endif %}>
             <td{% if prev_pass_end >= pass.pass_start %} class="conflict"{% endif %}>
