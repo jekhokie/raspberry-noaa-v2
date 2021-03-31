@@ -29,7 +29,15 @@ OUTPUT_IMAGE=$3
 # calculate any extra args for the processor
 extra_args=""
 if [ "${NOAA_CROP_TELEMETRY}" == "true" ]; then
-  extra_args="-c"
+  extra_args=${extra_args}" -c"
+fi
+
+if [ "${NOAA_CROP_TOPTOBOTTOM}" == "false" ]; then
+  extra_args=${extra_args}" -A"
+fi
+
+if [ "${NOAA_INTERPOLATE}" == "true" ]; then
+  extra_args=${extra_args}" -I"
 fi
 
 # produce the output image

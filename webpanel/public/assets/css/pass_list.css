@@ -26,3 +26,12 @@ table#passes td.no-passes {
   font-weight: bold;
   font-style: italic;
 }
+
+.flex-container {
+  display: flex;
+}
+
+.flex-child {
+  flex: 1;
+  max-height: 500px;
+}  

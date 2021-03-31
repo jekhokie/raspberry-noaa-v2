@@ -31,6 +31,7 @@ fi
 
 # binary helpers
 CONVERT="/usr/bin/convert"
+FFMPEG="/usr/bin/ffmpeg"
 GMIC="/usr/bin/gmic"
 IDENTIFY="/usr/bin/identify"
 MEDET_ARM="/usr/bin/medet_arm"
