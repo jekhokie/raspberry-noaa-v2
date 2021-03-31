@@ -72,6 +72,7 @@
       "minimum": 0,
       "maximum": 90
     },
+    "days_to_schedule_passes":         { "type": "number" },
     "delete_audio":                    { "type": "boolean" },
     "flip_meteor_image":               { "type": "boolean" },
     "produce_spectrogram":             { "type": "boolean" },
@@ -183,6 +184,7 @@
     "meteor_m2_gain",
     "meteor_m2_sun_min_elevation",
     "meteor_m2_sat_min_elevation",
+    "days_to_schedule_passes",
     "delete_audio",
     "flip_meteor_image",
     "produce_spectrogram",

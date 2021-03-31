@@ -69,6 +69,16 @@ meteor_m2_gain: 7.7
 meteor_m2_sun_min_elevation: 6
 meteor_m2_sat_min_elevation: 30
 
+# how many days to schedule passes - note this MUST be an even integer,
+# and the current day counts as "1" - passes will be scheduled until midnight
+# of the `days_to_schedule_passes` final day
+#
+# NOTE: If you want to set this value LOWER than a previously configured
+#       value, you must run the schedule script manually and pass the '-x' switch
+#       after re-running the ./install_and_upgrade.sh script to align the variables:
+#           ./scripts/schedule.sh -x
+days_to_schedule_passes: 1
+
 # whether audio files should be deleted after images are created
 delete_audio: false
 
