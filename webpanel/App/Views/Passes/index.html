@@ -49,7 +49,7 @@
 
           {% if last_date < cur_date %}
             <tr class="date-separator">
-              <td colspan="6">{{ cur_date }}</td>
+              <td colspan="6">{{ cur_date|date(constant('Config\\Config::PASSES_DATE_FORMAT')) }}</td>
             </tr>
             {% set last_date = cur_date %}
           {% endif %}
