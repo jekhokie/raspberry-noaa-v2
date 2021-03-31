@@ -131,6 +131,7 @@
       "enum": [ "DEBUG", "WARN", "INFO", "ERROR" ]
     },
     "enable_satvis":           { "type": "boolean" },
+    "enable_animation":        { "type": "boolean" },
     "delete_oldest_n":         { "type": "number" },
     "delete_older_than_n":     { "type": "number" },
     "disable_wifi_power_mgmt": { "type": "boolean" },
@@ -223,6 +224,7 @@
     "web_datetime_format",
     "log_level",
     "enable_satvis",
+    "enable_animation",
     "delete_oldest_n",
     "delete_older_than_n",
     "disable_wifi_power_mgmt",
