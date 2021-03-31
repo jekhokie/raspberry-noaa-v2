@@ -2,6 +2,13 @@
 #
 # Purpose: High-level scheduling script - schedules all desired satellite
 #          and orbital captures.
+#
+# Parameters:
+#   -t: Update/re-download TLE files
+#   -x: Wipe all existing future scheduled captures and start fresh
+#
+# Example:
+#   ./schedule.sh -t -x
 
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
@@ -14,11 +21,15 @@ TLE_OUTPUT="${NOAA_HOME}/tmp/orbit.tle"
 
 # check if TLE file should be updated
 update_tle=0
-while getopts ":t" opt; do
+wipe_existing=0
+while getopts ":t:x" opt; do
   case $opt in
     # update TLE files
     t )
       update_tle=1
+      ;;
+    x )
+      wipe_existing=1
       ;;
   esac
 done
@@ -69,35 +80,63 @@ else
   log "Not updating local copies of TLE files from source" "INFO"
 fi
 
-# remove 'at' jobs to make way for new jobs
-log "Clearing existing scheduled 'at' capture jobs..." "INFO"
-for i in $(atq | awk '{print $1}'); do
-  atrm "$i"
-done
+# section to remove all existing scheduled jobs/captures and clear
+# all future database captures, making room for a brand new schedule
+atq_date=""
+if [ "${wipe_existing}" == "1" ]; then
+  # remove 'at' jobs to make way for new jobs
+  log "Clearing existing scheduled 'at' capture jobs..." "INFO"
+  for i in $(atq | awk '{print $1}'); do
+    atrm "$i"
+  done
 
-# remove database passes for remainder of day so they can
-# be re-populated with new records
-cur_ms=$(date +"%s")
-log "Clearing existing passes specified in the database for remainder of the day..." "INFO"
-$SQLITE3 $DB_FILE "DELETE FROM predict_passes WHERE pass_start > $cur_ms;"
+  # remove database passes for remainder of day
+  cur_ms=$(date +"%s")
+  log "Clearing existing passes specified in the database for remainder of the captures..." "INFO"
+  $SQLITE3 $DB_FILE "DELETE FROM predict_passes WHERE pass_start > $cur_ms;"
+else
+  log "Determining latest scheduled capture job date..." "INFO"
+  atq_date=$(atq | sort -k 6n -k 3M -k 4n -k 5 -k 7 -k 1 | awk '{print $3 " " $4 ", " $6}' | tail -1)
+fi
+
+start_time_ms=$(date +"%s")
+last_day=$(($DAYS_TO_SCHEDULE_PASSES - 1))
+end_time_ms=$(date --date="+${last_day} days 23:59:59" +"%s")
+if [ -z "${atq_date}" ]; then
+  log "No passes currently scheduled - scheduling all passes starting now through ${end_time_ms} ms..." "INFO"
+else
+  # calculate current day of last passes and what should be the
+  # latest day of scheduled passes - assume if we've scheduled into
+  # any point of the last day, we're covering all passes already
+  latest_scheduled_ms=$(date --date="${atq_date} 23:59:59" +"%s")
+  future_schedule_ms=$(date --date="+${last_day} days 00:00:00" +"%s")
+
+  if [ "${latest_scheduled_ms}" -ge "${future_schedule_ms}" ]; then
+    log "All passes already scheduled to latest date - nothing to be done" "INFO"
+    exit
+  else
+    start_time_ms=$(($latest_scheduled_ms + 60))
+    log "Scheduling starting at ${start_time_ms} ms through ${end_time_ms} ms..." "INFO"
+  fi
+fi
 
 # create schedules to call respective receive scripts
 log "Scheduling new capture jobs..." "INFO"
 if [ "$NOAA_15_SCHEDULE" == "true" ]; then
   log "Scheduling NOAA 15 captures..." "INFO"
-  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 15" "receive_noaa.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
+  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 15" "receive_noaa.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
 fi
 if [ "$NOAA_18_SCHEDULE" == "true" ]; then
   log "Scheduling NOAA 18 captures..." "INFO"
-  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 18" "receive_noaa.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
+  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 18" "receive_noaa.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
 fi
 if [ "$NOAA_19_SCHEDULE" == "true" ]; then
   log "Scheduling NOAA 19 captures..." "INFO"
-  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 19" "receive_noaa.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
+  $NOAA_HOME/scripts/schedule_captures.sh "NOAA 19" "receive_noaa.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
 fi
 if [ "$METEOR_M2_SCHEDULE" == "true" ]; then
   log "Scheduling Meteor-M 2 captures..." "INFO"
-  $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M 2" "receive_meteor.sh" $TLE_OUTPUT >> $NOAA_LOG 2>&1
+  $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M 2" "receive_meteor.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
 fi
 log "Done scheduling jobs!" "INFO"
 
