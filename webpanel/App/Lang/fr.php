@@ -2,7 +2,8 @@
 return array(
   "admin" => "Admin",
   "admin_delete_confirm_header" => "Confirmez Supression",
-  "admin_delete_warning" => "Cliquez syr le 'X' à côté des captures que vous souhaitez supprimer pour que la capture soit supprimée de la base de données et que toutes les images associcées soient supprimées ** ATTENTION ** : Cette action est irréversible, assurez-vous que c'est ce que vous voulez faire !",
+  "admin_capture_delete_warning" => "Cliquez syr le 'X' à côté des captures que vous souhaitez supprimer pour que la capture soit supprimée de la base de données et que toutes les images associcées soient supprimées ** ATTENTION ** : Cette action est irréversible, assurez-vous que c'est ce que vous voulez faire !",
+  "admin_pass_delete_warning" => "Cliquez sur le «X» à côté des passes que vous souhaitez supprimer afin que la passe ne soit pas planifiée et supprimée de la base de données. ** AVERTISSEMENT **: Ceci est irréversible alors assurez-vous que c'est ce que vous voulez!",
   "cancel" => "Annulez",
   "captures" => "Capture",
   "confirm" => "Confirmez",
@@ -24,6 +25,7 @@ return array(
   "prev" => "Préced.",
   "satellite" => "Satellite",
   "successful_delete_capture" => "Capture supprimée avec succès",
+  "successful_delete_pass" => "Pass supprimé avec succès",
   "travel_direction" => "Direction",
 );
 ?>

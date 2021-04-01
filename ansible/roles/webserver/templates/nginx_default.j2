@@ -10,6 +10,10 @@ server {
     alias /srv/images/$1;
   }
 
+  location ~ /videos/(.*) {
+    alias /srv/videos/$1;
+  }
+
   location / {
     try_files $uri $uri/ /index.php;
   }

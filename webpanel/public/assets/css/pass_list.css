@@ -26,3 +26,19 @@ table#passes td.no-passes {
   font-weight: bold;
   font-style: italic;
 }
+
+table#passes tr.date-separator td {
+  background-color: #cce5ff !important;
+  font-size: .95em;
+  font-weight: bold;
+  text-align: center;
+}
+
+.flex-container {
+  display: flex;
+}
+
+.flex-child {
+  flex: 1;
+  max-height: 500px;
+}  

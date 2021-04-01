@@ -5,11 +5,19 @@
 {% endblock %}
 
 {% block pre_body %}
-  {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
-    <div id="satvis" class="d-none d-sm-block">
-      <iframe name="satvis" src="https://satvis.space/?elements=Point,Label,Orbit%20track,Sensor%20cone&layers=OfflineHighres&gs={{ constant('Config\\Config::BASE_STATION_LAT') }},{{ constant('Config\\Config::BASE_STATION_LON') }}&tags=Weather"></iframe>
-    </div>
-  {% endif %}
+  <div id="instruments" class="flex-container">
+    {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
+      <div id="satvis" class="d-none d-sm-block flex-child">
+        <iframe name="satvis" src="https://satvis.space/?elements=Point,Label,Orbit%20track,Sensor%20cone&layers=OfflineHighres&gs={{ constant('Config\\Config::BASE_STATION_LAT') }},{{ constant('Config\\Config::BASE_STATION_LON') }}&tags=Weather"></iframe>
+      </div>
+    {% endif %}
+
+    {% if constant('Config\\Config::ENABLE_ANIMATION') == 'true' %}
+      <div id="noaa-animation" class="d-none d-sm-block flex-child">
+        <video playsinline autoplay muted loop controls src="{{ constant('Config\\Config::ANIMATION_VIDEO_FILE') }}" width="100%" height="100%" type="video/mp4"></video>
+      </div>
+    {% endif %}
+  </div>
 {% endblock %}
 
 {% block body %}
@@ -25,15 +33,26 @@
       </tr>
     </thead>
     <tbody>
-      {% set now = 'now'|date('H:i:s') %}
+      {% set now = 'now'|date('m/d/y H:i:s') %}
+      {% set cur_date = 'now'|date('m/d/y') %}
+      {% set last_date = 0 %}
+
       {% if pass.list|length <= 0 %}
         <tr>
-          <td colspan="4" class="no-passes">0 {{ lang['passes'] }}</td>
+          <td colspan="6" class="no-passes">0 {{ lang['passes'] }}</td>
         </tr>
       {% else %}
         {% for pass in pass.list %}
           {% set pass_start = pass.pass_start|date('H:i:s') %}
           {% set pass_end = pass.pass_end|date('H:i:s') %}
+          {% set cur_date = pass.pass_start|date('m/d/y') %}
+
+          {% if last_date < cur_date %}
+            <tr class="date-separator">
+              <td colspan="6">{{ cur_date|date(constant('Config\\Config::PASSES_DATE_FORMAT')) }}</td>
+            </tr>
+            {% set last_date = cur_date %}
+          {% endif %}
 
           <tr{% if pass.is_active == false or pass_end < now %} class="inactive"{% endif %}>
             <td{% if prev_pass_end >= pass.pass_start %} class="conflict"{% endif %}>

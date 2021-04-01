@@ -103,6 +103,12 @@ fi
 # source some env vars
 . "$HOME/.noaa-v2.conf"
 
+# TLE data files
+# NOTE: This should be DRY-ed up with the scripts/schedule.sh script
+WEATHER_TXT="${NOAA_HOME}/tmp/weather.txt"
+AMATEUR_TXT="${NOAA_HOME}/tmp/amateur.txt"
+TLE_OUTPUT="${NOAA_HOME}/tmp/orbit.tle"
+
 # run database migrations
 log_running "Updating database schema with any changes..."
 $NOAA_HOME/db_migrations/update_database.sh
@@ -122,7 +128,7 @@ log_running "Updating web content..."
 ) || die "  Something went wrong updating web content - please inspect the logs above"
 
 # run a schedule of passes (as opposed to waiting until cron kicks in the evening)
-log_running "Scheduling first passes for imagery..."
+log_running "Scheduling passes for imagery..."
 if [ ! -f $WEATHER_TXT ] || [ ! -f $AMATEUR_TXT ] || [ ! -f $TLE_OUTPUT ]; then
   log_running "Scheduling with new TLE downloaded data..."
   ./scripts/schedule.sh -t
@@ -130,7 +136,7 @@ else
   log_running "Scheduling with existing TLE data (not downloading new)..."
   ./scripts/schedule.sh
 fi
-log_running "First passes scheduled!"
+log_running "Passes scheduled!"
 
 echo ""
 echo "-------------------------------------------------------------------------------"
