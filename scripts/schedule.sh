@@ -22,13 +22,13 @@ TLE_OUTPUT="${NOAA_HOME}/tmp/orbit.tle"
 # check if TLE file should be updated
 update_tle=0
 wipe_existing=0
-while getopts ":t:x" opt; do
+while getopts ":tx" opt; do
   case $opt in
     # update TLE files
-    t )
+    t)
       update_tle=1
       ;;
-    x )
+    x)
       wipe_existing=1
       ;;
   esac
