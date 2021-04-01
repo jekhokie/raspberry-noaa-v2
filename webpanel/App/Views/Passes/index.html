@@ -46,7 +46,7 @@
           {% set pass_start = pass.pass_start|date('H:i:s') %}
           {% set pass_end = pass.pass_end|date('H:i:s') %}
           {% set cur_date = pass.pass_start|date('m/d/y') %}
-          {% set pass_end_ms = pass.pass_start|date('U') %}
+          {% set pass_end_ms = pass.pass_end|date('U') %}
 
           {% if last_date < cur_date %}
             <tr class="date-separator">
