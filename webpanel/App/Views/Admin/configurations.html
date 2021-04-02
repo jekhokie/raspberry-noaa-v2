@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="/assets/css/admin.css">
+{% endblock %}
+
+{% block body %}
+  {% if status_msg is defined %}
+    {% if status_msg == 'Success' %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ lang['successful_update_configs'] }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% else %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ lang['fail_update_configs'] }}<br>
+        {{ status_msg }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  {% include('Admin/nav.html') %}
+
+  <form id="admin-config-form" action="/admin/updateConfigurations" method="post" enctype="multipart/form-data">
+    <button type="submit" class="btn btn-primary btn-block my-3">{{ lang['save'] }}</button>
+    {% for config in configuration.list %}
+      <div class="form-group row mb-3">
+        <label for="{{ config.config_key }}" class="col-sm-3 col-form-label">{{ config.config_key }}</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="{{ config.config_key }}" name="{{ config.config_key }}" value="{{ config.config_val }}"></input>
+        </div>
+      </div>
+    {% endfor %}
+  </form>
+{% endblock %}

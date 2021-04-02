@@ -142,6 +142,40 @@ class AdminController extends \Lib\Controller {
 
     View::renderTemplate('Admin/captures.html', $args);
   }
+
+  public function configurationsAction($args) {
+    $configuration = $this->loadModel('Configuration');
+    $configuration->getList();
+    $args = array_merge($args, array('configuration' => $configuration,
+                                     'admin_action' => 'configuration'));
+    View::renderTemplate('Admin/configurations.html', $args);
+  }
+
+  public function updateConfigurationsAction($args) {
+    $configuration = $this->loadModel('Configuration');
+
+    # attempt to update the parameters in the database
+    $status_msg = '';
+    foreach ($_POST as $k => $v) {
+      try {
+        $configuration->updateByKey($k, $v);
+      } catch (exception $e) {
+        error_log("Could not update configuration key '{}' with value '{}'".format($k, $v));
+        $status_msg += $k . ": " . $v . "<br>";
+      }
+    }
+
+    # if empty status message, everything went well
+    if (empty($status_msg)) {
+      $status_msg = 'Success';
+    }
+
+    $configuration->getList();
+    $args = array_merge($args, array('configuration' => $configuration,
+                                     'status_msg' => $status_msg,
+                                     'admin_action' => 'configuration'));
+    View::renderTemplate('Admin/configurations.html', $args);
+  }
 }
 
 ?>
