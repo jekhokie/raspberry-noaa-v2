@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="/assets/css/admin.css">
+{% endblock %}
+
+{% block body %}
+  {% include('Admin/nav.html') %}
+
+  <a href="#" onclick="runUpdate();" id="runUpdate" type="button" class="btn btn-primary my-3">{{ lang['run_update'] }}</a>
+
+  <div class="modal fade" id="consoleOutputModal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="consoleOutputLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="consoleOutputLabel">{{ lang['task_progress'] }}</h5>
+        </div>
+        <div id="consoleOutputArea" class="modal-body">
+        </div>
+        <div class="modal-footer">
+          <a class="btn btn-secondary" href="/admin/tools">{{ lang['close'] }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block js_includes %}
+  <script src="/assets/js/admin.js"></script>
+{% endblock %}

@@ -1,3 +1,36 @@
+function runUpdate() {
+  // check for server-sent event support and execute if available
+  if (typeof(EventSource) !== "undefined") {
+    var source = new EventSource("runUpdate");
+
+    // log events
+    source.onopen = function() { console.log("Connection to server opened."); };
+    source.onerror = function(err) { console.error("EventSource failed:", err); };
+
+    // launch the console output modal
+    $("div#consoleOutputModal").modal("show");
+
+    // handle message updates
+    var consoleOut = document.getElementById("consoleOutputArea");
+    source.onmessage = function(e) {
+      var result = JSON.parse(e.data);
+
+      // check if we received a termination message so we
+      // can close the connection
+      if (result.message == "TERMINATE") {
+        source.close();
+        console.log("Connection to server closed.");
+      } else {
+        // else append to console output
+        consoleOut.innerHTML += result.message + "<br>";
+        consoleOut.scrollTop = consoleOut.scrollHeight;
+      }
+    };
+  } else {
+    document.getElementById("configUpdates").innerHTML = "No server-sent events support - please check the server for updates";
+  }
+}
+
 $('#confirmDeletePass').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget);
 

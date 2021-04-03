@@ -176,6 +176,57 @@ class AdminController extends \Lib\Controller {
                                      'admin_action' => 'configuration'));
     View::renderTemplate('Admin/configurations.html', $args);
   }
+
+  public function toolsAction($args) {
+    $args = array_merge($args, array('admin_action' => 'tools'));
+    View::renderTemplate('Admin/tools.html', $args);
+  }
+
+  public function runUpdate($args) {
+    # headers for event stream
+    header('Cache-Control: no-cache');
+    header('Content-Type: text/event-stream');
+    header('X-Accel-Buffering: no');
+
+    # specify a stdout pipe and the command to launch
+    $descriptorspec = array(1 => array("pipe", "w"));
+    $cmd = "sudo -u pi /home/pi/raspberry-noaa-v2/install_and_upgrade.sh 2>&1";
+
+    # start/launch the command specified
+    $process = proc_open($cmd, $descriptorspec, $pipes, "/home/pi/raspberry-noaa-v2");
+
+    # check if the process launched successfully
+    if (is_resource($process)) {
+      # process output of script line by line, sending updates
+      while (!feof($pipes[1])) {
+        $s = fgets($pipes[1]);
+        $data = array("message" => utf8_encode($s));
+        echo "data: " . json_encode($data) . PHP_EOL . PHP_EOL;
+        ob_flush();
+        flush();
+      }
+
+      # close open file descriptors and process
+      fclose($pipes[1]);
+      $retval = proc_close($process);
+      $data = array("message" => utf8_encode("Closing processor - return value: " . $retval));
+      echo "data: " . json_encode($data) . PHP_EOL . PHP_EOL;
+      ob_flush();
+      flush();
+
+      # send terminate to close connection
+      $data = array("message" => utf8_encode("TERMINATE"));
+      echo "data: " . json_encode($data) . PHP_EOL . PHP_EOL;
+      ob_flush();
+      flush();
+    } else {
+      # something went wrong starting the process
+      $data = array("message" => utf8_encode("Failed to start process"));
+      echo "data: " . json_encode($data) . PHP_EOL . PHP_EOL;
+      ob_flush();
+      flush();
+    }
+  }
 }
 
 ?>

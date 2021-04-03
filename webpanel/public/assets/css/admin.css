@@ -21,3 +21,9 @@ table#admin-pass-list tr.date-separator td {
   font-weight: bold;
   text-align: center;
 }
+
+div#consoleOutputModal div.modal-body {
+  font-family: 'Courier New', monospace;
+  overflow: scroll;
+  width: 100%;
+}

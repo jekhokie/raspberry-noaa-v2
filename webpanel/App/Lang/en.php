@@ -5,6 +5,7 @@ return array(
   "admin_capture_delete_warning" => "Click the 'X' next to the captures you want to delete to have both the pass/capture removed from the database and all associated images deleted. **WARNING**: This is irreversible, so please ensure this is what you want!",
   "admin_pass_delete_warning" => "Click the 'X' next to the passes you want to delete to have the pass unscheduled and removed from the database. **WARNING**: This is irreversible, so please ensure this is what you want!",
   "cancel" => "Cancel",
+  "close" => "Close",
   "captures" => "Captures",
   "configurations" => "Configurations",
   "confirm" => "Confirm",
@@ -25,11 +26,14 @@ return array(
   "pass_start_azimuth" => "Azimuth",
   "passes" => "Passes",
   "prev" => "Prev",
+  "run_update" => "Run Update",
   "satellite" => "Satellite",
   "save" => "Save",
   "successful_delete_capture" => "Successfully deleted capture",
   "successful_delete_pass" => "Successfully deleted pass",
   "successful_update_configs" => "Successfully updated configs",
+  "task_progress" => "Task Progress",
+  "tools" => "Tools",
   "travel_direction" => "Direction",
 );
 ?>
