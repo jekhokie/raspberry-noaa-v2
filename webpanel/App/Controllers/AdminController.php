@@ -21,6 +21,52 @@ class AdminController extends \Lib\Controller {
     }
   }
 
+  # run a general server-side event
+  protected function runServerEvent($cmd) {
+    # headers for event stream
+    header('Cache-Control: no-cache');
+    header('Content-Type: text/event-stream');
+    header('X-Accel-Buffering: no');
+
+    # specify a stdout pipe and the command to launch
+    $descriptorspec = array(1 => array("pipe", "w"));
+
+    # start/launch the command specified
+    $process = proc_open($cmd, $descriptorspec, $pipes, "/home/pi/raspberry-noaa-v2");
+
+    # check if the process launched successfully
+    if (is_resource($process)) {
+      # process output of script line by line, sending updates
+      while (!feof($pipes[1])) {
+        $s = fgets($pipes[1]);
+        $data = array("message" => utf8_encode($s));
+        echo "data: " . json_encode($data) . PHP_EOL . PHP_EOL;
+        ob_flush();
+        flush();
+      }
+
+      # close open file descriptors and process
+      fclose($pipes[1]);
+      $retval = proc_close($process);
+      $data = array("message" => utf8_encode("Closing processor - return value: " . $retval));
+      echo "data: " . json_encode($data) . PHP_EOL . PHP_EOL;
+      ob_flush();
+      flush();
+
+      # send terminate to close connection
+      $data = array("message" => utf8_encode("TERMINATE"));
+      echo "data: " . json_encode($data) . PHP_EOL . PHP_EOL;
+      ob_flush();
+      flush();
+    } else {
+      # something went wrong starting the process
+      $data = array("message" => utf8_encode("Failed to start process"));
+      echo "data: " . json_encode($data) . PHP_EOL . PHP_EOL;
+      ob_flush();
+      flush();
+    }
+  }
+
   public function passesAction($args) {
     $pass = $this->loadModel('Pass');
     $pass->getActiveList();
@@ -178,54 +224,46 @@ class AdminController extends \Lib\Controller {
   }
 
   public function toolsAction($args) {
-    $args = array_merge($args, array('admin_action' => 'tools'));
+    # do work to get and return any available tags
+    $tag_list = array('LATEST');
+    $current_sha1 = trim(`cd /home/pi/raspberry-noaa-v2/ && git rev-parse HEAD`);
+    $current_tag = trim(`cd /home/pi/raspberry-noaa-v2/ && git describe --tags --abbrev=0`);
+    $available_tags = array_filter(explode("\n", `cd /home/pi/raspberry-noaa-v2/ && git tag -l`));
+    $tag_index = array_search("v1.3.0", $available_tags);
+
+    if (($tag_index + 1) < count($available_tags)) {
+      $tag_list = array_slice($available_tags, ($tag_index + 1));
+    }
+
+    $args = array_merge($args, array('admin_action' => 'tools',
+                                     'current_sha1' => $current_sha1,
+                                     'current_tag' => $current_tag,
+                                     'tag_list' => $tag_list));
     View::renderTemplate('Admin/tools.html', $args);
   }
 
+  public function gitUpdateTags($args) {
+    $cmd = "sudo -u pi git fetch --all --tags 2>&1";
+    $this->runServerEvent($cmd);
+  }
+
+  # check out the specified tag
+  public function gitCheckoutTag($args) {
+    $tag = $args['tag'];
+    $cmd = "sudo -u pi git checkout tags/" . $tag . " 2>&1";
+    $this->runServerEvent($cmd);
+  }
+
+  # pull down the latest/edge code
+  public function gitPullLatest($args) {
+    $cmd = "sudo -u pi git pull origin master 2>&1";
+    $this->runServerEvent($cmd);
+  }
+
+  # run the install and upgrade script
   public function runUpdate($args) {
-    # headers for event stream
-    header('Cache-Control: no-cache');
-    header('Content-Type: text/event-stream');
-    header('X-Accel-Buffering: no');
-
-    # specify a stdout pipe and the command to launch
-    $descriptorspec = array(1 => array("pipe", "w"));
     $cmd = "sudo -u pi /home/pi/raspberry-noaa-v2/install_and_upgrade.sh 2>&1";
-
-    # start/launch the command specified
-    $process = proc_open($cmd, $descriptorspec, $pipes, "/home/pi/raspberry-noaa-v2");
-
-    # check if the process launched successfully
-    if (is_resource($process)) {
-      # process output of script line by line, sending updates
-      while (!feof($pipes[1])) {
-        $s = fgets($pipes[1]);
-        $data = array("message" => utf8_encode($s));
-        echo "data: " . json_encode($data) . PHP_EOL . PHP_EOL;
-        ob_flush();
-        flush();
-      }
-
-      # close open file descriptors and process
-      fclose($pipes[1]);
-      $retval = proc_close($process);
-      $data = array("message" => utf8_encode("Closing processor - return value: " . $retval));
-      echo "data: " . json_encode($data) . PHP_EOL . PHP_EOL;
-      ob_flush();
-      flush();
-
-      # send terminate to close connection
-      $data = array("message" => utf8_encode("TERMINATE"));
-      echo "data: " . json_encode($data) . PHP_EOL . PHP_EOL;
-      ob_flush();
-      flush();
-    } else {
-      # something went wrong starting the process
-      $data = array("message" => utf8_encode("Failed to start process"));
-      echo "data: " . json_encode($data) . PHP_EOL . PHP_EOL;
-      ob_flush();
-      flush();
-    }
+    $this->runServerEvent($cmd);
   }
 }
 

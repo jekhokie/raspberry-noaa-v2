@@ -1,7 +1,15 @@
-function runUpdate() {
+// capture the tag to be used when attempting to update source code
+function updateToTag() {
+  var tag = document.getElementById("gitTag").value;
+  var cmd = 'gitCheckoutTag?tag=' + tag;
+  runCommand(cmd);
+}
+
+// run a command and pipe the output to the console viewer
+function runCommand($cmd) {
   // check for server-sent event support and execute if available
   if (typeof(EventSource) !== "undefined") {
-    var source = new EventSource("runUpdate");
+    var source = new EventSource($cmd);
 
     // log events
     source.onopen = function() { console.log("Connection to server opened."); };
