@@ -24,7 +24,7 @@
     </div>
     <div class="form-group row mb-3 align-items-center">
       <div class="col-sm-2">
-        <button onclick="updateToTag();" {% if tag_list[0] == 'LATEST' %}disabled="disabled"{% endif %} type="button" id="runGitPullTag" class="form-control btn btn-sm btn-primary">{{ lang['run_git_pull_tag'] }}</button>
+        <button onclick="updateToTag();" {% if tag_list[0] == 'LATEST' %}disabled="disabled"{% endif %} type="button" id="runGitPullTag" class="form-control btn btn-sm btn-primary">{{ lang['run_git_checkout_tag'] }}</button>
       </div>
       <div class="col-sm-2">
         {% if tag_list[0] == 'LATEST' %}
@@ -39,7 +39,7 @@
           </select>
         {% endif %}
       </div>
-      <label for="runGitPullTag" class="col-sm-6 col-form-label">{{ lang['run_git_pull_tag_txt'] }}</label>
+      <label for="runGitPullTag" class="col-sm-6 col-form-label">{{ lang['run_git_checkout_tag_txt'] }}</label>
     </div>
     <div class="form-group row mb-3 align-items-center">
       <div class="col-sm-2">
