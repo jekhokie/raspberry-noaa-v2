@@ -28,6 +28,7 @@
 
   <form id="admin-config-form" action="/admin/updateConfigurations" method="post" enctype="multipart/form-data">
     <button type="submit" class="btn btn-primary btn-block my-3">{{ lang['save'] }}</button>
+
     {% for config in configuration.list %}
       <div class="form-group row mb-3">
         <label for="{{ config.config_key }}" class="col-sm-3 col-form-label">{{ config.config_key }}</label>
@@ -36,5 +37,7 @@
         </div>
       </div>
     {% endfor %}
+
+    <button type="submit" class="btn btn-primary btn-block my-3">{{ lang['save'] }}</button>
   </form>
 {% endblock %}
