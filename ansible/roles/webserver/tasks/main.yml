@@ -194,4 +194,13 @@
     owner: root
     group: root
     mode: 0440
+
+- name: www-data sudoers install_and_upgrade.sh as pi user
+  become: yes
+  copy:
+    src: 030_www-data-installrn2-nopasswd
+    dest: /etc/sudoers.d/030_www-data-installrn2-nopasswd
+    owner: root
+    group: root
+    mode: 0440
 ...
