@@ -229,7 +229,7 @@ class AdminController extends \Lib\Controller {
     $current_sha1 = trim(`cd /home/pi/raspberry-noaa-v2/ && git rev-parse HEAD`);
     $current_tag = trim(`cd /home/pi/raspberry-noaa-v2/ && git describe --tags --abbrev=0`);
     $available_tags = array_filter(explode("\n", `cd /home/pi/raspberry-noaa-v2/ && git tag -l`));
-    $tag_index = array_search("v1.3.0", $available_tags);
+    $tag_index = array_search($current_tag, $available_tags);
 
     if (($tag_index + 1) < count($available_tags)) {
       $tag_list = array_slice($available_tags, ($tag_index + 1));
