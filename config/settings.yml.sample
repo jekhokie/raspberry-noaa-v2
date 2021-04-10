@@ -245,10 +245,13 @@ disable_wifi_power_mgmt: false
 #   discord_webhook_url - webhook url for the Discord channel
 #   enable_twitter_push - whether to push images to a Twitter feed
 #     * see docs/twitter_push.md for instructions
+#   enable_matrix_push - whether to push images to a Matrix room
+#     * see docs/matrix_push.md for instructions
 enable_email_push: false
 email_push_address: test@ifttt.com
 enable_email_schedule_push: false
 enable_discord_push: false
 discord_webhook_url: ''
 enable_twitter_push: false
+enable_matrix_push: false
 ...
