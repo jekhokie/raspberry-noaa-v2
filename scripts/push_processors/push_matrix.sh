@@ -37,13 +37,18 @@ if [ -z "${MATRIX_ROOM}" ]; then
     exit 1
 fi
 
+
+
 roomid=$MATRIX_ROOM
+roomurl=$(jq -rn --arg u "$roomid" '$u|@uri')
+
+# Join the room to ensure we are in it
+curl -H "Authorization: Bearer $MATRIX_ACCESS_TOKEN" -H "Content-Type: ${content_type}" "$MATRIX_HOMESERVER/_matrix/client/r0/join/${roomurl}"
 
 # Convert Alias to ID
 if [[ $roomid == \#* ]] ;
 then
-    encalias=$(jq -rn --arg u "$roomid" '$u|@uri')
-    roomid=$(curl -X GET -H "Content-Type: application/json" "$HOMESERVER/_matrix/client/r0/directory/room/${encalias}" | jq -r .room_id)
+    roomid=$(curl -X GET -H "Authorization: Bearer $MATRIX_ACCESS_TOKEN" -H "Content-Type: ${content_type}" "$MATRIX_HOMESERVER/_matrix/client/r0/directory/room/${roomurl}" | jq -r .room_id)
 fi
 
 for imagefile in $IMAGES; do
@@ -57,11 +62,11 @@ for imagefile in $IMAGES; do
         content_type=$(file -b --mime-type $imagefile)
 
         # Upload image, extract mxc URL
-        uri=$(curl -X POST --data-binary "@${imagefile}" -H "Authorization: Bearer $ACCESS_TOKEN" -H "Content-Type: ${content_type}" "$HOMESERVER/_matrix/media/r0/upload?filename=${filename}" | jq -r .content_uri)
+        uri=$(curl -X POST -H "Authorization: Bearer $MATRIX_ACCESS_TOKEN" -H "Content-Type: ${content_type}" --data-binary "@${imagefile}" "$MATRIX_HOMESERVER/_matrix/media/r0/upload?filename=${filename}" | jq -r .content_uri)
 
         # Send message with image
-        curl -H "Authorization: Bearer ${ACCESS_TOKEN}" -H "Content-Type: application/json" -X PUT -d "{ \"body\": \"${filename}\", \"msgtype\": \"m.image\", \"url\": \"${uri}\" }" "$HOMESERVER/_matrix/client/r0/rooms/${roomid}/send/m.room.message/$(date +%s)"
+        curl -H -H "Authorization: Bearer $MATRIX_ACCESS_TOKEN" -H "Content-Type: ${content_type}" -X PUT -d "{ \"body\": \"${filename}\", \"msgtype\": \"m.image\", \"url\": \"${uri}\" }" "$MATRIX_HOMESERVER/_matrix/client/r0/rooms/${roomid}/send/m.room.message/$(date +%s)"
     fi
 done
 
-curl -H "Authorization: Bearer ${ACCESS_TOKEN}" -H "Content-Type: application/json" -X PUT -d "{ \"body\": \"${MESSAGE}\" }" "$HOMESERVER/_matrix/client/r0/rooms/${roomid}/send/m.room.message/$(date +%s)"
+curl -H "Authorization: Bearer $MATRIX_ACCESS_TOKEN" -H "Content-Type: ${content_type}" -X PUT -d "{ \"body\": \"${MESSAGE}\" }" "$MATRIX_HOMESERVER/_matrix/client/r0/rooms/${roomid}/send/m.room.message/$(date +%s)"
