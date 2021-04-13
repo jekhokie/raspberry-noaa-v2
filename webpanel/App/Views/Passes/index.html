@@ -33,8 +33,8 @@
       </tr>
     </thead>
     <tbody>
-      {% set now = 'now'|date('m/d/y H:i:s') %}
-      {% set cur_date = 'now'|date('m/d/y') %}
+      {% set now_ms = 'now'|date('U') %}
+      {% set cur_date = now_ms|date('m/d/y') %}
       {% set last_date = 0 %}
 
       {% if pass.list|length <= 0 %}
@@ -46,6 +46,7 @@
           {% set pass_start = pass.pass_start|date('H:i:s') %}
           {% set pass_end = pass.pass_end|date('H:i:s') %}
           {% set cur_date = pass.pass_start|date('m/d/y') %}
+          {% set pass_end_ms = pass.pass_end|date('U') %}
 
           {% if last_date < cur_date %}
             <tr class="date-separator">
@@ -54,7 +55,7 @@
             {% set last_date = cur_date %}
           {% endif %}
 
-          <tr{% if pass.is_active == false or pass_end < now %} class="inactive"{% endif %}>
+          <tr{% if pass.is_active == false or pass_end_ms < now_ms %} class="inactive"{% endif %}>
             <td{% if prev_pass_end >= pass.pass_start %} class="conflict"{% endif %}>
               {% if prev_pass_end >= pass.pass_start %}<i class="fa fa-exclamation-triangle conflict-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['conflicting_pass'] }}"></i>{% endif %}
               {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
