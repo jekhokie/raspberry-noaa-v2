@@ -5,7 +5,7 @@
 # Title: RTLSDR NOAA APT Receiver V1.0.0
 # Author: Dom Robinson
 # Description: APT to WAV recorder for Raspberry-Noaa -V2
-# Generated: Tue Apr  6 16:02:50 2021
+# Generated: Mon Apr 12 23:22:56 2021
 ##################################################
 
 
@@ -80,14 +80,14 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
                 taps=None,
                 fractional_bw=None,
         )
-        self.low_pass_filter_0 = filter.fir_filter_ccf(20, firdes.low_pass(
-        	1, samp_rate, 18000, 1000, firdes.WIN_HAMMING, 6.76))
         self.gr_wavfile_sink_0_0_0_0 = blocks.wavfile_sink(recfile, 1, 11025, 16)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vff((0.7, ))
         self.blks2_wfm_rcv_0 = analog.wfm_rcv(
         	quad_rate=96000,
         	audio_decimation=5,
         )
+        self.band_pass_filter_1 = filter.fir_filter_ccf(20, firdes.band_pass(
+        	1, samp_rate, 137050000, 137950000, 10, firdes.WIN_HAMMING, 6.76))
         self.band_pass_filter_0 = filter.fir_filter_fff(1, firdes.band_pass(
         	1, samp_rate/20, 500, 4200, 200, firdes.WIN_HAMMING, 6.76))
 
@@ -97,12 +97,12 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
         # Connections
         ##################################################
         self.connect((self.band_pass_filter_0, 0), (self.rational_resampler_xxx_0, 0))
+        self.connect((self.band_pass_filter_1, 0), (self.blks2_wfm_rcv_0, 0))
         self.connect((self.blks2_wfm_rcv_0, 0), (self.band_pass_filter_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.gr_wavfile_sink_0_0_0_0, 0))
-        self.connect((self.low_pass_filter_0, 0), (self.blks2_wfm_rcv_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.rational_resampler_xxx_1, 0))
         self.connect((self.rational_resampler_xxx_1, 0), (self.blocks_multiply_const_vxx_0, 0))
-        self.connect((self.rtlsdr_source_0, 0), (self.low_pass_filter_0, 0))
+        self.connect((self.rtlsdr_source_0, 0), (self.band_pass_filter_1, 0))
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -110,7 +110,7 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.rtlsdr_source_0.set_sample_rate(self.samp_rate)
-        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, 18000, 1000, firdes.WIN_HAMMING, 6.76))
+        self.band_pass_filter_1.set_taps(firdes.band_pass(1, self.samp_rate, 137050000, 137950000, 10, firdes.WIN_HAMMING, 6.76))
         self.band_pass_filter_0.set_taps(firdes.band_pass(1, self.samp_rate/20, 500, 4200, 200, firdes.WIN_HAMMING, 6.76))
 
     def get_recfile(self):

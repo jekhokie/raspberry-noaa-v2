@@ -44,6 +44,16 @@
     mode: 0755
     remote_src: yes
 
+- name: install noaa-apt
+  become: yes
+  copy:
+    src: "{{ noaa_home }}/software/noaa-apt"
+    dest: /usr/bin/noaa-apt
+    owner: root
+    group: root
+    mode: 0755
+    remote_src: yes
+
 - name: remove old scheduling cron job
   cron:
     disabled: yes

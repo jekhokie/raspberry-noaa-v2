@@ -98,6 +98,9 @@ delete_audio: false
 #        (note: default value is total list of supported image processors)
 #   noaa_nighttime_enhancements - list of enhancements to create images using during nighttime captures
 #        (note: default value is total list of supported image processors)
+#   noaa_crop_toptobottom - shows entire image including noise at start and end.
+#   noaa_interpolate - produces a larger, higher quality image 
+#   noaa_apt (experimental) - an alternative demodulator and image rendering option to wxtoimg
 flip_meteor_image: true
 produce_spectrogram: true
 noaa_crop_telemetry: false
@@ -112,6 +115,7 @@ show_sun_elevation: true
 show_pass_direction: true
 noaa_daytime_enhancements: 'ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT therm'
 noaa_nighttime_enhancements: 'ZA MCIR MCIR-precip therm'
+noaa_apt: false
 
 # noaa map configurations
 # http://usradioguy.com/wp-content/uploads/2020/05/wxtoimgcommand-line.pdf
