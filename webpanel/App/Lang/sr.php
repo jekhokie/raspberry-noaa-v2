@@ -2,7 +2,8 @@
 return array(
   "admin" => "Admin",
   "admin_delete_confirm_header" => "Potvrdite brisanje",
-  "admin_delete_warning" => "Kliknite na „Ks“ pored snimaka koje želite da izbrišete da biste uklonili i dodavanje / snimanje iz baze podataka i sve povezane slike. ** UPOZORENJE **: Ovo je nepovratno, zato se uverite da je to ono što želite!",
+  "admin_capture_delete_warning" => "Kliknite na „Ks“ pored snimaka koje želite da izbrišete da biste uklonili i dodavanje / snimanje iz baze podataka i sve povezane slike. ** UPOZORENJE **: Ovo je nepovratno, zato se uverite da je to ono što želite!",
+  "admin_pass_delete_warning" => "Kliknite na „Ks“ pored propusnica koje želite da izbrišete, tako da prolazak nije zakazan i uklonjen iz baze podataka. ** UPOZORENJE **: Ovo je nepovratno, pa se uverite da je to ono što želite!",
   "cancel" => "Poništiti, otkazati",
   "captures" => "Hvatanja",
   "confirm" => "Potvrdi",
@@ -24,6 +25,7 @@ return array(
   "prev" => "Prethodna",
   "satellite" => "Satelit",
   "successful_delete_capture" => "Snimanje je uspešno izbrisano",
+  "successful_delete_pass" => "Propusnica je uspešno izbrisana",
   "travel_direction" => "Pravac",
 );
 ?>

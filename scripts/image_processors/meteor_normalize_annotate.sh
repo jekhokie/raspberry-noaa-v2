@@ -49,24 +49,70 @@ yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/gain: $gain\n.../")       
 # vars for image manipulation
 tmp_dir="${NOAA_HOME}/tmp/annotation"
 rendered_file="${tmp_dir}/index.html"
+annotation="${tmp_dir}/annotation.png"
 
 # generate annotation html and copy any assets
 $SCRIPTS_DIR/tools/jinja2_to_file.py "${NOAA_HOME}/config/annotation/annotation.html.j2" "${yml_config}" "${rendered_file}"
 find $NOAA_HOME/config/annotation/* -type f -not -name "*.j2" -exec cp {} "${tmp_dir}/" \;
 
 # generate annotation png and crop to content
-$WKHTMLTOIMG --enable-local-file-access --format png --quality 100 --transparent "file://${rendered_file}" "${tmp_dir}/annotation.png"
-$CONVERT -format png "${tmp_dir}/annotation.png" -background none -flatten -trim +repage "${tmp_dir}/annotation.png"
+$WKHTMLTOIMG --enable-local-file-access --format png --quality 100 --transparent "file://${rendered_file}" "${annotation}"
+$CONVERT -format png "${annotation}" -background none -flatten -trim +repage "${annotation}"
 
-# generate final image with annotation, doubling the annotation for account
-# for the LRPT image sizes, keeping aspect ratio for original image
-img_w=$($CONVERT "${tmp_dir}/annotation.png" -format "%w" info:)
-img_h=$($CONVERT "${tmp_dir}/annotation.png" -format "%h" info:)
+# resize the annotation appropriately, keeping aspect ratio
+img_w=$($CONVERT "${annotation}" -format "%w" info:)
+img_h=$($CONVERT "${annotation}" -format "%h" info:)
 new_img_w=$((img_w * 2))
 new_img_h=$((img_h * 2))
-echo $new_img_w
-echo $new_img_h
-$CONVERT -format jpg "${INPUT_JPG}" \( "${tmp_dir}/annotation.png" -resize "${new_img_w}x${new_img_h}^" \) \
-         -gravity $IMAGE_ANNOTATION_LOCATION \
-         -geometry +10+10 \
-         -composite "${OUTPUT_JPG}"
+$CONVERT "${annotation}" -resize "${new_img_w}x${new_img_h}^" "${annotation}"
+
+# extend the image if the user specified and didn't use
+# one of [West|Center|East] for the annotation location
+# TODO: DRY this up - this is the same code as in the NOAA script
+annotation_location=$(echo $IMAGE_ANNOTATION_LOCATION | tr '[:upper:]' '[:lower:]')
+extend_annotation=0
+if [ "${EXTEND_FOR_ANNOTATION}" == "true" ]; then
+  if [[ "${annotation_location}" =~ ^(west|center|east)$ ]]; then
+    log "You specified extending the annotation, but your annotation location $annotation_location does not support it" "WARN"
+  else
+    extend_annotation=1
+  fi
+fi
+
+# generate the final image with annotation
+if [ $extend_annotation -eq 1 ]; then
+  # calculate expansion height needed to fit annotation
+  annotation_h=$($IDENTIFY -format "%h" "${annotation}")
+  img_expand_px=$(($annotation_h + 20))
+  out_file=$(basename $OUTPUT_JPG)
+  tmp_out="${NOAA_HOME}/tmp/${out_file%%.*}-tmp.jpg"
+
+  # create pixels north or south depending on annotation location
+  gravity_var="South"
+  if [[ "${annotation_location}" =~ ^(northwest|north|northeast)$ ]]; then
+    gravity_var="North"
+  fi
+
+  $CONVERT -quality 100 \
+           -format jpg "${INPUT_JPG}" \
+           -gravity "${gravity_var}" \
+           -background black \
+           -splice "0x${img_expand_px}" "${tmp_out}"
+
+  # generate final image with annotation
+  $CONVERT -format jpg "${tmp_out}" "${annotation}" \
+           -gravity $IMAGE_ANNOTATION_LOCATION \
+           -geometry +0+10 \
+           -composite "${OUTPUT_JPG}"
+
+  # clean up
+  rm "${tmp_out}"
+else
+  $CONVERT -format jpg "${INPUT_JPG}" "${annotation}" \
+           -gravity $IMAGE_ANNOTATION_LOCATION \
+           -geometry +10+10 \
+           -composite "${OUTPUT_JPG}"
+fi
+
+# clean up the annotation
+rm "${annotation}"

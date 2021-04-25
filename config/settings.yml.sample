@@ -69,6 +69,16 @@ meteor_m2_gain: 7.7
 meteor_m2_sun_min_elevation: 6
 meteor_m2_sat_min_elevation: 30
 
+# how many days to schedule passes - note this MUST be an even integer,
+# and the current day counts as "1" - passes will be scheduled until midnight
+# of the `days_to_schedule_passes` final day
+#
+# NOTE: If you want to set this value LOWER than a previously configured
+#       value, you must run the schedule script manually and pass the '-x' switch
+#       after re-running the ./install_and_upgrade.sh script to align the variables:
+#           ./scripts/schedule.sh -x
+days_to_schedule_passes: 1
+
 # whether audio files should be deleted after images are created
 delete_audio: false
 
@@ -78,6 +88,9 @@ delete_audio: false
 #   noaa_crop_telemetry - whether to crop the left/right telemetry in image captures
 #   image_annotation_location - where to place the annotation in images - valid options are:
 #        NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
+#   extend_for_annotation - whether to create a black extension on the north/south location of
+#        the image to place the annotation into (vs. overlaying on the captured data)
+#        (note: this will ONLY work if the image_annotation_location is NOT one of [West|Center|East])
 #   produce_noaa_pristine_image - whether to produce a pristine image (unmodified) for larger
 #        composite-based use cases
 #   produce_noaa_pristine_histogram - whether to produce a histogram of the NOAA pristine image
@@ -93,10 +106,13 @@ delete_audio: false
 #        (note: default value is total list of supported image processors)
 #   noaa_nighttime_enhancements - list of enhancements to create images using during nighttime captures
 #        (note: default value is total list of supported image processors)
+#   noaa_crop_toptobottom - whether to crop the top and bottom noise out of the noaa capture
+#   noaa_interpolate - whether to interpolate and oversample the images (larger images produced)
 flip_meteor_image: true
 produce_spectrogram: true
 noaa_crop_telemetry: false
 image_annotation_location: 'NorthWest'
+extend_for_annotation: false
 produce_noaa_pristine_image: false
 produce_noaa_pristine_histogram: false
 produce_polar_az_el_graph: false
@@ -104,8 +120,10 @@ produce_polar_direction_graph: true
 ground_station_location: ''
 show_sun_elevation: true
 show_pass_direction: true
-noaa_daytime_enhancements: 'ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT therm'
-noaa_nighttime_enhancements: 'ZA MCIR MCIR-precip therm'
+noaa_daytime_enhancements: 'ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT therm avi'
+noaa_nighttime_enhancements: 'ZA MCIR HVCT MCIR-precip therm avi'
+noaa_crop_toptobottom: true
+noaa_interpolate: false
 
 # noaa map configurations
 # http://usradioguy.com/wp-content/uploads/2020/05/wxtoimgcommand-line.pdf
@@ -140,6 +158,13 @@ noaa_map_country_border_color: "0xffff00"
 noaa_map_state_border_enable: true
 noaa_map_state_border_color: "0xffff00"
 
+# settings for thermal map output for NOAA captures
+#   noaa_thermal_temp_overlay - whether to overlay a thermal map for color codes to temperature
+#   noaa_thermal_temp_overlay_location - where to place the thermal map in images - valid options are:
+#        NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
+noaa_thermal_temp_overlay: false
+noaa_thermal_temp_overlay_location: 'NorthEast'
+
 # locale settings for timezone and language
 #   timezone: see https://www.php.net/manual/en/timezones.php
 #   lang_setting: see the 'webpanel/App/Lang' folder for available
@@ -164,7 +189,9 @@ lang_setting: en
 #   admin_username - username used to access the 'admin' endpoint of the webpanel (WARNING: see 'lock_admin_page' above)
 #   admin_password - password used to access the 'admin' endpoint of the webpanel (WARNING: see 'lock_admin_page' above)
 #                    NOTE: MAKE SURE YOU SET THIS TO SOMETHING REASONABLY COMPLICATED!
-#   web_datetime_format - format to display date and time in the web interface - note that this MUST conform to
+#   web_passes_date_format - format to display the dates in the pass list view - note that this MUST conform to
+#                            https://www.php.net/manual/en/datetime.format.php or else bad things will happen
+#   web_datetime_format - format to display date and time in the web interface for captures - note that this MUST conform to
 #                         https://www.php.net/manual/en/datetime.format.php or else bad things will happen
 web_server_name: raspberry-noaa.localdomain
 enable_non_tls: false
@@ -175,6 +202,7 @@ cert_valid_days: 365
 lock_admin_page: false
 admin_username: 'admin'
 admin_password: 'admin'
+web_passes_date_format: 'm/d/Y'
 web_datetime_format: 'm/d/Y H:i:s'
 
 # log level for output from scripts
@@ -185,6 +213,11 @@ log_level: DEBUG
 # by default disabled on "extra-small" devices such as phones due to
 # the processing and space requirements
 enable_satvis: true
+
+# whether to enable the image video in the passes view - note that this
+# is by default disabled on "extra-small" devices such as phones due
+# to the processing and space requirements
+enable_animation: false
 
 # pruning capabilities - must be configured in cron (see documentation)
 #   delete_oldest_n - how many oldest captures to delete on each run
@@ -207,6 +240,7 @@ disable_wifi_power_mgmt: false
 #   enable_discord_push - whether to push images to a Discord channel
 #   discord_webhook_url - webhook url for the Discord channel
 #   enable_twitter_push - whether to push images to a Twitter feed
+#     * see docs/twitter_push.md for instructions
 enable_email_push: false
 email_push_address: test@ifttt.com
 enable_email_schedule_push: false

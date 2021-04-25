@@ -14,6 +14,7 @@ GIT_CHANGES=$(git diff --name-only)
 SDR_INFO=$(rtl_eeprom 2>&1)
 RPI_MODEL=$(cat /proc/device-tree/model | tr -d '\0')
 DISK_LAYOUT=$(lsblk)
+DB_TABLES=$(sqlite3 db/panel.db "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';")
 
 echo "============================================="
 echo "Details about environment"
@@ -52,6 +53,12 @@ else
 fi
 
 echo "---------------------------------------------"
+echo "Satellite SDR Settings:"
+while IFS= read -r res; do
+  echo "  $res"
+done < <(grep -E 'noaa_(15|18|19)_|meteor_m2_' config/settings.yml)
+
+echo "---------------------------------------------"
 echo "USB Device Map:"
 while IFS= read -r res; do
   echo "  $res"
@@ -88,3 +95,16 @@ fi
 echo "---------------------------------------------"
 echo "SDR Information:"
 echo -e "${SDR_INFO}"
+
+echo "---------------------------------------------"
+echo "Database tables:"
+if [ -z "${DB_TABLES}" ]; then
+  echo "  (None)"
+else
+  for db_table in $DB_TABLES; do
+    table_schema=$(sqlite3 db/panel.db ".schema ${db_table}")
+    echo "  ${db_table} =>"
+    echo "      ${table_schema}"
+    echo ""
+  done
+fi

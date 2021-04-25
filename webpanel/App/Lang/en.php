@@ -2,7 +2,8 @@
 return array(
   "admin" => "Admin",
   "admin_delete_confirm_header" => "Confirm Deletion",
-  "admin_delete_warning" => "Click the 'X' next to the captures you want to delete to have both the pass/capture removed from the database and all associated images deleted. **WARNING**: This is irreversible, so please ensure this is what you want!",
+  "admin_capture_delete_warning" => "Click the 'X' next to the captures you want to delete to have both the pass/capture removed from the database and all associated images deleted. **WARNING**: This is irreversible, so please ensure this is what you want!",
+  "admin_pass_delete_warning" => "Click the 'X' next to the passes you want to delete to have the pass unscheduled and removed from the database. **WARNING**: This is irreversible, so please ensure this is what you want!",
   "cancel" => "Cancel",
   "captures" => "Captures",
   "confirm" => "Confirm",
@@ -24,6 +25,7 @@ return array(
   "prev" => "Prev",
   "satellite" => "Satellite",
   "successful_delete_capture" => "Successfully deleted capture",
+  "successful_delete_pass" => "Successfully deleted pass",
   "travel_direction" => "Direction",
 );
 ?>

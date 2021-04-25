@@ -2,7 +2,8 @@
 return array(
   "admin" => "Administrador",
   "admin_delete_confirm_header" => "Confirmar la eliminación",
-  "admin_delete_warning" => "Haga clic en la 'X' junto a las capturas que desea eliminar para eliminar tanto el pase / captura de la base de datos como todas las imágenes asociadas. ** ADVERTENCIA **: ¡Esto es irreversible, así que asegúrese de que esto sea lo que desea!",
+  "admin_capture_delete_warning" => "Haga clic en la 'X' junto a las capturas que desea eliminar para eliminar tanto el pase / captura de la base de datos como todas las imágenes asociadas. ** ADVERTENCIA **: ¡Esto es irreversible, así que asegúrese de que esto sea lo que desea!",
+  "admin_pass_delete_warning" => "Haga clic en la 'X' junto a los pases que desea eliminar para que el pase no se programe ni se elimine de la base de datos. ** ADVERTENCIA **: ¡Esto es irreversible, así que asegúrese de que esto sea lo que desea!",
   "cancel" => "Cancelar",
   "captures" => "Capturas",
   "confirm" => "Confirmar",
@@ -24,6 +25,7 @@ return array(
   "prev" => "Anterior",
   "satellite" => "Satélite",
   "successful_delete_capture" => "Captura eliminada con éxito",
+  "successful_delete_pass" => "Pase eliminado con éxito",
   "travel_direction" => "Dirección",
 );
 ?>
