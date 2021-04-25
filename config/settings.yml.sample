@@ -27,7 +27,8 @@ test_freq_offset: -6
 #   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'gnuradio')
 #     **WARNING**: 'gnuradio' does not work with certain SDR devices (e.g. it will not currently
 #                  work with a RTL-SDR v3 dongle, as no image will be decoded from the bitstream)
-meteor_receiver: 'rtl_fm'
+meteor_receiver: 'gnuradio'
+noaa_receiver: 'gnuradio'
 
 # whether to schedule specific orbiting objects for capture
 #   <satellite_name>_schedule - whether to schedule captures for the satellite
@@ -41,7 +42,7 @@ noaa_15_schedule: true
 noaa_15_sdr_device_id: 0
 noaa_15_freq_offset: -6
 noaa_15_enable_bias_tee: true
-noaa_15_gain: 7.7
+noaa_15_gain: 48.0
 noaa_15_sun_min_elevation: 6
 noaa_15_sat_min_elevation: 30
 
@@ -49,7 +50,7 @@ noaa_18_schedule: true
 noaa_18_sdr_device_id: 0
 noaa_18_freq_offset: -6
 noaa_18_enable_bias_tee: true
-noaa_18_gain: 8.7
+noaa_18_gain: 48.0
 noaa_18_sun_min_elevation: 6
 noaa_18_sat_min_elevation: 30
 
@@ -57,7 +58,7 @@ noaa_19_schedule: true
 noaa_19_sdr_device_id: 0
 noaa_19_freq_offset: -6
 noaa_19_enable_bias_tee: true
-noaa_19_gain: 7.7
+noaa_19_gain: 48.0
 noaa_19_sun_min_elevation: 6
 noaa_19_sat_min_elevation: 30
 
@@ -65,19 +66,9 @@ meteor_m2_schedule: true
 meteor_m2_sdr_device_id: 0
 meteor_m2_freq_offset: -6
 meteor_m2_enable_bias_tee: true
-meteor_m2_gain: 7.7
+meteor_m2_gain: 48.0
 meteor_m2_sun_min_elevation: 6
 meteor_m2_sat_min_elevation: 30
-
-# how many days to schedule passes - note this MUST be an even integer,
-# and the current day counts as "1" - passes will be scheduled until midnight
-# of the `days_to_schedule_passes` final day
-#
-# NOTE: If you want to set this value LOWER than a previously configured
-#       value, you must run the schedule script manually and pass the '-x' switch
-#       after re-running the ./install_and_upgrade.sh script to align the variables:
-#           ./scripts/schedule.sh -x
-days_to_schedule_passes: 1
 
 # whether audio files should be deleted after images are created
 delete_audio: false
@@ -107,8 +98,9 @@ delete_audio: false
 #        (note: default value is total list of supported image processors)
 #   noaa_nighttime_enhancements - list of enhancements to create images using during nighttime captures
 #        (note: default value is total list of supported image processors)
-#   noaa_crop_toptobottom - whether to crop the top and bottom noise out of the noaa capture
-#   noaa_interpolate - whether to interpolate and oversample the images (larger images produced)
+#   noaa_crop_toptobottom - shows entire image including noise at start and end.
+#   noaa_interpolate - produces a larger, higher quality image 
+#   noaa_apt (experimental) - an alternative demodulator and image rendering option to wxtoimg
 flip_meteor_image: true
 produce_spectrogram: true
 noaa_crop_telemetry: false
@@ -121,10 +113,9 @@ produce_polar_direction_graph: true
 ground_station_location: ''
 show_sun_elevation: true
 show_pass_direction: true
-noaa_daytime_enhancements: 'ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT therm avi'
-noaa_nighttime_enhancements: 'ZA MCIR HVCT MCIR-precip therm avi'
-noaa_crop_toptobottom: true
-noaa_interpolate: false
+noaa_daytime_enhancements: 'ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT therm'
+noaa_nighttime_enhancements: 'ZA MCIR MCIR-precip therm'
+noaa_apt: false
 
 # noaa map configurations
 # http://usradioguy.com/wp-content/uploads/2020/05/wxtoimgcommand-line.pdf
@@ -190,9 +181,7 @@ lang_setting: en
 #   admin_username - username used to access the 'admin' endpoint of the webpanel (WARNING: see 'lock_admin_page' above)
 #   admin_password - password used to access the 'admin' endpoint of the webpanel (WARNING: see 'lock_admin_page' above)
 #                    NOTE: MAKE SURE YOU SET THIS TO SOMETHING REASONABLY COMPLICATED!
-#   web_passes_date_format - format to display the dates in the pass list view - note that this MUST conform to
-#                            https://www.php.net/manual/en/datetime.format.php or else bad things will happen
-#   web_datetime_format - format to display date and time in the web interface for captures - note that this MUST conform to
+#   web_datetime_format - format to display date and time in the web interface - note that this MUST conform to
 #                         https://www.php.net/manual/en/datetime.format.php or else bad things will happen
 web_server_name: raspberry-noaa.localdomain
 enable_non_tls: false
@@ -203,7 +192,6 @@ cert_valid_days: 365
 lock_admin_page: false
 admin_username: 'admin'
 admin_password: 'admin'
-web_passes_date_format: 'm/d/Y'
 web_datetime_format: 'm/d/Y H:i:s'
 
 # log level for output from scripts
@@ -214,11 +202,6 @@ log_level: DEBUG
 # by default disabled on "extra-small" devices such as phones due to
 # the processing and space requirements
 enable_satvis: true
-
-# whether to enable the image video in the passes view - note that this
-# is by default disabled on "extra-small" devices such as phones due
-# to the processing and space requirements
-enable_animation: false
 
 # pruning capabilities - must be configured in cron (see documentation)
 #   delete_oldest_n - how many oldest captures to delete on each run
