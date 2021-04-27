@@ -148,7 +148,8 @@
     "enable_twitter_push":        { "type": "boolean" },
     "enable_slack_push":          { "type": "boolean" },
     "slack_push_url":             { "type": "string" },
-    "slack_push_to":              { "type": "string" }
+    "slack_push_to":              { "type": "string" },
+    "slack_link":                 { "type": "string" }
   },
   "required": [
     "latitude",

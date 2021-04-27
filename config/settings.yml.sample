@@ -251,4 +251,5 @@ enable_twitter_push: false
 enable_slack_push: false
 slack_push_url: ''
 slack_push_to: ''
+slack_link: 'https://XXXX/captures/listImages'
 ...

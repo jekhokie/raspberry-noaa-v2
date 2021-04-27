@@ -291,6 +291,10 @@ if [ "${ENABLE_SLACK_PUSH}" == "true" ]; then
   slack_push_annotation="${slack_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}\n"
   slack_push_annotation="${slack_push_annotation} Sun Elevation: ${SUN_ELEV}°\n"
   slack_push_annotation="${slack_push_annotation} Gain: ${gain} | ${PASS_DIRECTION}\n"
+
+  pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
+  slack_push_annotation="${slack_push_annotation} <${SLACK_LINK_URL}?pass_id=${pass_id}>\n";
+
   ${PUSH_PROC_DIR}/push_slack.sh "${slack_push_annotation}" $push_file_list
 fi
 
