@@ -230,6 +230,9 @@ for enhancement in $ENHANCEMENTS; do
     "therm")
       proc_script="noaa_therm.sh"
       ;;
+    "apt")
+      proc_script="noaa_apt.sh"
+      ;;
   esac
 
   if [ -z "${proc_script}" ]; then
