@@ -29,4 +29,4 @@ fi
 
 # produce the output image
 #$WXTOIMG -o -m "${MAP_OVERLAY}" ${extra_args} -e "MSA" "${INPUT_WAV}" "${OUTPUT_IMAGE}"
-$NOAAAPT "${INPUT_WAV}" -m yes -F --contrast telemetry -o "${OUTPUT_IMAGE}"
+$NOAAAPT "${INPUT_WAV}" -m yes -F -c telemetry -o "${OUTPUT_IMAGE}"
