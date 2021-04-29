@@ -15,7 +15,7 @@ configured to run nightly at midnight using this script:
 
 ```bash
 # prune oldest n captures
-cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa-v2/scripts/prune_oldest.sh") | crontab -
+cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa-v2/scripts/prune_scripts/prune_oldest.sh") | crontab -
 ```
 
 ## Prune Captures Older Than n Days
@@ -26,5 +26,5 @@ that is configured to run nightly at midnight using this script:
 
 ```bash
 # prune captures older than n days
-cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa-v2/scripts/prune_older_than.sh") | crontab -
+cat <(crontab -l) <(echo "1 0 * * * /home/pi/raspberry-noaa-v2/scripts/prune_scripts/prune_older_than.sh") | crontab -
 ```
