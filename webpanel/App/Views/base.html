@@ -33,6 +33,9 @@
           <li class="nav-item {% if page == 'admin' %} active {% endif %}">
             <a class="nav-link" href="/admin">{{ lang['admin'] }}</a>
           </li>
+          <li class="nav-item {% if page == 'setup' %} active {% endif %}">
+            <a class="nav-link" href="/setup">{{ lang['setup'] }}</a>
+          </li>
         </ul>
         <span class="navbar-text timezone">
           <em>
@@ -43,6 +46,8 @@
       </div>
     </header>
 
+<div class="flex-wrapper">
+
     <div class="container">
       {% block pre_body %}
       {% endblock %}
@@ -51,11 +56,15 @@
       {% endblock %}
     </div>
 
+
+
     <footer class="footer text-center">
       <div class="container">
         <a href="https://github.com/jekhokie/raspberry-noaa-v2"><img class="img-footer" src="/assets/web_img/logo-small-v2.png" alt="logo"></a>
       </div>
     </footer>
+
+</div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
             integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

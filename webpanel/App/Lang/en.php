@@ -23,6 +23,7 @@ return array(
   "passes" => "Passes",
   "prev" => "Prev",
   "satellite" => "Satellite",
+  "setup" => "Setup",
   "successful_delete_capture" => "Successfully deleted capture",
   "travel_direction" => "Direction",
 );
