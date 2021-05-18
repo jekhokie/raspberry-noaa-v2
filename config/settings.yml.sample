@@ -37,6 +37,8 @@ meteor_receiver: 'rtl_fm'
 #   <satellite_name>_gain - gain setting for specific satellite captures
 #   <satellite_name>_sun_min_elevation - threshold for sun elevation for specific satellite captures
 #   <satellite_name>_sat_min_elevation - threshold for sat elevation for specific satellite captures
+#   <satellite_name>_memory_threshold - for METEOR satellite, minimum free memory (MB) required to store pass in RAM
+
 noaa_15_schedule: true
 noaa_15_sdr_device_id: 0
 noaa_15_freq_offset: -6
@@ -68,6 +70,7 @@ meteor_m2_enable_bias_tee: true
 meteor_m2_gain: 7.7
 meteor_m2_sun_min_elevation: 6
 meteor_m2_sat_min_elevation: 30
+meteor_m2_memory_threshold: 600
 
 # how many days to schedule passes - note this MUST be an even integer,
 # and the current day counts as "1" - passes will be scheduled until midnight
