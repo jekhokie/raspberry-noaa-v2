@@ -56,10 +56,12 @@ for imagefile in $IMAGES; do
         uri=$(curl -X POST -H "Authorization: Bearer $MATRIX_ACCESS_TOKEN" -H "Content-Type: ${content_type}" --data-binary "@${imagefile}" "$MATRIX_HOMESERVER/_matrix/media/r0/upload?filename=${filename}" | jq -r .content_uri)
 
         # Send message with image
-        curl -H "Authorization: Bearer $MATRIX_ACCESS_TOKEN" -H "Content-Type: ${content_type}" -X PUT -d "{ \"body\": \"${filename}\", \"msgtype\": \"m.image\", \"url\": \"${uri}\" }" "$MATRIX_HOMESERVER/_matrix/client/r0/rooms/${roomid}/send/m.room.message/$(date +%s)"
+	image_log=$(curl -H "Authorization: Bearer $MATRIX_ACCESS_TOKEN" -H "Content-Type: ${content_type}" -X PUT -d "{ \"body\": \"${filename}\", \"msgtype\": \"m.image\", \"url\": \"${uri}\" }" "$MATRIX_HOMESERVER/_matrix/client/r0/rooms/${roomid}/send/m.room.message/$(date +%s)" 2>&1)
+	log "${image_log}" "INFO"
     fi
 done
 
 sleep 1
 
-curl -H "Authorization: Bearer $MATRIX_ACCESS_TOKEN" -H "Content-Type: ${content_type}" -X PUT -d "{ \"body\": \"${MESSAGE}\", \"msgtype\": \"m.text\" }" "$MATRIX_HOMESERVER/_matrix/client/r0/rooms/${roomid}/send/m.room.message/$(date +%s)"
+message_log=$(curl -H "Authorization: Bearer $MATRIX_ACCESS_TOKEN" -H "Content-Type: ${content_type}" -X PUT -d "{ \"body\": \"${MESSAGE}\", \"msgtype\": \"m.text\" }" "$MATRIX_HOMESERVER/_matrix/client/r0/rooms/${roomid}/send/m.room.message/$(date +%s)" 2?&1)
+log "${message_log}" "INFO"
