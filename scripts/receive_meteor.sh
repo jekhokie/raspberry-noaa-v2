@@ -409,6 +409,24 @@ if [ "${ENABLE_TWITTER_PUSH}" == "true" ]; then
   ${PUSH_PROC_DIR}/push_twitter.sh "${twitter_push_annotation}" $push_file_list
 fi
 
+# handle matrix pushing if enabled
+if [ "${ENABLE_MATRIX_PUSH}" == "true" ]; then
+    # create push annotation specific to matrix
+    # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
+    matrix_push_annotation=""
+    if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+        matrix_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
+    fi
+    matrix_push_annotation="${matrix_push_annotation}${SAT_NAME} ${capture_start}"
+    matrix_push_annotation="${matrix_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
+    matrix_push_annotation="${matrix_push_annotation} Sun Elevation: ${SUN_ELEV}°"
+    matrix_push_annotation="${matrix_push_annotation} Gain: ${gain}"
+    matrix_push_annotation="${matrix_push_annotation} | ${PASS_DIRECTION}"
+
+    log "Pushing image enhancements to Matrix" "INFO"
+    ${PUSH_PROC_DIR}/push_matrix.sh "${matrix_push_annotation}" $push_file_list
+fi
+
 # calculate and report total time for capture
 TIMER_END=$(date '+%s')
 DIFF=$(($TIMER_END - $TIMER_START))

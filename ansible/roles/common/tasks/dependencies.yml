@@ -13,6 +13,7 @@
       - gnuradio
       - gr-osmosdr
       - imagemagick
+      - jq
       - libatlas-base-dev
       - libjpeg9
       - libjpeg9-dev
