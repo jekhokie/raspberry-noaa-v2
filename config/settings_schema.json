@@ -146,7 +146,8 @@
     "enable_email_schedule_push": { "type": "boolean" },
     "enable_discord_push":        { "type": "boolean" },
     "discord_webhook_url":        { "type": "string" },
-    "enable_twitter_push":        { "type": "boolean" }
+    "enable_twitter_push":        { "type": "boolean" },
+    "enable_matrix_push":        { "type": "boolean" }
   },
   "required": [
     "latitude",
@@ -239,6 +240,7 @@
     "enable_email_schedule_push",
     "enable_discord_push",
     "discord_webhook_url",
-    "enable_twitter_push"
+    "enable_twitter_push",
+    "enable_matrix_push"
   ]
 }
