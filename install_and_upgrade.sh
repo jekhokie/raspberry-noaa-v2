@@ -1,11 +1,18 @@
 #!/bin/bash
 
-RED=$(tput setaf 1)
-GREEN=$(tput setaf 2)
-YELLOW=$(tput setaf 3)
-BLUE=$(tput setaf 4)
-BOLD=$(tput bold)
-RESET=$(tput sgr0)
+echo "Install running in:  " $HOME
+
+RED=; GREEN=; YELLOW=; BLUE=; BOLD=; RESET=; 
+case ${TERM} in
+  '') ;;
+  *)
+      RED=`tput setaf 1`
+      GREEN=`tput setaf 2`
+      YELLOW=`tput setaf 3`
+      BLUE=`tput setaf 6`
+      BOLD=`tput bold`
+      RESET=`tput sgr0`;;
+esac
 
 die() {
   >&2 echo "${RED}Error: $1${RESET}" && exit 1
@@ -27,6 +34,7 @@ log_finished() {
 if [ $EUID -eq 0 ]; then
   die "Please run this script as the pi user (not as root)"
 fi
+
 
 # verify the repo exists as expected in the home directory
 if [ ! -e "$HOME/raspberry-noaa-v2" ]; then
@@ -116,7 +124,7 @@ fi
 log_running "Updating web content..."
 (
   find $WEB_HOME/ -mindepth 1 -type d -name "Config" -prune -o -print | xargs rm -rf &&
-  cp -r $NOAA_HOME/webpanel/* $WEB_HOME/ &&
+  cp -rP $NOAA_HOME/webpanel/* $WEB_HOME/ &&
   sudo chown -R pi:www-data $WEB_HOME/ &&
   composer install -d $WEB_HOME/
 ) || die "  Something went wrong updating web content - please inspect the logs above"

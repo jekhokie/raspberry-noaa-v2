@@ -25,8 +25,8 @@
     {% endif %}
   {% endif %}
 
- <span><button onclick="saveUpdate()" class="btn btn-danger" id="btn-save">Save Edit</button></span>
-
+ <span><button onclick="saveUpdate()" class="btn btn-danger" id="btn-save">Save And Install Edit</button></span>
+Or leave this window to cancel edits.
 <div id="editor" class="aceEditor"></div>
 <script src="/assets/src/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
@@ -43,7 +43,7 @@ function loadFile(filePath) {
   return result;
  }
 
-    var s = loadFile("http://sdr:8900/assets/php/settings.php");
+    var s = loadFile("./assets/php/settings.yml");
     var editor = ace.edit("editor");
     editor.session.setMode('ace/mode/yaml');
     editor.session.setValue(s);
@@ -57,8 +57,12 @@ function loadFile(filePath) {
    var xhr = new XMLHttpRequest(); 
    xhr.open( 'post', '/assets/php/post.php', true );
    xhr.send(data);
+   pop_up('/assets/php/update.php');
  };
 
+function pop_up(url){
+window.open(url,'win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=376,height=368,directories=no,location=no') 
+}
 
 
 </script>
