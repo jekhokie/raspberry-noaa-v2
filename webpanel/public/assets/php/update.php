@@ -1,11 +1,12 @@
 <?php
-$home='/home/pi';
+
+$home=file_get_contents('home');;
 
 putenv("HOME=$home");
 $home = getenv("HOME");
 echo "<p> php HOME env: ".($home."</p>");
 
-$a = popen('TERM=xterm-256color '.$home.'/raspberry-noaa-v2/install_and_upgrade.sh 2>&1', 'r');
+$a = popen('TERM=xterm-256color '.$home.'/install_and_upgrade.sh 2>&1', 'r');
 
 echo '<table width="99%"><tr><td>Terminal Response</td></tr>';
 
