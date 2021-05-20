@@ -128,6 +128,7 @@ log_running "Updating web content..."
   sudo chown www-data:www-data $NOAA_HOME/config/settings.yml
   sudo chmod 655 $NOAA_HOME/config/settings.yml
   echo $NOAA_HOME > $WEB_HOME/public/assets/php/home
+  ln -s $NOAA_HOME/config/settings.yml $WEB_HOME/public/assets/php/settings.yml
   sudo chown -R pi:www-data $WEB_HOME/ &&
   composer install -d $WEB_HOME/
 ) || die "  Something went wrong updating web content - please inspect the logs above"
