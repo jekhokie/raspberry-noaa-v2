@@ -24,7 +24,7 @@ if [ ${OUT_FILE: -4} != ".wav" ]; then
 fi
 
 log "Recording at ${METEOR_FREQ} MHz..." "INFO"
-if [ ${GAIN} == 0]; then
+if [ ${GAIN} == 0 ]; then
 timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -M raw -f "${METEOR_FREQ}"M -p "${FREQ_OFFSET}" -s 288k | $SOX -t raw -r 288k -c 2 -b 16 -e s - -t wav "${OUT_FILE}" rate 96k >> $NOAA_LOG 2>&1
 else
 timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -M raw -f "${METEOR_FREQ}"M -p "${FREQ_OFFSET}" -s 288k -g "${GAIN}" | $SOX -t raw -r 288k -c 2 -b 16 -e s - -t wav "${OUT_FILE}" rate 96k >> $NOAA_LOG 2>&1
