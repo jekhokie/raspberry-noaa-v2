@@ -253,5 +253,9 @@ enable_email_schedule_push: false
 enable_discord_push: false
 discord_webhook_url: ''
 enable_twitter_push: false
+enable_slack_push: false
+slack_push_url: ''
+slack_push_to: ''
+slack_link: 'https://XXXX/captures/listImages'
 enable_matrix_push: false
 ...

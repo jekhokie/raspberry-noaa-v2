@@ -281,6 +281,23 @@ for enhancement in $ENHANCEMENTS; do
   fi
 done
 
+# handle Slack pushing if enabled
+if [ "${ENABLE_SLACK_PUSH}" == "true" ]; then
+  slack_push_annotation=""
+  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+    slack_push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n "
+  fi
+  slack_push_annotation="${slack_push_annotation}${SAT_NAME} ${capture_start}\n"
+  slack_push_annotation="${slack_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}\n"
+  slack_push_annotation="${slack_push_annotation} Sun Elevation: ${SUN_ELEV}°\n"
+  slack_push_annotation="${slack_push_annotation} Gain: ${gain} | ${PASS_DIRECTION}\n"
+
+  pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
+  slack_push_annotation="${slack_push_annotation} <${SLACK_LINK_URL}?pass_id=${pass_id}>\n";
+
+  ${PUSH_PROC_DIR}/push_slack.sh "${slack_push_annotation}" $push_file_list
+fi
+
 # handle twitter pushing if enabled
 if [ "${ENABLE_TWITTER_PUSH}" == "true" ]; then
   # create push annotation specific to twitter
