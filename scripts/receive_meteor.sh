@@ -47,12 +47,17 @@ AUDIO_FILE_BASE="${METEOR_AUDIO_OUTPUT}/${FILENAME_BASE}"
 IMAGE_FILE_BASE="${IMAGE_OUTPUT}/${FILENAME_BASE}"
 IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 
-in_mem=true
-SYSTEM_MEMORY=$(free -m | awk '/^Mem:/{print $2}')
-if [ "$SYSTEM_MEMORY" -lt 2000 ]; then
+# check if there is enough free memory to store pass on RAM
+FREE_MEMORY=$(free -m | grep Mem | awk '{print $4}')
+if [ "$FREE_MEMORY" -lt $METEOR_M2_MEMORY_TRESHOLD ]; then
   log "The system doesn't have enough space to store a Meteor pass on RAM" "INFO"
+  log "Free : ${FREE_MEMORY} ; Required : ${METEOR_M2_MEMORY_TRESHOLD}" "INFO"
   RAMFS_AUDIO_BASE="${METEOR_AUDIO_OUTPUT}/${FILENAME_BASE}"
   in_mem=false
+else
+  log "The system have enough space to store a Meteor pass on RAM" "INFO"
+  log "Free : ${FREE_MEMORY} ; Required : ${METEOR_M2_MEMORY_TRESHOLD}" "INFO"
+  in_mem=true
 fi
 
 FLIP=""
@@ -152,6 +157,11 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
                                     "direction"
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png"
   fi
+
+  # how are we about memory usage at this point ?
+  FREE_MEMORY=$(free -m | grep Mem | awk '{print $4}')
+  RAMFS_USAGE=$(du -sh ${RAMFS_AUDIO} | awk '{print $1}')
+  log "Free memory : ${FREE_MEMORY} ; Total RAMFS usage : ${RAMFS_USAGE}" "INFO"
 
   if [ "$DELETE_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
@@ -414,6 +424,24 @@ if [ "${ENABLE_TWITTER_PUSH}" == "true" ]; then
 
   log "Pushing image enhancements to Twitter" "INFO"
   ${PUSH_PROC_DIR}/push_twitter.sh "${twitter_push_annotation}" $push_file_list
+fi
+
+# handle matrix pushing if enabled
+if [ "${ENABLE_MATRIX_PUSH}" == "true" ]; then
+    # create push annotation specific to matrix
+    # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
+    matrix_push_annotation=""
+    if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+        matrix_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
+    fi
+    matrix_push_annotation="${matrix_push_annotation}${SAT_NAME} ${capture_start}"
+    matrix_push_annotation="${matrix_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
+    matrix_push_annotation="${matrix_push_annotation} Sun Elevation: ${SUN_ELEV}°"
+    matrix_push_annotation="${matrix_push_annotation} Gain: ${gain}"
+    matrix_push_annotation="${matrix_push_annotation} | ${PASS_DIRECTION}"
+
+    log "Pushing image enhancements to Matrix" "INFO"
+    ${PUSH_PROC_DIR}/push_matrix.sh "${matrix_push_annotation}" $push_file_list
 fi
 
 # calculate and report total time for capture

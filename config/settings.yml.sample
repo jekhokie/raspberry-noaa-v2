@@ -37,6 +37,8 @@ meteor_receiver: 'rtl_fm'
 #   <satellite_name>_gain - gain setting for specific satellite captures
 #   <satellite_name>_sun_min_elevation - threshold for sun elevation for specific satellite captures
 #   <satellite_name>_sat_min_elevation - threshold for sat elevation for specific satellite captures
+#   <satellite_name>_memory_threshold - for METEOR satellite, minimum free memory (MB) required to store pass in RAM
+
 noaa_15_schedule: true
 noaa_15_sdr_device_id: 0
 noaa_15_freq_offset: -6
@@ -68,6 +70,7 @@ meteor_m2_enable_bias_tee: true
 meteor_m2_gain: 7.7
 meteor_m2_sun_min_elevation: 6
 meteor_m2_sat_min_elevation: 30
+meteor_m2_memory_threshold: 600
 
 # how many days to schedule passes - note this MUST be an even integer,
 # and the current day counts as "1" - passes will be scheduled until midnight
@@ -242,6 +245,8 @@ disable_wifi_power_mgmt: false
 #   discord_webhook_url - webhook url for the Discord channel
 #   enable_twitter_push - whether to push images to a Twitter feed
 #     * see docs/twitter_push.md for instructions
+#   enable_matrix_push - whether to push images to a Matrix room
+#     * see docs/matrix_push.md for instructions
 enable_email_push: false
 email_push_address: test@ifttt.com
 enable_email_schedule_push: false
@@ -252,4 +257,5 @@ enable_slack_push: false
 slack_push_url: ''
 slack_push_to: ''
 slack_link: 'https://XXXX/captures/listImages'
+enable_matrix_push: false
 ...
