@@ -233,7 +233,9 @@ delete_older_than_n: 0
 #   disable_wifi_power_mgmt - if running wireless internet and you want to
 #       disable "sleep" mode of your wifi device (assuming it's wlan0), set
 #       this to true (note: updating this requires a reboot)
+#   disable_at_mail - if you do not want "at" to send mail after job execution
 disable_wifi_power_mgmt: false
+disable_at_mail: false
 
 # push processing settings for sending images elsewhere
 #   * NOTE: Make sure you set up your ~/.msmtprc file before enabling email push!

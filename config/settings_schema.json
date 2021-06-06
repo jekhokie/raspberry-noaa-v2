@@ -133,6 +133,7 @@
       "type": "string",
       "enum": [ "DEBUG", "WARN", "INFO", "ERROR" ]
     },
+    "disable_at_mail":         { "type": "boolean" },
     "enable_satvis":           { "type": "boolean" },
     "enable_animation":        { "type": "boolean" },
     "delete_oldest_n":         { "type": "number" },
@@ -151,7 +152,7 @@
     "slack_push_url":             { "type": "string" },
     "slack_push_to":              { "type": "string" },
     "slack_link":                 { "type": "string" },
-    "enable_matrix_push":        { "type": "boolean" }
+    "enable_matrix_push":         { "type": "boolean" }
   },
   "required": [
     "latitude",
@@ -234,6 +235,7 @@
     "web_passes_date_format",
     "web_datetime_format",
     "log_level",
+    "disable_at_mail",
     "enable_satvis",
     "enable_animation",
     "delete_oldest_n",
