@@ -19,6 +19,20 @@
   register: meteor_demod
   when: not meteor_demod_bin.stat.exists
 
+- name: create meteor_demod build directory
+  file:
+    path: /tmp/meteor_demod/build
+    state: directory
+    mode: 0755
+  when: meteor_demod.changed
+
+- name: generate build system for meteor_demod software
+  command: cmake ../ -DINSTALL_UDEV_RULES=ON -DDETACH_KERNEL_DRIVER=ON
+  args:
+    chdir: /tmp/meteor_demod/build
+    creates: /tmp/meteor_demod/build/Makefile
+  when: meteor_demod.changed
+
 - name: make meteor_demod software
   command: make
   args:

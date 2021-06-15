@@ -8,6 +8,7 @@
 
 - name: disable systemd-timesyncd
   become: yes
+  ignore_errors: yes
   service:
     name: systemd-timesyncd
     state: stopped
