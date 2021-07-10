@@ -1,0 +1,1 @@
+%www-data ALL=(pi) NOPASSWD: /home/pi/raspberry-noaa-v2/install_and_upgrade.sh, /usr/bin/git

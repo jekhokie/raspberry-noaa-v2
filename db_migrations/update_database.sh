@@ -106,4 +106,13 @@ else
   log "  - ${script} already applied" "INFO"
 fi
 
+script="10_add_configuration_table.sql"
+check=$($SQL_CMD $NOAA_HOME/db/panel.db ".schema configurations")
+if [ -z "${check}" ]; then
+  log "  - applying ${script}" "INFO"
+  $SQL_CMD $NOAA_HOME/db/panel.db < $NOAA_HOME/db_migrations/$script
+else
+  log "  - ${script} already applied" "INFO"
+fi
+
 log "Schema updates complete!" "INFO"
