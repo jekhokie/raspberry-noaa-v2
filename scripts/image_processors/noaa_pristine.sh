@@ -4,10 +4,10 @@
 #
 # Input parameters:
 #   1. Input .wav file
-#   2. Output .jpg file
+#   2. Output .png file
 #
 # Example:
-#   ./noaa_hvc.sh /path/to/map_overlay.png /path/to/input.wav /path/to/output.jpg
+#   ./noaa_hvc.sh /path/to/input.wav /path/to/output.png
 
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
@@ -18,4 +18,4 @@ INPUT_WAV=$1
 OUTPUT_IMAGE=$2
 
 # produce the output image
-$WXTOIMG -o -e "pristine" "${INPUT_WAV}" "${OUTPUT_IMAGE}"
+$WXTOIMG -o -e -16 "pristine" "${INPUT_WAV}" "${OUTPUT_IMAGE}"

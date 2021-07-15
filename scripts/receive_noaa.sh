@@ -87,21 +87,34 @@ if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
 fi
 
 pristine=0
-histogram=0
 if [[ "${PRODUCE_NOAA_PRISTINE}" == "true" ]]; then
   log "Producing pristine image" "INFO"
   pristine=1
-  ${IMAGE_PROC_DIR}/noaa_pristine.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
-  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_THUMB_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
-
-  if [ "${PRODUCE_NOAA_PRISTINE_HISTOGRAM}" == "true" ]; then
-    log "Producing histogram of NOAA pristine image" "INFO"
-    histogram=1
-    histogram_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
-    ${IMAGE_PROC_DIR}/histogram.sh "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_FILE_BASE}-histogram.jpg" "${SAT_NAME}" "${histogram_text}" >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram.jpg" "${IMAGE_THUMB_BASE}-histogram.jpg" >> $NOAA_LOG 2>&1
-  fi
+  ${IMAGE_PROC_DIR}/noaa_pristine.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.png" >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.png" "${IMAGE_THUMB_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
 fi
+
+histogram=0
+if [ "${PRODUCE_NOAA_PRISTINE_HISTOGRAM}" == "true" ]; then
+  tmp_dir="${NOAA_HOME}/tmp"
+  histogram=1
+  histogram_text="${capture_start} @ ${SAT_MAX_ELEVATION}° Gain: ${GAIN}"
+
+  log "Generating Data for Histogram" "INFO"
+  ${IMAGE_PROC_DIR}/noaa_histogram_data.sh "${AUDIO_FILE_BASE}.wav" "${tmp_dir}/${FILENAME_BASE}-a.png" "${tmp_dir}/${FILENAME_BASE}-b.png" >> $NOAA_LOG 2>&1
+
+  log "Producing histogram of NOAA pristine image channel A" "INFO"
+  ${IMAGE_PROC_DIR}/histogram.sh "${tmp_dir}/${FILENAME_BASE}-a.png" "${IMAGE_FILE_BASE}-histogram-a.jpg" "${SAT_NAME} - Channel A" "${histogram_text}" >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram-a.jpg" "${IMAGE_THUMB_BASE}-histogram-a.jpg" >> $NOAA_LOG 2>&1
+
+  log "Producing histogram of NOAA pristine image channel B" "INFO"
+  ${IMAGE_PROC_DIR}/histogram.sh "${tmp_dir}/${FILENAME_BASE}-b.png" "${IMAGE_FILE_BASE}-histogram-b.jpg" "${SAT_NAME} - Channel B" "${histogram_text}" >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram-b.jpg" "${IMAGE_THUMB_BASE}-histogram-b.jpg" >> $NOAA_LOG 2>&1
+
+  rm "${tmp_dir}/${FILENAME_BASE}-a.png"
+  rm "${tmp_dir}/${FILENAME_BASE}-b.png"
+fi
+
 
 polar_az_el=0
 if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
