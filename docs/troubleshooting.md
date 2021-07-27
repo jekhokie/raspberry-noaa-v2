@@ -111,7 +111,9 @@ settings.
 PPM is the error rate measured in Parts Per Million of your RTL-SDR device. While most RTL-SDR have a low PPM, they no two devices have the same PPM. 
 To evaluate what your device's PPM is you can do so at the command line as follows:
 
-``` $ rtl_test -p
+``` 
+
+$ rtl_test -p
 Found 1 device(s):
   0:  Realtek, RTL2838UHIDIR, SN: 00000001
 
@@ -140,6 +142,7 @@ real sample rate: 2047887 current PPM: -55 cumulative PPM: -3
 real sample rate: 2048116 current PPM: 57 cumulative PPM: 2
 real sample rate: 2048020 current PPM: 10 cumulative PPM: 2
 real sample rate: 2048027 current PPM: 14 cumulative PPM: 3 
+...
 ```
 
 As you can see from my example above the PPM for my card is beginning to average at around 2/3. 
