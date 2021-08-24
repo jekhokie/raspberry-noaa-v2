@@ -35,4 +35,4 @@ if [ "${NOAA_INTERPOLATE}" == "true" ]; then
 fi
 
 # produce the output image
-$WXTOIMG -o -m "${MAP_OVERLAY}" ${extra_args} -e "HVCT" "${INPUT_WAV}" "${OUTPUT_IMAGE}"
+$WXTOIMG -o -m "${MAP_OVERLAY}" ${extra_args} -e "HVCT-precip" "${INPUT_WAV}" "${OUTPUT_IMAGE}"
