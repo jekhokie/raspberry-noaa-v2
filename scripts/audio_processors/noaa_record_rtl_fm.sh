@@ -42,8 +42,4 @@ if [ ${OUT_FILE: -4} != ".wav" ]; then
 fi
 
 log "Recording at ${freq} MHz..." "INFO"
-if [ "${GAIN}" == 0 ]; then
-timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -f "${freq}"M -p "${FREQ_OFFSET}" -s 60k  -E wav -E deemp -F 9 - | $SOX -t raw -e signed -c 1 -b 16 -r 60000 - "${OUT_FILE}" rate 11025
-else
 timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -f "${freq}"M -p "${FREQ_OFFSET}" -s 60k -g "${GAIN}" -E wav -E deemp -F 9 - | $SOX -t raw -e signed -c 1 -b 16 -r 60000 - "${OUT_FILE}" rate 11025
-fi
