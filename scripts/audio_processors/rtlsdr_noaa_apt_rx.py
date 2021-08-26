@@ -39,8 +39,7 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
     	#   4. Frequency offset (PPM)
 
     	stream_name = sys.argv[1]
-    	#gain = float(sys.argv[2])
-	gain = 42.7
+	gain = float(sys.argv[2])
 	import decimal
 	freq = int(decimal.Decimal(sys.argv[3].strip("M"))*decimal.Decimal(1000000))
     	freq_offset = int(sys.argv[4])
