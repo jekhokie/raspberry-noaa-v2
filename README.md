@@ -73,8 +73,10 @@ The original raspberry-noaa was tested on Raspberry Pi 2 and up. However, while 
 with raspberry-noaa-v2, this version was developed and tested on a Raspberry Pi 4 - it has not been exhaustively tested on other variants
 of Raspberry Pi (but if you get it working on a version, please do submit a PR and mention it so this document can be updated!).
 
-In addition, it's recommended that the [Raspberry Pi OS](https://www.raspberrypi.org/software/) operating system is used - this is the
-OS that has been tested and proven working. If you do test with another OS - again, please submit a PR and let us know how it works out!
+In addition, it's recommended that the Official Release of [Raspberry Pi OS](https://www.raspberrypi.org/software/) operating system is used 
+**(not the very latest build)** - this is the OS that has been tested and proven working. 
+
+If you do test with another OS - again, please submit a PR and let us know how it works out!
 
 If you're interested in the details behind the original raspberry-noaa hardware compatibility tests, see the [hardware](docs/hardware.md)
 document.
