@@ -22,8 +22,8 @@ NOAA and Meteor-M 2 satellite imagery capture setup for the Raspberry Pi!
 
 See "Credits" for the awesome way this version of the framework came to be.
 
-## Quick Start - Use a maintained image
-Want a really simple way to get up and running? V3ELB has been maintaining a pre-built image of Raspberry-Noaa-V2 ('RN2') over here:
+## Super Easy setup: Use a maintained image
+Want a really simple way to get up and running? VE3ELB has been maintaining a pre-built image of Raspberry-Noaa-V2 ('RN2') over here:
 
 [https://qsl.net/ve3elb/RaspiNOAA/](https://qsl.net/ve3elb/RaspiNOAA/)
 
@@ -207,7 +207,7 @@ or form to the success of this repository/framework. Below are some direct contr
 * **[otti-soft](https://github.com/otti-soft/meteor-m2-lrpt)**: Meteor-M 2 python functionality for image processing.
 * **[NateDN10](https://www.instructables.com/member/NateDN10/)**: Came up with the major enhancements to the Meteor-M 2 receiver image processing in "otti-soft"s repo above.
     * [Instructables](https://www.instructables.com/Raspberry-Pi-NOAA-and-Meteor-M-2-Receiver/) post had the details behind creating the advanced functionality.
-* **[Dom Robinson](https://www.facebook.com/d2consulting.co.uk)**: Meteor enhancements, Satvis visualizations, and overall great code written that were incorporated into the repo.
+* **[Dom Robinson](https://github.com/dom-robinson)**: Meteor enhancements, Satvis visualizations, and overall great code written that were incorporated into the repo.
     * Merge of functionality into this repo was partially created using his excellent fork of the original raspberry-noaa repo [here](https://github.com/dom-robinson/raspberry-noaa).
     * Continued pushing the boundaries on the framework capabilities.
 * **[Colin Kaminski](https://www.facebook.com/holography)**: MAJOR testing assistance and submission of various enhancements and documentation.
@@ -216,6 +216,7 @@ or form to the success of this repository/framework. Below are some direct contr
 * **[Kyle Keen](http://kmkeen.com/rtl-power/)**: Programming a lot of features for our RTL-SDR Drivers.
 * **[Pascal P.](https://github.com/Cirromulus)**: Frequency/spectrum analysis test scripts for visualizing frequency spectrum of environment.
 * **[Socowi's Time Functionality](https://stackoverflow.com/a/50434292)**: Time parser to calculate end date for scanner scripts.
+* **[VE3ELB](https://github.com/ve3elb)**: Took on the invaluable task to create fully working images of RN2 for the PI and maintains [https://qsl.net/ve3elb/RaspiNOAA/](https://qsl.net/ve3elb/RaspiNOAA/).
 
 ## Contributing
 
