@@ -22,9 +22,18 @@ NOAA and Meteor-M 2 satellite imagery capture setup for the Raspberry Pi!
 
 See "Credits" for the awesome way this version of the framework came to be.
 
-## Quick Start
+## Quick Start - Use a maintained image
+Want a really simple way to get up and running? V3ELB has been maintaining a pre-build image of Raspberry-Noaa-V2 ('RN2') over here:
 
-Don't want all the nitty-gritty details? Here's the quick-start - if you have questions, continue reading the rest of this README or
+[https://qsl.net/ve3elb/RaspiNOAA/](https://qsl.net/ve3elb/RaspiNOAA/)
+
+Setup instructions are in the PDF that is included. 
+This is not always up to speed with the latest code, but lots of folks find it a great way to get started quickly!
+
+## Quick Start - building latest from the source on this repo
+
+Want to build your own, but don't want all the nitty-gritty details? 
+Here's the quick-start - if you have questions, continue reading the rest of this README or
 reach out by submitting an issue:
 
 ```bash
