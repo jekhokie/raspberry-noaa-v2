@@ -171,7 +171,7 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 
   log "Decoding in progress (Bitstream to BMP)" "INFO"
   NOW=$(date +%m-%d-%Y)
-  meteordemod -t "${NOAA_HOME}/tmp/orbit.tle" -i "${RAMFS_AUDIO_BASE}.s" -o "${RAMFS_AUDIO_BASE}" -f jpg -d $NOW >> $NOAA_LOG 2>&1
+  meteor_demod -t "${NOAA_HOME}/tmp/orbit.tle" -i "${RAMFS_AUDIO_BASE}.s" -o "${RAMFS_AUDIO_BASE}" -f jpg -d $NOW >> $NOAA_LOG 2>&1
 
   if [ "$DELETE_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
