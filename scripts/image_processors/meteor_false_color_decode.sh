@@ -18,4 +18,4 @@ INPUT_DEC=$1
 OUTPUT_BMP=$2
 
 # produce the output image
-$MEDET_ARM "${INPUT_DEC}" "${OUTPUT_BMP}" -r 65 -g 65 -b 64 -d
+$MEDET_ARM "${INPUT_DEC}" "${OUTPUT_BMP}" -r 66 -g 65 -b 64 -d
