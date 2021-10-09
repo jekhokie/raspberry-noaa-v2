@@ -17,5 +17,5 @@
 INPUT_DEC=$1
 OUTPUT_BMP=$2
 
-# produce the output image
+# produce the output image - adjust -r 68 to -r 66 for summer colors if you are getting strange colors either side of ~ equinox
 $MEDET_ARM "${INPUT_DEC}" "${OUTPUT_BMP}" -r 68 -g 65 -b 64 -d
