@@ -226,6 +226,48 @@ for enhancement in $ENHANCEMENTS; do
     "avi")
       proc_script="noaa_avi.sh"
       ;;
+    "CC")
+      proc_script="noaa_cc.sh"
+      ;;
+    "HE")
+      proc_script="noaa_he.sh"
+      ;;
+    "HF")
+      proc_script="noaa_hf.sh"
+      ;;
+    "MD")
+      proc_script="noaa_md.sh"
+      ;;
+    "BD")
+      proc_script="noaa_bd.sh"
+      ;;
+    "avi")
+      proc_script="noaa_avi.sh"
+      ;;
+    "MB")
+      proc_script="noaa_mb.sh"
+      ;;
+    "JF")
+      proc_script="noaa_jf.sh"
+      ;;
+    "JJ")
+      proc_script="noaa_jj.sh"
+      ;;
+    "LC")
+      proc_script="noaa_lc.sh"
+      ;;
+    "TA")
+      proc_script="noaa_ta.sh"
+      ;;
+    "WV")
+      proc_script="noaa_wv.sh"
+      ;;
+    "NO")
+      proc_script="noaa_no.sh"
+      ;;
+    "sea")
+      proc_script="noaa_sea.sh"
+      ;;
   esac
 
   if [ -z "${proc_script}" ]; then
