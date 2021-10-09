@@ -26,16 +26,16 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
     def __init__(self):
         gr.top_block.__init__(self, "RTLSDR NOAA APT Receiver V1.0.0")
 
-	##################################################
-	# Variables
-	##################################################
+	###############################################################
+	# Variables - added for Raspberry-Noaa-V2 manually after export
+	###############################################################
 
     	# get some variables in place for inputs
     	#
     	# Arguments:
     	#   1. Full path and name of stream file (including file extension)
     	#   2. Gain to be used
-	#   3. Frequency (in Mhz)	
+	    #   3. Frequency (in Mhz)	
     	#   4. Frequency offset (PPM)
 
     	stream_name = sys.argv[1]
@@ -54,9 +54,15 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
         self.cutoff = cutoff = 75000
         self.centre_freq = centre_freq = 0
 
-        ##################################################
-        # Blocks
-        ##################################################
+	###############################################################
+        # Blocks - note the fcd_freq, freq_offset and gain are carried 
+        #          in from settings.yml using the 'variables' block above.
+        #          NOTE: If you edit and replace this .py in gnucomposer
+        #          these will be overwritten with hard-coded values and 
+        #          need to be manually reintroduced to make the script take 
+        #          settings from your own settings.yml.
+        ################################################################
+
         self.rtlsdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + 'rtl=0' )
         self.rtlsdr_source_0.set_sample_rate(samp_rate)
         self.rtlsdr_source_0.set_center_freq(fcd_freq, 0)
