@@ -25,9 +25,11 @@ test_freq_offset: -6
 
 # receiver settings
 #   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'gnuradio')
+#   noaa_receiver  - which receiver method to use (either 'rtl_fm' or 'gnuradio')
 #     **WARNING**: 'gnuradio' does not work with certain SDR devices (e.g. it will not currently
 #                  work with a RTL-SDR v3 dongle, as no image will be decoded from the bitstream)
-meteor_receiver: 'rtl_fm'
+meteor_receiver: 'gnuradio'
+noaa_receiver: 'gnuradio'
 
 # whether to schedule specific orbiting objects for capture
 #   <satellite_name>_schedule - whether to schedule captures for the satellite
