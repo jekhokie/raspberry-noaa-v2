@@ -48,7 +48,7 @@ IMAGE_FILE_BASE="${IMAGE_OUTPUT}/${FILENAME_BASE}"
 IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 
 # check if there is enough free memory to store pass on RAM
-FREE_MEMORY=$(free -m | grep Mem | awk '{print $4}')
+FREE_MEMORY=$(free -m | grep Mem | awk '{print $7}')
 if [ "$FREE_MEMORY" -lt $METEOR_M2_MEMORY_TRESHOLD ]; then
   log "The system doesn't have enough space to store a Meteor pass on RAM" "INFO"
   log "Free : ${FREE_MEMORY} ; Required : ${METEOR_M2_MEMORY_TRESHOLD}" "INFO"
