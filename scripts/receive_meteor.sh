@@ -161,8 +161,9 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
 
   # how are we about memory usage at this point ?
   FREE_MEMORY=$(free -m | grep Mem | awk '{print $4}')
+  AVAILABLE_MEMORY=$(free -m | grep Mem | awk '{print $7}')
   RAMFS_USAGE=$(du -sh ${RAMFS_AUDIO} | awk '{print $1}')
-  log "Free memory : ${FREE_MEMORY} ; Total RAMFS usage : ${RAMFS_USAGE}" "INFO"
+  log "Free memory : ${FREE_MEMORY} ; Available memory : ${AVAILABLE_MEMORY} ; Total RAMFS usage : ${RAMFS_USAGE}" "INFO"
 
   if [ "$DELETE_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
