@@ -114,7 +114,7 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
 
   log "Demodulation in progress (QPSK)" "INFO"
   qpsk_file="${NOAA_HOME}/tmp/meteor/${FILENAME_BASE}.qpsk"
-  ${AUDIO_PROC_DIR}/meteor_demodulate_qpsk.sh "${qpsk_file}" "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+  ${AUDIO_PROC_DIR}/meteor_demodulate_qpsk.sh "${RAMFS_AUDIO_BASE}.wav" "${qpsk_file}" >> $NOAA_LOG 2>&1
 
   if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
     log "Producing spectrogram" "INFO"
