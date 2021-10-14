@@ -178,7 +178,7 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   log "Decoding in progress (QPSK to BMP)" "INFO"
   ${IMAGE_PROC_DIR}/meteor_decode_qpsk.sh "${qpsk_file}" "${AUDIO_FILE_BASE}" >> $NOAA_LOG 2>&1
 
-  rm "${qpsk_file}"
+  #rm "${qpsk_file}"
 
   if [ -f "${AUDIO_FILE_BASE}.dec" ]; then
     if [ "${SUN_ELEV}" -lt "${SUN_MIN_ELEV}" ]; then
