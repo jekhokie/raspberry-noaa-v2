@@ -192,6 +192,9 @@ output file in `/var/log/raspberry-noaa-v2/output.log` to investigate potential 
 
 ## Additional Feature Information
 
+The decoding model has been changed with release 1.8 to default to using GNURADIO based capture via Python for both Meteor 
+(which was previously an option) and now also for NOAA. This will open the platform up for developers to integrate alternative hardware capture than rtl-sdr.
+
 For additional information on some of the capabilities included in this framework, see below:
 
   - [Meteor M2 Full Decoding](docs/meteor.md)
