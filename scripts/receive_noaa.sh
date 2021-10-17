@@ -84,6 +84,9 @@ if [ "$NOAA_RECEIVER" == "gnuradio" ]; then
   ${AUDIO_PROC_DIR}/noaa_record_gnuradio.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav" >> $NOAA_LOG 2>&1
 fi
 
+# wait for files to close
+sleep 5
+
 spectrogram=0
 if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
   log "Producing spectrogram" "INFO"
