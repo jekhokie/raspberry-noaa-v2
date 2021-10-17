@@ -51,6 +51,9 @@ cd raspberry-noaa-v2/
 # copy sample settings and update for your install
 cp config/settings.yml.sample config/settings.yml
 vi config/settings.yml
+or
+nano config/settings.yml
+
 
 # perform install
 ./install_and_upgrade.sh
