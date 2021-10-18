@@ -177,6 +177,8 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
 
   log "Decoding in progress (QPSK to BMP)" "INFO"
   ${IMAGE_PROC_DIR}/meteor_decode_qpsk.sh "${qpsk_file}" "${AUDIO_FILE_BASE}" >> $NOAA_LOG 2>&1
+  
+  sleep 10
 
   rm "${qpsk_file}"
 
@@ -283,6 +285,8 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 
   log "Decoding in progress (Bitstream to BMP)" "INFO"
   ${IMAGE_PROC_DIR}/meteor_decode_bitstream.sh "${RAMFS_AUDIO_BASE}.s" "${RAMFS_AUDIO_BASE}" >> $NOAA_LOG 2>&1
+  
+  sleep 2
 
   if [ "$DELETE_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
