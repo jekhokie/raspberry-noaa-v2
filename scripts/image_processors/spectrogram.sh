@@ -24,10 +24,12 @@ CHART_COMMENT=$4
 CHART_TEXT="${CHART_TITLE} ${CHART_COMMENT}"
 
 # produce the spectrogram on a single channel (the first one)
-$FFMPEG -y -i ${IN_WAV_FILE} -lavfi showspectrumpic=s=800x400:mode=separate ${OUT_PNG_FILE}.mez.png
+$FFMPEG -y -i ${IN_WAV_FILE} -lavfi showspectrumpic=s=800x400 temporary.png
+
+sleep 2
 
 # add the title text
-$FFMPEG -y -i ${OUT_PNG_FILE}.mez.png -vf "drawtext=fontfile=/path/to/font.ttf:text='${CHART_TEXT}':fontcolor=white:fontsize=18:box=1:boxcolor=black@0.5:boxborderw=5:x=(w-text_w)/2:y=10" ${OUT_PNG_FILE}
+$FFMPEG -y -i temporary.png -vf "drawtext=fontfile=/path/to/font.ttf:text='${CHART_TEXT}':fontcolor=white:fontsize=18:box=1:boxcolor=black@0.5:boxborderw=5:x=(w-text_w)/2:y=10" ${OUT_PNG_FILE}
 
-rm ${OUT_PNG_FILE}.mez.png
+rm temporary.png
 
