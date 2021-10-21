@@ -42,5 +42,5 @@ if [ ${OUT_FILE: -4} != ".wav" ]; then
 fi
 
 log "Recording ${NOAA_HOME} at ${freq} MHz...to " "INFO" 
-timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/rtlsdr_noaa_apt_rx.py" "${OUT_FILE}" "${GAIN}" "${freq}"M "${FREQ_OFFSET}" >> $NOAA_LOG 2>&1
+timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/rtlsdr_noaa_apt_rx.py" "${OUT_FILE}" "${GAIN}" "${freq}"M "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
 

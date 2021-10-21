@@ -31,9 +31,16 @@ class top_block(gr.top_block):
     #   1. Full path and name of stream file (including file extension)
     #   2. Gain to be used
     #   3. Frequency offset (PPM)
+    #   4. SDR Device ID from settings.yml (for RTL-SDR source block)
+    #   5. Bias-T (0/1 for RTL-SDR)
+
+
     stream_name = sys.argv[1]
     gain = float(sys.argv[2])
     freq_offset = int(sys.argv[3])
+    sdr_dev_id = sys.argv[4]
+    bias_t = int(sys.argv[5])
+
 
     ##################################################
     # Variables
@@ -48,9 +55,10 @@ class top_block(gr.top_block):
     self.clock_alpha = clock_alpha = 0.002
     self.bitstream_name = bitstream_name = stream_name
 
-    ##################################################
-    # Blocks
-    ##################################################
+    ##############################################################################################################################################
+    # Blocks -- *** NOTE HOW TEH VARIABLES ARE CARRIED IN FROM settings.yml - this has to be re-done every time you export the .py from gnuradio
+    ###############################################################################################################################################
+    self.rtlsdr_source_0 = osmosdr.source( args="numchan=" + str(1) + "rtl=" + sdr_dev_id + ",bias=" + bias_t + '' )
     self.rtlsdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + '' )
     self.rtlsdr_source_0.set_sample_rate(samp_rate_airspy)
     self.rtlsdr_source_0.set_center_freq(freq, 0)

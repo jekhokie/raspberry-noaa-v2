@@ -35,14 +35,18 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
     	# Arguments:
     	#   1. Full path and name of stream file (including file extension)
     	#   2. Gain to be used
-	    #   3. Frequency (in Mhz)	
+	#   3. Frequency (in Mhz)	
     	#   4. Frequency offset (PPM)
+        #   5. SDR Device ID from settings.yml (for RTL-SDR source block)
+        #   6. Bias-T (0/1 for RTL-SDR)
 
     	stream_name = sys.argv[1]
 	gain = float(sys.argv[2])
 	import decimal
 	freq = int(decimal.Decimal(sys.argv[3].strip("M"))*decimal.Decimal(1000000))
     	freq_offset = int(sys.argv[4])
+        sdr_dev_id = sys.argv[4]
+        bias_t = int(sys.argv[5])
 
         ##################################################
         # Variables
@@ -55,7 +59,7 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
         self.centre_freq = centre_freq = 0
 
 	###############################################################
-        # Blocks - note the fcd_freq, freq_offset and gain are carried 
+        # Blocks - note the fcd_freq, freq_offset rtl device, bias-t and gain are carried 
         #          in from settings.yml using the 'variables' block above.
         #          NOTE: If you edit and replace this .py in gnucomposer
         #          these will be overwritten with hard-coded values and 
@@ -63,7 +67,7 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
         #          settings from your own settings.yml.
         ################################################################
 
-        self.rtlsdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + 'rtl=0' )
+        self.rtlsdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + 'rtl=0,bias=1' )
         self.rtlsdr_source_0.set_sample_rate(samp_rate)
         self.rtlsdr_source_0.set_center_freq(fcd_freq, 0)
         self.rtlsdr_source_0.set_freq_corr(freq_offset, 0)

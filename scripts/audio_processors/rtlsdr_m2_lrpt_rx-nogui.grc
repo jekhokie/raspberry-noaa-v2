@@ -2150,7 +2150,7 @@
     </param>
     <param>
       <key>args</key>
-      <value></value>
+      <value>rtl=0,bias=0</value>
     </param>
     <param>
       <key>_enabled</key>
