@@ -45,8 +45,9 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
 	import decimal
 	freq = int(decimal.Decimal(sys.argv[3].strip("M"))*decimal.Decimal(1000000))
     	freq_offset = int(sys.argv[4])
-        sdr_dev_id = sys.argv[4]
-        bias_t = int(sys.argv[5])
+        sdr_dev_id = sys.argv[5]
+        bias_t_string = sys.argv[6]
+	bias_t = distutils.util.strtobool((bias_t_string)
 
         ##################################################
         # Variables

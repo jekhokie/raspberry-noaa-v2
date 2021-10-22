@@ -39,8 +39,8 @@ class top_block(gr.top_block):
     gain = float(sys.argv[2])
     freq_offset = int(sys.argv[3])
     sdr_dev_id = sys.argv[4]
-    bias_t = int(sys.argv[5])
-
+    bias_t_string = sys.argv[5]
+    bias_t = distutils.util.strtobool((bias_t_string)
 
     ##################################################
     # Variables
