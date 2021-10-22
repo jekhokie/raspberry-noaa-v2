@@ -40,7 +40,11 @@ class top_block(gr.top_block):
     freq_offset = int(sys.argv[3])
     sdr_dev_id = sys.argv[4]
     bias_t_string = sys.argv[5]
-    bias_t = distutils.util.strtobool((bias_t_string)
+    bias_t_bool = "1"
+    if not bias_t_string:
+      bias_t_bool = "0"
+    bias_t = bias_t_bool 
+
 
     ##################################################
     # Variables
