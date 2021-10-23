@@ -40,10 +40,9 @@ class top_block(gr.top_block):
     freq_offset = int(sys.argv[3])
     sdr_dev_id = sys.argv[4]
     bias_t_string = sys.argv[5]
-    bias_t_bool = "1"
+    bias_t = "1"
     if not bias_t_string:
-      bias_t_bool = "0"
-    bias_t = bias_t_bool 
+      bias_t = "0"
 
     ##################################################
     # Variables
@@ -59,10 +58,10 @@ class top_block(gr.top_block):
     self.bitstream_name = bitstream_name = stream_name
 
     ##############################################################################################################################################
-    # Blocks -- *** NOTE HOW TEH VARIABLES ARE CARRIED IN FROM settings.yml - this has to be re-done every time you export the .py from gnuradio
+    # Blocks -- *** NOTE HOW THE VARIABLES ARE CARRIED IN FROM settings.yml - this has to be re-done every time you export the .py from gnuradio
     ###############################################################################################################################################
-    self.rtlsdr_source_0 = osmosdr.source( args="numchan=" + str(1) + "rtl=" + sdr_dev_id + ",bias=" + bias_t + '' )
-    self.rtlsdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + '' )
+
+    self.rtlsdr_source_0 = osmosdr.source( args='numchan=' + str(1) + ' ' + 'rtl=' + str(sdr_dev_id) + ',bias=' + bias_t + '' )
     self.rtlsdr_source_0.set_sample_rate(samp_rate_airspy)
     self.rtlsdr_source_0.set_center_freq(freq, 0)
     self.rtlsdr_source_0.set_freq_corr(freq_offset, 0)
