@@ -114,15 +114,15 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
 
   log "Demodulation in progress (QPSK)" "INFO"
   qpsk_file="${NOAA_HOME}/tmp/meteor/${FILENAME_BASE}.qpsk"
-  ${AUDIO_PROC_DIR}/meteor_demodulate_qpsk.sh "${qpsk_file}" "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+  ${AUDIO_PROC_DIR}/meteor_demodulate_qpsk.sh "${RAMFS_AUDIO_BASE}.wav" "${qpsk_file}" >> $NOAA_LOG 2>&1
 
   if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
     log "Producing spectrogram" "INFO"
     spectrogram=1
     spectro_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
-    ${IMAGE_PROC_DIR}/spectrogram.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" spectro_text >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/spectrogram.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" "${spectro_text}" >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png" >> $NOAA_LOG 2>&1
-  fi
+   fi
 
   if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
     log "Producing polar graph of azimuth and elevation for pass" "INFO"
@@ -178,6 +178,8 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
 
   log "Decoding in progress (QPSK to BMP)" "INFO"
   ${IMAGE_PROC_DIR}/meteor_decode_qpsk.sh "${qpsk_file}" "${AUDIO_FILE_BASE}" >> $NOAA_LOG 2>&1
+  
+  sleep 10
 
   rm "${qpsk_file}"
 
@@ -284,6 +286,8 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 
   log "Decoding in progress (Bitstream to BMP)" "INFO"
   ${IMAGE_PROC_DIR}/meteor_decode_bitstream.sh "${RAMFS_AUDIO_BASE}.s" "${RAMFS_AUDIO_BASE}" >> $NOAA_LOG 2>&1
+  
+  sleep 2
 
   if [ "$DELETE_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"

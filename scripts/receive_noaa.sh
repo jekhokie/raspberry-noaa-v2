@@ -75,7 +75,17 @@ if pgrep "rtl_fm" > /dev/null; then
 fi
 
 log "Starting rtl_fm record" "INFO"
-${AUDIO_PROC_DIR}/noaa_record.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav" >> $NOAA_LOG 2>&1
+if [ "$NOAA_RECEIVER" == "rtl_fm" ]; then
+  log "Starting rtl_fm record" "INFO"
+  ${AUDIO_PROC_DIR}/noaa_record_rtl_fm.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav" >> $NOAA_LOG 2>&1
+fi
+if [ "$NOAA_RECEIVER" == "gnuradio" ]; then
+  log "Starting gnuradio record" "INFO"
+  ${AUDIO_PROC_DIR}/noaa_record_gnuradio.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav" >> $NOAA_LOG 2>&1
+fi
+
+# wait for files to close
+sleep 5
 
 spectrogram=0
 if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
@@ -238,6 +248,48 @@ for enhancement in $ENHANCEMENTS; do
       ;;
     "avi")
       proc_script="noaa_avi.sh"
+      ;;
+    "CC")
+      proc_script="noaa_cc.sh"
+      ;;
+    "HE")
+      proc_script="noaa_he.sh"
+      ;;
+    "HF")
+      proc_script="noaa_hf.sh"
+      ;;
+    "MD")
+      proc_script="noaa_md.sh"
+      ;;
+    "BD")
+      proc_script="noaa_bd.sh"
+      ;;
+    "avi")
+      proc_script="noaa_avi.sh"
+      ;;
+    "MB")
+      proc_script="noaa_mb.sh"
+      ;;
+    "JF")
+      proc_script="noaa_jf.sh"
+      ;;
+    "JJ")
+      proc_script="noaa_jj.sh"
+      ;;
+    "LC")
+      proc_script="noaa_lc.sh"
+      ;;
+    "TA")
+      proc_script="noaa_ta.sh"
+      ;;
+    "WV")
+      proc_script="noaa_wv.sh"
+      ;;
+    "NO")
+      proc_script="noaa_no.sh"
+      ;;
+    "sea")
+      proc_script="noaa_sea.sh"
       ;;
   esac
 

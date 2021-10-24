@@ -23,4 +23,4 @@ if [ ${OUT_FILE: -2} != ".s" ]; then
   exit 1
 fi
 
-timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/rtlsdr_m2_lrpt_rx.py" "${OUT_FILE}" "${GAIN}" "${FREQ_OFFSET}" >> $NOAA_LOG 2>&1
+timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/rtlsdr_m2_lrpt_rx.py" "${OUT_FILE}" "${GAIN}" "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1

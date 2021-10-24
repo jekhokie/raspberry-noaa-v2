@@ -3,7 +3,7 @@
 # Purpose: Decode Meteor-M 2 bitstream audio file to .bmp image file.
 #
 # Input parameters:
-#   1. Input bitstream file
+#   1. Input bitstream .s file
 #   2. Output filename for .bmp file
 #
 # Example:
