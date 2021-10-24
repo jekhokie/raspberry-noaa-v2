@@ -109,9 +109,9 @@ delete_audio: false
 #   show_sun_elevation - whether to show sun elevation in annotation
 #   show_pass_direction - show which direction the satellite is moving in the image annotation
 #   noaa_daytime_enhancements - list of enhancements to create images using during daytime captures
-#        (note: default value is total list of supported image processors)
+#        (note: default value seen includes list of ALL supported image processors excluding 'avi' which must be explicitly added when opting to 'enable_animation' below )
 #   noaa_nighttime_enhancements - list of enhancements to create images using during nighttime captures
-#        (note: default value is total list of supported image processors)
+#        (note: default value seen includes list of ALL supported image processors excluding 'avi' which must be explicitly added when opting to 'enable_animation' below )
 #   noaa_crop_toptobottom - whether to crop the top and bottom noise out of the noaa capture
 #   noaa_interpolate - whether to interpolate and oversample the images (larger images produced)
 flip_meteor_image: true
@@ -126,8 +126,8 @@ produce_polar_direction_graph: true
 ground_station_location: ''
 show_sun_elevation: true
 show_pass_direction: true
-noaa_daytime_enhancements: 'ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT therm avi'
-noaa_nighttime_enhancements: 'ZA MCIR HVCT MCIR-precip therm avi'
+noaa_daytime_enhancements: 'MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT ZA therm CC HE HF MD BD MB JF JJ LC TA WV NO sea' 
+noaa_nighttime_enhancements: 'MCIR MCIR-precip HVCT ZA therm NO TA sea'
 noaa_crop_toptobottom: true
 noaa_interpolate: false
 
