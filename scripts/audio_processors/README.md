@@ -55,10 +55,10 @@ The ```.grc``` files are source files that can be opened and explored in gnuradi
 The two ```.png``` are rendered below. They are screen grabs from gnuradio composer. 
 
 ### Noaa Capture
-![noaa gnuradio workflow](https://github.com/jekhokie/raspberry-noaa-v2/blob/aug21-merging-gnuradio/scripts/audio_processors/rtlsdr_noaa_apt_rx.png?raw=true)
+![noaa gnuradio workflow](./scripts/audio_processors/rtlsdr_noaa_apt_rx.png)
 
 ### MeteorM2 Capture
-![m2 gnuradio workflow](https://github.com/jekhokie/raspberry-noaa-v2/blob/aug21-merging-gnuradio/scripts/audio_processors/rtlsdr_m2_lrpt_rx-nogui.png?raw=true)
+![m2 gnuradio workflow](./scripts/audio_processors/rtlsdr_m2_lrpt_rx-nogui.png)
 
 
 
