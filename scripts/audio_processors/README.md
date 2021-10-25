@@ -55,11 +55,13 @@ The ```.grc``` files are source files that can be opened and explored in gnuradi
 The two ```.png``` are rendered below. They are screen grabs from gnuradio composer. 
 
 ### Noaa Capture
-![noaa gnuradio workflow](./scripts/audio_processors/rtlsdr_noaa_apt_rx.png)
+![noaa gnuradio workflow](./rtlsdr_noaa_apt_rx.png)
+[[/rtlsdr_noaa_apt_rx.png|NOAA GNURADIO CAPTURE]]
+
 
 ### MeteorM2 Capture
-![m2 gnuradio workflow](./scripts/audio_processors/rtlsdr_m2_lrpt_rx-nogui.png)
-
+![m2 gnuradio workflow](./rtlsdr_m2_lrpt_rx-nogui.png)
+[[/rtlsdr_m2_lrpt_rx-nogui.png|METEOR GNURADIO CAPTURE]]
 
 
 The images show a visual workflow of what is setup in gnuradio and then exported to ```.py``` files from gnuradio composer.
