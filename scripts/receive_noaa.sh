@@ -100,7 +100,7 @@ pristine=0
 if [[ "${PRODUCE_NOAA_PRISTINE}" == "true" ]]; then
   log "Producing pristine image" "INFO"
   pristine=1
-  ${IMAGE_PROC_DIR}/noaa_pristine.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.png" >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/noaa_pristine.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
   ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.png" "${IMAGE_THUMB_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
 fi
 
