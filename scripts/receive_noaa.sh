@@ -121,6 +121,14 @@ if [ "${PRODUCE_NOAA_PRISTINE_HISTOGRAM}" == "true" ]; then
   ${IMAGE_PROC_DIR}/histogram.sh "${tmp_dir}/${FILENAME_BASE}-b.png" "${IMAGE_FILE_BASE}-histogram-b.jpg" "${SAT_NAME} - Channel B" "${histogram_text}" >> $NOAA_LOG 2>&1
   ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram-b.jpg" "${IMAGE_THUMB_BASE}-histogram-b.jpg" >> $NOAA_LOG 2>&1
 
+  log "Horizontally Merge two Histogram Channels to single image for output"
+  $CONVERT +append "${IMAGE_FILE_BASE}-histogram-a.jpg" "${IMAGE_FILE_BASE}-histogram-b.jpg" -resize x500 "${IMAGE_FILE_BASE}-histogram.jpg" >>$NOAA_LOG 2>&1
+  $CONVERT +append "${IMAGE_THUMB_BASE}-histogram-a.jpg" "${IMAGE_THUMB_BASE}-histogram-b.jpg" -resize x300 "${IMAGE_THUMB_BASE}-histogram.jpg" >>$NOAA_LOG 2>&1
+
+  rm "${IMAGE_FILE_BASE}-histogram-a.jpg" 
+  rm "${IMAGE_FILE_BASE}-histogram-b.jpg" 
+  rm "${IMAGE_THUMB_BASE}-histogram-a.jpg" 
+  rm "${IMAGE_THUMB_BASE}-histogram-b.jpg" 
   rm "${tmp_dir}/${FILENAME_BASE}-a.png"
   rm "${tmp_dir}/${FILENAME_BASE}-b.png"
 fi
