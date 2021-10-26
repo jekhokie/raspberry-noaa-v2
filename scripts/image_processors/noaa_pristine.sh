@@ -18,4 +18,4 @@ INPUT_WAV=$1
 OUTPUT_IMAGE=$2
 
 # produce the output image
-$WXTOIMG -o -e -16 "pristine" "${INPUT_WAV}" "${OUTPUT_IMAGE}"
+$WXTOIMG -o -e "pristine" -16 "${INPUT_WAV}" "${OUTPUT_IMAGE}"
