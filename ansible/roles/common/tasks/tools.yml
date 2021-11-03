@@ -10,7 +10,7 @@
 - name: install wxtoimg x64
   become: yes
   apt:
-    deb: "{{ noaa_home }}/software/‘wxtoimg-amd64-2.11.2-beta.deb"
+    deb: "{{ noaa_home }}/software/wxtoimg-amd64-2.11.2-beta.deb"
     state: present
     update_cache: no
   when: ansible_architecture == 'x86_64'
