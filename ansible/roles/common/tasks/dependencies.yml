@@ -60,11 +60,21 @@
   apt:
     deb: "https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.{{ ansible_distribution_release }}_amd64.deb"
     state: present
-  when: ansible_architecture == 'armv7l'
+  when: ansible_architecture == 'x86_64'
 
 # predict is not packaged anymore after stretch
-- name: install predict (>stretch)
+- name: install predict (>stretch) x86_64
   apt:
     deb: "http://ftp.us.debian.org/debian/pool/main/p/predict/predict_2.2.3-4+b2_amd64.deb"
     state: present
-  when: ansible_distribution_release != 'stretch'
+  when:
+    - ansible_distribution_release != 'stretch'
+    - ansible_architecture == 'x86_64'
+
+- name: install predict (>stretch) arm
+  apt:
+    deb: "http://ftp.us.debian.org/debian/pool/main/p/predict/predict_2.2.3-4+b2_armhf.deb"
+    state: present
+  when:
+    - ansible_distribution_release != 'stretch'
+    - ansible_architecture == 'armv7l'
