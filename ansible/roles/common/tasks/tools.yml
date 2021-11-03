@@ -43,7 +43,7 @@
     creates: /usr/bin/meteor_demod
   when: meteor_demod.changed
 
-- name: install medet_arm
+- name: install medet_arm (arm)
   become: yes
   copy:
     src: "{{ noaa_home }}/software/medet_arm"
@@ -54,11 +54,11 @@
     remote_src: yes
   when: ansible_architecture == 'armv7l'
 
-- name: install medet_x64
+- name: install medet_arm (x86_64)
   become: yes
   copy:
     src: "{{ noaa_home }}/software/medet_x64"
-    dest: /usr/bin/medet_x64
+    dest: /usr/bin/medet_arm
     owner: root
     group: root
     mode: 0755
