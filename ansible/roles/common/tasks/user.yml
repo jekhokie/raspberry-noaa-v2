@@ -1,0 +1,12 @@
+---
+- name: change user in rtlsdr_m2_lrpt_rx-nogui.grc
+  replace:
+    path: "{{ noaa_home }}/scripts/audio_processors/rtlsdr_m2_lrpt_rx-nogui.grc"
+    regexp: "/home/pi/"
+    replace: "/home/{{ running_under_user }}/"
+
+- name: change user in sun.py
+  replace:
+    path: "{{ noaa_home }}/scripts/tools/sun.py"
+    regexp: "/home/pi/"
+    replace: "/home/{{ running_under_user }}/"

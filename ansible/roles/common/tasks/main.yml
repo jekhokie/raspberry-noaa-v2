@@ -24,4 +24,7 @@
 
 # twitter push setup
 - include: twitter.yml
+
+# various updates for the user used
+- include: user.yml
 ...
