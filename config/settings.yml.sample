@@ -221,7 +221,7 @@ use_ntpd: true
 use_ramfs: true
 
 # Install and setup nginx + PHP
-setup_webserver: false
+setup_webserver: true
 
 # log level for output from scripts
 log_level: DEBUG
