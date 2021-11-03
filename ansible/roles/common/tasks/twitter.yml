@@ -12,8 +12,8 @@
     src: tweepy.conf
     dest: /home/pi/.tweepy.conf
     force: no
-    owner: {{ running_under_user }}
-    group: {{ running_under_group }}
+    owner: "{{ running_under_user }}"
+    group: "{{ running_under_group }}"
     mode: 0600
   when: enable_twitter_push | bool
 ...
