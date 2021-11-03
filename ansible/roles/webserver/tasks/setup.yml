@@ -31,20 +31,6 @@
       - php7.2-mbstring
       - php7.2-sqlite3
 
-- name: install composer
-  become: yes
-  apt:
-    update_cache: no
-    state: present
-    name: composer
-
-- name: "add {{ running_under_user }} user to www-data group"
-  become: yes
-  user:
-    name: "{{ running_under_user }}"
-    groups: www-data
-    append: yes
-
 - name: nginx config file
   become: yes
   template:

@@ -69,4 +69,17 @@
     owner: root
     group: root
     mode: 0440
-...
+
+- name: install composer
+  become: yes
+  apt:
+    update_cache: no
+    state: present
+    name: composer
+
+- name: "add {{ running_under_user }} user to www-data group"
+  become: yes
+  user:
+    name: "{{ running_under_user }}"
+    groups: www-data
+    append: yes
