@@ -9,7 +9,7 @@
 
 - name: predict directory
   file:
-    path: "~{{ running_under }}/.predict"
+    path: "~{{ running_under_user }}/.predict"
     state: directory
     owner: "{{ running_under_user }}"
     group: "{{ running_under_group }}"
