@@ -3,7 +3,7 @@
 available_langs: [ ar, de, en, es, sr ]
 
 # root git clone directory (where functionality exists)
-noaa_home: "/home/pi/raspberry-noaa-v2"
+noaa_home: "/home/{{ running_under_user }}/raspberry-noaa-v2"
 
 # database file
 db_file: "{{ noaa_home }}/db/panel.db"

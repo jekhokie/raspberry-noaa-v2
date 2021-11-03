@@ -1,10 +1,19 @@
 ---
-- name: install wxtoimg
+- name: install wxtoimg arm
   become: yes
   apt:
     deb: "{{ noaa_home }}/software/wxtoimg-armhf-2.11.2-beta.deb"
     state: present
     update_cache: no
+  when: ansible_architecture == 'armv7l'
+
+- name: install wxtoimg x64
+  become: yes
+  apt:
+    deb: "{{ noaa_home }}/software/‘wxtoimg-amd64-2.11.2-beta.deb"
+    state: present
+    update_cache: no
+  when: ansible_architecture == 'x86_64'
 
 - name: check if meteor_demod software is installed
   stat:
@@ -43,6 +52,18 @@
     group: root
     mode: 0755
     remote_src: yes
+  when: ansible_architecture == 'armv7l'
+
+- name: install medet_x64
+  become: yes
+  copy:
+    src: "{{ noaa_home }}/software/medet_x64"
+    dest: /usr/bin/medet_x64
+    owner: root
+    group: root
+    mode: 0755
+    remote_src: yes
+  when: ansible_architecture == 'x86_64'
 
 - name: remove old scheduling cron job
   cron:
@@ -75,32 +96,32 @@
   file:
     path: "{{ noaa_home }}/tmp/map"
     state: directory
-    owner: pi
-    group: pi
+    owner: {{ running_under_user }}
+    group: {{ running_under_group }}
     mode: 0755
 
 - name: create meteor directory
   file:
     path: "{{ noaa_home }}/tmp/meteor"
     state: directory
-    owner: pi
-    group: pi
+    owner: {{ running_under_user }}
+    group: {{ running_under_group }}
     mode: 0755
 
 - name: create annotation directory
   file:
     path: "{{ noaa_home }}/tmp/annotation"
     state: directory
-    owner: pi
-    group: pi
+    owner: {{ running_under_user }}
+    group: {{ running_under_group }}
     mode: 0755
 
 - name: create scanner directory
   file:
     path: "{{ noaa_home }}/tmp/scanner"
     state: directory
-    owner: pi
-    group: pi
+    owner: {{ running_under_user }}
+    group: {{ running_under_group }}
     mode: 0755
 
 - name: create images directory
@@ -108,7 +129,7 @@
   file:
     path: "{{ images_output }}"
     state: directory
-    owner: pi
+    owner: {{ running_under_user }}
     mode: 0775
 
 - name: create thumbnails directory
@@ -116,7 +137,7 @@
   file:
     path: "{{ images_output }}/thumb"
     state: directory
-    owner: pi
+    owner: {{ running_under_user }}
     mode: 0775
 
 - name: create audio root directory
@@ -124,8 +145,8 @@
   file:
     path: "{{ audio_output }}"
     state: directory
-    owner: pi
-    group: pi
+    owner: {{ running_under_user }}
+    group: {{ running_under_group }}
     mode: 0775
 
 - name: create noaa audio directory
@@ -133,8 +154,8 @@
   file:
     path: "{{ audio_output }}/noaa"
     state: directory
-    owner: pi
-    group: pi
+    owner: {{ running_under_user }}
+    group: {{ running_under_group }}
     mode: 0775
 
 - name: create meteor audio directory
@@ -142,8 +163,8 @@
   file:
     path: "{{ audio_output }}/meteor"
     state: directory
-    owner: pi
-    group: pi
+    owner: {{ running_under_user }}
+    group: {{ running_under_group }}
     mode: 0775
 
 - name: create videos directory
@@ -151,6 +172,6 @@
   file:
     path: "{{ videos_output }}"
     state: directory
-    owner: pi
+    owner: {{ running_under_user }}
     mode: 0775
 ...

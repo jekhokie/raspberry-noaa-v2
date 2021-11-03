@@ -2,17 +2,21 @@
 - name: install raspberry-noaa-v2 webpanel
   hosts: webserver
   connection: local
-  gather_facts: no
+  gather_facts: yes
   roles:
     - role: webserver
   post_tasks:
     - name: output web server url
       debug:
         msg: "Your non-TLS web server URL is: http://{{ web_server_name }}:{{ web_port }}"
-      when: not enable_tls|bool
+      when:
+        - not enable_tls|bool
+        - setup_webserver
 
     - name: output web server tls url
       debug:
         msg: "Your TLS-enabled web server URL is: https://{{ web_server_name }}:{{ web_tls_port }}"
-      when: enable_tls|bool
+      when:
+        - enable_tls|bool
+        - setup_webserver
 ...

@@ -1,0 +1,72 @@
+---
+- name: web directory
+  become: yes
+  file:
+    path: "{{ web_home }}"
+    state: directory
+    owner: "{{ running_under_user }}"
+    group: www-data
+    mode: 0775
+
+- name: config directory
+  become: yes
+  file:
+    path: "{{ web_home }}/Config"
+    state: directory
+    owner: "{{ running_under_user }}"
+    group: www-data
+    mode: 0775
+
+- name: php config file
+  become: yes
+  template:
+    src: Config.php.j2
+    dest: "{{ web_home }}/Config/Config.php"
+    owner: "{{ running_under_user }}"
+    group: www-data
+    mode: 0644
+
+- name: update images directory group
+  become: yes
+  file:
+    path: "{{ images_output }}"
+    state: directory
+    group: www-data
+
+- name: update thumbnails directory group
+  become: yes
+  file:
+    path: "{{ images_output }}/thumb"
+    state: directory
+    group: www-data
+
+- name: update videos directory group
+  become: yes
+  file:
+    path: "{{ videos_output }}"
+    state: directory
+    group: www-data
+
+- name: update database folder permissions
+  become: yes
+  file:
+    path: "{{ noaa_home }}/db"
+    group: www-data
+    mode: 0770
+
+- name: update database file permissions
+  become: yes
+  file:
+    path: "{{ noaa_home }}/db/panel.db"
+    group: www-data
+    mode: 0770
+
+- name: www-data sudoers atrm as pi user
+  become: yes
+  copy:
+    src: 020_www-data-atrm-nopasswd
+    dest: /etc/sudoers.d/020_www-data-atrm-nopasswd
+    owner: root
+    group: root
+    mode: 0440
+...

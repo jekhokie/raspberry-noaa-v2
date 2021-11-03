@@ -1,1 +1,1 @@
-%www-data ALL=(pi) NOPASSWD: /usr/bin/atrm
+%www-data ALL=({{ running_under_user }}) NOPASSWD: /usr/bin/atrm

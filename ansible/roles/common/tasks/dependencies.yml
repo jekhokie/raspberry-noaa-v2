@@ -47,9 +47,17 @@
     name: libgfortran5
   when: raspbian_version.stdout != 'stretch'
 
-- name: install wkhtmltox (wkhtmltoimg)
+- name: install wkhtmltox (wkhtmltoimg) arm
   become: yes
   apt:
-    deb: https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.raspberrypi.buster_armhf.deb
+    deb: "https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.raspberrypi.{{ ansible_distribution_release }}_armhf.deb"
     state: present
+  when: ansible_architecture == 'armv7l'
+
+- name: install wkhtmltox (wkhtmltoimg) x86_64
+  become: yes
+  apt:
+    deb: "https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.{{ ansible_distribution_release }}_amd64.deb"
+    state: present
+  when: ansible_architecture == 'armv7l'
 ...

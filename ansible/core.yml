@@ -2,7 +2,7 @@
 - name: install raspberry-noaa-v2 core
   hosts: core
   connection: local
-  gather_facts: no
+  gather_facts: yes
   pre_tasks:
     - name: get os release
       shell: lsb_release -c --short

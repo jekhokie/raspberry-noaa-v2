@@ -1,4 +1,8 @@
 ---
+# User under the app will run
+running_under_user: pi
+running_under_group: pi
+
 # base station configurations
 #   latitude: south values are negative
 #   longitude: west values are negative
@@ -209,6 +213,9 @@ admin_username: 'admin'
 admin_password: 'admin'
 web_passes_date_format: 'm/d/Y'
 web_datetime_format: 'm/d/Y H:i:s'
+use_ntpd: true
+use_ramfs: true
+setup_webserver: false
 
 # log level for output from scripts
 log_level: DEBUG
