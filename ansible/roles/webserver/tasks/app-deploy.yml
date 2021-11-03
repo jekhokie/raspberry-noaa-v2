@@ -63,7 +63,7 @@
 
 - name: www-data sudoers atrm as pi user
   become: yes
-  copy:
+  template:
     src: 020_www-data-atrm-nopasswd
     dest: /etc/sudoers.d/020_www-data-atrm-nopasswd
     owner: root
