@@ -10,7 +10,7 @@
 - name: drop template twitter tweepy config file
   copy:
     src: tweepy.conf
-    dest: /home/pi/.tweepy.conf
+    dest: "/home/{{ running_under_user }}/.tweepy.conf"
     force: no
     owner: "{{ running_under_user }}"
     group: "{{ running_under_group }}"
