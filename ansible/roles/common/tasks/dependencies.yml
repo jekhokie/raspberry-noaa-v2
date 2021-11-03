@@ -37,7 +37,7 @@
     update_cache: no
     state: present
     name: libgfortran-5-dev
-  when: raspbian_version.stdout == 'stretch'
+  when: ansible_distribution_release == 'stretch'
 
 - name: install dependencies (non-stretch)
   become: yes
@@ -45,7 +45,7 @@
     update_cache: no
     state: present
     name: libgfortran5
-  when: raspbian_version.stdout != 'stretch'
+  when: ansible_distribution_release != 'stretch'
 
 - name: install wkhtmltox (wkhtmltoimg) arm
   become: yes
