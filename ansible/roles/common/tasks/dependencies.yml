@@ -64,6 +64,7 @@
 
 # predict is not packaged anymore after stretch
 - name: install predict (>stretch) x86_64
+  become: yes
   apt:
     deb: "http://ftp.us.debian.org/debian/pool/main/p/predict/predict_2.2.3-4+b2_amd64.deb"
     state: present
@@ -72,6 +73,7 @@
     - ansible_architecture == 'x86_64'
 
 - name: install predict (>stretch) arm
+  become: yes
   apt:
     deb: "http://ftp.us.debian.org/debian/pool/main/p/predict/predict_2.2.3-4+b2_armhf.deb"
     state: present
