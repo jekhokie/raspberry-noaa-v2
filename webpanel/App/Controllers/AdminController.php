@@ -43,7 +43,7 @@ class AdminController extends \Lib\Controller {
 
       # attempt to remove the job ID
       try {
-        echo shell_exec("sudo -u pi atrm " . $pass->at_job_id . " 2>&1");
+        echo shell_exec("sudo -u " . Config::RUNNING_UNDER_USER . " atrm " . $pass->at_job_id . " 2>&1");
       } catch (exception $e) {
         error_log("Could not delete pass job ID using atrm for job ID: " . $pass->at_job_id . " - " . $e);
       }
