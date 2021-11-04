@@ -10,12 +10,10 @@
 
 - name: check if rtl-sdr software is installed
   stat:
-    path: /usr/local/bin/rtl_sdr
-  register: rtlsdr_bin
-
-- name: check if rtl-sdr software is installed (alternate path)
-  stat:
-    path: /usr/bin/rtl_sdr
+    path: "{{ item }}"
+  with_items:
+    - /usr/local/bin/rtl_sdr
+    - /usr/bin/rtl_sdr
   register: rtlsdr_bin
 
 - name: git clone rtl-sdr software
@@ -24,9 +22,7 @@
     dest: /tmp/rtl-sdr
     update: no
   register: rtlsdr
-  when:
-    - not rtlsdr_bin.stat.exists
-    - not rtlsdr_bin2.stat.exists
+  when: not rtlsdr_bin.stat.exists
 
 - name: create rtl-sdr build directory
   file:
