@@ -156,8 +156,6 @@
     "slack_push_to":              { "type": "string" },
     "slack_link":                 { "type": "string" },
     "enable_matrix_push":         { "type": "boolean" },
-    "running_under_user":         { "type": "string" },
-    "running_under_group":        { "type": "string" },
     "use_ntpd":                   { "type": "boolean" },
     "use_ramfs":                  { "type": "boolean" },
     "setup_webserver":            { "type": "boolean" }
@@ -260,8 +258,6 @@
     "slack_push_url",
     "slack_push_to",
     "slack_link",
-    "running_under_user",
-    "running_under_group",
     "use_ntpd",
     "use_ramfs",
     "setup_webserver"

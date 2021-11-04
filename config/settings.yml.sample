@@ -1,8 +1,4 @@
 ---
-# User under the app will run, default is 'pi' for a raspberry
-running_under_user: pi
-running_under_group: pi
-
 # base station configurations
 #   latitude: south values are negative
 #   longitude: west values are negative

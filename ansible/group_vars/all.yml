@@ -3,7 +3,7 @@
 available_langs: [ ar, de, en, es, sr ]
 
 # root git clone directory (where functionality exists)
-noaa_home: "/home/{{ running_under_user }}/raspberry-noaa-v2"
+noaa_home: "{{ ansible_user_dir }}/raspberry-noaa-v2"
 
 # database file
 db_file: "{{ noaa_home }}/db/panel.db"
@@ -29,4 +29,8 @@ log_file: "/var/log/raspberry-noaa-v2/output.log"
 # TLS self-signed certs
 tls_cert: /etc/ssl/certs/local_server.crt
 tls_cert_key: /etc/ssl/private/local_server.key
+
+# User we are running under
+running_under_user: "{{ ansible_user_id }}"  # we need the real, alphanumeric username for some parts
+running_under_group: "{{ ansible_user_gid }}"  # group is only used for files permissions so GID should be fine
 ...
