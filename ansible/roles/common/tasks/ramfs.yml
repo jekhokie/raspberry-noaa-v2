@@ -1,10 +1,11 @@
 ---
 - name: ramfs directory
+  become: yes
   file:
-    path: ramfs_path
+    path: "{{ ramfs_path }}"
     state: directory
-    owner: pi
-    group: pi
+    owner: "{{ running_under_user }}"
+    group: "{{ running_under_group }}"
     mode: 0770
 
 - name: get system memory
