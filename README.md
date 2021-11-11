@@ -220,7 +220,7 @@ or form to the success of this repository/framework. Below are some direct contr
 * **[Pascal P.](https://github.com/Cirromulus)**: Frequency/spectrum analysis test scripts for visualizing frequency spectrum of environment.
 * **[Socowi's Time Functionality](https://stackoverflow.com/a/50434292)**: Time parser to calculate end date for scanner scripts.
 * **[Vince VE3ELB](https://github.com/ve3elb)**: Took on the invaluable task to create fully working images of RN2 for the PI and maintains [https://qsl.net/ve3elb/RaspiNOAA/](https://qsl.net/ve3elb/RaspiNOAA/).
-
+*  **[mihajlo2003petkovic](https://github.com/mihajlo2003petkovic)**: Updates to the web browser and general updating and debugging.
 ## Contributing
 
 Pull requests are welcome! Simply follow the below pattern:
