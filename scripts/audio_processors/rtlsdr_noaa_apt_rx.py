@@ -39,8 +39,7 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
     	#   4. Frequency offset (PPM)
         #   5. SDR Device ID from settings.yml (for RTL-SDR source block)
         #   6. Bias-T (0/1 for RTL-SDR)
-
-    	stream_name = sys.argv[1]
+	stream_name = sys.argv[1]
 	gain = float(sys.argv[2])
 	import decimal
 	freq = int(decimal.Decimal(sys.argv[3].strip("M"))*decimal.Decimal(1000000))
