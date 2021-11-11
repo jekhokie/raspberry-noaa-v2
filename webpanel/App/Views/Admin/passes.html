@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="/assets/css/pagination.css">
+  <link rel="stylesheet" type="text/css" href="/assets/css/admin.css">
+{% endblock %}
+
+{% block body %}
+  {% if status_msg is defined %}
+    {% if status_msg == 'Success' %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ lang['successful_delete_pass'] }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% else %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ status_msg }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  {% include('Admin/nav.html') %}
+
+  <p class="lead text-center">
+    {{ lang['admin_pass_delete_warning'] }}
+  </p>
+
+  <table class="table table-bordered table-sm" id="admin-pass-list">
+    <thead class="thead-light">
+      <tr class="text-center">
+        <th scope="col" class="text-center"></th>
+        <th scope="col">{{ lang['satellite'] }}</th>
+        <th scope="col">{{ lang['pass_start'] }}</th>
+        <th scope="col">{{ lang['pass_end'] }}</th>
+        <th scope="col">{{ lang['max_elev'] }}</th>
+        <th scope="col" class="d-none d-sm-table-cell">{{ lang['pass_start_azimuth'] }}</th>
+        <th scope="col" class="d-none d-sm-table-cell">{{ lang['travel_direction'] }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set now = 'now'|date('m/d/y H:i:s') %}
+      {% set cur_date = 'now'|date('m/d/y') %}
+      {% set last_date = 0 %}
+
+      {% if pass.list|length <= 0 %}
+        <tr>
+          <td colspan="7" class="no-passes">0 {{ lang['passes'] }}</td>
+        </tr>
+      {% else %}
+        {% for pass in pass.list %}
+          {% set pass_start = pass.pass_start|date('H:i:s') %}
+          {% set pass_end = pass.pass_end|date('H:i:s') %}
+          {% set cur_date = pass.pass_start|date('m/d/y') %}
+
+          {% if last_date < cur_date %}
+            <tr class="date-separator">
+              <td colspan="7">{{ cur_date }}</td>
+            </tr>
+            {% set last_date = cur_date %}
+          {% endif %}
+
+          <tr{% if pass.is_active == false or pass_end < now %} class="inactive"{% endif %}>
+            <td class="capture-select text-center align-middle">
+              <button type="button" class="btn btn-sm btn-danger delete-capture" data-toggle="modal"
+                                   data-pass-start-id="{{ pass.pass_start }}"
+                                   data-sat-name="{{ pass.sat_name }}"
+                                   data-pass-start="{{ pass.pass_start|date('m/d/y H:i:s') }}"
+                                   data-pass-end="{{ pass.pass_end|date('m/d/y H:i:s') }}"
+                                   data-target="#confirmDeletePass">X</button>
+            </td>
+            <td{% if prev_pass_end >= pass.pass_start %} class="conflict"{% endif %}>
+              {% if prev_pass_end >= pass.pass_start %}<i class="fa fa-exclamation-triangle conflict-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['conflicting_pass'] }}"></i>{% endif %}
+              {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
+                <a href='https://satvis.space/?elements=Point,Label,Orbit%20track,Sensor%20cone&layers=OfflineHighres&tags=Weather&sat={{ pass.sat_name }}&gs={{ constant('Config\\Config::BASE_STATION_LAT') }},{{ constant('Config\\Config::BASE_STATION_LON') }}' target='satvis'>{{ pass.sat_name }}</a>
+              {% else %}
+                {{ pass.sat_name }}
+              {% endif %}
+            </td>
+            <td class="text-center">{{ pass_start }}</td>
+            <td class="text-center">{{ pass_end }}</td>
+            <td class="text-center">
+              {{ pass.max_elev }}&#176;
+              {% if pass.azimuth_at_max != "" %}
+                {% if pass.azimuth_at_max >= 0 and pass.azimuth_at_max <= 180 %}E{% else %}W{% endif %}
+              {% endif %}
+            </td>
+            <td class="text-center d-none d-sm-table-cell">{% if pass.pass_start_azimuth != "" %}{{ pass.pass_start_azimuth }}&#176;{% endif %}</td>
+            <td class="text-center d-none d-sm-table-cell">{% if pass.direction != "" %}{{ pass.direction }}{% endif %}</td>
+          </tr>
+
+          {% set prev_pass_end = pass.pass_end %}
+        {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+
+
+  <div class="modal fade" id="confirmDeletePass" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeleteLabel">{{ lang['admin_delete_confirm_header'] }}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="contents">
+            <strong>{{ lang.satellite }}: </strong><span id="satellite-name"></span><br>
+            <strong>{{ lang.pass_start }}: </strong><span id="pass-start"></span><br>
+            <strong>{{ lang.pass_end }}: </strong><span id="pass-end"></span><br>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ lang['cancel'] }}</button>
+          <a href="" id="confirmDeletion" type="button" class="btn btn-danger">{{ lang['confirm'] }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block js_includes %}
+  <script src="/assets/js/admin.js"></script>
+{% endblock %}

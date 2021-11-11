@@ -1,0 +1,44 @@
+div#satvis {
+  width: 100%;
+  height: 500px;
+}
+
+div#satvis iframe {
+  border: 0;
+  width: 100%;
+  height: 100%;
+}
+
+table#passes tr td.conflict i.conflict-icon {
+  color: #ec5645;
+}
+
+table#passes tr.inactive td.conflict i.conflict-icon {
+  color: lightgray;
+}
+
+table#passes tr.inactive {
+  color: lightgray;
+}
+
+table#passes td.no-passes {
+  text-align: center;
+  font-weight: bold;
+  font-style: italic;
+}
+
+table#passes tr.date-separator td {
+  background-color: #cce5ff !important;
+  font-size: .95em;
+  font-weight: bold;
+  text-align: center;
+}
+
+.flex-container {
+  display: flex;
+}
+
+.flex-child {
+  flex: 1;
+  max-height: 500px;
+}  

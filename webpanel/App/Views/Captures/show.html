@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="/assets/css/captures.css">
+{% endblock %}
+
+{% block body %}
+
+ <div>
+         <p align="right"> Enhancement details <a href="../enhancement_details.html" target="_blank">information</a></p>
+ </div>
+
+  {% set col_count = 0 %}
+  {% set i = 0 %}
+  {% set img_count = capture.enhancements|length %}
+
+  {% for enhancement in capture.enhancements %}
+    {% if col_count % 3 == 0 %}
+      <div class="card-group capture-image-cards">
+    {% endif %}
+
+    <div class="card bg-light m-2 p-2 image-card">
+      <a href="/images/{{ capture.image_path }}{{ enhancement }}">
+        <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.image_path }}{{ enhancement }}" alt="img">
+      </a>
+      <div class="card-body">
+        <p class="card-text">
+          <strong>{{ lang.enhancement }}: </strong>{{ enhancement|trim('-', side='left')|split('.')|slice(0,-1)|join }}<br>
+          <strong>{{ lang.gain }}: </strong>
+            {% if capture.gain == '0' %}
+              Auto
+            {% elseif capture.gain == '' %}
+              Unknown
+            {% else %}
+              {{ capture.gain }}
+            {% endif %}
+        </p>
+      </div>
+    </div>
+
+    {% set i = i + 1 %}
+    {% set col_count = col_count + 1 %}
+
+    {% if (col_count % 3 == 0) or (i >= img_count) %}
+      </div>
+    {% endif %}
+  {% endfor %}
+
+{% endblock %}

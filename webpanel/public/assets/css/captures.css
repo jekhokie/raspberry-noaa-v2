@@ -1,0 +1,21 @@
+div.card-group.capture-image-cards div.image-card {
+  display: block;
+  border: 1px solid rgba(0,0,0,.125);
+  border-radius: 0.25rem;
+}
+
+div.card-group.capture-image-cards div.image-card a {
+  display: block;
+  text-align: center;
+  height: 180px;
+}
+
+div.card-group.capture-image-cards div.image-card img.card-img-top {
+  max-height: 180px;
+  max-width: 100%;
+  width: unset;
+}
+
+div.card-group.capture-image-cards div.image-card div.card-body {
+  text-align: left;
+}

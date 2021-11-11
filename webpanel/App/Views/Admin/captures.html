@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="/assets/css/pagination.css">
+  <link rel="stylesheet" type="text/css" href="/assets/css/admin.css">
+{% endblock %}
+
+{% block body %}
+  {% if status_msg is defined %}
+    {% if status_msg == 'Success' %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ lang['successful_delete_capture'] }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% else %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ status_msg }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  {% include('Admin/nav.html') %}
+
+  <p class="lead text-center">
+    {{ lang['admin_capture_delete_warning'] }}
+  </p>
+
+  <nav aria-label="page" id="pagination" class="mb-0">
+    {% include('Captures/pagination.html') %}
+  </nav>
+
+  <div class="page-count-summary mb-0 mx-2 my-1">
+    {{ "#{lang['page']} #{cur_page} #{lang['of']} #{page_count}" }}
+  </div>
+
+  <table class="table table-bordered" id="admin-capture-list">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col" class="text-center"></th>
+        <th scope="col" class="text-center align-middle">{{ lang['satellite'] }}</th>
+        <th scope="col" class="text-center align-middle">{{ lang['pass_start'] }} / {{ lang['max_elev'] }}</th>
+        <th scope="col" class="text-center align-middle">{{ lang['image'] }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for capture in capture.list %}
+        <tr scope="row">
+          <td class="capture-select text-center align-middle">
+            <button type="button" class="btn btn-sm btn-danger delete-capture" data-toggle="modal"
+                                 data-capture-id="{{ capture.id }}"
+                                 data-sat-name="{{ capture.sat_name }}"
+                                 data-elevation="{{ capture.max_elev }}"
+                                 data-pass-start="{{ capture.pass_start|date('m/d/y H:i:s') }}"
+                                 data-target="#confirmDeleteCapture">X</button>
+          </td>
+          <td class="capture-sat-name text-center align-middle">{{ capture.sat_name }}</td>
+          <td class="capture-pass-start-elev text-center align-middle">
+            {{ capture.pass_start|date(constant('Config\\Config::DATETIME_FORMAT')) }} @
+            {{ capture.max_elev }}&#176;
+          </td>
+          <td class="capture-thumbnail text-center align-middle">
+            <a href="/captures/listImages?pass_id={{ capture.id }}">
+              {% if capture.sat_type == 0 %}
+                <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-122-rectified.jpg">
+              {% elseif capture.sat_type == 1 %}
+                <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-MCIR.jpg">
+              {% elseif capture.sat_type == 2 %}
+                <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-0.jpg">
+              {% endif %}
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <nav aria-label="page" id="pagination" class="d-md-none mb-0">
+    {% include('Captures/pagination.html') %}
+  </nav>
+
+  <div class="modal fade" id="confirmDeleteCapture" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeleteLabel">{{ lang['admin_delete_confirm_header'] }}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="contents">
+            <strong>{{ lang.satellite }}: </strong><span id="satellite-name"></span><br>
+            <strong>{{ lang.pass_start }}: </strong><span id="pass-start"></span><br>
+            <strong>{{ lang.elev }}: </strong><span id="capture-elevation"></span>&#176;<br>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ lang['cancel'] }}</button>
+          <a href="" id="confirmDeletion" type="button" class="btn btn-danger">{{ lang['confirm'] }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block js_includes %}
+  <script src="/assets/js/admin.js"></script>
+{% endblock %}

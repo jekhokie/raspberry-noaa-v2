@@ -1,0 +1,17 @@
+      <nav aria-label="page" id="pagination" class="mb-0">
+        <ul class="pagination pagination-sm justify-content-center mb-0 mx-2">
+          <li class="page-item{% if cur_page <= 1 %} disabled {% endif %}">
+            <a class="page-link" href="{{ "?page_no=#{cur_page-1}" }}" aria-label="{{ lang['prev'] }}">
+              <span aria-hiden="true">&laquo;</span>
+              <span>{{ lang['prev'] }}</span>
+            </a>
+          </li>
+
+          <li class="page-item{% if cur_page >= page_count %} disabled {% endif %}">
+            <a class="page-link" href="{{ "?page_no=#{cur_page+1}" }}" aria-label="{{ lang['next'] }}">
+              <span>{{ lang['next'] }}</span>
+              <span aria-hiden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>

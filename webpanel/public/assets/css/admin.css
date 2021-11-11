@@ -1,0 +1,23 @@
+table#admin-capture-list tbody tr {
+  height: 128px;
+}
+
+table#admin-capture-list tbody td.capture-thumbnail img {
+  max-height: 128px;
+  max-width: 128px;
+}
+
+table#admin-pass-list tr td.conflict i.conflict-icon {
+  color: #ec5645;
+}
+
+table#admin-pass-list tr td {
+  vertical-align: middle;
+}
+
+table#admin-pass-list tr.date-separator td {
+  background-color: #cce5ff !important;
+  font-size: .95em;
+  font-weight: bold;
+  text-align: center;
+}
