@@ -4,6 +4,7 @@
 #   longitude: west values are negative
 latitude: 40.712776
 longitude: -74.005974
+altitude: 0.0
 
 # time zone offset from UTC (for example, '-5' for US Eastern)
 timezone_offset: -5
