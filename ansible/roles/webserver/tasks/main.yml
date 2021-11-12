@@ -27,9 +27,9 @@
     update_cache: no
     state: present
     name:
-      - php7.2-fpm
-      - php7.2-mbstring
-      - php7.2-sqlite3
+      - php7.4-fpm
+      - php7.4-mbstring
+      - php7.4-sqlite3
 
 - name: install composer
   become: yes
