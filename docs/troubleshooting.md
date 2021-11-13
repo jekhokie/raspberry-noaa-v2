@@ -218,7 +218,7 @@ appropriately. After running this script, you should be able to resume accessing
 to follw the instructions in the [TLS Webserver](tls_webserver.md) document regarding bypassing self-signed blocks in certain
 browsers the very first time you access the webpanel since the certificate will be brand new to the browser.
 
-# ngix debugging shortcuts
+# ngix Debugging Shortcuts
 
 * Access log: `/var/log/nginx/access.log`
 * Error log: `/var/log/nginx/error.log`
