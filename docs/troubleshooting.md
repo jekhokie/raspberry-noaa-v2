@@ -225,7 +225,7 @@ browsers the very first time you access the webpanel since the certificate will 
 * FPM log: `/var/log/php7.4-fpm.log`
 * Check for PHP-FPM: `sudo ps aux | grep 'php'`
 * Check if the FPM service is installed: `sudo systemctl list-unit-files | grep -E 'php[^fpm]*fpm'`
-* Check if the FMP service is running: `sudo systemctl is-active php7.4-fpm.service`
+* Check if the FPM service is running: `sudo systemctl is-active php7.4-fpm.service`
 * Restart FPM service: `systemctl restart php7.4-fpm.service`
 * Detailed check on the service: `systemctl status nginx`
 * Start service: `systemctl start nginx`
