@@ -217,3 +217,18 @@ within the next 24 hours) and will automatically remediate the problem by creati
 appropriately. After running this script, you should be able to resume accessing the webpanel, but you will also likely need
 to follw the instructions in the [TLS Webserver](tls_webserver.md) document regarding bypassing self-signed blocks in certain
 browsers the very first time you access the webpanel since the certificate will be brand new to the browser.
+
+# ngix debugging shortcuts
+
+* Access log: `/var/log/nginx/access.log`
+* Error log: `/var/log/nginx/error.log`
+* FPM log: `/var/log/php7.2-fpm.log`
+* Check for PHP-FPM: `sudo ps aux | grep 'php'`
+* Check if the FPM service is installed: `sudo systemctl list-unit-files | grep -E 'php[^fpm]*fpm'`
+* Check if the FMP service is running: `sudo systemctl is-active php7.2-fpm.service`
+* Detailed check on the service: `systemctl status nginx`
+* Start service: `systemctl start nginx`
+* Check syntax `sudo nginx -t`
+* Restart service: `systemctl restart nginx`
+* Filter error logs: `tail -f /var/log/nginx/error.log`
+* Check if nginx is binding to the ports: `netstat -plant | grep '80\|443'`
