@@ -219,6 +219,7 @@ to follw the instructions in the [TLS Webserver](tls_webserver.md) document rega
 browsers the very first time you access the webpanel since the certificate will be brand new to the browser.
 
 # ngix Debugging Shortcuts
+note: Older versions of Raspberry-noaa-V2 use php7.2
 
 * Access log: `/var/log/nginx/access.log`
 * Error log: `/var/log/nginx/error.log`
