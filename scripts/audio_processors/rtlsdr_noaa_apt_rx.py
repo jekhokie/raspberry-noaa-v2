@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ##################################################
 # GNU Radio Python Flow Graph
@@ -40,16 +40,16 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
         #   5. SDR Device ID from settings.yml (for RTL-SDR source block)
         #   6. Bias-T (0/1 for RTL-SDR)
 
-    	stream_name = sys.argv[1]
-	gain = float(sys.argv[2])
-	import decimal
-	freq = int(decimal.Decimal(sys.argv[3].strip("M"))*decimal.Decimal(1000000))
-    	freq_offset = int(sys.argv[4])
+        stream_name = sys.argv[1]
+        gain = float(sys.argv[2])
+        import decimal
+        freq = int(decimal.Decimal(sys.argv[3].strip("M"))*decimal.Decimal(1000000))
+        freq_offset = int(sys.argv[4])
         sdr_dev_id = sys.argv[5]
         bias_t_string = sys.argv[6]
-	bias_t = "1"
-	if not bias_t_string:
-	   bias_t = "0"
+        bias_t = "1"
+        if not bias_t_string:
+           bias_t = "0"
 
         ##################################################
         # Variables
