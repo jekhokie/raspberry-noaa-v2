@@ -3,6 +3,7 @@
   "properties": {
     "latitude":              { "type": "number" },
     "longitude":             { "type": "number" },
+    "altitude":             { "type": "number" },
     "timezone_offset":       { "type": "number" },
     "ntp_server":            { "type": "string" },
     "test_gain":             { "type": "number" },
@@ -160,6 +161,7 @@
   "required": [
     "latitude",
     "longitude",
+    "altitude",
     "timezone_offset",
     "ntp_server",
     "test_gain",
