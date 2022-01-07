@@ -19,4 +19,4 @@ OUTPUT_QPSK=$2
 
 
 # produce the output image - note QPSK output lists before wav
-$METEORDEMOD -B -o "${OUTPUT_QPSK}" "${INPUT_WAV}" >> $NOAA_LOG 2>&1
+$METEOR_DEMOD -B -o "${OUTPUT_QPSK}" "${INPUT_WAV}" >> $NOAA_LOG 2>&1
