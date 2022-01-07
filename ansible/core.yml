@@ -9,8 +9,6 @@
       register: raspbian_version
       check_mode: no
       changed_when: no
-    - debug:
-        msg: "{{ raspbian_version }}"
   roles:
     - role: common
 ...
