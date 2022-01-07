@@ -5,7 +5,7 @@
 # Input parameters:
 #   1. Name of satellite "METEOR-M 2"
 #   2. Filename of image outputs
-#   3. Epoch start time for capture
+#   3. TLE file location
 #   4. Duration of capture (seconds)
 #   5. Max angle elevation for satellite
 #   6. Direction of pass
@@ -120,9 +120,9 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     log "Producing spectrogram" "INFO"
     spectrogram=1
     spectro_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
-    ${IMAGE_PROC_DIR}/spectrogram.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" "${spectro_text}" >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/spectrogram.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" "${spectro_text}" >> $NOAA_LOG 2>&1    #Bilo je ${AUDIO_FILE_BASE}.wav
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png" >> $NOAA_LOG 2>&1
-   fi
+  fi
 
   if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
     log "Producing polar graph of azimuth and elevation for pass" "INFO"
@@ -176,59 +176,50 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     fi
   fi
 
-  log "Decoding in progress (QPSK to BMP)" "INFO"
-  ${IMAGE_PROC_DIR}/meteor_decode_qpsk.sh "${qpsk_file}" "${AUDIO_FILE_BASE}" >> $NOAA_LOG 2>&1
-  
-  sleep 10
+  log "Running MeteorDemod do demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
+  $METEORDEMOD -t "$TLE_FILE" -f jpg -i "${qpsk_file}" >> $NOAA_LOG 2>&1 #Dodao sam >> $NOAA_LOG 2>&1
 
-  rm "${qpsk_file}"
+  log "Removing QPSK, GCP and BMP files" "INFO"
+  rm "${qpsk_file}" *.gcp *.bmp
 
-  if [ -f "${AUDIO_FILE_BASE}.dec" ]; then
-    if [ "${SUN_ELEV}" -lt "${SUN_MIN_ELEV}" ]; then
-      log "I got a successful ${FILENAME_BASE}.dec file. Decoding APID 68" "INFO"
-      ${IMAGE_PROC_DIR}/meteor_apid68_decode.sh "${AUDIO_FILE_BASE}.dec" "${IMAGE_FILE_BASE}-122" >> $NOAA_LOG 2>&1
-      $CONVERT $FLIP -negate "${IMAGE_FILE_BASE}-122.bmp" "${IMAGE_FILE_BASE}-122.bmp" >> $NOAA_LOG 2>&1
-    else
-      log "I got a successful ${FILENAME_BASE}.dec file. Creating false color image" "INFO"
-      ${IMAGE_PROC_DIR}/meteor_false_color_decode.sh "${AUDIO_FILE_BASE}.dec" "${IMAGE_FILE_BASE}-122" >> $NOAA_LOG 2>&1
-	  $CONVERT $FLIP "${IMAGE_FILE_BASE}-122.bmp" "${IMAGE_FILE_BASE}-122.bmp" >> $NOAA_LOG 2>&1
-    fi
+  log "Annotating images and creating thumbnails" "INFO"
+  counter=1
+  for i in *.jpg
+    do
+      ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "$i" 100 >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.jpg}-thumb-122-rectified.jpg" >> $NOAA_LOG 2>&1
 
-    log "Rectifying image to adjust aspect ratio" "INFO"
-    python3 "${IMAGE_PROC_DIR}/meteor_rectify.py" "${IMAGE_FILE_BASE}-122.bmp" >> $NOAA_LOG 2>&1
+      mv "$i" "${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
+      mv "${i%.jpg}-thumb-122-rectified.jpg" "${IMAGE_THUMB_BASE}-${counter}-122-rectified.jpg"
 
-    log "Annotating images and creating thumbnails" "INFO"
-    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${IMAGE_FILE_BASE}-122-rectified.jpg" 100 >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-122-rectified.jpg" "${IMAGE_THUMB_BASE}-122-rectified.jpg" >> $NOAA_LOG 2>&1
-    rm "${IMAGE_FILE_BASE}-122.bmp"
-    rm "${AUDIO_FILE_BASE}.bmp"
-    rm "${AUDIO_FILE_BASE}.dec"
+      push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg "
+      ((counter++))
+    done
+    counter=1
 
-    if [ -f "${IMAGE_FILE_BASE}-122-rectified.jpg" ]; then
+    if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
       if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
         log "Emailing image" "INFO"
-        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
+	${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-2-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
       fi
 
       if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
         log "Pushing image to Discord" "INFO"
-        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
+	${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-2-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
       fi
-
-      # capture list of files to push to Twitter
-      push_file_list="${IMAGE_FILE_BASE}-122-rectified.jpg"
+      log "$push_file_list" "Images to be posted on Twitter"
     else
       log "No image produced - not pushing anywhere" "INFO"
     fi
 
     # store decoded pass
-    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, has_polar_direction, gain) \
-                                         VALUES ( \
-                                           (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
-                                           $EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $polar_direction, $GAIN \
-                                         );"
+    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, has_polar_direction, gain) \
+                                         VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $polar_direction, $GAIN);"
+
+    log "Filename base value for Meteor-M2 is: $FILENAME_BASE" "INFO"
 
     pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
+
     $SQLITE3 $DB_FILE "UPDATE predict_passes \
                        SET is_active = 0 \
                        WHERE (predict_passes.pass_start) \
@@ -242,7 +233,7 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   else
     log "Decoding failed, either a bad pass/low SNR or a software problem" "ERROR"
   fi
-elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
+if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
   log "Starting gnuradio record" "INFO"
   ${AUDIO_PROC_DIR}/meteor_record_gnuradio.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
 
@@ -286,7 +277,7 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 
   log "Decoding in progress (Bitstream to BMP)" "INFO"
   ${IMAGE_PROC_DIR}/meteor_decode_bitstream.sh "${RAMFS_AUDIO_BASE}.s" "${RAMFS_AUDIO_BASE}" >> $NOAA_LOG 2>&1
-  
+
   sleep 2
 
   if [ "$DELETE_AUDIO" = true ]; then
@@ -313,9 +304,9 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     python3 "${IMAGE_PROC_DIR}/meteor_rectify.py" ${RAMFS_AUDIO_BASE}-col.bmp >> $NOAA_LOG 2>&1
 
     log "Compressing and rotating where required" "INFO"
-    $CONVERT ${RAMFS_AUDIO_BASE}-rectified.jpg $FLIP -normalize -quality 90 ${RAMFS_AUDIO_BASE}.jpg
-    $CONVERT ${RAMFS_AUDIO_BASE}-ir-rectified.jpg $FLIP -normalize -quality 90 ${RAMFS_AUDIO_BASE}-ir.jpg
-    $CONVERT ${RAMFS_AUDIO_BASE}-col-rectified.jpg $FLIP -normalize -quality 90 ${RAMFS_AUDIO_BASE}-col.jpg
+    $CONVERT ${RAMFS_AUDIO_BASE}-rectified.jpg $FLIP -normalize -quality 100 ${RAMFS_AUDIO_BASE}.jpg
+    $CONVERT ${RAMFS_AUDIO_BASE}-ir-rectified.jpg $FLIP -normalize -quality 100 ${RAMFS_AUDIO_BASE}-ir.jpg
+    $CONVERT ${RAMFS_AUDIO_BASE}-col-rectified.jpg $FLIP -normalize -quality 100 ${RAMFS_AUDIO_BASE}-col.jpg
 
     log "Annotating images and generating thumbnails" "INFO"
     ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "${RAMFS_AUDIO_BASE}.jpg" "${IMAGE_FILE_BASE}-122-rectified.jpg" >> $NOAA_LOG 2>&1
