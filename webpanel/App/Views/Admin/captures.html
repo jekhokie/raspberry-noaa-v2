@@ -66,11 +66,19 @@
           <td class="capture-thumbnail text-center align-middle">
             <a href="/captures/listImages?pass_id={{ capture.id }}">
               {% if capture.sat_type == 0 %}
-                <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-122-rectified.jpg">
-              {% elseif capture.sat_type == 1 %}
-                <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-MCIR.jpg">
-              {% elseif capture.sat_type == 2 %}
-                <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-0.jpg">
+               {% if capture.daylight_pass == 1 %}
+                 <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-2-122-rectified.jpg">
+               {% else %}
+                 <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-1-122-rectified.jpg">
+               {% endif %}
+               {% elseif capture.sat_type == 1 %}
+                 {% if capture.daylight_pass == 1 %}
+                 <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-MSA.jpg">
+               {% else %}
+                 <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-MCIR.jpg">
+               {% endif %}
+               {% elseif capture.sat_type == 2 %}
+                 <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-0.jpg">
               {% endif %}
             </a>
           </td>
