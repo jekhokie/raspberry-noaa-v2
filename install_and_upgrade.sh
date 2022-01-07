@@ -74,7 +74,6 @@ fi
 log_running "Installing MeteorDemod and OpenCV as its dependency"
 sudo apt install python3-opencv
 sudo apt install ~/raspberry-noaa-v2/software/Meteordemod-2.0.0-Linux.deb
-mv ~/raspberry-noaa-v2/software/MeteorDemod_settings.ini /home/pi/.config/meteordemod/settings.ini
 log_done "Finished installing MeteorDemod"
 
 # install ansible
