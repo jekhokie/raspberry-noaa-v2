@@ -43,6 +43,7 @@ SQLITE3="/usr/bin/sqlite3"
 WXMAP="/usr/local/bin/wxmap"
 WXTOIMG="/usr/local/bin/wxtoimg"
 WKHTMLTOIMG="/usr/local/bin/wkhtmltoimage"
+METEORDEMOD="/usr/local/bin/meteordemod"
 
 # base directories for scripts
 SCRIPTS_DIR="${NOAA_HOME}/scripts"

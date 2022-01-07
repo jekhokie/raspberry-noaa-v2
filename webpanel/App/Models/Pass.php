@@ -8,7 +8,7 @@ class Pass extends \Lib\Model {
 
   # get a list of passes
   public function getList() {
-    $today = strtotime(date('d.m.Y.', time()));		//Ispod navodnika bilo je 'Y-m-d'
+    $today = strtotime(date('d.m.Y.', time()));
     $query = $this->db_conn->query("SELECT sat_name,
                                            is_active,
                                            pass_start,
