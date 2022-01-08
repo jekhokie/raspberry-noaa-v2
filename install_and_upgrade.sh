@@ -71,11 +71,6 @@ else
   die "  Please update your config/settings.yml file to accommodate the above errors"
 fi
 
-log_running "Installing MeteorDemod and OpenCV as its dependency"
-sudo apt install python3-opencv
-sudo apt install ~/raspberry-noaa-v2/software/Meteordemod-2.0.0-Linux.deb
-log_done "Finished installing MeteorDemod"
-
 # install ansible
 which ansible-playbook 2>&1 >/dev/null
 if [ $? -ne 0 ]; then
