@@ -37,7 +37,7 @@
     dest: ~pi/.config/meteordemod/settings.ini
     owner: pi
     group: pi
-    mode: 0644
+    mode: 0755
     
 - name: wxtoimg license terms acceptance file
   copy:
