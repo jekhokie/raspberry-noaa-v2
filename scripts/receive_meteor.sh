@@ -182,6 +182,11 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   log "Removing QPSK, GCP and BMP files" "INFO"
   rm "${qpsk_file}" *.gcp *.bmp
 
+  for i in spread_*.jpg
+  do
+    $CONVERT $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
+  done
+
     log "Annotating images and creating thumbnails" "INFO"
     counter=1
     for i in *.jpg
@@ -286,6 +291,11 @@ if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
   $METEORDEMOD -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
 
   rm *.gcp *.bmp
+
+  for i in spread_*.jpg
+  do
+    $CONVERT $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
+  done
 
   sleep 2
 
