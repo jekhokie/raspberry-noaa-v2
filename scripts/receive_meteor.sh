@@ -165,6 +165,8 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   RAMFS_USAGE=$(du -sh ${RAMFS_AUDIO} | awk '{print $1}')
   log "Free memory : ${FREE_MEMORY} ; Available memory : ${AVAILABLE_MEMORY} ; Total RAMFS usage : ${RAMFS_USAGE}" "INFO"
 
+#  $METEORDEMOD -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+
   if [ "$DELETE_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
     rm "${RAMFS_AUDIO_BASE}.wav"
@@ -176,15 +178,19 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     fi
   fi
 
+#  log "Decoding in progress (QPSK to BMP)" "INFO"
+#  ${IMAGE_PROC_DIR}/meteor_decode_qpsk.sh "${qpsk_file}" "${AUDIO_FILE_BASE}" >> $NOAA_LOG 2>&1
+
+#  sleep 10
   log "Running MeteorDemod do demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
-  $METEORDEMOD -t "$TLE_FILE" -f jpg -i "${qpsk_file}" >> $NOAA_LOG 2>&1 #Dodao sam >> $NOAA_LOG 2>&1
+  $METEORDEMOD -t "$TLE_FILE" -f jpg -i "${qpsk_file}" >> $NOAA_LOG 2>&1
 
   log "Removing QPSK, GCP and BMP files" "INFO"
   rm "${qpsk_file}" *.gcp *.bmp
 
-  log "Annotating images and creating thumbnails" "INFO"
-  counter=1
-  for i in *.jpg
+    log "Annotating images and creating thumbnails" "INFO"
+    counter=1
+    for i in *.jpg
     do
       ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "$i" 100 >> $NOAA_LOG 2>&1
       ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.jpg}-thumb-122-rectified.jpg" >> $NOAA_LOG 2>&1
@@ -199,13 +205,19 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
 
     if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
       if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
-        log "Emailing image" "INFO"
-	${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-2-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
+        log "Emailing images" "INFO"
+        for i in "${IMAGE_FILE_BASE}-*-122-rectified.jpg"
+        do
+          ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+        done
       fi
 
       if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
-        log "Pushing image to Discord" "INFO"
-	${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-2-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
+        log "Pushing images to Discord" "INFO"
+        for i in "${IMAGE_FILE_BASE}-*-122-rectified.jpg"
+        do
+          ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+        done
       fi
       log "$push_file_list" "Images to be posted on Twitter"
     else
@@ -276,7 +288,11 @@ if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
   fi
 
   log "Decoding in progress (Bitstream to BMP)" "INFO"
-  ${IMAGE_PROC_DIR}/meteor_decode_bitstream.sh "${RAMFS_AUDIO_BASE}.s" "${RAMFS_AUDIO_BASE}" >> $NOAA_LOG 2>&1
+#  ${IMAGE_PROC_DIR}/meteor_decode_bitstream.sh "${RAMFS_AUDIO_BASE}.s" "${RAMFS_AUDIO_BASE}" >> $NOAA_LOG 2>&1
+
+  $METEORDEMOD -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
+
+  rm *.gcp *.bmp
 
   sleep 2
 
@@ -291,37 +307,22 @@ if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
   fi
 
   # check if we got an image, and post-process if so
-  if [ -f "${RAMFS_AUDIO_BASE}_0.bmp" ]; then
-    log "I got a successful bmp file - post-processing" "INFO"
-    log "Blend and combine channels" "INFO"
-    $CONVERT ${RAMFS_AUDIO_BASE}_1.bmp ${RAMFS_AUDIO_BASE}_1.bmp ${RAMFS_AUDIO_BASE}_0.bmp -combine -set colorspace sRGB ${RAMFS_AUDIO_BASE}.bmp >> $NOAA_LOG 2>&1
-    $CONVERT ${RAMFS_AUDIO_BASE}_2.bmp ${RAMFS_AUDIO_BASE}_2.bmp ${RAMFS_AUDIO_BASE}_2.bmp -combine -set colorspace sRGB -negate ${RAMFS_AUDIO_BASE}-ir.bmp >> $NOAA_LOG 2>&1
-    $CONVERT ${RAMFS_AUDIO_BASE}_0.bmp ${RAMFS_AUDIO_BASE}_1.bmp ${RAMFS_AUDIO_BASE}_2.bmp -combine -set colorspace sRGB ${RAMFS_AUDIO_BASE}-col.bmp >> $NOAA_LOG 2>&1
+#  if [ -f "${RAMFS_AUDIO_BASE}_0.bmp" ]; then
+  if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
+    log "I got a successful jpg images" "INFO"
 
-    log "Rectifying image to adjust aspect ratio" "INFO"
-    python3 "${IMAGE_PROC_DIR}/meteor_rectify.py" ${RAMFS_AUDIO_BASE}.bmp >> $NOAA_LOG 2>&1
-    python3 "${IMAGE_PROC_DIR}/meteor_rectify.py" ${RAMFS_AUDIO_BASE}-ir.bmp >> $NOAA_LOG 2>&1
-    python3 "${IMAGE_PROC_DIR}/meteor_rectify.py" ${RAMFS_AUDIO_BASE}-col.bmp >> $NOAA_LOG 2>&1
-
-    log "Compressing and rotating where required" "INFO"
-    $CONVERT ${RAMFS_AUDIO_BASE}-rectified.jpg $FLIP -normalize -quality 100 ${RAMFS_AUDIO_BASE}.jpg
-    $CONVERT ${RAMFS_AUDIO_BASE}-ir-rectified.jpg $FLIP -normalize -quality 100 ${RAMFS_AUDIO_BASE}-ir.jpg
-    $CONVERT ${RAMFS_AUDIO_BASE}-col-rectified.jpg $FLIP -normalize -quality 100 ${RAMFS_AUDIO_BASE}-col.jpg
-
-    log "Annotating images and generating thumbnails" "INFO"
-    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "${RAMFS_AUDIO_BASE}.jpg" "${IMAGE_FILE_BASE}-122-rectified.jpg" >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-122-rectified.jpg" "${IMAGE_THUMB_BASE}-122-rectified.jpg" >> $NOAA_LOG 2>&1
-
-    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "${RAMFS_AUDIO_BASE}-ir.jpg" "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${IMAGE_THUMB_BASE}-ir-122-rectified.jpg" >> $NOAA_LOG 2>&1
-
-    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "${RAMFS_AUDIO_BASE}-col.jpg" "${IMAGE_FILE_BASE}-col-122-rectified.jpg" >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${IMAGE_THUMB_BASE}-col-122-rectified.jpg" >> $NOAA_LOG 2>&1
-
-    # capture list of files to push to Twitter
-    push_file_list="${IMAGE_FILE_BASE}-122-rectified.jpg"
-    push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-ir-122-rectified.jpg"
-    push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-col-122-rectified.jpg"
+    log "Annotating images and creating thumbnails" "INFO"
+    counter=1
+    for i in *.jpg
+    do
+      ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "$i" 100 >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.jpg}-thumb-122-rectified.jpg" >> $NOAA_LOG 2>&1
+      mv "$i" "${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
+      mv "${i%.jpg}-thumb-122-rectified.jpg" "${IMAGE_THUMB_BASE}-${counter}-122-rectified.jpg"
+      push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg "
+      ((counter++))
+    done
+    counter=1
 
     # insert or replace in case there was already an insert due to the spectrogram creation
     $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, has_polar_direction, gain) \
@@ -343,44 +344,23 @@ if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     #       and iterate over it, which would significantly DRY this code up
     if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
       log "Emailing images" "INFO"
-      if [ -f "${IMAGE_FILE_BASE}-122-rectified.jpg" ]; then
-        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
-      fi
-      if [ -f "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" ]; then
-        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
-      fi
-      if [ -f "${IMAGE_FILE_BASE}-col-122-rectified.jpg" ]; then
-        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
+      if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
+        for i in "${IMAGE_FILE_BASE}-*-122-rectified.jpg"
+        do
+          ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+        done
       fi
     fi
 
     if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
       log "Pushing images to Discord" "INFO"
-      if [ -f "${IMAGE_FILE_BASE}-122-rectified.jpg" ]; then
-        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
-      fi
-      if [ -f "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" ]; then
-        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-ir-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
-      fi
-      if [ -f "${IMAGE_FILE_BASE}-col-122-rectified.jpg" ]; then
-        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-col-122-rectified.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
+      if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
+        for i in "${IMAGE_FILE_BASE}-*-122-rectified.jpg"
+        do
+          ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+        done
       fi
     fi
-
-    log "Cleaning up temp files" "INFO"
-    rm -f ${RAMFS_AUDIO_BASE}_0.bmp
-    rm -f ${RAMFS_AUDIO_BASE}_1.bmp
-    rm -f ${RAMFS_AUDIO_BASE}_2.bmp
-    rm -f ${RAMFS_AUDIO_BASE}.jpg
-    rm -f ${RAMFS_AUDIO_BASE}-ir.jpg
-    rm -f ${RAMFS_AUDIO_BASE}-col.jpg
-    rm -f ${RAMFS_AUDIO_BASE}.bmp
-    rm -f ${RAMFS_AUDIO_BASE}-ir.bmp
-    rm -f ${RAMFS_AUDIO_BASE}-col.bmp
-    rm -f ${RAMFS_AUDIO_BASE}-rectified.jpg
-    rm -f ${RAMFS_AUDIO_BASE}-ir-rectified.jpg
-    rm -f ${RAMFS_AUDIO_BASE}-col-rectified.jpg
-    rm -f ${RAMFS_AUDIO_BASE}.dec
 
   else
     log "Did not get a successful .bmp image - stopping processing" "ERROR"
