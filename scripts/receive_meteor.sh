@@ -165,8 +165,6 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   RAMFS_USAGE=$(du -sh ${RAMFS_AUDIO} | awk '{print $1}')
   log "Free memory : ${FREE_MEMORY} ; Available memory : ${AVAILABLE_MEMORY} ; Total RAMFS usage : ${RAMFS_USAGE}" "INFO"
 
-#  $METEORDEMOD -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
-
   if [ "$DELETE_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
     rm "${RAMFS_AUDIO_BASE}.wav"
@@ -178,10 +176,6 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     fi
   fi
 
-#  log "Decoding in progress (QPSK to BMP)" "INFO"
-#  ${IMAGE_PROC_DIR}/meteor_decode_qpsk.sh "${qpsk_file}" "${AUDIO_FILE_BASE}" >> $NOAA_LOG 2>&1
-
-#  sleep 10
   log "Running MeteorDemod do demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
   $METEORDEMOD -t "$TLE_FILE" -f jpg -i "${qpsk_file}" >> $NOAA_LOG 2>&1
 
@@ -287,8 +281,7 @@ if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png"
   fi
 
-  log "Decoding in progress (Bitstream to BMP)" "INFO"
-#  ${IMAGE_PROC_DIR}/meteor_decode_bitstream.sh "${RAMFS_AUDIO_BASE}.s" "${RAMFS_AUDIO_BASE}" >> $NOAA_LOG 2>&1
+  log "Running MeteorDemod do demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
 
   $METEORDEMOD -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
 
@@ -307,7 +300,6 @@ if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
   fi
 
   # check if we got an image, and post-process if so
-#  if [ -f "${RAMFS_AUDIO_BASE}_0.bmp" ]; then
   if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
     log "I got a successful jpg images" "INFO"
 
