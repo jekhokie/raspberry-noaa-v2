@@ -35,9 +35,9 @@
   template:
     src: settings.ini.j2
     dest: ~pi/.config/meteordemod/settings.ini
-    owner: root
-    group: root
-    mode: 0755
+    owner: pi
+    group: pi
+    mode: 0644
     
 - name: wxtoimg license terms acceptance file
   copy:
