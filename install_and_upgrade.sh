@@ -71,11 +71,6 @@ else
   die "  Please update your config/settings.yml file to accommodate the above errors"
 fi
 
-log_running "Installing MeteorDemod and OpenCV as its dependency"
-sudo apt install python3-opencv
-sudo apt install ~/raspberry-noaa-v2/software/Meteordemod-2.0.0-Linux.deb
-log_done "Finished installing MeteorDemod"
-
 # install ansible
 which ansible-playbook 2>&1 >/dev/null
 if [ $? -ne 0 ]; then
@@ -89,6 +84,9 @@ if [ $? -ne 0 ]; then
     die "  Could not install Ansible - please inspect the logs above"
   fi
 fi
+
+log_running "Setting ~/.config/meteordemod ownership to the current user"
+sudo chown $USER:$USER -R ~/.config/meteordemod
 
 log_running "Checking for configuration settings..."
 if [ -f config/settings.yml ]; then
