@@ -187,63 +187,63 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     $CONVERT $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
   done
 
-    log "Annotating images and creating thumbnails" "INFO"
-    counter=1
-    for i in *.jpg
-    do
-      ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "$i" 100 >> $NOAA_LOG 2>&1
-      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.jpg}-thumb-122-rectified.jpg" >> $NOAA_LOG 2>&1
+  log "Annotating images and creating thumbnails" "INFO"
+  counter=1
+  for i in *.jpg
+  do
+    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "$i" 100 >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.jpg}-thumb-122-rectified.jpg" >> $NOAA_LOG 2>&1
 
-      mv "$i" "${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
-      mv "${i%.jpg}-thumb-122-rectified.jpg" "${IMAGE_THUMB_BASE}-${counter}-122-rectified.jpg"
+    mv "$i" "${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
+    mv "${i%.jpg}-thumb-122-rectified.jpg" "${IMAGE_THUMB_BASE}-${counter}-122-rectified.jpg"
 
-      push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg "
-      ((counter++))
-    done
-    counter=1
+    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg "
+    ((counter++))
+  done
+  counter=1
 
-    if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
-      if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
-        log "Emailing images" "INFO"
-        for i in "${IMAGE_FILE_BASE}-*-122-rectified.jpg"
-        do
-          ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
-        done
-      fi
-
-      if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
-        log "Pushing images to Discord" "INFO"
-        for i in "${IMAGE_FILE_BASE}-*-122-rectified.jpg"
-        do
-          ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
-        done
-      fi
-      log "$push_file_list" "Images to be posted on Twitter"
-    else
-      log "No image produced - not pushing anywhere" "INFO"
+  if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
+    if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
+      log "Emailing images" "INFO"
+      for i in "${IMAGE_FILE_BASE}-*-122-rectified.jpg"
+      do
+        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+      done
     fi
 
-    # store decoded pass
-    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, has_polar_direction, gain) \
-                                         VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $polar_direction, $GAIN);"
-
-    log "Filename base value for Meteor-M2 is: $FILENAME_BASE" "INFO"
-
-    pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
-
-    $SQLITE3 $DB_FILE "UPDATE predict_passes \
-                       SET is_active = 0 \
-                       WHERE (predict_passes.pass_start) \
-                       IN ( \
-                         SELECT predict_passes.pass_start \
-                         FROM predict_passes \
-                         INNER JOIN decoded_passes \
-                         ON predict_passes.pass_start = decoded_passes.pass_start \
-                         WHERE decoded_passes.id = $pass_id \
-                       );"
+    if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
+      log "Pushing images to Discord" "INFO"
+      for i in "${IMAGE_FILE_BASE}-*-122-rectified.jpg"
+      do
+        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+      done
+    fi
+    log "$push_file_list" "Images to be posted on Twitter"
   else
-    log "Decoding failed, either a bad pass/low SNR or a software problem" "ERROR"
+    log "No image produced - not pushing anywhere" "INFO"
   fi
+
+# store decoded pass
+  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, has_polar_direction, gain) \
+                                       VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $polar_direction, $GAIN);"
+
+  log "Filename base value for Meteor-M2 is: $FILENAME_BASE" "INFO"
+
+  pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
+  
+  $SQLITE3 $DB_FILE "UPDATE predict_passes \
+                     SET is_active = 0 \
+                     WHERE (predict_passes.pass_start) \
+                     IN ( \
+                       SELECT predict_passes.pass_start \
+                       FROM predict_passes \
+                       INNER JOIN decoded_passes \
+                       ON predict_passes.pass_start = decoded_passes.pass_start \
+                       WHERE decoded_passes.id = $pass_id \
+                     );"
+else
+  log "Decoding failed, either a bad pass/low SNR or a software problem" "ERROR"
+fi
 if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
   log "Starting gnuradio record" "INFO"
   ${AUDIO_PROC_DIR}/meteor_record_gnuradio.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
