@@ -218,7 +218,6 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
         ${PUSH_PROC_DIR}/push_discord.sh "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
       done
     fi
-    log "$push_file_list" "Images to be posted on Twitter"
   else
     log "No image produced - not pushing anywhere" "INFO"
   fi
