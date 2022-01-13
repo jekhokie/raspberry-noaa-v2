@@ -205,7 +205,7 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
     if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
       log "Emailing images" "INFO"
-      for i in "${IMAGE_FILE_BASE}-*-122-rectified.jpg"
+      for i in $push_file_list
       do
         ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
       done
@@ -213,9 +213,9 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
 
     if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
       log "Pushing images to Discord" "INFO"
-      for i in "${IMAGE_FILE_BASE}-*-122-rectified.jpg"
+      for i in $push_file_list
       do
-        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+        ${PUSH_PROC_DIR}/push_discord.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
       done
     fi
     log "$push_file_list" "Images to be posted on Twitter"
@@ -347,7 +347,7 @@ if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
       log "Emailing images" "INFO"
       if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
-        for i in "${IMAGE_FILE_BASE}-*-122-rectified.jpg"
+        for i in $push_file_list
         do
           ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
         done
@@ -357,9 +357,9 @@ if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
       log "Pushing images to Discord" "INFO"
       if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
-        for i in "${IMAGE_FILE_BASE}-*-122-rectified.jpg"
+        for i in $push_file_list
         do
-          ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+          ${PUSH_PROC_DIR}/push_discord.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
         done
       fi
     fi
