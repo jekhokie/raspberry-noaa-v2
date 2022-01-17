@@ -112,9 +112,13 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   log "Starting rtl_fm record" "INFO"
   ${AUDIO_PROC_DIR}/meteor_record_rtl_fm.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
 
+  sleep 2
+
   log "Demodulation in progress (QPSK)" "INFO"
   qpsk_file="${NOAA_HOME}/tmp/meteor/${FILENAME_BASE}.qpsk"
   ${AUDIO_PROC_DIR}/meteor_demodulate_qpsk.sh "${RAMFS_AUDIO_BASE}.wav" "${qpsk_file}" >> $NOAA_LOG 2>&1
+
+  sleep 2
 
   if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
     log "Producing spectrogram" "INFO"
@@ -122,41 +126,6 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     spectro_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
     ${IMAGE_PROC_DIR}/spectrogram.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" "${spectro_text}" >> $NOAA_LOG 2>&1    #Bilo je ${AUDIO_FILE_BASE}.wav
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png" >> $NOAA_LOG 2>&1
-  fi
-
-  if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
-    log "Producing polar graph of azimuth and elevation for pass" "INFO"
-    polar_az_el=1
-    epoch_end=$((EPOCH_START + CAPTURE_TIME))
-    ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
-                                    "${TLE_FILE}" \
-                                    $EPOCH_START \
-                                    $epoch_end \
-                                    $LAT \
-                                    $LON \
-                                    $SAT_MIN_ELEV \
-                                    $PASS_DIRECTION \
-                                    "${IMAGE_FILE_BASE}-polar-azel.jpg" \
-                                    "azel"
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-azel.jpg" "${IMAGE_THUMB_BASE}-polar-azel.jpg"
-  fi
-
-  polar_direction=0
-  if [[ "${PRODUCE_POLAR_DIRECTION}" == "true" ]]; then
-    log "Producing polar graph of direction for pass" "INFO"
-    polar_direction=1
-    epoch_end=$((EPOCH_START + CAPTURE_TIME))
-    ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
-                                    "${TLE_FILE}" \
-                                    $EPOCH_START \
-                                    $epoch_end \
-                                    $LAT \
-                                    $LON \
-                                    $SAT_MIN_ELEV \
-                                    $PASS_DIRECTION \
-                                    "${IMAGE_FILE_BASE}-polar-direction.png" \
-                                    "direction"
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png"
   fi
 
   # how are we about memory usage at this point ?
@@ -176,128 +145,30 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     fi
   fi
 
-  log "Running MeteorDemod do demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
+  sleep 2
+
+  log "Running MeteorDemod to demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
   $METEORDEMOD -t "$TLE_FILE" -f jpg -i "${qpsk_file}" >> $NOAA_LOG 2>&1
 
-  log "Removing QPSK, GCP and BMP files" "INFO"
-  rm "${qpsk_file}" *.gcp *.bmp
+  sleep 2
+else
+  log "Decoding failed, either a bad pass/low SNR or a software problem" "ERROR"
+fi
 
-  for i in spread_*.jpg
-  do
-    $CONVERT $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
-  done
-
-    log "Annotating images and creating thumbnails" "INFO"
-    counter=1
-    for i in *.jpg
-    do
-      ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "$i" 100 >> $NOAA_LOG 2>&1
-      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.jpg}-thumb-122-rectified.jpg" >> $NOAA_LOG 2>&1
-
-      mv "$i" "${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
-      mv "${i%.jpg}-thumb-122-rectified.jpg" "${IMAGE_THUMB_BASE}-${counter}-122-rectified.jpg"
-
-      push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg "
-      ((counter++))
-    done
-    counter=1
-
-    if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
-      if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
-        log "Emailing images" "INFO"
-        for i in "${IMAGE_FILE_BASE}-*-122-rectified.jpg"
-        do
-          ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
-        done
-      fi
-
-      if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
-        log "Pushing images to Discord" "INFO"
-        for i in "${IMAGE_FILE_BASE}-*-122-rectified.jpg"
-        do
-          ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
-        done
-      fi
-      log "$push_file_list" "Images to be posted on Twitter"
-    else
-      log "No image produced - not pushing anywhere" "INFO"
-    fi
-
-    # store decoded pass
-    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, has_polar_direction, gain) \
-                                         VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $polar_direction, $GAIN);"
-
-    log "Filename base value for Meteor-M2 is: $FILENAME_BASE" "INFO"
-
-    pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
-
-    $SQLITE3 $DB_FILE "UPDATE predict_passes \
-                       SET is_active = 0 \
-                       WHERE (predict_passes.pass_start) \
-                       IN ( \
-                         SELECT predict_passes.pass_start \
-                         FROM predict_passes \
-                         INNER JOIN decoded_passes \
-                         ON predict_passes.pass_start = decoded_passes.pass_start \
-                         WHERE decoded_passes.id = $pass_id \
-                       );"
-  else
-    log "Decoding failed, either a bad pass/low SNR or a software problem" "ERROR"
-  fi
 if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
+
+#  qpsk_file="${NOAA_HOME}/tmp/meteor/${FILENAME_BASE}.s"
+
   log "Starting gnuradio record" "INFO"
+#  ${AUDIO_PROC_DIR}/meteor_record_gnuradio.sh $CAPTURE_TIME "$qpsk_file" >> $NOAA_LOG 2>&1
   ${AUDIO_PROC_DIR}/meteor_record_gnuradio.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
 
   log "Waiting for files to close" "INFO"
   sleep 2
 
-  if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
-    log "Producing polar graph of azimuth and elevation for pass" "INFO"
-    polar_az_el=1
-    epoch_end=$((EPOCH_START + CAPTURE_TIME))
-    ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
-                                    "${TLE_FILE}" \
-                                    $EPOCH_START \
-                                    $epoch_end \
-                                    $LAT \
-                                    $LON \
-                                    $SAT_MIN_ELEV \
-                                    $PASS_DIRECTION \
-                                    "${IMAGE_FILE_BASE}-polar-azel.jpg" \
-                                    "azel"
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-azel.jpg" "${IMAGE_THUMB_BASE}-polar-azel.jpg"
-  fi
-
-  polar_direction=0
-  if [[ "${PRODUCE_POLAR_DIRECTION}" == "true" ]]; then
-    log "Producing polar graph of direction for pass" "INFO"
-    polar_direction=1
-    epoch_end=$((EPOCH_START + CAPTURE_TIME))
-    ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
-                                    "${TLE_FILE}" \
-                                    $EPOCH_START \
-                                    $epoch_end \
-                                    $LAT \
-                                    $LON \
-                                    $SAT_MIN_ELEV \
-                                    $PASS_DIRECTION \
-                                    "${IMAGE_FILE_BASE}-polar-direction.png" \
-                                    "direction"
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png"
-  fi
-
-  log "Running MeteorDemod do demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
+  log "Running MeteorDemod to demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
 
   $METEORDEMOD -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
-
-  rm *.gcp *.bmp
-
-  for i in spread_*.jpg
-  do
-    $CONVERT $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
-  done
-
-  sleep 2
 
   if [ "$DELETE_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
@@ -308,67 +179,91 @@ if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
       mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
     fi
   fi
-
-  # check if we got an image, and post-process if so
-  if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
-    log "I got a successful jpg images" "INFO"
-
-    log "Annotating images and creating thumbnails" "INFO"
-    counter=1
-    for i in *.jpg
-    do
-      ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "$i" 100 >> $NOAA_LOG 2>&1
-      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.jpg}-thumb-122-rectified.jpg" >> $NOAA_LOG 2>&1
-      mv "$i" "${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
-      mv "${i%.jpg}-thumb-122-rectified.jpg" "${IMAGE_THUMB_BASE}-${counter}-122-rectified.jpg"
-      push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg "
-      ((counter++))
-    done
-    counter=1
-
-    # insert or replace in case there was already an insert due to the spectrogram creation
-    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, has_polar_direction, gain) \
-                                         VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $polar_direction, $GAIN);"
-
-    pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
-    $SQLITE3 $DB_FILE "UPDATE predict_passes \
-                       SET is_active = 0 \
-                       WHERE (predict_passes.pass_start) \
-                       IN ( \
-                         SELECT predict_passes.pass_start \
-                         FROM predict_passes \
-                         INNER JOIN decoded_passes \
-                         ON predict_passes.pass_start = decoded_passes.pass_start \
-                         WHERE decoded_passes.id = $pass_id \
-                       );"
-
-    # TODO: This is VERY not DRY - possibly put the image filenames in an array
-    #       and iterate over it, which would significantly DRY this code up
-    if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
-      log "Emailing images" "INFO"
-      if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
-        for i in "${IMAGE_FILE_BASE}-*-122-rectified.jpg"
-        do
-          ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
-        done
-      fi
-    fi
-
-    if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
-      log "Pushing images to Discord" "INFO"
-      if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
-        for i in "${IMAGE_FILE_BASE}-*-122-rectified.jpg"
-        do
-          ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
-        done
-      fi
-    fi
-
-  else
-    log "Did not get a successful .bmp image - stopping processing" "ERROR"
-  fi
 else
   log "Receiver type '$METEOR_RECEIVER' not valid" "ERROR"
+fi
+
+#----------------------------------------------------------------------------------------------------------------
+
+if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
+  log "Producing polar graph of azimuth and elevation for pass" "INFO"
+  polar_az_el=1
+  epoch_end=$((EPOCH_START + CAPTURE_TIME))
+  ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
+                                  "${TLE_FILE}" \
+                                  $EPOCH_START \
+                                  $epoch_end \
+                                  $LAT \
+                                  $LON \
+                                  $SAT_MIN_ELEV \
+                                  $PASS_DIRECTION \
+                                  "${IMAGE_FILE_BASE}-polar-azel.jpg" \
+                                  "azel"
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-azel.jpg" "${IMAGE_THUMB_BASE}-polar-azel.jpg"
+fi
+
+polar_direction=0
+if [[ "${PRODUCE_POLAR_DIRECTION}" == "true" ]]; then
+  log "Producing polar graph of direction for pass" "INFO"
+  polar_direction=1
+  epoch_end=$((EPOCH_START + CAPTURE_TIME))
+  ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
+                                  "${TLE_FILE}" \
+                                  $EPOCH_START \
+                                  $epoch_end \
+                                  $LAT \
+                                  $LON \
+                                  $SAT_MIN_ELEV \
+                                  $PASS_DIRECTION \
+                                  "${IMAGE_FILE_BASE}-polar-direction.png" \
+                                  "direction"
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png"
+fi
+
+rm *.gcp *.bmp
+
+for i in spread_*.jpg
+do
+  $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
+done
+
+sleep 2
+
+log "Annotating images and creating thumbnails" "INFO"
+counter=1
+for i in *.jpg
+do
+  ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "$i" 100 >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.jpg}-thumb-122-rectified.jpg" >> $NOAA_LOG 2>&1
+  mv "$i" "${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
+  mv "${i%.jpg}-thumb-122-rectified.jpg" "${IMAGE_THUMB_BASE}-${counter}-122-rectified.jpg"
+  push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg "
+  ((counter++))
+done
+counter=1
+
+# check if we got an image, and post-process if so
+
+if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
+  log "I got a successful jpg images" "INFO"
+
+  # insert or replace in case there was already an insert due to the spectrogram creation
+  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, has_polar_direction, gain) \
+                                       VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $polar_direction, $GAIN);"
+
+  pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
+  $SQLITE3 $DB_FILE "UPDATE predict_passes \
+                     SET is_active = 0 \
+                     WHERE (predict_passes.pass_start) \
+                     IN ( \
+                       SELECT predict_passes.pass_start \
+                       FROM predict_passes \
+                       INNER JOIN decoded_passes \
+                       ON predict_passes.pass_start = decoded_passes.pass_start \
+                       WHERE decoded_passes.id = $pass_id \
+                     );"
+else
+  log "Did not get a successful .bmp image - stopping processing" "ERROR"
 fi
 
 # handle Slack pushing if enabled
@@ -422,6 +317,26 @@ if [ "${ENABLE_MATRIX_PUSH}" == "true" ]; then
 
     log "Pushing image enhancements to Matrix" "INFO"
     ${PUSH_PROC_DIR}/push_matrix.sh "${matrix_push_annotation}" $push_file_list
+fi
+
+if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
+  log "Emailing images" "INFO"
+  if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
+    for i in $push_file_list
+    do
+      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+    done
+  fi
+fi
+
+if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
+  log "Pushing images to Discord" "INFO"
+  if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
+    for i in $push_file_list
+    do
+      ${PUSH_PROC_DIR}/push_discord.sh "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+    done
+  fi
 fi
 
 # calculate and report total time for capture
