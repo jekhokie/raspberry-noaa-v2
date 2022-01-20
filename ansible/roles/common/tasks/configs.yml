@@ -30,7 +30,15 @@
     owner: pi
     group: pi
     mode: 0644
-    
+
+- name: MeteorDemod directory
+  file:
+    path: ~pi/.config/meteordemod
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0755
+
 - name: MeteorDemod config settings.ini file
   template:
     src: settings.ini.j2
