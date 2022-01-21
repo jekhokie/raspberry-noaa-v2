@@ -303,20 +303,20 @@ fi
 
 # handle matrix pushing if enabled
 if [ "${ENABLE_MATRIX_PUSH}" == "true" ]; then
-    # create push annotation specific to matrix
-    # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
-    matrix_push_annotation=""
-    if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-        matrix_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
-    fi
-    matrix_push_annotation="${matrix_push_annotation}${SAT_NAME} ${capture_start}"
-    matrix_push_annotation="${matrix_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
-    matrix_push_annotation="${matrix_push_annotation} Sun Elevation: ${SUN_ELEV}°"
-    matrix_push_annotation="${matrix_push_annotation} Gain: ${gain}"
-    matrix_push_annotation="${matrix_push_annotation} | ${PASS_DIRECTION}"
+  # create push annotation specific to matrix
+  # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
+  matrix_push_annotation=""
+  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+      matrix_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
+  fi
+  matrix_push_annotation="${matrix_push_annotation}${SAT_NAME} ${capture_start}"
+  matrix_push_annotation="${matrix_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
+  matrix_push_annotation="${matrix_push_annotation} Sun Elevation: ${SUN_ELEV}°"
+  matrix_push_annotation="${matrix_push_annotation} Gain: ${gain}"
+  matrix_push_annotation="${matrix_push_annotation} | ${PASS_DIRECTION}"
 
-    log "Pushing image enhancements to Matrix" "INFO"
-    ${PUSH_PROC_DIR}/push_matrix.sh "${matrix_push_annotation}" $push_file_list
+  log "Pushing image enhancements to Matrix" "INFO"
+  ${PUSH_PROC_DIR}/push_matrix.sh "${matrix_push_annotation}" $push_file_list
 fi
 
 if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
@@ -325,6 +325,7 @@ if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
     for i in $push_file_list
     do
       ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+      sleep 2
     done
   fi
 fi
@@ -335,6 +336,7 @@ if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
     for i in $push_file_list
     do
       ${PUSH_PROC_DIR}/push_discord.sh "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+      sleep 2
     done
   fi
 fi
