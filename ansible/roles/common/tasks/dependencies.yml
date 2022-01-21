@@ -15,6 +15,7 @@
       - imagemagick
       - jq
       - libatlas-base-dev
+      - libgfortran5
       - libjpeg9
       - libjpeg9-dev
       - libncurses5-dev
