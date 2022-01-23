@@ -213,11 +213,12 @@ fi
 has_one_image=0
 push_file_list=""
 for enhancement in $ENHANCEMENTS; do
+  export ENHANCEMENT=$enhancement
   log "Decoding image" "INFO"
 
-    ${IMAGE_PROC_DIR}/noaa_enhancements.sh $map_overlay "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" $enhancement >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/noaa_enhancements.sh $map_overlay "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" $enhancement >> $NOAA_LOG 2>&1
 
-   if [ -f "${IMAGE_FILE_BASE}-$enhancement.jpg" ]; then
+  if [ -f "${IMAGE_FILE_BASE}-$enhancement.jpg" ]; then
     filesize=$(wc -c "${IMAGE_FILE_BASE}-$enhancement.jpg" | awk '{print $1}')
     ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_FILE_BASE}-$enhancement.jpg" 90 >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_THUMB_BASE}-$enhancement.jpg" >> $NOAA_LOG 2>&1
