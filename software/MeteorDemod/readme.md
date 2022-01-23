@@ -22,6 +22,9 @@ Currently supported outputs are raw channel images, RGB images, IR images. Outpu
 OpenCV must be installed on the system. Required OpenCV modules: core, imgcodecs, imgproc
 
 Lots of people struggling with compiling openCV on Raspberry Pi. Here is the commands that I've tested on Raspbian:
+
+(Don't forget to ```sudo apt-get update``` to ensure you can install cmake properly).
+
 ```
 sudo apt install python3-dev python3-pip
 sudo apt install cmake build-essential pkg-config git
