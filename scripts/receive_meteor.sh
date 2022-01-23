@@ -151,6 +151,7 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   $METEORDEMOD -t "$TLE_FILE" -f jpg -i "${qpsk_file}" >> $NOAA_LOG 2>&1
 
   sleep 2
+  rm "${qpsk_file}"
 else
   log "Decoding failed, either a bad pass/low SNR or a software problem" "ERROR"
 fi
