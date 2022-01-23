@@ -30,7 +30,7 @@ test_freq_offset: 0
 #     **WARNING**: 'gnuradio' does not work with certain SDR devices (e.g. it will not currently
 #                  work with a RTL-SDR v3 dongle, as no image will be decoded from the bitstream)
 noaa_receiver: 'gnuradio'
-meteor_receiver: 'rtl_fm'
+meteor_receiver: 'gnuradio'
 
 # whether to schedule specific orbiting objects for capture
 #   <satellite_name>_schedule - whether to schedule captures for the satellite
@@ -106,6 +106,8 @@ delete_audio: false
 #        direction over the course of the pass, including AOS and LOS
 #   ground_station_location - free-form text for indicating ground station location in image
 #        annotation (leave blank if you wish to exclude the ground station annotation)
+#   antenna_information - free-form text for indicating antenna information in image
+#        annotation (leave blank if you wish to exclude the antenna information annotation)
 #   show_sun_elevation - whether to show sun elevation in annotation
 #   show_pass_direction - show which direction the satellite is moving in the image annotation
 #   noaa_daytime_enhancements - list of enhancements to create images using during daytime captures
@@ -124,6 +126,7 @@ produce_noaa_pristine_histogram: false
 produce_polar_az_el_graph: false
 produce_polar_direction_graph: true
 ground_station_location: ''
+antenna_information: ''
 show_sun_elevation: true
 show_pass_direction: true
 noaa_daytime_enhancements: 'MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT ZA therm CC HE HF MD BD MB JF JJ LC TA WV NO sea' 
