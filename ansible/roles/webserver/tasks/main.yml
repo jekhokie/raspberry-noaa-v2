@@ -14,11 +14,6 @@
     state: present
   when: raspbian_version.stdout == 'buster'
 
-- name: Upgrade numpy with pip
-  pip: 
-    name: numpy
-    extra_args: --upgrade
-
 - name: install nginx
   become: yes
   apt:
