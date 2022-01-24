@@ -53,7 +53,6 @@ cp config/settings.yml.sample config/settings.yml
 vi config/settings.yml
 
 # perform install
-sudo chmod +x install_MeteorDemod.sh
 ./install_MeteorDemod.sh
 ./install_and_upgrade.sh
 ```
@@ -132,7 +131,6 @@ cp config/settings.yml.sample config/settings.yml
 vi config/settings.yml
 
 # perform install
-sudo chmod +x install_MeteorDemod.sh
 ./install_MeteorDemod.sh
 ./install_and_upgrade.sh
 ```
