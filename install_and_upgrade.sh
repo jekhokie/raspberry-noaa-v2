@@ -41,27 +41,22 @@ if [ -f /etc/modprobe.d/rtlsdr.conf ]; then
   install_type='upgrade'
 fi
 
-log_running "Checking for python3-pip..."
-dpkg -l python3-pip 2>&1 >/dev/null
-if [ $? -eq 0 ]; then
-  log_done "  python3-pip already installed!"
-else
-  log_running "  python3-pip not yet installed - installing..."
-  sudo apt-get -y install python3-pip
+# Install the dependancies for the check settings script, everything else is installed by ansible
+for package in python3-yaml python3-jsonschema; do
+  log_running "Checking for $package..."
+  dpkg -l $package 2>&1 >/dev/null
   if [ $? -eq 0 ]; then
-    log_done "    python3-pip successfully installed!"
+    log_done "  $package already installed!"
   else
-    die "    Could not install python3-pip - please check the logs above"
+    log_running "  $package not yet installed - installing..."
+    sudo apt-get -y install $package
+    if [ $? -eq 0 ]; then
+      log_done "    $package successfully installed!"
+    else
+      die "    Could not install $package - please check the logs above"
+    fi
   fi
-fi
-
-log_running "Installing Python dependencies..."
-sudo python3 -m pip install -r $HOME/raspberry-noaa-v2/requirements.txt
-if [ $? -eq 0 ]; then
-  log_done "  Successfully aligned required Python packages!"
-else
-  die "  Could not install dependent Python packages - please check the logs above"
-fi
+done
 
 log_running "Checking configuration files..."
 python3 scripts/tools/validate_yaml.py config/settings.yml config/settings_schema.json
