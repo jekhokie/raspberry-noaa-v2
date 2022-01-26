@@ -33,7 +33,7 @@ if [ "$(lsb_release -sc)" == "bullseye" ];
 then
    gmic_temp_1="${input_path}/_${input_filename}_c1.${input_fileext}"
 else
-   gmic_temp_1="${input_path}/_${input_filename}_c~.${input_fileext}"
+   gmic_temp_1="${input_path}/_${input_filename}~.${input_fileext}"
 fi
 
 gmic_temp_2="${input_path}/_${input_file}"
