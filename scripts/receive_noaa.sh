@@ -69,11 +69,24 @@ IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 PASS_START=$(expr "$EPOCH_START" + 90)
 export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 
+#check for running captures in rtl_fm mode
 if pgrep "rtl_fm" > /dev/null; then
   log "There is an existing rtl_fm instance running, I quit" "ERROR"
   exit 1
 fi
 
+#check for running captures in gnuradio mode
+if pgrep -f rtlsdr_noaa_apt_rx.py > /dev/null; then
+  log "There is an existing gnuradio noaa capture instance running, I quit" "ERROR"
+  exit 1
+fi
+
+if pgrep -f rtlsdr_m2_lrpt_rx.py > /dev/null; then
+  log "There is an existing gnuradio M2 capture instance running, I quit" "ERROR"
+  exit 1
+fi
+
+#start capture
 log "Starting rtl_fm record" "INFO"
 if [ "$NOAA_RECEIVER" == "rtl_fm" ]; then
   log "Starting rtl_fm record" "INFO"
@@ -87,6 +100,7 @@ fi
 # wait for files to close
 sleep 5
 
+#generate outputs
 spectrogram=0
 if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
   log "Producing spectrogram" "INFO"
