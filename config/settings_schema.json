@@ -109,6 +109,9 @@
     "noaa_thermal_temp_overlay_location": {
       "type": "string"
     },
+    "meteor_create_spreaded_images_without_overlay": { "type": "boolean" },
+    "meteor_create_equidistant_projection": { "type": "boolean" },
+    "meteor_create_mercator_projection": { "type": "boolean" },
     "timezone":                        { "type": "string" },
     "lang_setting": {
       "type": "string",
@@ -198,6 +201,9 @@
     "meteor_m2_sun_min_elevation",
     "meteor_m2_sat_min_elevation",
     "meteor_m2_memory_threshold",
+    "meteor_create_spreaded_images_without_overlay",
+    "meteor_create_equidistant_projection",
+    "meteor_create_mercator_projection",
     "days_to_schedule_passes",
     "delete_audio",
     "flip_meteor_image",
