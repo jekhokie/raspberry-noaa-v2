@@ -131,6 +131,7 @@ show_sun_elevation: true
 show_pass_direction: true
 noaa_daytime_enhancements: 'MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT ZA therm CC HE HF MD BD MB JF JJ LC TA WV NO sea' 
 noaa_nighttime_enhancements: 'MCIR MCIR-precip HVCT ZA therm NO TA sea'
+noaa_jpg_image_quality: 90
 meteor_jpg_image_quality: 90
 meteor_create_spreaded_images_without_overlay: true
 meteor_create_rain_probability_overlay: true
