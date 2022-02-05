@@ -234,7 +234,7 @@ for enhancement in $ENHANCEMENTS; do
 
   if [ -f "${IMAGE_FILE_BASE}-$enhancement.jpg" ]; then
     filesize=$(wc -c "${IMAGE_FILE_BASE}-$enhancement.jpg" | awk '{print $1}')
-    ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_FILE_BASE}-$enhancement.jpg" 90 >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_FILE_BASE}-$enhancement.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_THUMB_BASE}-$enhancement.jpg" >> $NOAA_LOG 2>&1
     # check that the file actually has content
     if [ $filesize -gt 20480 ]; then
