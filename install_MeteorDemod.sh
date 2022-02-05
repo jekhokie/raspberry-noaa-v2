@@ -12,8 +12,9 @@ make -j4
 sudo make install
 
 cd ~
-cp -r ~/raspberry-noaa-v2/software/MeteorDemod ~
+git clone https://github.com/Digitelektro/MeteorDemod.git
 cd MeteorDemod
+git submodule update --init --recursive
 mkdir build && cd build
 cmake ../
 make -j4
