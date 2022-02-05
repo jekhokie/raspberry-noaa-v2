@@ -15,6 +15,7 @@
       - imagemagick
       - jq
       - libatlas-base-dev
+      - libgfortran5
       - libjpeg9
       - libjpeg9-dev
       - libncurses5-dev
@@ -30,22 +31,6 @@
       - socat
       - sox
       - sqlite3
-
-- name: install dependencies (stretch only)
-  become: yes
-  apt:
-    update_cache: no
-    state: present
-    name: libgfortran-5-dev
-  when: raspbian_version.stdout == 'stretch'
-
-- name: install dependencies (non-stretch)
-  become: yes
-  apt:
-    update_cache: no
-    state: present
-    name: libgfortran5
-  when: raspbian_version.stdout != 'stretch'
 
 - name: install wkhtmltox (wkhtmltoimg)
   become: yes
