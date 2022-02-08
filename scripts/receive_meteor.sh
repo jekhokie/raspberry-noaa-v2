@@ -239,7 +239,7 @@ log "Annotating images and creating thumbnails" "INFO"
 counter=1
 for i in *.jpg
 do
-  ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "$i" 100 >> $NOAA_LOG 2>&1
+  ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "$i" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
   ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.jpg}-thumb-122-rectified.jpg" >> $NOAA_LOG 2>&1
   mv "$i" "${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
   mv "${i%.jpg}-thumb-122-rectified.jpg" "${IMAGE_THUMB_BASE}-${counter}-122-rectified.jpg"
