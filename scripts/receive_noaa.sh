@@ -230,7 +230,11 @@ for enhancement in $ENHANCEMENTS; do
   export ENHANCEMENT=$enhancement
   log "Decoding image" "INFO"
 
-  ${IMAGE_PROC_DIR}/noaa_enhancements.sh $map_overlay "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" $enhancement >> $NOAA_LOG 2>&1
+  if [$enhancement == "avi"]; then
+    ${IMAGE_PROC_DIR}/noaa_avi.sh $map_overlay "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" $enhancement >> $NOAA_LOG 2>&1
+  else
+    ${IMAGE_PROC_DIR}/noaa_enhancements.sh $map_overlay "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" $enhancement >> $NOAA_LOG 2>&1
+  fi
 
   if [ -f "${IMAGE_FILE_BASE}-$enhancement.jpg" ]; then
     filesize=$(wc -c "${IMAGE_FILE_BASE}-$enhancement.jpg" | awk '{print $1}')
