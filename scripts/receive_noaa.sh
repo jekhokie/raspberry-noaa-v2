@@ -335,7 +335,7 @@ if [ "${ENABLE_MATRIX_PUSH}" == "true" ]; then
     ${PUSH_PROC_DIR}/push_matrix.sh "${matrix_push_annotation}" $push_file_list
 fi
 
-rm "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
+rm $map_overlay
 
 # store enhancements if there was at least 1 good image created
 if [ $has_one_image -eq 1 ]; then
