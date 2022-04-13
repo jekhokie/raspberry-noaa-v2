@@ -9,7 +9,7 @@ git clone https://github.com/opencv/opencv.git
 cd opencv/
 mkdir build && cd build
 cmake ../  -DBUILD_LIST=core,imgproc,imgcodecs -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_TESTS=OFF -DBUILD_EXAMPLES=OFF -DCMAKE_SHARED_LINKER_FLAGS=-latomic
-make -j4
+make -j2
 sudo make install
 
 cd ~
@@ -18,7 +18,7 @@ cd MeteorDemod
 git submodule update --init --recursive
 mkdir build && cd build
 cmake ../
-make -j4
+make -j2
 sudo make install
 sudo chown $USER:$USER -R ~/.config/meteordemod
 
