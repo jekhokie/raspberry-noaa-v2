@@ -10,12 +10,8 @@
     "test_sdr_device_id":    { "type": "number" },
     "test_enable_bias_tee":  { "type": "boolean" },
     "test_freq_offset":      { "type": "number" },
-    "meteor_receiver": {
-      "type": "string"
-    },
-    "noaa_receiver": {
-      "type": "string"
-    },
+    "meteor_receiver":       { "type": "string" },
+    "noaa_receiver":         { "type": "string" },
     "noaa_15_schedule":        { "type": "boolean" },
     "noaa_15_sdr_device_id":   { "type": "number" },
     "noaa_15_freq_offset":     { "type": "number" },
@@ -82,9 +78,7 @@
     "flip_meteor_image":               { "type": "boolean" },
     "produce_spectrogram":             { "type": "boolean" },
     "noaa_crop_telemetry":             { "type": "boolean" },
-    "image_annotation_location": {
-      "type": "string"
-    },
+    "image_annotation_location":       { "type": "string" },
     "extend_for_annotation":           { "type": "boolean" },
     "produce_noaa_pristine_image":     { "type": "boolean" },
     "produce_noaa_pristine_histogram": { "type": "boolean" },
@@ -109,9 +103,7 @@
     "noaa_interpolate":                { "type": "boolean" },
     "noaa_apt":                        { "type": "boolean" },
     "noaa_thermal_temp_overlay":       { "type": "boolean" },
-    "noaa_thermal_temp_overlay_location": {
-      "type": "string"
-    },
+    "noaa_thermal_temp_overlay_location": { "type": "string" },
     "timezone":                        { "type": "string" },
     "lang_setting": {
       "type": "string",
@@ -171,6 +163,7 @@
     "test_sdr_device_id",
     "test_enable_bias_tee",
     "test_freq_offset",
+    "noaa_receiver",
     "meteor_receiver",
     "noaa_15_schedule",
     "noaa_15_sdr_device_id",

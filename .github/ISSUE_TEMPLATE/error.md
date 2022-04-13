@@ -3,8 +3,6 @@ name: Error
 about: Create a report to help us improve
 title: "[Error]"
 labels: ''
-assignees: jekhokie
-
 ---
 
 **Describe the bug**
