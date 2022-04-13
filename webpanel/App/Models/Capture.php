@@ -106,7 +106,8 @@ class Capture extends \Lib\Model {
       array_push($enhancements, '-pristine.jpg');
     }
     if ($pass['has_histogram'] == '1') {
-      array_push($enhancements, '-histogram.jpg');
+      array_push($enhancements, '-histogram-a.jpg');
+      array_push($enhancements, '-histogram-b.jpg');
     }
 
     $this->enhancements = $enhancements;

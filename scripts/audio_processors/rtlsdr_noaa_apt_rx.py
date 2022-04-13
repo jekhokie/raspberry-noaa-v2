@@ -1,10 +1,12 @@
 #!/usr/bin/env python
+
 # -*- coding: utf-8 -*-
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: RTLSDR NOAA APT Receiver V1.0.0
 # Author: Dom Robinson
 # Description: APT to WAV recorder for Raspberry-Noaa -V2
+
 # Generated: Sun Apr  4 22:24:30 2021
 ##################################################
 
@@ -30,6 +32,7 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
 	# Variables - added for Raspberry-Noaa-V2 manually after export
 	###############################################################
 
+
     	# get some variables in place for inputs
     	#
     	# Arguments:
@@ -50,10 +53,10 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
         bias_t = "1"
         if not bias_t_string:
            bias_t = "0"
-
         ##################################################
         # Variables
         ##################################################
+
         self.trans = trans = 25000
         self.samp_rate = samp_rate = 1920000
         self.recfile = recfile = stream_name
@@ -95,8 +98,10 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
                 taps=None,
                 fractional_bw=None,
         )
+
         self.low_pass_filter_0 = filter.fir_filter_ccf(20, firdes.low_pass(
         	1, samp_rate, cutoff, trans, firdes.WIN_HAMMING, 6.76))
+
         self.gr_wavfile_sink_0_0_0_0 = blocks.wavfile_sink(recfile, 1, 11025, 16)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vff((0.7, ))
         self.blks2_wfm_rcv_0 = analog.wfm_rcv(
@@ -104,11 +109,10 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
         	audio_decimation=5,
         )
 
-
-
         ##################################################
         # Connections
         ##################################################
+
         self.connect((self.blks2_wfm_rcv_0, 0), (self.rational_resampler_xxx_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.gr_wavfile_sink_0_0_0_0, 0))
         self.connect((self.low_pass_filter_0, 0), (self.blks2_wfm_rcv_0, 0))
@@ -131,6 +135,7 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
         self.rtlsdr_source_0.set_sample_rate(self.samp_rate)
         self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, self.cutoff, self.trans, firdes.WIN_HAMMING, 6.76))
 
+
     def get_recfile(self):
         return self.recfile
 
@@ -152,6 +157,7 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
         self.cutoff = cutoff
         self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, self.cutoff, self.trans, firdes.WIN_HAMMING, 6.76))
 
+
     def get_centre_freq(self):
         return self.centre_freq
 
@@ -168,4 +174,3 @@ def main(top_block_cls=rtlsdr_noaa_apt_rx, options=None):
 
 if __name__ == '__main__':
     main()
-

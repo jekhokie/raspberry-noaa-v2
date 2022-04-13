@@ -136,11 +136,13 @@
     </param>
     <param>
       <key>id</key>
+
       <value>cutoff</value>
     </param>
     <param>
       <key>value</key>
       <value>95000</value>
+
     </param>
   </block>
   <block>
@@ -156,6 +158,7 @@
     <param>
       <key>_coordinate</key>
       <value>(184, 76)</value>
+
     </param>
     <param>
       <key>_rotation</key>
@@ -190,6 +193,7 @@
     </param>
     <param>
       <key>id</key>
+
       <value>recfile</value>
     </param>
     <param>
@@ -210,12 +214,14 @@
     <param>
       <key>_coordinate</key>
       <value>(288, 12)</value>
+
     </param>
     <param>
       <key>_rotation</key>
       <value>0</value>
     </param>
     <param>
+
       <key>id</key>
       <value>samp_rate</value>
     </param>
@@ -226,29 +232,34 @@
   </block>
   <block>
     <key>variable</key>
+
     <param>
       <key>comment</key>
       <value></value>
     </param>
     <param>
+
       <key>_enabled</key>
       <value>True</value>
     </param>
     <param>
       <key>_coordinate</key>
       <value>(496, 20)</value>
+
     </param>
     <param>
       <key>_rotation</key>
       <value>0</value>
     </param>
     <param>
+
       <key>id</key>
       <value>trans</value>
     </param>
     <param>
       <key>value</key>
       <value>5000</value>
+
     </param>
   </block>
   <block>
@@ -472,6 +483,7 @@
     </param>
   </block>
   <block>
+
     <key>rational_resampler_xxx</key>
     <param>
       <key>alias</key>
@@ -634,6 +646,7 @@
     <param>
       <key>gain0</key>
       <value>30</value>
+
     </param>
     <param>
       <key>ant10</key>
@@ -1885,7 +1898,9 @@
     </param>
     <param>
       <key>args</key>
+
       <value>rtl=0,bias=0</value>
+
     </param>
     <param>
       <key>_enabled</key>
@@ -1997,7 +2012,9 @@
     </param>
   </block>
   <connection>
+
     <source_block_id>blks2_wfm_rcv_0</source_block_id>
+
     <sink_block_id>rational_resampler_xxx_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
@@ -2011,6 +2028,7 @@
   <connection>
     <source_block_id>low_pass_filter_0</source_block_id>
     <sink_block_id>blks2_wfm_rcv_0</sink_block_id>
+
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>

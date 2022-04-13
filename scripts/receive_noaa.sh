@@ -95,6 +95,7 @@ fi
 if [ "$NOAA_RECEIVER" == "gnuradio" ]; then
   log "Starting gnuradio record" "INFO"
   ${AUDIO_PROC_DIR}/noaa_record_gnuradio.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav" >> $NOAA_LOG 2>&1
+
 fi
 
 # wait for files to close
@@ -140,6 +141,7 @@ if [ "${PRODUCE_NOAA_PRISTINE_HISTOGRAM}" == "true" ]; then
   $CONVERT +append "${IMAGE_THUMB_BASE}-histogram-a.jpg" "${IMAGE_THUMB_BASE}-histogram-b.jpg" -resize x300 "${IMAGE_THUMB_BASE}-histogram.jpg" >>$NOAA_LOG 2>&1
 
   rm "${IMAGE_FILE_BASE}-histogram-a.jpg" "${IMAGE_FILE_BASE}-histogram-b.jpg" "${IMAGE_THUMB_BASE}-histogram-a.jpg" "${IMAGE_THUMB_BASE}-histogram-b.jpg" "${tmp_dir}/${FILENAME_BASE}-a.png" "${tmp_dir}/${FILENAME_BASE}-b.png"
+
 fi
 
 
