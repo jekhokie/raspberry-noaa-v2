@@ -35,7 +35,7 @@ FFMPEG="/usr/bin/ffmpeg"
 GMIC="/usr/bin/gmic"
 IDENTIFY="/usr/bin/identify"
 MEDET_ARM="/usr/bin/medet_arm"
-METEOR_DEMOD="/usr/bin/meteor_demod"
+METEOR_DEMOD="/usr/local/bin/meteor_demod"
 PREDICT="/usr/bin/predict"
 RTL_FM="/usr/local/bin/rtl_fm"
 SOX="/usr/bin/sox"
@@ -43,7 +43,10 @@ SQLITE3="/usr/bin/sqlite3"
 WXMAP="/usr/local/bin/wxmap"
 WXTOIMG="/usr/local/bin/wxtoimg"
 WKHTMLTOIMG="/usr/local/bin/wkhtmltoimage"
+
+METEORDEMOD="/usr/local/bin/meteordemod"
 NOAAAPT="/usr/local/bin/noaa-apt"
+
 
 # base directories for scripts
 SCRIPTS_DIR="${NOAA_HOME}/scripts"

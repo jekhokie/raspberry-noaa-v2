@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 ##################################################
 # GNU Radio Python Flow Graph
@@ -31,9 +31,18 @@ class top_block(gr.top_block):
     #   1. Full path and name of stream file (including file extension)
     #   2. Gain to be used
     #   3. Frequency offset (PPM)
+    #   4. SDR Device ID from settings.yml (for RTL-SDR source block)
+    #   5. Bias-T (0/1 for RTL-SDR)
+
+
     stream_name = sys.argv[1]
     gain = float(sys.argv[2])
     freq_offset = int(sys.argv[3])
+    sdr_dev_id = sys.argv[4]
+    bias_t_string = sys.argv[5]
+    bias_t = "1"
+    if not bias_t_string:
+      bias_t = "0"
 
     ##################################################
     # Variables
@@ -48,10 +57,11 @@ class top_block(gr.top_block):
     self.clock_alpha = clock_alpha = 0.002
     self.bitstream_name = bitstream_name = stream_name
 
-    ##################################################
-    # Blocks
-    ##################################################
-    self.rtlsdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + '' )
+    ##############################################################################################################################################
+    # Blocks -- *** NOTE HOW THE VARIABLES ARE CARRIED IN FROM settings.yml - this has to be re-done every time you export the .py from gnuradio
+    ###############################################################################################################################################
+
+    self.rtlsdr_source_0 = osmosdr.source( args='numchan=' + str(1) + ' ' + 'rtl=' + str(sdr_dev_id) + ',bias=' + bias_t + '' )
     self.rtlsdr_source_0.set_sample_rate(samp_rate_airspy)
     self.rtlsdr_source_0.set_center_freq(freq, 0)
     self.rtlsdr_source_0.set_freq_corr(freq_offset, 0)

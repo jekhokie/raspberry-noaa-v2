@@ -27,7 +27,8 @@ SUBJECT=$3
 # check that the file exists and is accessible
 if [ -f "${ATTACHMENT}" ]; then 
   log "Emailing to address $EMAIL_ADDRESS" "INFO"
-  mpack -s "${SUBJECT}" ${ATTACHMENT} ${EMAIL_ADDRESS}
+  email_log=$(mpack -s "${SUBJECT}" ${ATTACHMENT} ${EMAIL_ADDRESS} 2>&1)
+  log "${email_log}" "INFO"
 else
   log "Could not find or access image/attachment - not sending an email" "ERROR"
 fi

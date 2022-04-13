@@ -13,11 +13,14 @@
       - gnuradio
       - gr-osmosdr
       - imagemagick
+      - jq
       - libatlas-base-dev
+      - libgfortran5
       - libjpeg9
       - libjpeg9-dev
       - libncurses5-dev
       - libncursesw5-dev
+      - libsox-fmt-mp3
       - libusb-1.0-0
       - libusb-1.0-0-dev
       - libxft-dev

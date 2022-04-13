@@ -14,6 +14,7 @@ Below are Raspberry Pi models that are in use and confirmed working with this fr
 * Raspberry Pi 3 B
 * Raspberry Pi 2 B
 * Raspberry Pi 2
+* Raspberry Pi Zero W 2 (In testing) - Can not use desktop.
 
 Below are Raspberry Pi models that have been tested but do *not* work with this framework:
 
@@ -53,6 +54,7 @@ Quadrifilar (QFH) Antenna:
 
 * [John Coppens QFH Calculator](http://jcoppens.com/ant/qfh/index.en.php)
 * [Thingverse 3-Printed QFH](https://www.thingiverse.com/make:768284)
+* [Tin Hat Ranch QFH](https://usradioguy.com/wp-content/uploads/2020/05/20200307-How-To-Build-A-QFH.pdf)
 
 ## Other Hardware
 

@@ -69,21 +69,39 @@ IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 PASS_START=$(expr "$EPOCH_START" + 90)
 export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 
+#check for running captures in rtl_fm mode
 if pgrep "rtl_fm" > /dev/null; then
   log "There is an existing rtl_fm instance running, I quit" "ERROR"
   exit 1
 fi
 
-log "Starting rtl_fm record" "INFO"
-if [ "$NOAA_RECEIVER" == "rtl_fm" ]; then
-log "Starting rtl_fm record" "INFO"
-${AUDIO_PROC_DIR}/noaa_record_rtl_fm.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav" >> $NOAA_LOG 2>&1
-fi
-if [ "$NOAA_RECEIVER" == "gnuradio" ] ;then
-log "Starting gnuradio record" "INFO"
-${AUDIO_PROC_DIR}/noaa_record_gnuradio.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav" >> $NOAA_LOG 2>&1
+#check for running captures in gnuradio mode
+if pgrep -f rtlsdr_noaa_apt_rx.py > /dev/null; then
+  log "There is an existing gnuradio noaa capture instance running, I quit" "ERROR"
+  exit 1
 fi
 
+if pgrep -f rtlsdr_m2_lrpt_rx.py > /dev/null; then
+  log "There is an existing gnuradio M2 capture instance running, I quit" "ERROR"
+  exit 1
+fi
+
+#start capture
+log "Starting rtl_fm record" "INFO"
+if [ "$NOAA_RECEIVER" == "rtl_fm" ]; then
+  log "Starting rtl_fm record" "INFO"
+  ${AUDIO_PROC_DIR}/noaa_record_rtl_fm.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav" >> $NOAA_LOG 2>&1
+fi
+if [ "$NOAA_RECEIVER" == "gnuradio" ]; then
+  log "Starting gnuradio record" "INFO"
+  ${AUDIO_PROC_DIR}/noaa_record_gnuradio.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav" >> $NOAA_LOG 2>&1
+
+fi
+
+# wait for files to close
+sleep 5
+
+#generate outputs
 spectrogram=0
 if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
   log "Producing spectrogram" "INFO"
@@ -105,7 +123,7 @@ histogram=0
 if [ "${PRODUCE_NOAA_PRISTINE_HISTOGRAM}" == "true" ]; then
   tmp_dir="${NOAA_HOME}/tmp"
   histogram=1
-  histogram_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
+  histogram_text="${capture_start} @ ${SAT_MAX_ELEVATION}° Gain: ${GAIN}"
 
   log "Generating Data for Histogram" "INFO"
   ${IMAGE_PROC_DIR}/noaa_histogram_data.sh "${AUDIO_FILE_BASE}.wav" "${tmp_dir}/${FILENAME_BASE}-a.png" "${tmp_dir}/${FILENAME_BASE}-b.png" >> $NOAA_LOG 2>&1
@@ -118,9 +136,14 @@ if [ "${PRODUCE_NOAA_PRISTINE_HISTOGRAM}" == "true" ]; then
   ${IMAGE_PROC_DIR}/histogram.sh "${tmp_dir}/${FILENAME_BASE}-b.png" "${IMAGE_FILE_BASE}-histogram-b.jpg" "${SAT_NAME} - Channel B" "${histogram_text}" >> $NOAA_LOG 2>&1
   ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram-b.jpg" "${IMAGE_THUMB_BASE}-histogram-b.jpg" >> $NOAA_LOG 2>&1
 
-  rm "${tmp_dir}/${FILENAME_BASE}-a.png"
-  rm "${tmp_dir}/${FILENAME_BASE}-b.png"
+  log "Horizontally Merge two Histogram Channels to single image for output"
+  $CONVERT +append "${IMAGE_FILE_BASE}-histogram-a.jpg" "${IMAGE_FILE_BASE}-histogram-b.jpg" -resize x500 "${IMAGE_FILE_BASE}-histogram.jpg" >>$NOAA_LOG 2>&1
+  $CONVERT +append "${IMAGE_THUMB_BASE}-histogram-a.jpg" "${IMAGE_THUMB_BASE}-histogram-b.jpg" -resize x300 "${IMAGE_THUMB_BASE}-histogram.jpg" >>$NOAA_LOG 2>&1
+
+  rm "${IMAGE_FILE_BASE}-histogram-a.jpg" "${IMAGE_FILE_BASE}-histogram-b.jpg" "${IMAGE_THUMB_BASE}-histogram-a.jpg" "${IMAGE_THUMB_BASE}-histogram-b.jpg" "${tmp_dir}/${FILENAME_BASE}-a.png" "${tmp_dir}/${FILENAME_BASE}-b.png"
+
 fi
+
 
 polar_az_el=0
 if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
@@ -209,96 +232,70 @@ for enhancement in $ENHANCEMENTS; do
   export ENHANCEMENT=$enhancement
   log "Decoding image" "INFO"
 
-  # determine what frequency based on NOAA variant
-  proc_script=""
-  case $enhancement in
-    "ZA")
-      proc_script="noaa_za.sh"
-      ;;
-    "MCIR")
-      proc_script="noaa_mcir.sh"
-      ;;
-    "MCIR-precip")
-      proc_script="noaa_mcir_precip.sh"
-      ;;
-    "MSA")
-      proc_script="noaa_msa.sh"
-      ;;
-    "MSA-precip")
-      proc_script="noaa_msa_precip.sh"
-      ;;
-    "HVC")
-      proc_script="noaa_hvc.sh"
-      ;;
-    "HVC-precip")
-      proc_script="noaa_hvc_precip.sh"
-      ;;
-    "HVCT")
-      proc_script="noaa_hvct.sh"
-      ;;
-    "HVCT-precip")
-      proc_script="noaa_hvct_precip.sh"
-      ;;
-    "therm")
-      proc_script="noaa_therm.sh"
-      ;;
-    "avi")
-      proc_script="noaa_avi.sh"
-      ;;
-  esac
+  ${IMAGE_PROC_DIR}/noaa_enhancements.sh $map_overlay "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" $enhancement >> $NOAA_LOG 2>&1
 
-  if [ -z "${proc_script}" ]; then
-    log "No image processor found for $enhancement - skipping." "ERROR"
-  else
-    ${IMAGE_PROC_DIR}/${proc_script} $map_overlay "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" >> $NOAA_LOG 2>&1
+  if [ -f "${IMAGE_FILE_BASE}-$enhancement.jpg" ]; then
+    filesize=$(wc -c "${IMAGE_FILE_BASE}-$enhancement.jpg" | awk '{print $1}')
+    ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_FILE_BASE}-$enhancement.jpg" 90 >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_THUMB_BASE}-$enhancement.jpg" >> $NOAA_LOG 2>&1
+    # check that the file actually has content
+    if [ $filesize -gt 20480 ]; then
+      # at least one good image
+      has_one_image=1
 
-    if [ -f "${IMAGE_FILE_BASE}-$enhancement.jpg" ]; then
-      ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_FILE_BASE}-$enhancement.jpg" 90 >> $NOAA_LOG 2>&1
-      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_THUMB_BASE}-$enhancement.jpg" >> $NOAA_LOG 2>&1
-      filesize=$(wc -c "${IMAGE_FILE_BASE}-$enhancement.jpg" | awk '{print $1}')
+      # capture list of files to push to Twitter
+      push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-$enhancement.jpg"
 
-      # check that the file actually has content
-      if [ $filesize -gt 20480 ]; then
-        # at least one good image
-        has_one_image=1
-
-        # capture list of files to push to Twitter
-        push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-$enhancement.jpg"
-
-        # determine if auto-gain is set - handles "0" and "0.0" floats
-        gain=$GAIN
-        if [ $(echo "$GAIN==0"|bc) -eq 1 ]; then
-          gain='Automatic'
-        fi
-
-        # create push annotation string (annotation in the email subject, discord text, etc.)
-        # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
-        push_annotation=""
-        if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-          push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
-        fi
-        push_annotation="${push_annotation}${SAT_NAME} ${enhancement} ${capture_start}"
-        push_annotation="${push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
-        push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
-        push_annotation="${push_annotation} Gain: ${gain}"
-        push_annotation="${push_annotation} | ${PASS_DIRECTION}"
-
-        if [ "${ENABLE_EMAIL_PUSH}" == "true" ]; then
-          log "Emailing image enhancement $enhancement" "INFO"
-          ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-$enhancement.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
-        fi
-
-        if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
-          log "Pushing image enhancement $enhancement to Discord" "INFO"
-          ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
-        fi
-      else
-        log "No image with enhancement $enhancement created - not pushing anywhere" "INFO"
-        rm "${IMAGE_FILE_BASE}-$enhancement.jpg"
+      # determine if auto-gain is set - handles "0" and "0.0" floats
+      gain=$GAIN
+      if [ $(echo "$GAIN==0"|bc) -eq 1 ]; then
+        gain='Automatic'
       fi
+
+      # create push annotation string (annotation in the email subject, discord text, etc.)
+      # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
+      push_annotation=""
+      if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+        push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
+      fi
+      push_annotation="${push_annotation}${SAT_NAME} ${enhancement} ${capture_start}"
+      push_annotation="${push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
+      push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
+      push_annotation="${push_annotation} Gain: ${gain}"
+      push_annotation="${push_annotation} | ${PASS_DIRECTION}"
+
+      if [ "${ENABLE_EMAIL_PUSH}" == "true" ]; then
+        log "Emailing image enhancement $enhancement" "INFO"
+        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-$enhancement.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
+      fi
+
+      if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
+        log "Pushing image enhancement $enhancement to Discord" "INFO"
+        ${PUSH_PROC_DIR}/push_discord.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
+      fi
+    else
+      log "No image with enhancement $enhancement created - not pushing anywhere" "INFO"
+      rm "${IMAGE_FILE_BASE}-$enhancement.jpg"
     fi
   fi
 done
+
+# handle Slack pushing if enabled
+if [ "${ENABLE_SLACK_PUSH}" == "true" ]; then
+  slack_push_annotation=""
+  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+    slack_push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n "
+  fi
+  slack_push_annotation="${slack_push_annotation}${SAT_NAME} ${capture_start}\n"
+  slack_push_annotation="${slack_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}\n"
+  slack_push_annotation="${slack_push_annotation} Sun Elevation: ${SUN_ELEV}°\n"
+  slack_push_annotation="${slack_push_annotation} Gain: ${gain} | ${PASS_DIRECTION}\n"
+
+  pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
+  slack_push_annotation="${slack_push_annotation} <${SLACK_LINK_URL}?pass_id=${pass_id}>\n";
+
+  ${PUSH_PROC_DIR}/push_slack.sh "${slack_push_annotation}" $push_file_list
+fi
 
 # handle twitter pushing if enabled
 if [ "${ENABLE_TWITTER_PUSH}" == "true" ]; then
@@ -316,6 +313,24 @@ if [ "${ENABLE_TWITTER_PUSH}" == "true" ]; then
 
   log "Pushing image enhancements to Twitter" "INFO"
   ${PUSH_PROC_DIR}/push_twitter.sh "${twitter_push_annotation}" $push_file_list
+fi
+
+# handle matrix pushing if enabled
+if [ "${ENABLE_MATRIX_PUSH}" == "true" ]; then
+    # create push annotation specific to matrix
+    # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
+    matrix_push_annotation=""
+    if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+        matrix_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
+    fi
+    matrix_push_annotation="${matrix_push_annotation}${SAT_NAME} ${capture_start}"
+    matrix_push_annotation="${matrix_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
+    matrix_push_annotation="${matrix_push_annotation} Sun Elevation: ${SUN_ELEV}°"
+    matrix_push_annotation="${matrix_push_annotation} Gain: ${gain}"
+    matrix_push_annotation="${matrix_push_annotation} | ${PASS_DIRECTION}"
+
+    log "Pushing image enhancements to Matrix" "INFO"
+    ${PUSH_PROC_DIR}/push_matrix.sh "${matrix_push_annotation}" $push_file_list
 fi
 
 rm "${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
@@ -351,4 +366,3 @@ TIMER_END=$(date '+%s')
 DIFF=$(($TIMER_END - $TIMER_START))
 PROC_TIME=$(date -ud "@$DIFF" +'%H:%M.%S')
 log "Total processing time: ${PROC_TIME}" "INFO"
-

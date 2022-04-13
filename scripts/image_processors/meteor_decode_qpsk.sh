@@ -3,7 +3,7 @@
 # Purpose: Decode Meteor-M 2 qpsk file to .bmp image file.
 #
 # Input parameters:
-#   1. Input QPSK file
+#   1. Input QPSK .qpsk file
 #   2. Output filename for .bmp file
 #
 # Example:

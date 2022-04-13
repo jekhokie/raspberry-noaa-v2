@@ -21,5 +21,15 @@ OUT_PNG_FILE=$2
 CHART_TITLE=$3
 CHART_COMMENT=$4
 
+CHART_TEXT="${CHART_TITLE} ${CHART_COMMENT}"
+
 # produce the spectrogram on a single channel (the first one)
-$SOX "${IN_WAV_FILE}" -n remix 1 spectrogram -t "${CHART_TITLE}" -x 1024 -y 257 -c "${CHART_COMMENT}" -o "${OUT_PNG_FILE}"
+$FFMPEG -y -i ${IN_WAV_FILE} -lavfi showspectrumpic=s=400x800:orientation=1:saturation=1:gain=0.3:color=intensity:start=1300:stop=4000:legend=1 $NOAA_HOME/tmp/temp_spectrogram.png
+
+sleep 2
+
+# add the title text
+$FFMPEG -y -i $NOAA_HOME/tmp/temp_spectrogram.png -vf "drawtext=fontfile=/path/to/font.ttf:text='${CHART_TEXT}':fontcolor=white:fontsize=18:box=1:boxcolor=black@0.5:boxborderw=5:x=20:y=10" ${OUT_PNG_FILE}
+
+# rm $NOAA_HOME/tmp/temp_spectrogram.png
+

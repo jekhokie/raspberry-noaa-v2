@@ -17,7 +17,7 @@
   become: yes
   mount:
     fstype: tmpfs
-    opts: "nodev,nosuid,size={% if os_memory.stdout|int < 2000 %}200M{% else %}1000M{% endif %}"
+    opts: "nodev,nosuid,size=1000M"
     src: tmpfs
     path: "{{ ramfs_path }}"
     state: mounted

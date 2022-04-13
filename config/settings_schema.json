@@ -3,6 +3,7 @@
   "properties": {
     "latitude":              { "type": "number" },
     "longitude":             { "type": "number" },
+    "altitude":              { "type": "number" },
     "timezone_offset":       { "type": "number" },
     "ntp_server":            { "type": "string" },
     "test_gain":             { "type": "number" },
@@ -75,6 +76,7 @@
       "minimum": 0,
       "maximum": 90
     },
+    "meteor_m2_memory_threshold":      { "type": "number" },
     "days_to_schedule_passes":         { "type": "number" },
     "delete_audio":                    { "type": "boolean" },
     "flip_meteor_image":               { "type": "boolean" },
@@ -113,7 +115,7 @@
     "timezone":                        { "type": "string" },
     "lang_setting": {
       "type": "string",
-      "enum": [ "ar", "bg", "de", "en", "es", "fr", "nl", "sr" ]
+      "enum": [ "ar", "bg", "cn", "de", "en", "es", "fr", "lt", "nl", "pt", "sr" ]
     },
     "web_server_name": { "type": "string" },
     "enable_non_tls":  { "type": "boolean" },
@@ -138,6 +140,7 @@
       "type": "string",
       "enum": [ "DEBUG", "WARN", "INFO", "ERROR" ]
     },
+    "disable_at_mail":         { "type": "boolean" },
     "enable_satvis":           { "type": "boolean" },
     "enable_animation":        { "type": "boolean" },
     "delete_oldest_n":         { "type": "number" },
@@ -151,11 +154,17 @@
     "enable_email_schedule_push": { "type": "boolean" },
     "enable_discord_push":        { "type": "boolean" },
     "discord_webhook_url":        { "type": "string" },
-    "enable_twitter_push":        { "type": "boolean" }
+    "enable_twitter_push":        { "type": "boolean" },
+    "enable_slack_push":          { "type": "boolean" },
+    "slack_push_url":             { "type": "string" },
+    "slack_push_to":              { "type": "string" },
+    "slack_link":                 { "type": "string" },
+    "enable_matrix_push":         { "type": "boolean" }
   },
   "required": [
     "latitude",
     "longitude",
+    "altitude",
     "timezone_offset",
     "ntp_server",
     "test_gain",
@@ -191,6 +200,7 @@
     "meteor_m2_gain",
     "meteor_m2_sun_min_elevation",
     "meteor_m2_sat_min_elevation",
+    "meteor_m2_memory_threshold",
     "days_to_schedule_passes",
     "delete_audio",
     "flip_meteor_image",
@@ -236,6 +246,7 @@
     "web_passes_date_format",
     "web_datetime_format",
     "log_level",
+    "disable_at_mail",
     "enable_satvis",
     "enable_animation",
     "delete_oldest_n",
@@ -246,6 +257,10 @@
     "enable_email_schedule_push",
     "enable_discord_push",
     "discord_webhook_url",
-    "enable_twitter_push"
-  ]
+    "enable_twitter_push",
+    "enable_matrix_push",
+    "enable_slack_push",
+    "slack_push_url",
+    "slack_push_to",
+    "slack_link"]
 }

@@ -4,6 +4,7 @@
 #   longitude: west values are negative
 latitude: 40.712776
 longitude: -74.005974
+altitude: 0.0
 
 # time zone offset from UTC (for example, '-5' for US Eastern)
 timezone_offset: -5
@@ -21,14 +22,17 @@ ntp_server: ''
 test_gain: 7.7
 test_sdr_device_id: 0
 test_enable_bias_tee: true
-test_freq_offset: -6
+test_freq_offset: 0
 
 # receiver settings
+#   noaa_receiver  - which receiver method to use (either 'rtl_fm' or 'gnuradio')
 #   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'gnuradio')
 #     **WARNING**: 'gnuradio' does not work with certain SDR devices (e.g. it will not currently
 #                  work with a RTL-SDR v3 dongle, as no image will be decoded from the bitstream)
+
 meteor_receiver: 'gnuradio'
 noaa_receiver: 'gnuradio'
+
 
 # whether to schedule specific orbiting objects for capture
 #   <satellite_name>_schedule - whether to schedule captures for the satellite
@@ -38,25 +42,29 @@ noaa_receiver: 'gnuradio'
 #   <satellite_name>_gain - gain setting for specific satellite captures
 #   <satellite_name>_sun_min_elevation - threshold for sun elevation for specific satellite captures
 #   <satellite_name>_sat_min_elevation - threshold for sat elevation for specific satellite captures
+#   <satellite_name>_memory_threshold - for METEOR satellite, minimum free memory (MB) required to store pass in RAM
+
 noaa_15_schedule: true
 noaa_15_sdr_device_id: 0
-noaa_15_freq_offset: -6
+noaa_15_freq_offset: 0
 noaa_15_enable_bias_tee: true
 noaa_15_gain: 48.0
+
 noaa_15_sun_min_elevation: 6
 noaa_15_sat_min_elevation: 30
 
 noaa_18_schedule: true
 noaa_18_sdr_device_id: 0
-noaa_18_freq_offset: -6
+noaa_18_freq_offset: 0
 noaa_18_enable_bias_tee: true
 noaa_18_gain: 48.0
+
 noaa_18_sun_min_elevation: 6
 noaa_18_sat_min_elevation: 30
 
 noaa_19_schedule: true
 noaa_19_sdr_device_id: 0
-noaa_19_freq_offset: -6
+noaa_19_freq_offset: 0
 noaa_19_enable_bias_tee: true
 noaa_19_gain: 48.0
 noaa_19_sun_min_elevation: 6
@@ -64,11 +72,12 @@ noaa_19_sat_min_elevation: 30
 
 meteor_m2_schedule: true
 meteor_m2_sdr_device_id: 0
-meteor_m2_freq_offset: -6
+meteor_m2_freq_offset: 0
 meteor_m2_enable_bias_tee: true
 meteor_m2_gain: 48.0
 meteor_m2_sun_min_elevation: 6
 meteor_m2_sat_min_elevation: 30
+meteor_m2_memory_threshold: 600
 
 # whether audio files should be deleted after images are created
 delete_audio: false
@@ -85,22 +94,25 @@ delete_audio: false
 #   produce_noaa_pristine_image - whether to produce a pristine image (unmodified) for larger
 #        composite-based use cases
 #   produce_noaa_pristine_histogram - whether to produce a histogram of the NOAA pristine image
-#        NOTE: produce_noaa_pristine_image MUST BE ENABLED for the histogram to be produced
 #   produce_polar_az_el_graph - whether to produce a polar graph that shows the pass
 #        azimuth and elevation over the course of the pass, truncated to satellite min elevation
 #   produce_polar_direction_graph - whether to produce a polar graph that shows the pass
 #        direction over the course of the pass, including AOS and LOS
 #   ground_station_location - free-form text for indicating ground station location in image
 #        annotation (leave blank if you wish to exclude the ground station annotation)
+#   antenna_information - free-form text for indicating antenna information in image
+#        annotation (leave blank if you wish to exclude the antenna information annotation)
 #   show_sun_elevation - whether to show sun elevation in annotation
 #   show_pass_direction - show which direction the satellite is moving in the image annotation
 #   noaa_daytime_enhancements - list of enhancements to create images using during daytime captures
-#        (note: default value is total list of supported image processors)
+#        (note: default value seen includes list of ALL supported image processors excluding 'avi' which must be explicitly added when opting to 'enable_animation' below )
 #   noaa_nighttime_enhancements - list of enhancements to create images using during nighttime captures
+
 #        (note: default value is total list of supported image processors)
 #   noaa_crop_toptobottom - shows entire image including noise at start and end.
 #   noaa_interpolate - produces a larger, higher quality image 
 #   noaa_apt (experimental) - an alternative demodulator and image rendering option to wxtoimg
+
 flip_meteor_image: true
 produce_spectrogram: true
 noaa_crop_telemetry: false
@@ -111,11 +123,18 @@ produce_noaa_pristine_histogram: false
 produce_polar_az_el_graph: false
 produce_polar_direction_graph: true
 ground_station_location: ''
+antenna_information: ''
 show_sun_elevation: true
 show_pass_direction: true
-noaa_daytime_enhancements: 'ZA MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT therm'
-noaa_nighttime_enhancements: 'ZA MCIR MCIR-precip therm'
-noaa_apt: false
+noaa_daytime_enhancements: 'MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT ZA therm CC HE HF MD BD MB JF JJ LC TA WV NO sea' 
+noaa_nighttime_enhancements: 'MCIR MCIR-precip HVCT ZA therm NO TA sea'
+meteor_create_spreaded_images_without_overlay: true
+meteor_create_rain_probability_overlay: true
+meteor_create_equidistant_projection: true
+meteor_create_mercator_projection: false
+noaa_crop_toptobottom: true
+noaa_interpolate: false
+
 
 # noaa map configurations
 # http://usradioguy.com/wp-content/uploads/2020/05/wxtoimgcommand-line.pdf
@@ -213,7 +232,9 @@ delete_older_than_n: 0
 #   disable_wifi_power_mgmt - if running wireless internet and you want to
 #       disable "sleep" mode of your wifi device (assuming it's wlan0), set
 #       this to true (note: updating this requires a reboot)
+#   disable_at_mail - if you do not want "at" to send mail after job execution
 disable_wifi_power_mgmt: false
+disable_at_mail: false
 
 # push processing settings for sending images elsewhere
 #   * NOTE: Make sure you set up your ~/.msmtprc file before enabling email push!
@@ -225,10 +246,17 @@ disable_wifi_power_mgmt: false
 #   discord_webhook_url - webhook url for the Discord channel
 #   enable_twitter_push - whether to push images to a Twitter feed
 #     * see docs/twitter_push.md for instructions
+#   enable_matrix_push - whether to push images to a Matrix room
+#     * see docs/matrix_push.md for instructions
 enable_email_push: false
 email_push_address: test@ifttt.com
 enable_email_schedule_push: false
 enable_discord_push: false
 discord_webhook_url: ''
 enable_twitter_push: false
+enable_slack_push: false
+slack_push_url: ''
+slack_push_to: ''
+slack_link: 'https://XXXX/captures/listImages'
+enable_matrix_push: false
 ...

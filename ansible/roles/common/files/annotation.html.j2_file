@@ -26,7 +26,7 @@
 </div>
 
 <p style="color: yellow; font-weight: bold;">
-  Ground Station: {{ ground_station_location }}<br>
+  Ground Station: {{ ground_station_location }} <br>
   {{ sat_name }} {{ enhancement }} {{ capture_start }} Max Elev: {{ sat_max_elevation }}&#176; {{ pass_side }}
   Sun Elevation: {{ sun_elevation }}&#176; Gain: {{ gain }} | {{ pass_direction }}
 </p>

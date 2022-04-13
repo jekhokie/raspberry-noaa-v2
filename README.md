@@ -22,9 +22,18 @@ NOAA and Meteor-M 2 satellite imagery capture setup for the Raspberry Pi!
 
 See "Credits" for the awesome way this version of the framework came to be.
 
-## Quick Start
+## Super Easy setup: Use a maintained image
+Want a really simple way to get up and running? VE3ELB has been maintaining a pre-built image of Raspberry-Noaa-V2 ('RN2') over here:
 
-Don't want all the nitty-gritty details? Here's the quick-start - if you have questions, continue reading the rest of this README or
+[https://qsl.net/ve3elb/RaspiNOAA/](https://qsl.net/ve3elb/RaspiNOAA/)
+
+Setup instructions are in the PDF that is included. 
+This is not always up to speed with the latest code, but lots of folks find it a great way to get started quickly!
+
+## Quick Start - building latest from the source on this repo
+
+Want to build your own, but don't want all the nitty-gritty details? 
+Here's the quick-start - if you have questions, continue reading the rest of this README or
 reach out by submitting an issue:
 
 ```bash
@@ -44,6 +53,7 @@ cp config/settings.yml.sample config/settings.yml
 vi config/settings.yml
 
 # perform install
+./install_MeteorDemod.sh
 ./install_and_upgrade.sh
 ```
 
@@ -73,8 +83,10 @@ The original raspberry-noaa was tested on Raspberry Pi 2 and up. However, while 
 with raspberry-noaa-v2, this version was developed and tested on a Raspberry Pi 4 - it has not been exhaustively tested on other variants
 of Raspberry Pi (but if you get it working on a version, please do submit a PR and mention it so this document can be updated!).
 
-In addition, it's recommended that the [Raspberry Pi OS](https://www.raspberrypi.org/software/) operating system is used - this is the
-OS that has been tested and proven working. If you do test with another OS - again, please submit a PR and let us know how it works out!
+In addition, it's recommended that the Official Release of [Raspberry Pi OS](https://www.raspberrypi.org/software/) operating system is used 
+**(not the very latest build)** - this is the OS that has been tested and proven working. 
+
+If you do test with another OS - again, please submit a PR and let us know how it works out!
 
 If you're interested in the details behind the original raspberry-noaa hardware compatibility tests, see the [hardware](docs/hardware.md)
 document.
@@ -119,6 +131,7 @@ cp config/settings.yml.sample config/settings.yml
 vi config/settings.yml
 
 # perform install
+./install_MeteorDemod.sh
 ./install_and_upgrade.sh
 ```
 
@@ -151,6 +164,8 @@ git pull
 # and incorporate any changes/updates
 
 # perform upgrade
+sudo chmod +x install_MeteorDemod.sh
+./install_MeteorDemod.sh
 ./install_and_upgrade.sh
 ```
 
@@ -181,6 +196,9 @@ output file in `/var/log/raspberry-noaa-v2/output.log` to investigate potential 
 
 ## Additional Feature Information
 
+The decoding model has been changed with release 1.8 to default to using GNURADIO based capture via Python for both Meteor 
+(which was previously an option) and now also for NOAA. This will open the platform up for developers to integrate alternative hardware capture than rtl-sdr.
+
 For additional information on some of the capabilities included in this framework, see below:
 
   - [Meteor M2 Full Decoding](docs/meteor.md)
@@ -196,7 +214,7 @@ or form to the success of this repository/framework. Below are some direct contr
 * **[otti-soft](https://github.com/otti-soft/meteor-m2-lrpt)**: Meteor-M 2 python functionality for image processing.
 * **[NateDN10](https://www.instructables.com/member/NateDN10/)**: Came up with the major enhancements to the Meteor-M 2 receiver image processing in "otti-soft"s repo above.
     * [Instructables](https://www.instructables.com/Raspberry-Pi-NOAA-and-Meteor-M-2-Receiver/) post had the details behind creating the advanced functionality.
-* **[Dom Robinson](https://www.facebook.com/d2consulting.co.uk)**: Meteor enhancements, Satvis visualizations, and overall great code written that were incorporated into the repo.
+* **[Dom Robinson](https://github.com/dom-robinson)**: Meteor enhancements, Satvis visualizations, and overall great code written that were incorporated into the repo.
     * Merge of functionality into this repo was partially created using his excellent fork of the original raspberry-noaa repo [here](https://github.com/dom-robinson/raspberry-noaa).
     * Continued pushing the boundaries on the framework capabilities.
 * **[Colin Kaminski](https://www.facebook.com/holography)**: MAJOR testing assistance and submission of various enhancements and documentation.
@@ -205,7 +223,10 @@ or form to the success of this repository/framework. Below are some direct contr
 * **[Kyle Keen](http://kmkeen.com/rtl-power/)**: Programming a lot of features for our RTL-SDR Drivers.
 * **[Pascal P.](https://github.com/Cirromulus)**: Frequency/spectrum analysis test scripts for visualizing frequency spectrum of environment.
 * **[Socowi's Time Functionality](https://stackoverflow.com/a/50434292)**: Time parser to calculate end date for scanner scripts.
-
+* **[Vince VE3ELB](https://github.com/ve3elb)**: Took on the invaluable task to create fully working images of RN2 for the PI and maintains [https://qsl.net/ve3elb/RaspiNOAA/](https://qsl.net/ve3elb/RaspiNOAA/).
+*  **[mihajlo2003petkovic](https://github.com/mihajlo2003petkovic)**: Updates to the web browser and general updating and debugging. Was the key man with  the integration of MeteorDemod [https://github.com/Digitelektro/MeteorDemod](https://github.com/Digitelektro/MeteorDemod).
+*  **[digitalelectro](https://github.com/Digitelektro)**: for the awesome Meteordemod [https://github.com/Digitelektro/MeteorDemod](https://github.com/Digitelektro/MeteorDemod).
+*  
 ## Contributing
 
 Pull requests are welcome! Simply follow the below pattern:

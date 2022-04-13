@@ -1,11 +1,13 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
+
 # -*- coding: utf-8 -*-
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: RTLSDR NOAA APT Receiver V1.0.0
 # Author: Dom Robinson
 # Description: APT to WAV recorder for Raspberry-Noaa -V2
-# Generated: Mon Apr 12 23:22:56 2021
+
+# Generated: Sun Apr  4 22:24:30 2021
 ##################################################
 
 
@@ -26,9 +28,10 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
     def __init__(self):
         gr.top_block.__init__(self, "RTLSDR NOAA APT Receiver V1.0.0")
 
-	##################################################
-	# Variables
-	##################################################
+	###############################################################
+	# Variables - added for Raspberry-Noaa-V2 manually after export
+	###############################################################
+
 
     	# get some variables in place for inputs
     	#
@@ -37,25 +40,40 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
     	#   2. Gain to be used
 	#   3. Frequency (in Mhz)	
     	#   4. Frequency offset (PPM)
+        #   5. SDR Device ID from settings.yml (for RTL-SDR source block)
+        #   6. Bias-T (0/1 for RTL-SDR)
 
-    	stream_name = sys.argv[1]
-    	gain = float(sys.argv[2])
-	import decimal
-	freq = int(decimal.Decimal(sys.argv[3].strip("M"))*decimal.Decimal(1000000))
-    	freq_offset = int(sys.argv[4])
-
+        stream_name = sys.argv[1]
+        gain = float(sys.argv[2])
+        import decimal
+        freq = int(decimal.Decimal(sys.argv[3].strip("M"))*decimal.Decimal(1000000))
+        freq_offset = int(sys.argv[4])
+        sdr_dev_id = sys.argv[5]
+        bias_t_string = sys.argv[6]
+        bias_t = "1"
+        if not bias_t_string:
+           bias_t = "0"
         ##################################################
         # Variables
         ##################################################
+
+        self.trans = trans = 25000
         self.samp_rate = samp_rate = 1920000
         self.recfile = recfile = stream_name
         self.fcd_freq = fcd_freq = freq
+        self.cutoff = cutoff = 75000
         self.centre_freq = centre_freq = 0
 
-        ##################################################
-        # Blocks
-        ##################################################
-        self.rtlsdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + 'rtl=0' )
+	###############################################################
+        # Blocks - note the fcd_freq, freq_offset rtl device, bias-t and gain are carried 
+        #          in from settings.yml using the 'variables' block above.
+        #          NOTE: If you edit and replace this .py in gnucomposer
+        #          these will be overwritten with hard-coded values and 
+        #          need to be manually reintroduced to make the script take 
+        #          settings from your own settings.yml.
+        ################################################################
+
+        self.rtlsdr_source_0 = osmosdr.source( args='numchan=' + str(1) + ' ' + 'rtl=' + str(sdr_dev_id) + ',bias=' + bias_t + '' )
         self.rtlsdr_source_0.set_sample_rate(samp_rate)
         self.rtlsdr_source_0.set_center_freq(fcd_freq, 0)
         self.rtlsdr_source_0.set_freq_corr(freq_offset, 0)
@@ -80,29 +98,34 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
                 taps=None,
                 fractional_bw=None,
         )
+
+        self.low_pass_filter_0 = filter.fir_filter_ccf(20, firdes.low_pass(
+        	1, samp_rate, cutoff, trans, firdes.WIN_HAMMING, 6.76))
+
         self.gr_wavfile_sink_0_0_0_0 = blocks.wavfile_sink(recfile, 1, 11025, 16)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vff((0.7, ))
         self.blks2_wfm_rcv_0 = analog.wfm_rcv(
         	quad_rate=96000,
         	audio_decimation=5,
         )
-        self.band_pass_filter_1 = filter.fir_filter_ccf(20, firdes.band_pass(
-        	1, samp_rate, 137050000, 137950000, 10, firdes.WIN_HAMMING, 6.76))
-        self.band_pass_filter_0 = filter.fir_filter_fff(1, firdes.band_pass(
-        	1, samp_rate/20, 500, 4200, 200, firdes.WIN_HAMMING, 6.76))
-
-
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.band_pass_filter_0, 0), (self.rational_resampler_xxx_0, 0))
-        self.connect((self.band_pass_filter_1, 0), (self.blks2_wfm_rcv_0, 0))
-        self.connect((self.blks2_wfm_rcv_0, 0), (self.band_pass_filter_0, 0))
+
+        self.connect((self.blks2_wfm_rcv_0, 0), (self.rational_resampler_xxx_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.gr_wavfile_sink_0_0_0_0, 0))
+        self.connect((self.low_pass_filter_0, 0), (self.blks2_wfm_rcv_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.rational_resampler_xxx_1, 0))
         self.connect((self.rational_resampler_xxx_1, 0), (self.blocks_multiply_const_vxx_0, 0))
-        self.connect((self.rtlsdr_source_0, 0), (self.band_pass_filter_1, 0))
+        self.connect((self.rtlsdr_source_0, 0), (self.low_pass_filter_0, 0))
+
+    def get_trans(self):
+        return self.trans
+
+    def set_trans(self, trans):
+        self.trans = trans
+        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, self.cutoff, self.trans, firdes.WIN_HAMMING, 6.76))
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -110,8 +133,8 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.rtlsdr_source_0.set_sample_rate(self.samp_rate)
-        self.band_pass_filter_1.set_taps(firdes.band_pass(1, self.samp_rate, 137050000, 137950000, 10, firdes.WIN_HAMMING, 6.76))
-        self.band_pass_filter_0.set_taps(firdes.band_pass(1, self.samp_rate/20, 500, 4200, 200, firdes.WIN_HAMMING, 6.76))
+        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, self.cutoff, self.trans, firdes.WIN_HAMMING, 6.76))
+
 
     def get_recfile(self):
         return self.recfile
@@ -126,6 +149,14 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
     def set_fcd_freq(self, fcd_freq):
         self.fcd_freq = fcd_freq
         self.rtlsdr_source_0.set_center_freq(self.fcd_freq, 0)
+
+    def get_cutoff(self):
+        return self.cutoff
+
+    def set_cutoff(self, cutoff):
+        self.cutoff = cutoff
+        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, self.cutoff, self.trans, firdes.WIN_HAMMING, 6.76))
+
 
     def get_centre_freq(self):
         return self.centre_freq
