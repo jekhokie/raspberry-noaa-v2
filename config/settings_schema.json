@@ -10,12 +10,8 @@
     "test_sdr_device_id":    { "type": "number" },
     "test_enable_bias_tee":  { "type": "boolean" },
     "test_freq_offset":      { "type": "number" },
-    "meteor_receiver": {
-      "type": "string"
-    },
-    "noaa_receiver": {
-      "type": "string"
-    },
+    "meteor_receiver":       { "type": "string" },
+    "noaa_receiver":         { "type": "string" },
     "noaa_15_schedule":        { "type": "boolean" },
     "noaa_15_sdr_device_id":   { "type": "number" },
     "noaa_15_freq_offset":     { "type": "number" },
@@ -82,9 +78,7 @@
     "flip_meteor_image":               { "type": "boolean" },
     "produce_spectrogram":             { "type": "boolean" },
     "noaa_crop_telemetry":             { "type": "boolean" },
-    "image_annotation_location": {
-      "type": "string"
-    },
+    "image_annotation_location":       { "type": "string" },
     "extend_for_annotation":           { "type": "boolean" },
     "produce_noaa_pristine_image":     { "type": "boolean" },
     "produce_noaa_pristine_histogram": { "type": "boolean" },
@@ -105,13 +99,14 @@
     "noaa_map_country_border_color":   { "type": "string" },
     "noaa_map_state_border_enable":    { "type": "boolean" },
     "noaa_map_state_border_color":     { "type": "string" },
+    "noaa_crop_toptobottom":           { "type": "boolean" },
+    "noaa_interpolate":                { "type": "boolean" },
+    "noaa_apt":                        { "type": "boolean" },
     "noaa_thermal_temp_overlay":       { "type": "boolean" },
-    "noaa_thermal_temp_overlay_location": {
-      "type": "string"
-    },
     "meteor_create_spreaded_images_without_overlay": { "type": "boolean" },
     "meteor_create_equidistant_projection": { "type": "boolean" },
     "meteor_create_mercator_projection": { "type": "boolean" },
+
     "timezone":                        { "type": "string" },
     "lang_setting": {
       "type": "string",
@@ -171,6 +166,7 @@
     "test_sdr_device_id",
     "test_enable_bias_tee",
     "test_freq_offset",
+    "noaa_receiver",
     "meteor_receiver",
     "noaa_15_schedule",
     "noaa_15_sdr_device_id",
@@ -232,6 +228,9 @@
     "noaa_map_state_border_color",
     "noaa_thermal_temp_overlay",
     "noaa_thermal_temp_overlay_location",
+    "noaa_crop_toptobottom",
+    "noaa_interpolate",
+    "noaa_apt",
     "timezone",
     "lang_setting",
     "web_server_name",

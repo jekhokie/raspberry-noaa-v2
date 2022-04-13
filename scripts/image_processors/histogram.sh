@@ -39,9 +39,9 @@ fi
 gmic_temp_2="${input_path}/_${input_file}"
 
 # produce the histogram on a pristine image
+
 $GMIC "${IN_FILE}" +histogram 256 display_graph[-1] 400,300,1,0,255,0 outputp
 $CONVERT "${gmic_temp_1}" "${OUT_FILE}"
 rm "${gmic_temp_1}"
-rm "${gmic_temp_2}"
 $CONVERT "${OUT_FILE}" -undercolor grey85 -fill black -pointsize 12 -annotate +5+12  "${CHART_TITLE}" "${OUT_FILE}"
 $CONVERT "${OUT_FILE}" -gravity SouthWest -undercolor grey85 -fill black -pointsize 12 -annotate +5+1 "${CHART_COMMENT}" "${OUT_FILE}"
