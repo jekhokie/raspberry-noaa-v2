@@ -93,6 +93,9 @@ else
 fi
 
 echo "---------------------------------------------"
+echo "Checking for BlackList (the response should be blank):
+echo lsmod | grep dvb
+echo ""
 echo "SDR Information:"
 echo -e "${SDR_INFO}"
 
