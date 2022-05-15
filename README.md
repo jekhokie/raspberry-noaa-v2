@@ -78,6 +78,8 @@ Also, check out [THIS LINK](docs/webpanel_screenshots.md) for some screen shots 
 
 ## Compatibility
 
+**NOTE: ONLY 32bit OS is supported : Recommended is 'Bullseye' Release.**
+
 The original raspberry-noaa was tested on Raspberry Pi 2 and up. However, while it's possible this compatibility has been maintained
 with raspberry-noaa-v2, this version was developed and tested on a Raspberry Pi 4 - it has not been exhaustively tested on other variants
 of Raspberry Pi (but if you get it working on a version, please do submit a PR and mention it so this document can be updated!).
