@@ -36,7 +36,7 @@ done
 
 if [ "${update_tle}" == "1" ]; then
   # wait for an IP to be assigned/DNS to be available so the TLE can be retrieved
-  tle_addr="www.celestrak.com"
+  tle_addr="www.celestrak.org"
   max_iters_sec=60
   sleep_iter_seconds=5
   counter=0
@@ -60,8 +60,8 @@ if [ "${update_tle}" == "1" ]; then
 
   # get the txt files for orbit information
   log "Downloading new TLE files from source" "INFO"
-  wget -r "http://${tle_addr}/NORAD/elements/weather.txt" -O "${WEATHER_TXT}" >> $NOAA_LOG 2>&1
-  wget -r "http://${tle_addr}/NORAD/elements/amateur.txt" -O "${AMATEUR_TXT}" >> $NOAA_LOG 2>&1
+  wget -r "http://${tle_addr}/NORAD/elements/weather.txt" --no-check-certificate -O "${WEATHER_TXT}" >> $NOAA_LOG 2>&1
+  wget -r "http://${tle_addr}/NORAD/elements/amateur.txt" --no-check-certificate -O "${AMATEUR_TXT}" >> $NOAA_LOG 2>&1
 
   # create tle files for scheduling
   #   note: it's really unfortunate but a directory structure any deeper than 'tmp' in the
