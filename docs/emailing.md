@@ -36,6 +36,11 @@ and use this within the `/home/pi/.msmtprc` file for the `password` setting.
 **Note**: This file defaults to a template to configure a gmail email account to send images. If you want to know more about
 how to configure this file for additional account types, see the [msmtp](https://wiki.debian.org/msmtp) documentation.
 
+Since May 2022 Google have enforced 2FA. You need to setup 2FA in your Google Account setup, and then obtain an 'App Password' 
+This app password is then used INSTEAD OF your gmail account's normal password in the '''./msmtprc''' file. 
+Follow this video for the process of obtaining the app password: 
+[https://www.youtube.com/watch?v=Jp9B0rY6Fxk&t=138s](https://www.youtube.com/watch?v=Jp9B0rY6Fxk&t=138s)
+
 ## Testing (Optional)
 
 If you'd like to see whether the configurations you've set are working, you can run a quick test from the command line using
