@@ -163,10 +163,7 @@ fi
 
 if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 
-#  qpsk_file="${NOAA_HOME}/tmp/meteor/${FILENAME_BASE}.s"
-
   log "Starting gnuradio record" "INFO"
-#  ${AUDIO_PROC_DIR}/meteor_record_gnuradio.sh $CAPTURE_TIME "$qpsk_file" >> $NOAA_LOG 2>&1
   ${AUDIO_PROC_DIR}/meteor_record_gnuradio.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
 
   log "Waiting for files to close" "INFO"
