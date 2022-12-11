@@ -1,64 +1,83 @@
 [Program]
-AzimuthalEquidistantProjection={{ meteor_create_equidistant_projection|lower }}
-MercatorProjection={{ meteor_create_mercator_projection|lower }}
-SpreadImage={{ meteor_create_spreaded_images_without_overlay|lower }}
-AddRainOverlay={{ meteor_create_rain_probability_overlay|lower }}
+AzimuthalEquidistantProjection=true
+MercatorProjection=false
+SpreadImage=true
+AddRainOverlay=true
 JpgQuality=100
-AlfaM2=110.8
-DeltaM2=-3.2
+ScanAngleM2=110.8
+RollM2=-2.9
+PitchM2=0.3
+YawM2=0
+#Onboard time offset in seconds
+TimeOffsetM2=0
 NightPassTreshold=20.0
+#Scale output image, it helps to reduce memory usage and generates smaller images
+ProjectionScale=1
+CompositeProjectionScale=1
+CompositeAzimuthalEquidistantProjection=true
+CompositeMercatorProjection=false
+GenerateComposite123=true
+GenerateComposite125=false
+GenerateComposite221=true
+GenerateComposite68=true
+GenerateCompositeThermal=true
+GenerateComposite68Rain=true
 
 [Demodulator]
-;Increasing bandwidth allow the pll to lock faster on signal, while decreasing it makes the pll lock more stable
-CostasBandwidth=50
-;Increasing RRC filter order makes the filtering more accurate at the expense of speed
-RRCFilterOrder=64
-;Increasing the interpolation factor enables better timing recovery, at the expense of filtering accuracy.
-InterpolationFactor=4
-;Waiting for lock makes smaller .S files and helps to discard the imperfect part of the image at the begining of decoding
+#Increasing bandwidth allow the pll to lock faster on signal, while decreasing it$
+CostasBandwidth=30
+#Increasing RRC filter order makes the filtering more accurate at the expense of $
+RRCFilterOrder=32
+#Waiting for lock makes smaller .S files and helps to discard the imperfect part $
 WaitForLock=1
 
 [Treatment]
 FillBlackLines=true
 
 [Watermark]
-;Place options: top_left, top_center, top_right, bottom_left, bottom_center, bottom_right
-Place=top_left
+#Place options: top_left, top_center, top_right, bottom_left, bottom_center, bottom_right
+Place=top_center
 Color=#AD880C
-Size=5
-;Text options: use '%date%' for date, '\n' for new line
+#Font height in pixels
+Size=80
+#Font lije width in pixels
+Width=3
+#Text options: use '%date%' for date, '\n' for new line
 Text=
 
 [ReceiverLocation]
 Draw=true
 Latitude={{ latitude }}
 Longitude={{ longitude }}
-Color=#FFFF00
+#It was Color=#FFFF00
+Color=#CC3030
 Size=30
 Thickness=6
-;MarkType options: STAR, CROSS, SQUARE, DIAMOND, TRIANGLE_UP, TRIANGLE_DOWN, TILTED_CROSS
+#MarkType options: STAR, CROSS, SQUARE, DIAMOND, TRIANGLE_UP, TRIANGLE_DOWN, TILTED_CROSS
 MarkType=CROSS
 
 [ShapeFileGraticules]
 FileName=ShapeFiles/ne_110m_graticules_10.shp
 Color=#C8C8C8
-Thickness=3
+Thickness=1
 
 [ShapeFileCoastLines]
 FileName=ShapeFiles/ne_50m_coastline.shp
 Color=#AAE0C6
-Thickness=3
+Thickness=2
 
 [ShapeFileBoundaryLines]
 FileName=ShapeFiles/ne_50m_admin_0_boundary_lines_land.shp
 Color=#FFFF00
-Thickness=5
+Thickness=2
 
-[ShapeFilePopulatedPlaces]
+[ShapeFilePopulatedPlaces] 
 FileName=ShapeFiles/ne_50m_populated_places.shp
 Color=#5A42F5
-Thickness=3
-FontScale=2
+#Font height in pixels
+Size=40
+# Font line width in pixels
+Width=2
 PointRadius=10
 FilterColumnName=ADM0CAP
 NumericFilter=1
