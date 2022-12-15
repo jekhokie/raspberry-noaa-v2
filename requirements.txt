@@ -7,5 +7,5 @@ numpy==1.18.1
 Pillow==7.1.2
 pylab==0.0.1
 pyyaml==5.4.1
-requests==2.25.1
+requests==2.27.0
 urllib3==1.26.3
