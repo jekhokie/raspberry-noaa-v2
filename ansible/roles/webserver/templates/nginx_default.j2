@@ -1,5 +1,7 @@
 server {
   listen {{ web_port }};
+  listen [::]:{{ web_port }};
+  
   root {{ web_home }}/public/;
   index index.php index.html index.htm index.nginx-debian.html;
   autoindex on;
