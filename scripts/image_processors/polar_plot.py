@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 #
 # Purpose: Create a polar plot of a satellite elevation and azimuth for a pass.
 #
