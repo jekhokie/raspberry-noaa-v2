@@ -31,6 +31,7 @@
       - socat
       - sox
       - sqlite3
+      - certbot
 
 - name: install dependencies (stretch only)
   become: yes
