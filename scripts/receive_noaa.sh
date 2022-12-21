@@ -87,7 +87,6 @@ if pgrep -f rtlsdr_m2_lrpt_rx.py > /dev/null; then
 fi
 
 #start capture
-log "Starting rtl_fm record" "INFO"
 if [ "$NOAA_RECEIVER" == "rtl_fm" ]; then
   log "Starting rtl_fm record" "INFO"
   ${AUDIO_PROC_DIR}/noaa_record_rtl_fm.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav" >> $NOAA_LOG 2>&1
