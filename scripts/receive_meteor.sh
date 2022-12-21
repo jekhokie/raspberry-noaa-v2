@@ -114,6 +114,7 @@ push_file_list=""
 spectrogram=0
 polar_az_el=0
 polar_direction=0
+
 if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   log "Starting rtl_fm record" "INFO"
   ${AUDIO_PROC_DIR}/meteor_record_rtl_fm.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
