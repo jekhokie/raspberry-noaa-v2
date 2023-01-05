@@ -23,4 +23,12 @@ if [ ${OUT_FILE: -2} != ".s" ]; then
   exit 1
 fi
 
-timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/rtlsdr_m2_lrpt_rx.py" "${OUT_FILE}" "${GAIN}" "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
+if [ "$RECEIVER_TYPE" == "rtlsdr" ]; then
+  log "Recording ${NOAA_HOME} via RTL-SDR at ${freq} MHz...to " "INFO"
+  timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/rtlsdr_m2_lrpt_rx.py" "${OUT_FILE}" "${GAIN}" "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
+fi
+
+if [ "$RECEIVER_TYPE" == "airspy_r2" ]; then
+  log "Recording ${NOAA_HOME} via Airspy R2 at ${freq} MHz...to " "INFO"
+  timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/airspy_r2_m2_lrpt_rx.py" "${OUT_FILE}" "${GAIN}" "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
+fi
