@@ -35,14 +35,20 @@ case $SAT_NAME in
     exit 1
 esac
 
-
 # check that filename extension is wav (only type supported currently)
 if [ ${OUT_FILE: -4} != ".wav" ]; then
   log "Output file must end in .wav extension." "ERROR"
   exit 1
 fi
 
-log "Recording ${NOAA_HOME} at ${freq} MHz...to " "INFO"
-log "Starting rtlsdr_noaa_apt_rx.py ${OUT_FILE} Gain: ${GAIN} Frequency: ${freq}M Offset: ${FREQ_OFFSET} Device: ${SDR_DEVICE_ID} Bias Tee: ${BIAS_TEE}" 
-timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/rtlsdr_noaa_apt_rx.py" "${OUT_FILE}" "${GAIN}" "${freq}"M "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
+if [ "$RECEIVER_TYPE" == "rtlsdr" ]; then
+  log "Recording ${NOAA_HOME} via RTL-SDR at ${freq} MHz...to " "INFO"
+  timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/rtlsdr_noaa_apt_rx.py" "${OUT_FILE}" "${GAIN}" "${freq}"M "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
+  ffmpeg -i "$3" -c:a copy "${3%.*}_tmp.wav" && ffmpeg -i "${3%.*}_tmp.wav" -c:a copy -y "$3" && rm "${3%.*}_tmp.wav"
+fi
 
+if [ "$RECEIVER_TYPE" == "airspy_r2" ]; then
+  log "Recording ${NOAA_HOME} via Airspy R2 at ${freq} MHz...to " "INFO"
+  timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/airspy_r2_noaa_apt_rx.py" "${OUT_FILE}" "${GAIN}" "${freq}"M "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
+  ffmpeg -i "$3" -c:a copy "${3%.*}_tmp.wav" && ffmpeg -i "${3%.*}_tmp.wav" -c:a copy -y "$3" && rm "${3%.*}_tmp.wav"
+fi
