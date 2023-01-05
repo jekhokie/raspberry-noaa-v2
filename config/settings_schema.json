@@ -10,6 +10,7 @@
     "test_sdr_device_id":    { "type": "number" },
     "test_enable_bias_tee":  { "type": "boolean" },
     "test_freq_offset":      { "type": "number" },
+    "receiver_type":         { "type": "string" },
     "meteor_receiver": {
       "type": "string"
     },
