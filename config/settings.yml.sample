@@ -25,7 +25,7 @@ test_enable_bias_tee: true
 test_freq_offset: 0
 
 # receiver settings
-#   receiver_type - the receiver type which program uses ('rtlsdr' or 'airspy_r2')
+#   receiver_type - the receiver type which program uses ('rtlsdr', 'airspy_mini' 'airspy_r2')
 #   noaa_receiver  - which receiver method to use (either 'rtl_fm' or 'gnuradio')
 #   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'gnuradio')
 #     **WARNING**: 'gnuradio' does not work with certain SDR devices (e.g. it will not currently
