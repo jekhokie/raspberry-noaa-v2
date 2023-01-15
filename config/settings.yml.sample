@@ -122,8 +122,9 @@ delete_audio: false
 flip_meteor_image: true
 produce_spectrogram: true
 noaa_crop_telemetry: false
-image_annotation_location: 'NorthWest'
-extend_for_annotation: false
+noaa_crop_toptobottom: false
+image_annotation_location: 'North'
+extend_for_annotation: true
 produce_noaa_pristine_image: false
 produce_noaa_pristine_histogram: false
 produce_polar_az_el_graph: false
@@ -134,14 +135,13 @@ show_sun_elevation: true
 show_pass_direction: true
 noaa_daytime_enhancements: 'MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT ZA therm CC HE HF MD BD MB JF JJ LC TA WV NO sea' 
 noaa_nighttime_enhancements: 'MCIR MCIR-precip HVCT ZA therm NO TA sea'
+noaa_interpolate: false
 noaa_jpg_image_quality: 90
 meteor_jpg_image_quality: 90
 meteor_create_spreaded_images_without_overlay: true
 meteor_create_rain_probability_overlay: true
 meteor_create_equidistant_projection: true
 meteor_create_mercator_projection: false
-noaa_crop_toptobottom: true
-noaa_interpolate: false
 
 # noaa map configurations
 # http://usradioguy.com/wp-content/uploads/2020/05/wxtoimgcommand-line.pdf
@@ -212,9 +212,9 @@ lang_setting: en
 #   web_datetime_format - format to display date and time in the web interface for captures - note that this MUST conform to
 #                         https://www.php.net/manual/en/datetime.format.php or else bad things will happen
 web_server_name: raspberry-noaa.localdomain
-enable_non_tls: false
+enable_non_tls: true
 web_port: 80
-enable_tls: true
+enable_tls: false
 web_tls_port: 443
 cert_valid_days: 365
 lock_admin_page: false
@@ -241,7 +241,7 @@ enable_animation: false
 #   delete_oldest_n - how many oldest captures to delete on each run
 #   delete_older_than_n - delete all images older than this many days
 delete_oldest_n: 0
-delete_older_than_n: 0
+delete_older_than_n: 30
 
 # operating system configurations
 #   disable_wifi_power_mgmt - if running wireless internet and you want to
@@ -272,6 +272,6 @@ enable_twitter_push: false
 enable_slack_push: false
 slack_push_url: ''
 slack_push_to: ''
-slack_link: 'https://XXXX/captures/listImages'
+slack_link: 'https://discord.com/api/webhooks/811418973593403393/Rwz1jn7IqaepgzfbhfhVpwZSvOvjutc4mq2ERtcHUUyWtpPnjx3w6doU1TOPIa4Nf2RX'
 enable_matrix_push: false
 ...
