@@ -167,6 +167,8 @@
     "enable_discord_push":        { "type": "boolean" },
     "discord_webhook_url":        { "type": "string" },
     "enable_twitter_push":        { "type": "boolean" },
+    "enable_facebook_push":        { "type": "boolean" },
+    "enable_instagram_push":        { "type": "boolean" },
     "enable_slack_push":          { "type": "boolean" },
     "slack_push_url":             { "type": "string" },
     "slack_push_to":              { "type": "string" },
