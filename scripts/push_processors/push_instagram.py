@@ -4,8 +4,8 @@ import sys
 import requests
 import json
 
-access_token = "YOUR_API_KEY_GOES_HERE"
-instagram_account_id ='YOUR_INSTAGRAM_ID_GOES_HERE'
+access_token = 'YOUR_API_KEY_GOES_HERE'
+instagram_account_id = 'YOUR_INSTAGRAM_BUSINESS_ID_GOES_HERE'
 
 graph_url = 'https://graph.facebook.com/v17.0/'
 
