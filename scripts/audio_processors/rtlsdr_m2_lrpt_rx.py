@@ -53,7 +53,7 @@ class top_block(gr.top_block):
     self.samp_rate = samp_rate = samp_rate_airspy/decim
     self.sps = sps = (samp_rate*1.0)/(symb_rate*1.0)
     self.pll_alpha = pll_alpha = 0.006
-    self.freq = freq = 137100000
+    self.freq = freq = 137.9e6
     self.clock_alpha = clock_alpha = 0.002
     self.bitstream_name = bitstream_name = stream_name
 
