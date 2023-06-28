@@ -44,23 +44,23 @@ fi
 if [ "$RECEIVER_TYPE" == "rtlsdr" ]; then
   log "Recording ${NOAA_HOME} via RTL-SDR at ${freq} MHz...to " "INFO"
   timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/rtlsdr_noaa_apt_rx.py" "${OUT_FILE}" "${GAIN}" "${freq}"M "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
-  ffmpeg -i "$3" -c:a copy "${3%.*}_tmp.wav" && ffmpeg -i "${3%.*}_tmp.wav" -c:a copy -y "$3" && rm "${3%.*}_tmp.wav"
+  ffmpeg -hide_banner -loglevel error -i "$3" -c:a copy "${3%.*}_tmp.wav" && ffmpeg -i "${3%.*}_tmp.wav" -c:a copy -y "$3" && rm "${3%.*}_tmp.wav"
 fi
 
 if [ "$RECEIVER_TYPE" == "airspy_r2" ]; then
   log "Recording ${NOAA_HOME} via Airspy R2 at ${freq} MHz...to " "INFO"
   timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/airspy_r2_noaa_apt_rx.py" "${OUT_FILE}" "${GAIN}" "${freq}"M "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
-  ffmpeg -i "$3" -c:a copy "${3%.*}_tmp.wav" && ffmpeg -i "${3%.*}_tmp.wav" -c:a copy -y "$3" && rm "${3%.*}_tmp.wav"
+  ffmpeg -hide_banner -loglevel error -i "$3" -c:a copy "${3%.*}_tmp.wav" && ffmpeg -i "${3%.*}_tmp.wav" -c:a copy -y "$3" && rm "${3%.*}_tmp.wav"
 fi
 
 if [ "$RECEIVER_TYPE" == "airspy_mini" ]; then
   log "Recording ${NOAA_HOME} via Airspy Mini at ${freq} MHz...to " "INFO"
   timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/airspy_mini_noaa_apt_rx.py" "${OUT_FILE}" "${GAIN}" "${freq}"M "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
-  ffmpeg -i "$3" -c:a copy "${3%.*}_tmp.wav" && ffmpeg -i "${3%.*}_tmp.wav" -c:a copy -y "$3" && rm "${3%.*}_tmp.wav"
+  ffmpeg -hide_banner -loglevel error -i "$3" -c:a copy "${3%.*}_tmp.wav" && ffmpeg -i "${3%.*}_tmp.wav" -c:a copy -y "$3" && rm "${3%.*}_tmp.wav"
 fi
 
 if [ "$RECEIVER_TYPE" == "hackrf" ]; then
   log "Recording ${NOAA_HOME} via Airspy R2 at ${freq} MHz...to " "INFO"
   timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/hackrf_noaa_apt_rx.py" "${OUT_FILE}" "${GAIN}" "${freq}"M "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
-  ffmpeg -i "$3" -c:a copy "${3%.*}_tmp.wav" && ffmpeg -i "${3%.*}_tmp.wav" -c:a copy -y "$3" && rm "${3%.*}_tmp.wav"
+  ffmpeg -hide_banner -loglevel error -i "$3" -c:a copy "${3%.*}_tmp.wav" && ffmpeg -i "${3%.*}_tmp.wav" -c:a copy -y "$3" && rm "${3%.*}_tmp.wav"
 fi
