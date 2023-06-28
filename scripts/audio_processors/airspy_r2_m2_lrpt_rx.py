@@ -30,50 +30,31 @@ class airspy_r2_m2_lrpt_rx(gr.top_block):
     def __init__(self):
         gr.top_block.__init__(self, "Airspy R2 Meteor QPSK LRPT")
 
-        ###############################################################
-        # Variables - added for Raspberry-Noaa-V2 manually after export
-        ###############################################################
-
-        # get some variables in place for inputs
-        #
-        # Arguments:
-        #   1. Full path and name of stream file (including file extension)
-        #   2. Gain to be used
-        #   3. Frequency (in Mhz)
-        #   4. Frequency offset (PPM)
-        #   5. SDR Device ID from settings.yml (for RTL-SDR source block)
-        #   6. Bias-T (0/1 for RTL-SDR)
-
         stream_name = sys.argv[1]
         gain = float(sys.argv[2])
-        import decimal
-        freq = int(decimal.Decimal(sys.argv[3].strip("M"))*decimal.Decimal(1000000))
-        freq_offset = int(sys.argv[4])
-        sdr_dev_id = sys.argv[5]
-        bias_t_string = sys.argv[6]
+        freq_offset = int(sys.argv[3])
+        sdr_dev_id = sys.argv[4]
+        bias_t_string = sys.argv[5]
         bias_t = "1"
         if not bias_t_string:
-           bias_t = "0"
+          bias_t = "0"
 
         ##################################################
         # Variables
         ##################################################
-        self.trans = trans = 25000
-        self.samp_rate = samp_rate = 2500000
-        self.recfile = recfile = stream_name
-        self.fcd_freq = fcd_freq = freq
-        self.cutoff = cutoff = 75000
-        self.centre_freq = centre_freq = 0
+        self.samp_rate_airspy = samp_rate_airspy = 2.5e6
+        self.decim = decim = 16
+        self.symb_rate = symb_rate = 72000
+        self.samp_rate = samp_rate = samp_rate_airspy/decim
+        self.sps = sps = (samp_rate*1.0)/(symb_rate*1.0)
+        self.pll_alpha = pll_alpha = 0.006
+        self.freq = freq = 137.9e6
+        self.clock_alpha = clock_alpha = 0.002
+        self.bitstream_name = bitstream_name = stream_name
 
-        ###############################################################
-        # Blocks - note the fcd_freq, freq_offset rtl device, bias-t and gain are carried
-        #          in from settings.yml using the 'variables' block above.
-        #          NOTE: If you edit and replace this .py in gnucomposer
-        #          these will be overwritten with hard-coded values and
-        #          need to be manually reintroduced to make the script take
-        #          settings from your own settings.yml.
-        ################################################################
-
+        ##################################################
+        # Blocks
+        ##################################################
         self.root_raised_cosine_filter_0 = filter.fir_filter_ccf(
             1,
             firdes.root_raised_cosine(
@@ -87,9 +68,7 @@ class airspy_r2_m2_lrpt_rx(gr.top_block):
                 decimation=decim,
                 taps=None,
                 fractional_bw=None)
-        self.osmosdr_source_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + "airspy=0,pack=1" + ",bias=" + bias_t + ""
-        )
+        self.osmosdr_source_0 = osmosdr.source( args='numchan=' + str(1) + ' ' + 'airspy=0,pack=1' + ',bias=' + bias_t + '' )
         self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(samp_rate_airspy)
         self.osmosdr_source_0.set_center_freq(freq, 0)
@@ -97,9 +76,9 @@ class airspy_r2_m2_lrpt_rx(gr.top_block):
         self.osmosdr_source_0.set_dc_offset_mode(0, 0)
         self.osmosdr_source_0.set_iq_balance_mode(0, 0)
         self.osmosdr_source_0.set_gain_mode(False, 0)
-        self.osmosdr_source_0.set_gain(20, 0)
-        self.osmosdr_source_0.set_if_gain(10, 0)
-        self.osmosdr_source_0.set_bb_gain(20, 0)
+        self.osmosdr_source_0.set_gain(17, 0)
+        self.osmosdr_source_0.set_if_gain(12, 0)
+        self.osmosdr_source_0.set_bb_gain(0, 0)
         self.osmosdr_source_0.set_antenna('', 0)
         self.osmosdr_source_0.set_bandwidth(1500000, 0)
         self.digital_costas_loop_cc_0 = digital.costas_loop_cc(pll_alpha, 4, False)
