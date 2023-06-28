@@ -52,9 +52,15 @@ class airspy_r2_m2_lrpt_rx(gr.top_block):
         self.clock_alpha = clock_alpha = 0.002
         self.bitstream_name = bitstream_name = stream_name
 
-        ##################################################
-        # Blocks
-        ##################################################
+
+        ###############################################################
+        # Blocks - note the fcd_freq, freq_offset rtl device, bias-t and gain are carried
+        #          in from settings.yml using the 'variables' block above.
+        #          NOTE: If you edit and replace this .py in gnucomposer
+        #          these will be overwritten with hard-coded values and
+        #          need to be manually reintroduced to make the script take
+        #          settings from your own settings.yml.
+        ################################################################
         self.root_raised_cosine_filter_0 = filter.fir_filter_ccf(
             1,
             firdes.root_raised_cosine(
