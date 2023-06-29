@@ -75,7 +75,7 @@ if [ "${update_tle}" == "1" ]; then
   grep "NOAA 18" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
   grep "NOAA 19" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
   grep "METEOR-M 2" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
-  grep "2023-091A" $ACTIVE_TXT -A 2 >> $TLE_OUTPUT  #To be changed to new name when the satellite gets renamed
+  grep "METEOR-M2 E" $WEATHER_TXT -A 2 >> $TLE_OUTPUT  #To be changed to new name when the satellite gets renamed
 elif [ ! -f $WEATHER_TXT ] || [ ! -f $AMATEUR_TXT ] || [ ! -f $TLE_OUTPUT ]; then
   log "TLE update not specified '-t' but no TLE files present - please re-run with '-t'" "INFO"
   exit 1
@@ -140,7 +140,7 @@ fi
 if [ "$METEOR_M2_SCHEDULE" == "true" ]; then
   log "Scheduling Meteor-M 2 captures..." "INFO"
   #$NOAA_HOME/scripts/schedule_captures.sh "METEOR-M 2" "receive_meteor.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
-  $NOAA_HOME/scripts/schedule_captures.sh "2023-091A" "receive_meteor.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
+  $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M2 3" "receive_meteor.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
 fi
 log "Done scheduling jobs!" "INFO"
 
