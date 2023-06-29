@@ -34,7 +34,7 @@ fi
 if [ "$OBJ_NAME" == "METEOR-M 2" ]; then
   SAT_MIN_ELEV=$METEOR_M2_SAT_MIN_ELEV
 fi
-if [ "$OBJ_NAME" == "2023-091A" ]; then
+if [ "$OBJ_NAME" == "METEOR-M2 3" ]; then
   SAT_MIN_ELEV=$METEOR_M2_SAT_MIN_ELEV
 fi
 
