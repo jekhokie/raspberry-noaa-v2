@@ -48,10 +48,9 @@ class airspy_r2_m2_lrpt_rx(gr.top_block):
         self.samp_rate = samp_rate = samp_rate_airspy/decim
         self.sps = sps = (samp_rate*1.0)/(symb_rate*1.0)
         self.pll_alpha = pll_alpha = 0.006
-        self.freq = freq = 137.9e6
+        self.freq = freq = 137900000
         self.clock_alpha = clock_alpha = 0.002
         self.bitstream_name = bitstream_name = stream_name
-
 
         ###############################################################
         # Blocks - note the fcd_freq, freq_offset rtl device, bias-t and gain are carried
@@ -61,6 +60,7 @@ class airspy_r2_m2_lrpt_rx(gr.top_block):
         #          need to be manually reintroduced to make the script take
         #          settings from your own settings.yml.
         ################################################################
+        
         self.root_raised_cosine_filter_0 = filter.fir_filter_ccf(
             1,
             firdes.root_raised_cosine(
@@ -74,25 +74,29 @@ class airspy_r2_m2_lrpt_rx(gr.top_block):
                 decimation=decim,
                 taps=None,
                 fractional_bw=None)
-        self.osmosdr_source_0 = osmosdr.source( args='numchan=' + str(1) + ' ' + 'airspy=0,pack=1' + ',bias=' + bias_t + '' )
+        self.osmosdr_source_0 = osmosdr.source(
+            args="numchan=" + str(1) + " " + "airspy=0,pack=1" + ",bias=" +  bias_t)
         self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(samp_rate_airspy)
         self.osmosdr_source_0.set_center_freq(freq, 0)
-        self.osmosdr_source_0.set_freq_corr(68, 0)
+        self.osmosdr_source_0.set_freq_corr(freq_offset, 0)
         self.osmosdr_source_0.set_dc_offset_mode(0, 0)
         self.osmosdr_source_0.set_iq_balance_mode(0, 0)
         self.osmosdr_source_0.set_gain_mode(False, 0)
-        self.osmosdr_source_0.set_gain(17, 0)
-        self.osmosdr_source_0.set_if_gain(12, 0)
-        self.osmosdr_source_0.set_bb_gain(0, 0)
+        self.osmosdr_source_0.set_gain(18, 0)
+        self.osmosdr_source_0.set_if_gain(14, 0)
+        self.osmosdr_source_0.set_bb_gain(20, 0)
         self.osmosdr_source_0.set_antenna('', 0)
         self.osmosdr_source_0.set_bandwidth(1500000, 0)
         self.digital_costas_loop_cc_0 = digital.costas_loop_cc(pll_alpha, 4, False)
         self.digital_constellation_soft_decoder_cf_1 = digital.constellation_soft_decoder_cf(digital.constellation_calcdist(([-1-1j, -1+1j, 1+1j, 1-1j]), ([0, 1, 3, 2]), 4, 1).base())
         self.digital_clock_recovery_mm_xx_0 = digital.clock_recovery_mm_cc(sps, clock_alpha**2/4.0, 0.5, clock_alpha, 0.005)
+        self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
         self.blocks_float_to_char_0 = blocks.float_to_char(1, 127)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, bitstream_name, False)
         self.blocks_file_sink_0.set_unbuffered(False)
+        self.blocks_delay_0 = blocks.delay(gr.sizeof_float*1, 1)
+        self.blocks_complex_to_float_0 = blocks.complex_to_float(1)
         self.analog_rail_ff_0 = analog.rail_ff(-1, 1)
         self.analog_agc_xx_0 = analog.agc_cc(1000e-4, 0.5, 1.0)
         self.analog_agc_xx_0.set_max_gain(4000)
@@ -104,10 +108,14 @@ class airspy_r2_m2_lrpt_rx(gr.top_block):
         ##################################################
         self.connect((self.analog_agc_xx_0, 0), (self.root_raised_cosine_filter_0, 0))
         self.connect((self.analog_rail_ff_0, 0), (self.blocks_float_to_char_0, 0))
+        self.connect((self.blocks_complex_to_float_0, 1), (self.blocks_delay_0, 0))
+        self.connect((self.blocks_complex_to_float_0, 0), (self.blocks_float_to_complex_0, 0))
+        self.connect((self.blocks_delay_0, 0), (self.blocks_float_to_complex_0, 1))
         self.connect((self.blocks_float_to_char_0, 0), (self.blocks_file_sink_0, 0))
+        self.connect((self.blocks_float_to_complex_0, 0), (self.digital_clock_recovery_mm_xx_0, 0))
         self.connect((self.digital_clock_recovery_mm_xx_0, 0), (self.digital_constellation_soft_decoder_cf_1, 0))
         self.connect((self.digital_constellation_soft_decoder_cf_1, 0), (self.analog_rail_ff_0, 0))
-        self.connect((self.digital_costas_loop_cc_0, 0), (self.digital_clock_recovery_mm_xx_0, 0))
+        self.connect((self.digital_costas_loop_cc_0, 0), (self.blocks_complex_to_float_0, 0))
         self.connect((self.osmosdr_source_0, 0), (self.rational_resampler_xxx_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.analog_agc_xx_0, 0))
         self.connect((self.root_raised_cosine_filter_0, 0), (self.digital_costas_loop_cc_0, 0))
