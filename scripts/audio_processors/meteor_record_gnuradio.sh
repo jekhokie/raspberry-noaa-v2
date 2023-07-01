@@ -32,3 +32,13 @@ if [ "$RECEIVER_TYPE" == "airspy_r2" ]; then
   log "Recording ${NOAA_HOME} via Airspy R2 at ${freq} MHz...to " "INFO"
   timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/airspy_r2_m2_lrpt_rx.py" "${OUT_FILE}" "${GAIN}" "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
 fi
+
+if [ "$RECEIVER_TYPE" == "airspy_mini" ]; then
+  log "Recording ${NOAA_HOME} via Airspy R2 at ${freq} MHz...to " "INFO"
+  timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/airspy_mini_m2_lrpt_rx.py" "${OUT_FILE}" "${GAIN}" "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
+fi
+
+if [ "$RECEIVER_TYPE" == "hackrf" ]; then
+  log "Recording ${NOAA_HOME} via Airspy R2 at ${freq} MHz...to " "INFO"
+  timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/hackrf_m2_lrpt_rx.py" "${OUT_FILE}" "${GAIN}" "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
+fi
