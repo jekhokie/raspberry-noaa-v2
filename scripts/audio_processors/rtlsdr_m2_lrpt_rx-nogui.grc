@@ -1,6 +1,6 @@
 options:
   parameters:
-    author: otti
+    author: otti & Mihajlo
     category: Custom
     cmake_opt: ''
     comment: ''
@@ -73,7 +73,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '137100000'
+    value: '137900000'
   states:
     bus_sink: false
     bus_source: false
@@ -97,7 +97,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: samp_rate_airspy/decim
+    value: samp_rate_rtlsdr/decim
   states:
     bus_sink: false
     bus_source: false
@@ -105,7 +105,7 @@ blocks:
     coordinate: [240, 484]
     rotation: 0
     state: enabled
-- name: samp_rate_airspy
+- name: samp_rate_rtlsdr
   id: variable
   parameters:
     comment: ''
@@ -178,6 +178,41 @@ blocks:
     coordinate: [1152, 452.0]
     rotation: 0
     state: enabled
+- name: blocks_complex_to_float_0
+  id: blocks_complex_to_float
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1192, 216.0]
+    rotation: 0
+    state: true
+- name: blocks_delay_0
+  id: blocks_delay
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    delay: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_ports: '1'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1376, 244.0]
+    rotation: 0
+    state: true
 - name: blocks_file_sink_0
   id: blocks_file_sink
   parameters:
@@ -213,6 +248,22 @@ blocks:
     coordinate: [1312, 460.0]
     rotation: 0
     state: enabled
+- name: blocks_float_to_complex_0
+  id: blocks_float_to_complex
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1504, 216.0]
+    rotation: 0
+    state: true
 - name: digital_clock_recovery_mm_xx_0
   id: digital_clock_recovery_mm_xx
   parameters:
@@ -664,7 +715,7 @@ blocks:
     minoutbuf: '0'
     nchan: '1'
     num_mboards: '1'
-    sample_rate: samp_rate_airspy
+    sample_rate: samp_rate_rtlsdr
     sync: sync
     time_source0: ''
     time_source1: ''
@@ -686,10 +737,14 @@ blocks:
 connections:
 - [analog_agc_xx_0, '0', root_raised_cosine_filter_0, '0']
 - [analog_rail_ff_0, '0', blocks_float_to_char_0, '0']
+- [blocks_complex_to_float_0, '0', blocks_float_to_complex_0, '0']
+- [blocks_complex_to_float_0, '1', blocks_delay_0, '0']
+- [blocks_delay_0, '0', blocks_float_to_complex_0, '1']
 - [blocks_float_to_char_0, '0', blocks_file_sink_0, '0']
+- [blocks_float_to_complex_0, '0', digital_clock_recovery_mm_xx_0, '0']
 - [digital_clock_recovery_mm_xx_0, '0', digital_constellation_soft_decoder_cf_1, '0']
 - [digital_constellation_soft_decoder_cf_1, '0', analog_rail_ff_0, '0']
-- [digital_costas_loop_cc_0, '0', digital_clock_recovery_mm_xx_0, '0']
+- [digital_costas_loop_cc_0, '0', blocks_complex_to_float_0, '0']
 - [rational_resampler_xxx_0, '0', analog_agc_xx_0, '0']
 - [root_raised_cosine_filter_0, '0', digital_costas_loop_cc_0, '0']
 - [rtlsdr_source_0, '0', rational_resampler_xxx_0, '0']
