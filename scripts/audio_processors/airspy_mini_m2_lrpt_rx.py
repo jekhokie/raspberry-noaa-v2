@@ -80,7 +80,7 @@ class airspy_mini_m2_lrpt_rx(gr.top_block):
         self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(samp_rate_airspy)
         self.osmosdr_source_0.set_center_freq(freq, 0)
-        self.osmosdr_source_0.set_freq_corr(68, 0)
+        self.osmosdr_source_0.set_freq_corr(freq_offset, 0)
         self.osmosdr_source_0.set_dc_offset_mode(0, 0)
         self.osmosdr_source_0.set_iq_balance_mode(0, 0)
         self.osmosdr_source_0.set_gain_mode(False, 0)
