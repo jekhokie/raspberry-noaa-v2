@@ -162,7 +162,7 @@ else
   log "Decoding failed, either a bad pass/low SNR or a software problem" "ERROR"
 fi
 
-if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
+if [ "$METEOR_RECEIVER" == "satdump" ]; then
 
   log "Starting gnuradio record" "INFO"
 #  ${AUDIO_PROC_DIR}/meteor_record_gnuradio.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
@@ -172,19 +172,19 @@ if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
   log "Waiting for files to close" "INFO"
   sleep 2
 
-  log "Running MeteorDemod to demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
+ # log "Running MeteorDemod to demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
 
-  $METEORDEMOD -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
+#  $METEORDEMOD -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
 
-  if [ "$DELETE_AUDIO" = true ]; then
-    log "Deleting audio files" "INFO"
-    rm "${RAMFS_AUDIO_BASE}.s"
-  else
-    if [ "$in_mem" == "true" ]; then
-      log "Moving audio files out to the SD card" "INFO"
-      mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
-    fi
-  fi
+#  if [ "$DELETE_AUDIO" = true ]; then
+#    log "Deleting audio files" "INFO"
+#    rm "${RAMFS_AUDIO_BASE}.s"
+#  else
+#    if [ "$in_mem" == "true" ]; then
+#      log "Moving audio files out to the SD card" "INFO"
+#      mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
+#    fi
+#  fi
 else
   log "Receiver type '$METEOR_RECEIVER' not valid" "ERROR"
 fi
