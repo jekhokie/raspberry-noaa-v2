@@ -191,7 +191,7 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     else
       log "I got a successful ${FILENAME_BASE}.dec file. Creating false color image" "INFO"
       ${IMAGE_PROC_DIR}/meteor_false_color_decode.sh "${AUDIO_FILE_BASE}.dec" "${IMAGE_FILE_BASE}-122" >> $NOAA_LOG 2>&1
-	  $CONVERT $FLIP "${IMAGE_FILE_BASE}-122.bmp" "${IMAGE_FILE_BASE}-122.bmp" >> $NOAA_LOG 2>&1
+      $CONVERT $FLIP "${IMAGE_FILE_BASE}-122.bmp" "${IMAGE_FILE_BASE}-122.bmp" >> $NOAA_LOG 2>&1
     fi
 
     log "Rectifying image to adjust aspect ratio" "INFO"
