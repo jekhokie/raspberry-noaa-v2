@@ -165,7 +165,9 @@ fi
 if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 
   log "Starting gnuradio record" "INFO"
-  ${AUDIO_PROC_DIR}/meteor_record_gnuradio.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
+#  ${AUDIO_PROC_DIR}/meteor_record_gnuradio.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
+  satdump live meteor_m2-x_lrpt . --source airspy --samplerate 2.5e6 --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+  rm satdump.logs meteor_m2-x_lrpt.cadu dataset.json
 
   log "Waiting for files to close" "INFO"
   sleep 2
@@ -224,27 +226,36 @@ if [[ "${PRODUCE_POLAR_DIRECTION}" == "true" ]]; then
   ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png"
 fi
 
-rm *.gcp *.bmp
+#rm *.gcp *.bmp
 
-for i in spread_*.jpg
-do
-  $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
-done
+#for i in spread_*.jpg
+#do
+#  $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
+#done
 
 sleep 2
 
 log "Annotating images and creating thumbnails" "INFO"
 counter=1
-for i in *.jpg
-do
-  ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "$i" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+#for i in *.jpg; do
+#  ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "$i" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+#  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.jpg}-thumb-122-rectified.jpg" >> $NOAA_LOG 2>&1
+#  mv "$i" "${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
+#  mv "${i%.jpg}-thumb-122-rectified.jpg" "${IMAGE_THUMB_BASE}-${counter}-122-rectified.jpg"
+#  push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg "
+#  ((counter++))
+#done
+for i in MSU-MR/*.png; do
+  ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "${i%.png}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
   ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.jpg}-thumb-122-rectified.jpg" >> $NOAA_LOG 2>&1
-  mv "$i" "${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
+  mv "${i%.png}.jpg" "${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
   mv "${i%.jpg}-thumb-122-rectified.jpg" "${IMAGE_THUMB_BASE}-${counter}-122-rectified.jpg"
-  push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg "
+  rm $i
+  push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
   ((counter++))
 done
 counter=1
+rm -r MSU-MR
 
 # check if we got an image, and post-process if so
 
