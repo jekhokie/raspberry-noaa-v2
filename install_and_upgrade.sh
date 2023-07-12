@@ -85,22 +85,6 @@ if [ $? -ne 0 ]; then
   fi
 fi
 
-log_running "Installing WXtoImg..."
-sudo apt install -y ~/raspberry-noaa-v2/software/wxtoimg-armhf-2.11.2-beta.deb
-if [ $? -eq 0 ]; then
-  log_done "WXtoImg installed successfully!"
-else
-  die "  Something failed with the WXtoImg install - please inspect the logs above"
-fi
-
-log_running "Installing SatDump..."
-sudo apt install -y ~/raspberry-noaa-v2/software/satdump_1.1.0_armhf.deb
-if [ $? -eq 0 ]; then
-  log_done "SatDump installed successfully!"
-else
-  die "  Something failed with the SatDump install - please inspect the logs above"
-fi
-
 log_running "Setting ~/.config/meteordemod ownership to the current user"
 sudo chown $USER:$USER -R ~/.config/meteordemod
 
