@@ -138,7 +138,7 @@ if [ "$NOAA_19_SCHEDULE" == "true" ]; then
   $NOAA_HOME/scripts/schedule_captures.sh "NOAA 19" "receive_noaa.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
 fi
 if [ "$METEOR_M2_SCHEDULE" == "true" ]; then
-  log "Scheduling Meteor-M 2 captures..." "INFO"
+  log "Scheduling Meteor-M2 3 captures..." "INFO"
   #$NOAA_HOME/scripts/schedule_captures.sh "METEOR-M 2" "receive_meteor.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
   $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M2 3" "receive_meteor.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
 fi
