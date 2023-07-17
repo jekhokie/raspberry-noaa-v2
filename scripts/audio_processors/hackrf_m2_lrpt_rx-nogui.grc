@@ -1,7 +1,6 @@
 options:
   parameters:
     author: Mihajlo
-    catch_exceptions: 'True'
     category: Custom
     cmake_opt: ''
     comment: ''
@@ -9,7 +8,7 @@ options:
     description: ''
     gen_cmake: 'On'
     gen_linking: dynamic
-    generate_options: hb
+    generate_options: no_gui
     hier_block_src_path: '.:'
     id: hackrf_m2_lrpt_rx
     max_nouts: '0'
@@ -28,7 +27,7 @@ options:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [72, 84.0]
+    coordinate: [64, 84.0]
     rotation: 0
     state: enabled
 
@@ -90,14 +89,9 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    append: 'False'
-    bits_per_sample1: FORMAT_PCM_U8
-    bits_per_sample2: FORMAT_PCM_16
-    bits_per_sample3: FORMAT_VORBIS
-    bits_per_sample4: FORMAT_PCM_16
+    bits_per_sample: '8'
     comment: ''
     file: baseband.wav
-    format: FORMAT_WAV
     nchan: '2'
     samp_rate: int(samp_rate_hackrf/decim)
   states:
@@ -493,4 +487,3 @@ connections:
 
 metadata:
   file_format: 1
-  grc_version: 3.10.6.0

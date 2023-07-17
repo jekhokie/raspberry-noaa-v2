@@ -8,7 +8,7 @@ options:
     description: ''
     gen_cmake: 'On'
     gen_linking: dynamic
-    generate_options: hb
+    generate_options: no_gui
     hier_block_src_path: '.:'
     id: airspy_mini_m2_lrpt_rx
     max_nouts: '0'
@@ -27,7 +27,7 @@ options:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [72, 84.0]
+    coordinate: [64, 84.0]
     rotation: 0
     state: enabled
 
