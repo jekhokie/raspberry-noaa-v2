@@ -27,82 +27,33 @@ options:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 11]
+    coordinate: [120, 72.0]
     rotation: 0
     state: enabled
 
 blocks:
-- name: bitstream_name
-  id: variable
-  parameters:
-    comment: ''
-    value: '"/home/pi/weather/meteor_LRPT_" + datetime.now().strftime("%d%m%Y_%H%M")
-      + ".s"'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [40, 564]
-    rotation: 0
-    state: enabled
-- name: clock_alpha
-  id: variable
-  parameters:
-    comment: ''
-    value: '0.002'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [344, 556]
-    rotation: 0
-    state: enabled
 - name: decim
   id: variable
   parameters:
     comment: ''
-    value: '8'
+    value: '10'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [168, 484]
+    coordinate: [448, 84.0]
     rotation: 180
     state: enabled
 - name: freq
   id: variable
   parameters:
     comment: ''
-    value: '137900000'
+    value: '137100000'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [344, 484]
-    rotation: 0
-    state: enabled
-- name: pll_alpha
-  id: variable
-  parameters:
-    comment: ''
-    value: '0.006'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [464, 556]
-    rotation: 0
-    state: enabled
-- name: samp_rate
-  id: variable
-  parameters:
-    comment: ''
-    value: samp_rate_rtlsdr/decim
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [240, 484]
+    coordinate: [528, 84.0]
     rotation: 0
     state: enabled
 - name: samp_rate_rtlsdr
@@ -114,68 +65,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [40, 484]
-    rotation: 0
-    state: enabled
-- name: sps
-  id: variable
-  parameters:
-    comment: ''
-    value: (samp_rate*1.0)/(symb_rate*1.0)
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [552, 484]
-    rotation: 0
-    state: enabled
-- name: symb_rate
-  id: variable
-  parameters:
-    comment: ''
-    value: '72000'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [448, 484]
-    rotation: 0
-    state: enabled
-- name: analog_agc_xx_0
-  id: analog_agc_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    gain: '1.0'
-    max_gain: '4000'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    rate: 1000e-4
-    reference: '0.5'
-    type: complex
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [520, 236.0]
-    rotation: 0
-    state: enabled
-- name: analog_rail_ff_0
-  id: analog_rail_ff
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    hi: '1'
-    lo: '-1'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1152, 452.0]
+    coordinate: [320, 84.0]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_float_0
@@ -191,148 +81,26 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1192, 216.0]
+    coordinate: [600, 312.0]
     rotation: 0
     state: true
-- name: blocks_delay_0
-  id: blocks_delay
+- name: blocks_wavfile_sink_0
+  id: blocks_wavfile_sink
   parameters:
     affinity: ''
     alias: ''
+    bits_per_sample: '8'
     comment: ''
-    delay: '1'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_ports: '1'
-    type: float
-    vlen: '1'
+    file: baseband.wav
+    nchan: '2'
+    samp_rate: int(samp_rate_rtlsdr/decim)
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1376, 244.0]
+    coordinate: [784, 308.0]
     rotation: 0
     state: true
-- name: blocks_file_sink_0
-  id: blocks_file_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    append: 'False'
-    comment: ''
-    file: bitstream_name
-    type: byte
-    unbuffered: 'False'
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1472, 444.0]
-    rotation: 0
-    state: enabled
-- name: blocks_float_to_char_0
-  id: blocks_float_to_char
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    scale: '127'
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1312, 460.0]
-    rotation: 0
-    state: enabled
-- name: blocks_float_to_complex_0
-  id: blocks_float_to_complex
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1504, 216.0]
-    rotation: 0
-    state: true
-- name: digital_clock_recovery_mm_xx_0
-  id: digital_clock_recovery_mm_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    gain_mu: clock_alpha
-    gain_omega: clock_alpha**2/4.0
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    mu: '0.5'
-    omega: sps
-    omega_relative_limit: '0.005'
-    type: complex
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [688, 428.0]
-    rotation: 0
-    state: enabled
-- name: digital_constellation_soft_decoder_cf_1
-  id: digital_constellation_soft_decoder_cf
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    constellation: digital.constellation_calcdist(([-1-1j, -1+1j, 1+1j, 1-1j]), ([0,
-      1, 3, 2]), 4, 1).base()
-    maxoutbuf: '0'
-    minoutbuf: '0'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [912, 460.0]
-    rotation: 0
-    state: enabled
-- name: digital_costas_loop_cc_0
-  id: digital_costas_loop_cc
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    order: '4'
-    use_snr: 'False'
-    w: pll_alpha
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [960, 232.0]
-    rotation: 0
-    state: enabled
-- name: import_0
-  id: import
-  parameters:
-    alias: ''
-    comment: ''
-    imports: from datetime import datetime
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [216, 564]
-    rotation: 0
-    state: enabled
 - name: rational_resampler_xxx_0
   id: rational_resampler_xxx
   parameters:
@@ -344,38 +112,15 @@ blocks:
     interp: '1'
     maxoutbuf: '0'
     minoutbuf: '0'
-    taps: ''
+    taps: '[]'
     type: ccc
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [320, 236.0]
+    coordinate: [408, 300.0]
     rotation: 0
-    state: enabled
-- name: root_raised_cosine_filter_0
-  id: root_raised_cosine_filter
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha: '0.6'
-    comment: ''
-    decim: '1'
-    gain: '1'
-    interp: '1'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    ntaps: '361'
-    samp_rate: samp_rate
-    sym_rate: symb_rate
-    type: fir_filter_ccf
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [696, 220.0]
-    rotation: 0
-    state: enabled
+    state: true
 - name: rtlsdr_source_0
   id: rtlsdr_source
   parameters:
@@ -730,23 +475,14 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 164.0]
+    coordinate: [120, 228.0]
     rotation: 0
     state: enabled
 
 connections:
-- [analog_agc_xx_0, '0', root_raised_cosine_filter_0, '0']
-- [analog_rail_ff_0, '0', blocks_float_to_char_0, '0']
-- [blocks_complex_to_float_0, '0', blocks_float_to_complex_0, '0']
-- [blocks_complex_to_float_0, '1', blocks_delay_0, '0']
-- [blocks_delay_0, '0', blocks_float_to_complex_0, '1']
-- [blocks_float_to_char_0, '0', blocks_file_sink_0, '0']
-- [blocks_float_to_complex_0, '0', digital_clock_recovery_mm_xx_0, '0']
-- [digital_clock_recovery_mm_xx_0, '0', digital_constellation_soft_decoder_cf_1, '0']
-- [digital_constellation_soft_decoder_cf_1, '0', analog_rail_ff_0, '0']
-- [digital_costas_loop_cc_0, '0', blocks_complex_to_float_0, '0']
-- [rational_resampler_xxx_0, '0', analog_agc_xx_0, '0']
-- [root_raised_cosine_filter_0, '0', digital_costas_loop_cc_0, '0']
+- [blocks_complex_to_float_0, '0', blocks_wavfile_sink_0, '0']
+- [blocks_complex_to_float_0, '1', blocks_wavfile_sink_0, '1']
+- [rational_resampler_xxx_0, '0', blocks_complex_to_float_0, '0']
 - [rtlsdr_source_0, '0', rational_resampler_xxx_0, '0']
 
 metadata:
