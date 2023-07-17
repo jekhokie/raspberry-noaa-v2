@@ -134,26 +134,41 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   fi
 
   # how are we about memory usage at this point ?
-  FREE_MEMORY=$(free -m | grep Mem | awk '{print $4}')
-  AVAILABLE_MEMORY=$(free -m | grep Mem | awk '{print $7}')
-  RAMFS_USAGE=$(du -sh ${RAMFS_AUDIO} | awk '{print $1}')
-  log "Free memory : ${FREE_MEMORY} ; Available memory : ${AVAILABLE_MEMORY} ; Total RAMFS usage : ${RAMFS_USAGE}" "INFO"
-
-  if [ "$DELETE_AUDIO" = true ]; then
-    log "Deleting audio files" "INFO"
-    rm "${RAMFS_AUDIO_BASE}.wav"
-  else
-    if [ "$in_mem" == "true" ]; then
-      log "Moving audio files out to the SD card" "INFO"
-      mv "${RAMFS_AUDIO_BASE}.wav" "${AUDIO_FILE_BASE}.wav"
-      rm "${RAMFS_AUDIO_BASE}.wav"
-    fi
-  fi
+  #FREE_MEMORY=$(free -m | grep Mem | awk '{print $4}')
+  #AVAILABLE_MEMORY=$(free -m | grep Mem | awk '{print $7}')
+  #RAMFS_USAGE=$(du -sh ${RAMFS_AUDIO} | awk '{print $1}')
+  #log "Free memory : ${FREE_MEMORY} ; Available memory : ${AVAILABLE_MEMORY} ; Total RAMFS usage : ${RAMFS_USAGE}" "INFO"
 
   log "Running MeteorDemod to demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
   $METEORDEMOD -m oqpsk -diff 1 -int 1 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
 
+  rm *.gcp *.bmp "${RAMFS_AUDIO_BASE}.wav"
+
   sleep 2
+
+  for i in spread_*.jpg
+  do
+    $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
+  done
+
+  for i in *.jpg; do
+    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "$i" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.jpg}-thumb-122-rectified.jpg" >> $NOAA_LOG 2>&1
+    mv "$i" "${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
+    mv "${i%.jpg}-thumb-122-rectified.jpg" "${IMAGE_THUMB_BASE}-${counter}-122-rectified.jpg"
+    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg "
+    ((counter++))
+  done
+
+  if [ "$DELETE_AUDIO" = true ]; then
+    log "Deleting audio files" "INFO"
+    rm "${RAMFS_AUDIO_BASE}.s"
+  else
+    if [ "$in_mem" == "true" ]; then
+      log "Moving audio files out to the SD card" "INFO"
+      mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
+    fi
+  fi
 else
   log "Decoding failed, either a bad pass/low SNR or a software problem" "ERROR"
 fi
@@ -170,7 +185,12 @@ if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 
   $METEORDEMOD -m oqpsk -diff 1 -int 1 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
   
-  rm *.gcp *.bmp
+  rm *.gcp *.bmp "${RAMFS_AUDIO_BASE}.wav"
+
+  for i in spread_*.jpg
+  do
+    $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
+  done
 
   for i in *.jpg; do
     ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "$i" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
@@ -183,13 +203,11 @@ if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 
   if [ "$DELETE_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
-    #rm "${RAMFS_AUDIO_BASE}.s"
-    rm "${RAMFS_AUDIO_BASE}.wav"
+    rm "${RAMFS_AUDIO_BASE}.s"
   else
     if [ "$in_mem" == "true" ]; then
       log "Moving audio files out to the SD card" "INFO"
-      #mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
-      mv "${RAMFS_AUDIO_BASE}.wav" "${AUDIO_FILE_BASE}.wav"
+      mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
     fi
   fi
 else
@@ -222,7 +240,6 @@ if [ "$METEOR_RECEIVER" == "satdump" ]; then
 else
   log "Receiver type '$METEOR_RECEIVER' not valid" "ERROR"
 fi
-
 
 #----------------------------------------------------------------------------------------------------------------
 
