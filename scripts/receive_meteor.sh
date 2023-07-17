@@ -122,9 +122,7 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   sleep 2
 
   log "Demodulation in progress (QPSK)" "INFO"
-  qpsk_file="${NOAA_HOME}/tmp/meteor/${FILENAME_BASE}.qpsk"
-  ${AUDIO_PROC_DIR}/meteor_demodulate_qpsk.sh "${RAMFS_AUDIO_BASE}.wav" "${qpsk_file}" >> $NOAA_LOG 2>&1
-
+  $METEOR_DEMOD -B -m oqpsk -r 80000 -o "${RAMFS_AUDIO_BASE}.s" "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
   sleep 2
 
   if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
@@ -152,42 +150,77 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     fi
   fi
 
-  sleep 2
-
   log "Running MeteorDemod to demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
-  $METEORDEMOD -t "$TLE_FILE" -f jpg -i "${qpsk_file}" >> $NOAA_LOG 2>&1
+  $METEORDEMOD -diff 1 -int 1 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
 
   sleep 2
 else
   log "Decoding failed, either a bad pass/low SNR or a software problem" "ERROR"
 fi
 
+if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
+
+  log "Starting gnuradio record" "INFO"
+  ${AUDIO_PROC_DIR}/meteor_record_gnuradio.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
+
+  log "Waiting for files to close" "INFO"
+  sleep 2
+
+  log "Running MeteorDemod to demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
+
+  $METEORDEMOD -diff 1 -int 1 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
+  
+  rm *.gcp *.bmp
+
+  for i in *.jpg; do
+    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "$i" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.jpg}-thumb-122-rectified.jpg" >> $NOAA_LOG 2>&1
+    mv "$i" "${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
+    mv "${i%.jpg}-thumb-122-rectified.jpg" "${IMAGE_THUMB_BASE}-${counter}-122-rectified.jpg"
+    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg "
+    ((counter++))
+  done
+
+  if [ "$DELETE_AUDIO" = true ]; then
+    log "Deleting audio files" "INFO"
+    rm "${RAMFS_AUDIO_BASE}.s"
+  else
+    if [ "$in_mem" == "true" ]; then
+      log "Moving audio files out to the SD card" "INFO"
+      mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
+    fi
+  fi
+else
+  log "Receiver type '$METEOR_RECEIVER' not valid" "ERROR"
+fi
+
 if [ "$METEOR_RECEIVER" == "satdump" ]; then
 
   log "Starting gnuradio record" "INFO"
-#  ${AUDIO_PROC_DIR}/meteor_record_gnuradio.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
   satdump live meteor_m2-x_lrpt . --source rtlsdr --samplerate 1.024e6 --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
   rm satdump.logs meteor_m2-x_lrpt.cadu dataset.json
 
   log "Waiting for files to close" "INFO"
   sleep 2
 
- # log "Running MeteorDemod to demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
+  log "Annotating images and creating thumbnails" "INFO"
+  counter=1
+  for i in MSU-MR/*.png; do
+    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "${i%.png}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.jpg}-thumb-122-rectified.jpg" >> $NOAA_LOG 2>&1
+    mv "${i%.png}.jpg" "${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
+    mv "${i%.jpg}-thumb-122-rectified.jpg" "${IMAGE_THUMB_BASE}-${counter}-122-rectified.jpg"
+    rm $i
+    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
+    ((counter++))
+  done
+  counter=1
+  rm -r MSU-MR
 
-#  $METEORDEMOD -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.s" >> $NOAA_LOG 2>&1
-
-#  if [ "$DELETE_AUDIO" = true ]; then
-#    log "Deleting audio files" "INFO"
-#    rm "${RAMFS_AUDIO_BASE}.s"
-#  else
-#    if [ "$in_mem" == "true" ]; then
-#      log "Moving audio files out to the SD card" "INFO"
-#      mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
-#    fi
-#  fi
 else
   log "Receiver type '$METEOR_RECEIVER' not valid" "ERROR"
 fi
+
 
 #----------------------------------------------------------------------------------------------------------------
 
@@ -225,37 +258,6 @@ if [[ "${PRODUCE_POLAR_DIRECTION}" == "true" ]]; then
                                   "direction"
   ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png"
 fi
-
-#rm *.gcp *.bmp
-
-#for i in spread_*.jpg
-#do
-#  $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
-#done
-
-sleep 2
-
-log "Annotating images and creating thumbnails" "INFO"
-counter=1
-#for i in *.jpg; do
-#  ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "$i" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-#  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.jpg}-thumb-122-rectified.jpg" >> $NOAA_LOG 2>&1
-#  mv "$i" "${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
-#  mv "${i%.jpg}-thumb-122-rectified.jpg" "${IMAGE_THUMB_BASE}-${counter}-122-rectified.jpg"
-#  push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg "
-#  ((counter++))
-#done
-for i in MSU-MR/*.png; do
-  ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "${i%.png}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.jpg}-thumb-122-rectified.jpg" >> $NOAA_LOG 2>&1
-  mv "${i%.png}.jpg" "${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
-  mv "${i%.jpg}-thumb-122-rectified.jpg" "${IMAGE_THUMB_BASE}-${counter}-122-rectified.jpg"
-  rm $i
-  push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
-  ((counter++))
-done
-counter=1
-rm -r MSU-MR
 
 # check if we got an image, and post-process if so
 
