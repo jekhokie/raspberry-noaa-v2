@@ -169,11 +169,7 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
       mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
     fi
   fi
-else
-  log "Decoding failed, either a bad pass/low SNR or a software problem" "ERROR"
-fi
-
-if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
+elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 
   log "Starting gnuradio record" "INFO"
   ${AUDIO_PROC_DIR}/meteor_record_gnuradio.sh $CAPTURE_TIME "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
@@ -210,11 +206,7 @@ if [ "$METEOR_RECEIVER" == "gnuradio" ]; then
       mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
     fi
   fi
-else
-  log "Receiver type '$METEOR_RECEIVER' not valid" "ERROR"
-fi
-
-if [ "$METEOR_RECEIVER" == "satdump" ]; then
+elif [ "$METEOR_RECEIVER" == "satdump" ]; then
 
   log "Starting gnuradio record" "INFO"
   satdump live meteor_m2-x_lrpt . --source rtlsdr --samplerate 1.024e6 --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
@@ -236,7 +228,6 @@ if [ "$METEOR_RECEIVER" == "satdump" ]; then
   done
   counter=1
   rm -r MSU-MR
-
 else
   log "Receiver type '$METEOR_RECEIVER' not valid" "ERROR"
 fi

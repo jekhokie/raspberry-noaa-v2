@@ -18,7 +18,7 @@ CAPTURE_TIME=$1
 OUT_FILE=$2
 
 # check that filename extension is bitstream (only type supported currently)
-if [ ${OUT_FILE: -2} != ".wav" ]; then
+if [ ${OUT_FILE: -4} != ".wav" ]; then
   log "Output file must end in .wav extension." "ERROR"
   exit 1
 fi
