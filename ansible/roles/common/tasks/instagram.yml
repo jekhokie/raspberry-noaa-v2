@@ -1,0 +1,11 @@
+---
+- name: drop template instagram config file
+  copy:
+    src: instagram.conf
+    dest: /home/pi/.instagram.conf
+    force: no
+    owner: pi
+    group: pi
+    mode: 0600
+  when: enable_instagram_push | bool
+...

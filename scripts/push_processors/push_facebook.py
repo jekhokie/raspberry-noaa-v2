@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
+import os
 import sys
 import facebook as fb
 
-access_token = "YOUR_API_KEY_GOES_HERE"
+ACCESS_TOKEN_KEY = os.environ['FACEBOOK_ACCESS_TOKEN']
 
-bot = fb.GraphAPI(access_token)
+bot = fb.GraphAPI(ACCESS_TOKEN_KEY)
 
 imgs_id = []
 annotation = sys.argv[1]

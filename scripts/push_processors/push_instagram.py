@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
+import os
 import sys
 import requests
 import json
 
-access_token = 'YOUR_API_KEY_GOES_HERE'
-instagram_account_id = 'YOUR_INSTAGRAM_BUSINESS_ID_GOES_HERE'
+ACCESS_TOKEN = os.environ['INSTAGRAM_ACCESS_TOKEN']
+ACCOUNT_ID = os.environ['INSTAGRAM_ACCOUNT_ID']
 
 graph_url = 'https://graph.facebook.com/v17.0/'
 
@@ -13,14 +14,14 @@ annotation = sys.argv[1]
 image = sys.argv[2]
 
 def publish_image():
-  #post_url = 'https://graph.facebook.com/v17.0/{}/media'.format(instagram_account_id)
-  post_url = f'https://graph.facebook.com/v17.0/{instagram_account_id}/media'
+  #post_url = 'https://graph.facebook.com/v17.0/{}/media'.format(ACCOUNT_ID)
+  post_url = f'https://graph.facebook.com/v17.0/{ACCOUNT_ID}/media'
   image_url = f'https://voxgalactica.com/images/{image}'
 
   payload = {
              'image_url': image_url,
              'caption': annotation,
-             'access_token': access_token,
+             'access_token': ACCESS_TOKEN,
             }
   r = requests.post(post_url, data = payload)
   print(r.text)
@@ -30,10 +31,10 @@ def publish_image():
 
   if 'id' in results:
     creation_id=results['id']
-    second_url = f'https://graph.facebook.com/v17.0/{instagram_account_id}/media_publish'
+    second_url = f'https://graph.facebook.com/v17.0/{ACCOUNT_ID}/media_publish'
     second_payload = {
                       'creation_id': creation_id,
-                      'access_token': access_token,
+                      'access_token': ACCESS_TOKEN,
                      }
     r = requests.post(second_url, data = second_payload)
     print(r.text)
