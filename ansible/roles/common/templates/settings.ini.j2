@@ -4,12 +4,6 @@ MercatorProjection=false
 SpreadImage=true
 AddRainOverlay=true
 JpgQuality=100
-ScanAngleM2=110.8
-RollM2=-2.9
-PitchM2=0.3
-YawM2=0
-#Onboard time offset in seconds
-TimeOffsetM2=0
 NightPassTreshold=20.0
 #Scale output image, it helps to reduce memory usage and generates smaller images
 ProjectionScale=1
@@ -17,11 +11,29 @@ CompositeProjectionScale=1
 CompositeAzimuthalEquidistantProjection=true
 CompositeMercatorProjection=false
 GenerateComposite123=true
-GenerateComposite125=false
+GenerateComposite125=true
 GenerateComposite221=true
 GenerateComposite68=true
 GenerateCompositeThermal=true
 GenerateComposite68Rain=true
+
+[METEOR-M-2]
+SatNameInTLE=METEOR-M 2
+ScanAngle=110.8
+Roll=-2.9
+Pitch=0.3
+Yaw=0
+# Onboard time offset in seconds
+TimeOffset=0
+
+[METEOR-M-2-3]
+SatNameInTLE=METEOR-M2 3
+ScanAngle=110.3
+Roll=0
+Pitch=0
+Yaw=0
+# Onboard time offset in seconds
+TimeOffset=0
 
 [Demodulator]
 #Increasing bandwidth allow the pll to lock faster on signal, while decreasing it$
@@ -29,7 +41,7 @@ CostasBandwidth=30
 #Increasing RRC filter order makes the filtering more accurate at the expense of $
 RRCFilterOrder=32
 #Waiting for lock makes smaller .S files and helps to discard the imperfect part $
-WaitForLock=1
+WaitForLock=0
 
 [Treatment]
 FillBlackLines=true
@@ -40,7 +52,7 @@ Place=top_center
 Color=#AD880C
 #Font height in pixels
 Size=80
-#Font lije width in pixels
+#Font line width in pixels
 Width=3
 #Text options: use '%date%' for date, '\n' for new line
 Text=
