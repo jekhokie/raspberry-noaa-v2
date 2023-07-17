@@ -350,7 +350,7 @@ if [ -f "${AUDIO_FILE_BASE}.wav" ]; then
     else
       convert +append "${IMAGE_FILE_BASE}-MCIR.jpg" "${IMAGE_FILE_BASE}-MCIR-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
     fi
-
+  fi
   # handle matrix pushing if enabled
   if [ "${ENABLE_MATRIX_PUSH}" == "true" ]; then
       # create push annotation specific to matrix

@@ -328,6 +328,46 @@ if [ "${ENABLE_TWITTER_PUSH}" == "true" ]; then
   ${PUSH_PROC_DIR}/push_twitter.sh "${twitter_push_annotation}" $push_file_list
 fi
 
+# handle facebook pushing if enabled
+if [ "${ENABLE_FACEBOOK_PUSH}" == "true" ]; then
+  facebook_push_annotation=""
+  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+    facebook_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
+  fi
+  facebook_push_annotation="${facebook_push_annotation}${SAT_NAME} ${capture_start}"
+  facebook_push_annotation="${facebook_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
+  facebook_push_annotation="${facebook_push_annotation} Sun Elevation: ${SUN_ELEV}°"
+  facebook_push_annotation="${facebook_push_annotation} Gain: ${gain}"
+  facebook_push_annotation="${facebook_push_annotation} | ${PASS_DIRECTION}"
+
+  log "Pushing image enhancements to Facebook" "INFO"
+  ${PUSH_PROC_DIR}/push_facebook.py "${facebook_push_annotation}" "${push_file_list}"
+fi
+
+# handle instagram pushing if enabled
+if [ "${ENABLE_INSTAGRAM_PUSH}" == "true" ]; then
+  instagram_push_annotation=""
+  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+    instagram_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
+  fi
+  instagram_push_annotation="${instagram_push_annotation}${SAT_NAME} ${capture_start}"
+  instagram_push_annotation="${instagram_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
+  instagram_push_annotation="${instagram_push_annotation} Sun Elevation: ${SUN_ELEV}°"
+  instagram_push_annotation="${instagram_push_annotation} Gain: ${gain}"
+  instagram_push_annotation="${instagram_push_annotation} | ${PASS_DIRECTION}"
+
+  convert "${IMAGE_FILE_BASE}-1-122-rectified.jpg" -resize "1080x1350>" -gravity center -background black -extent 1080x1350 "${IMAGE_FILE_BASE}-instagram.jpg"
+
+  log "Pushing image enhancements to Instagram" "INFO"
+  ${PUSH_PROC_DIR}/push_instagram.py "${instagram_push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg")
+  rm "${IMAGE_FILE_BASE}-instagram.jpg"
+  #if [[ "$daylight" -eq 1 ]]; then
+  #  convert +append "${IMAGE_FILE_BASE}-MSA.jpg" "${IMAGE_FILE_BASE}-MSA-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
+  #else
+  #  convert +append "${IMAGE_FILE_BASE}-MCIR.jpg" "${IMAGE_FILE_BASE}-MCIR-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
+  fi
+fi
+
 # handle matrix pushing if enabled
 if [ "${ENABLE_MATRIX_PUSH}" == "true" ]; then
   # create push annotation specific to matrix
