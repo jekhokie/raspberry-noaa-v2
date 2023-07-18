@@ -113,6 +113,9 @@ else
   die "  Something failed with the install - please inspect the logs above"
 fi
 
+log_running "Making Python scripts executable!"
+sudo chmod +x $NOAA_HOME/scripts/audio_processors/*.py
+
 #log_running "Installing SSL certificates..."
 #if [ $? -eq 0 ] && [ $ENABLE_TLS == "true" ] && [ -n $WEB_SERVER_NAME ]; then
 #  sudo certbot certonly --webroot -w /var/www/wx-new/public -d $WEB_SERVER_NAME
