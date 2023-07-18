@@ -50,7 +50,7 @@ class rtlsdr_m2_lrpt_rx(gr.top_block):
         # Variables
         ##################################################
         self.samp_rate_rtlsdr = samp_rate_rtlsdr = 1250000
-        self.freq = freq = 137100000
+        self.freq = freq = 137900000
         self.decim = decim = 10
         output_baseband = stream_name
 
