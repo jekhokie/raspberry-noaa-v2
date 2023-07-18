@@ -40,7 +40,7 @@ class airspy_r2_m2_lrpt_rx(gr.top_block):
         # Variables
         ##################################################
         self.samp_rate_airspy = samp_rate_airspy = 2.5e6
-        self.freq = freq = 137100000
+        self.freq = freq = 137900000
         self.decim = decim = 20
         output_baseband = stream_name
 
