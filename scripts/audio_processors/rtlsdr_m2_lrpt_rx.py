@@ -39,9 +39,10 @@ class rtlsdr_m2_lrpt_rx(gr.top_block):
 
         stream_name = sys.argv[1]
         gain = float(sys.argv[2])
-        freq_offset = int(sys.argv[3])
-        sdr_dev_id = sys.argv[4]
-        bias_t_string = sys.argv[5]
+        freq = int(sys.argv[3])
+        freq_offset = int(sys.argv[4])
+        sdr_dev_id = sys.argv[5]
+        bias_t_string = sys.argv[6]
         bias_t = "1"
         if not bias_t_string:
           bias_t = "0"
@@ -50,7 +51,7 @@ class rtlsdr_m2_lrpt_rx(gr.top_block):
         # Variables
         ##################################################
         self.samp_rate_rtlsdr = samp_rate_rtlsdr = 1250000
-        self.freq = freq = 137900000
+        self.freq = freq
         self.decim = decim = 10
         output_baseband = stream_name
 
