@@ -365,7 +365,6 @@ if [ "${ENABLE_INSTAGRAM_PUSH}" == "true" ]; then
   #  convert +append "${IMAGE_FILE_BASE}-MSA.jpg" "${IMAGE_FILE_BASE}-MSA-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
   #else
   #  convert +append "${IMAGE_FILE_BASE}-MCIR.jpg" "${IMAGE_FILE_BASE}-MCIR-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
-  fi
 fi
 
 # handle matrix pushing if enabled
