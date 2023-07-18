@@ -40,7 +40,7 @@ class hackrf_m2_lrpt_rx(gr.top_block):
         # Variables
         ##################################################
         self.samp_rate_hackrf = samp_rate_hackrf = 4e6
-        self.freq = freq = 137100000
+        self.freq = freq = 137900000
         self.decim = decim = 32
         output_baseband = stream_name
 
