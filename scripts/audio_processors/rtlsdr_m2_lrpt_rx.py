@@ -39,7 +39,7 @@ class rtlsdr_m2_lrpt_rx(gr.top_block):
 
         stream_name = sys.argv[1]
         gain = float(sys.argv[2])
-        freq = int(sys.argv[3])
+        freq = int(float(sys.argv[3])*1e6)
         freq_offset = int(sys.argv[4])
         sdr_dev_id = sys.argv[5]
         bias_t_string = sys.argv[6]
