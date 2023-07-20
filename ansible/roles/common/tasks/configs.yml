@@ -131,7 +131,7 @@
   copy:
     src: annotation.html.j2_file
     dest: ~pi/raspberry-noaa-v2/config/annotation/annotation.html.j2
-    force: no
+    force: yes
     owner: pi
     group: pi
     mode: 0600
@@ -140,7 +140,7 @@
   copy:
     src: raspberry-noaa-v2-logo.png
     dest: ~pi/raspberry-noaa-v2/config/annotation/raspberry-noaa-v2-logo.png
-    force: no
+    force: yes
     owner: pi
     group: pi
     mode: 0600
