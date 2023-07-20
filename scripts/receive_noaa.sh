@@ -99,6 +99,8 @@ fi
 # wait for files to close
 sleep 5
 
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 if [ -f "${AUDIO_FILE_BASE}.wav" ]; then
   #generate outputs
   spectrogram=0
@@ -399,6 +401,7 @@ if [ -f "${AUDIO_FILE_BASE}.wav" ]; then
 else
   log "Did not receive any audio - stopping processing and not posting anything" "ERROR"
 fi
+
 # calculate and report total time for capture
 TIMER_END=$(date '+%s')
 DIFF=$(($TIMER_END - $TIMER_START))

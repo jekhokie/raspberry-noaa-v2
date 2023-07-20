@@ -209,8 +209,8 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 elif [ "$METEOR_RECEIVER" == "satdump" ]; then
 
   log "Starting gnuradio record" "INFO"
-  satdump live meteor_m2-x_lrpt . --source rtlsdr --samplerate 1.024e6 --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
-  rm satdump.logs meteor_m2-x_lrpt.cadu dataset.json
+  satdump live meteor_m2-x_lrpt_80k . --source rtlsdr --samplerate 1.024e6 --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+  rm satdump.logs meteor_m2-x_lrpt_80k.cadu dataset.json
 
   log "Waiting for files to close" "INFO"
   sleep 2
@@ -232,178 +232,180 @@ else
   log "Receiver type '$METEOR_RECEIVER' not valid" "ERROR"
 fi
 
-#----------------------------------------------------------------------------------------------------------------
-
-if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
-  log "Producing polar graph of azimuth and elevation for pass" "INFO"
-  polar_az_el=1
-  epoch_end=$((EPOCH_START + CAPTURE_TIME))
-  ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
-                                  "${TLE_FILE}" \
-                                  $EPOCH_START \
-                                  $epoch_end \
-                                  $LAT \
-                                  $LON \
-                                  $SAT_MIN_ELEV \
-                                  $PASS_DIRECTION \
-                                  "${IMAGE_FILE_BASE}-polar-azel.jpg" \
-                                  "azel"
-  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-azel.jpg" "${IMAGE_THUMB_BASE}-polar-azel.jpg"
-fi
-
-polar_direction=0
-if [[ "${PRODUCE_POLAR_DIRECTION}" == "true" ]]; then
-  log "Producing polar graph of direction for pass" "INFO"
-  polar_direction=1
-  epoch_end=$((EPOCH_START + CAPTURE_TIME))
-  ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
-                                  "${TLE_FILE}" \
-                                  $EPOCH_START \
-                                  $epoch_end \
-                                  $LAT \
-                                  $LON \
-                                  $SAT_MIN_ELEV \
-                                  $PASS_DIRECTION \
-                                  "${IMAGE_FILE_BASE}-polar-direction.png" \
-                                  "direction"
-  ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png"
-fi
-
-# check if we got an image, and post-process if so
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
-  log "I got a successful jpg images" "INFO"
-
-  # insert or replace in case there was already an insert due to the spectrogram creation
-  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, has_polar_direction, gain) \
-                                       VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $polar_direction, $GAIN);"
-
-  pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
-  $SQLITE3 $DB_FILE "UPDATE predict_passes \
-                     SET is_active = 0 \
-                     WHERE (predict_passes.pass_start) \
-                     IN ( \
-                       SELECT predict_passes.pass_start \
-                       FROM predict_passes \
-                       INNER JOIN decoded_passes \
-                       ON predict_passes.pass_start = decoded_passes.pass_start \
-                       WHERE decoded_passes.id = $pass_id \
-                     );"
-else
-  log "Did not get a successful .bmp image - stopping processing" "ERROR"
-fi
-
-# handle Slack pushing if enabled
-if [ "${ENABLE_SLACK_PUSH}" == "true" ]; then
-  slack_push_annotation=""
-  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-    slack_push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n "
+  if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
+    log "Producing polar graph of azimuth and elevation for pass" "INFO"
+    polar_az_el=1
+    epoch_end=$((EPOCH_START + CAPTURE_TIME))
+    ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
+                                    "${TLE_FILE}" \
+                                    $EPOCH_START \
+                                    $epoch_end \
+                                    $LAT \
+                                    $LON \
+                                    $SAT_MIN_ELEV \
+                                    $PASS_DIRECTION \
+                                    "${IMAGE_FILE_BASE}-polar-azel.jpg" \
+                                    "azel"
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-azel.jpg" "${IMAGE_THUMB_BASE}-polar-azel.jpg"
   fi
-  slack_push_annotation="${slack_push_annotation}${SAT_NAME} ${capture_start}\n"
-  slack_push_annotation="${slack_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}\n"
-  slack_push_annotation="${slack_push_annotation} Sun Elevation: ${SUN_ELEV}°\n"
-  slack_push_annotation="${slack_push_annotation} Gain: ${gain} | ${PASS_DIRECTION}\n"
 
-  pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
-  slack_push_annotation="${slack_push_annotation} <${SLACK_LINK_URL}?pass_id=${pass_id}>\n";
-
-  ${PUSH_PROC_DIR}/push_slack.sh "${slack_push_annotation}" $push_file_list
-fi
-
-# handle twitter pushing if enabled
-if [ "${ENABLE_TWITTER_PUSH}" == "true" ]; then
-  # create push annotation specific to twitter
-  # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
-  twitter_push_annotation=""
-  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-    twitter_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
+  polar_direction=0
+  if [[ "${PRODUCE_POLAR_DIRECTION}" == "true" ]]; then
+    log "Producing polar graph of direction for pass" "INFO"
+    polar_direction=1
+    epoch_end=$((EPOCH_START + CAPTURE_TIME))
+    ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
+                                    "${TLE_FILE}" \
+                                    $EPOCH_START \
+                                    $epoch_end \
+                                    $LAT \
+                                    $LON \
+                                    $SAT_MIN_ELEV \
+                                    $PASS_DIRECTION \
+                                    "${IMAGE_FILE_BASE}-polar-direction.png" \
+                                    "direction"
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png"
   fi
-  twitter_push_annotation="${twitter_push_annotation}${SAT_NAME} ${capture_start}"
-  twitter_push_annotation="${twitter_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
-  twitter_push_annotation="${twitter_push_annotation} Sun Elevation: ${SUN_ELEV}°"
-  twitter_push_annotation="${twitter_push_annotation} Gain: ${gain}"
-  twitter_push_annotation="${twitter_push_annotation} | ${PASS_DIRECTION}"
 
-  log "Pushing image enhancements to Twitter" "INFO"
-  ${PUSH_PROC_DIR}/push_twitter.sh "${twitter_push_annotation}" $push_file_list
-fi
+  # check if we got an image, and post-process if so
 
-# handle facebook pushing if enabled
-if [ "${ENABLE_FACEBOOK_PUSH}" == "true" ]; then
-  facebook_push_annotation=""
-  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-    facebook_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
-  fi
-  facebook_push_annotation="${facebook_push_annotation}${SAT_NAME} ${capture_start}"
-  facebook_push_annotation="${facebook_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
-  facebook_push_annotation="${facebook_push_annotation} Sun Elevation: ${SUN_ELEV}°"
-  facebook_push_annotation="${facebook_push_annotation} Gain: ${gain}"
-  facebook_push_annotation="${facebook_push_annotation} | ${PASS_DIRECTION}"
-
-  log "Pushing image enhancements to Facebook" "INFO"
-  ${PUSH_PROC_DIR}/push_facebook.py "${facebook_push_annotation}" "${push_file_list}"
-fi
-
-# handle instagram pushing if enabled
-if [ "${ENABLE_INSTAGRAM_PUSH}" == "true" ]; then
-  instagram_push_annotation=""
-  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-    instagram_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
-  fi
-  instagram_push_annotation="${instagram_push_annotation}${SAT_NAME} ${capture_start}"
-  instagram_push_annotation="${instagram_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
-  instagram_push_annotation="${instagram_push_annotation} Sun Elevation: ${SUN_ELEV}°"
-  instagram_push_annotation="${instagram_push_annotation} Gain: ${gain}"
-  instagram_push_annotation="${instagram_push_annotation} | ${PASS_DIRECTION}"
-
-  convert "${IMAGE_FILE_BASE}-1-122-rectified.jpg" -resize "1080x1350>" -gravity center -background black -extent 1080x1350 "${IMAGE_FILE_BASE}-instagram.jpg"
-
-  log "Pushing image enhancements to Instagram" "INFO"
-  ${PUSH_PROC_DIR}/push_instagram.py "${instagram_push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg")
-  rm "${IMAGE_FILE_BASE}-instagram.jpg"
-  #if [[ "$daylight" -eq 1 ]]; then
-  #  convert +append "${IMAGE_FILE_BASE}-MSA.jpg" "${IMAGE_FILE_BASE}-MSA-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
-  #else
-  #  convert +append "${IMAGE_FILE_BASE}-MCIR.jpg" "${IMAGE_FILE_BASE}-MCIR-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
-fi
-
-# handle matrix pushing if enabled
-if [ "${ENABLE_MATRIX_PUSH}" == "true" ]; then
-  # create push annotation specific to matrix
-  # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
-  matrix_push_annotation=""
-  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-      matrix_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
-  fi
-  matrix_push_annotation="${matrix_push_annotation}${SAT_NAME} ${capture_start}"
-  matrix_push_annotation="${matrix_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
-  matrix_push_annotation="${matrix_push_annotation} Sun Elevation: ${SUN_ELEV}°"
-  matrix_push_annotation="${matrix_push_annotation} Gain: ${gain}"
-  matrix_push_annotation="${matrix_push_annotation} | ${PASS_DIRECTION}"
-
-  log "Pushing image enhancements to Matrix" "INFO"
-  ${PUSH_PROC_DIR}/push_matrix.sh "${matrix_push_annotation}" $push_file_list
-fi
-
-if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
-  log "Emailing images" "INFO"
   if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
-    for i in $push_file_list
-    do
-      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
-      sleep 2
-    done
-  fi
-fi
+    log "I got a successful jpg images" "INFO"
 
-if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
-  log "Pushing images to Discord" "INFO"
-  if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
-    for i in $push_file_list
-    do
-      ${PUSH_PROC_DIR}/push_discord.sh "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
-      sleep 2
-    done
+    # insert or replace in case there was already an insert due to the spectrogram creation
+    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, has_polar_direction, gain) \
+                                        VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $polar_direction, $GAIN);"
+
+    pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
+    $SQLITE3 $DB_FILE "UPDATE predict_passes \
+                      SET is_active = 0 \
+                      WHERE (predict_passes.pass_start) \
+                      IN ( \
+                        SELECT predict_passes.pass_start \
+                        FROM predict_passes \
+                        INNER JOIN decoded_passes \
+                        ON predict_passes.pass_start = decoded_passes.pass_start \
+                        WHERE decoded_passes.id = $pass_id \
+                      );"
+  else
+    log "Did not get a successful .bmp image - stopping processing" "ERROR"
+  fi
+
+  # handle Slack pushing if enabled
+  if [ "${ENABLE_SLACK_PUSH}" == "true" ]; then
+    slack_push_annotation=""
+    if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+      slack_push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n "
+    fi
+    slack_push_annotation="${slack_push_annotation}${SAT_NAME} ${capture_start}\n"
+    slack_push_annotation="${slack_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}\n"
+    slack_push_annotation="${slack_push_annotation} Sun Elevation: ${SUN_ELEV}°\n"
+    slack_push_annotation="${slack_push_annotation} Gain: ${gain} | ${PASS_DIRECTION}\n"
+
+    pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
+    slack_push_annotation="${slack_push_annotation} <${SLACK_LINK_URL}?pass_id=${pass_id}>\n";
+
+    ${PUSH_PROC_DIR}/push_slack.sh "${slack_push_annotation}" $push_file_list
+  fi
+
+  # handle twitter pushing if enabled
+  if [ "${ENABLE_TWITTER_PUSH}" == "true" ]; then
+    # create push annotation specific to twitter
+    # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
+    twitter_push_annotation=""
+    if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+      twitter_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
+    fi
+    twitter_push_annotation="${twitter_push_annotation}${SAT_NAME} ${capture_start}"
+    twitter_push_annotation="${twitter_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
+    twitter_push_annotation="${twitter_push_annotation} Sun Elevation: ${SUN_ELEV}°"
+    twitter_push_annotation="${twitter_push_annotation} Gain: ${gain}"
+    twitter_push_annotation="${twitter_push_annotation} | ${PASS_DIRECTION}"
+
+    log "Pushing image enhancements to Twitter" "INFO"
+    ${PUSH_PROC_DIR}/push_twitter.sh "${twitter_push_annotation}" $push_file_list
+  fi
+
+  # handle facebook pushing if enabled
+  if [ "${ENABLE_FACEBOOK_PUSH}" == "true" ]; then
+    facebook_push_annotation=""
+    if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+      facebook_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
+    fi
+    facebook_push_annotation="${facebook_push_annotation}${SAT_NAME} ${capture_start}"
+    facebook_push_annotation="${facebook_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
+    facebook_push_annotation="${facebook_push_annotation} Sun Elevation: ${SUN_ELEV}°"
+    facebook_push_annotation="${facebook_push_annotation} Gain: ${gain}"
+    facebook_push_annotation="${facebook_push_annotation} | ${PASS_DIRECTION}"
+
+    log "Pushing image enhancements to Facebook" "INFO"
+    ${PUSH_PROC_DIR}/push_facebook.py "${facebook_push_annotation}" "${push_file_list}"
+  fi
+
+  # handle instagram pushing if enabled
+  if [ "${ENABLE_INSTAGRAM_PUSH}" == "true" ]; then
+    instagram_push_annotation=""
+    if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+      instagram_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
+    fi
+    instagram_push_annotation="${instagram_push_annotation}${SAT_NAME} ${capture_start}"
+    instagram_push_annotation="${instagram_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
+    instagram_push_annotation="${instagram_push_annotation} Sun Elevation: ${SUN_ELEV}°"
+    instagram_push_annotation="${instagram_push_annotation} Gain: ${gain}"
+    instagram_push_annotation="${instagram_push_annotation} | ${PASS_DIRECTION}"
+
+    convert "${IMAGE_FILE_BASE}-1-122-rectified.jpg" -resize "1080x1350>" -gravity center -background black -extent 1080x1350 "${IMAGE_FILE_BASE}-instagram.jpg"
+
+    log "Pushing image enhancements to Instagram" "INFO"
+    ${PUSH_PROC_DIR}/push_instagram.py "${instagram_push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg")
+    rm "${IMAGE_FILE_BASE}-instagram.jpg"
+    #if [[ "$daylight" -eq 1 ]]; then
+    #  convert +append "${IMAGE_FILE_BASE}-MSA.jpg" "${IMAGE_FILE_BASE}-MSA-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
+    #else
+    #  convert +append "${IMAGE_FILE_BASE}-MCIR.jpg" "${IMAGE_FILE_BASE}-MCIR-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
+  fi
+
+  # handle matrix pushing if enabled
+  if [ "${ENABLE_MATRIX_PUSH}" == "true" ]; then
+    # create push annotation specific to matrix
+    # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
+    matrix_push_annotation=""
+    if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+        matrix_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
+    fi
+    matrix_push_annotation="${matrix_push_annotation}${SAT_NAME} ${capture_start}"
+    matrix_push_annotation="${matrix_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
+    matrix_push_annotation="${matrix_push_annotation} Sun Elevation: ${SUN_ELEV}°"
+    matrix_push_annotation="${matrix_push_annotation} Gain: ${gain}"
+    matrix_push_annotation="${matrix_push_annotation} | ${PASS_DIRECTION}"
+
+    log "Pushing image enhancements to Matrix" "INFO"
+    ${PUSH_PROC_DIR}/push_matrix.sh "${matrix_push_annotation}" $push_file_list
+  fi
+
+  if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
+    log "Emailing images" "INFO"
+    if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
+      for i in $push_file_list
+      do
+        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+        sleep 2
+      done
+    fi
+  fi
+
+  if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
+    log "Pushing images to Discord" "INFO"
+    if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
+      for i in $push_file_list
+      do
+        ${PUSH_PROC_DIR}/push_discord.sh "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+        sleep 2
+      done
+    fi
   fi
 fi
 
