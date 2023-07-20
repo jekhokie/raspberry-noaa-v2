@@ -5,8 +5,7 @@
 {% endblock %}
 
 {% block pre_body %}
-  <br><center><h1><strong>Mihajlo's Satellite Receiver</strong></h1></center><br>
-
+  <br><center><h1><strong>NOAA APT and Meteor LRPT Satellite Receiver</strong></h1></center><br>
   <div id="instruments" class="flex-container">
     {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
       <div id="satvis" class="d-none d-sm-block flex-child">
@@ -20,14 +19,14 @@
       </div>
     {% endif %}
   </div>
-<!--  <br><br><center><h1><strong>Artemis 1 Livestream from the Moon</strong></h1></center><br> -->
-<!--  <center><div style="position: relative; width: 100%; padding-bottom: 56.25%;"><iframe src="https://www.youtube.com/embed/GFbVREEtc1Y?autoplay=1&mute=1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div></center> -->
-  <br><br><center><h1><strong>Satellite Analysis & Lightning Strikes For Balkans</strong></h1></center><br>
-  <div><img src="https://hidmet.gov.rs/data/analiza/SATREP/satrep-evropa.png" style="width: 555px; max-width: 100%; aspect-ratio: 1/1; display: inline; float: left;"></img>
-  <iframe src="https://map.blitzortung.org/index.php?interactive=1&NavigationControl=1&FullScreenControl=1&Cookies=0&InfoDiv=1&MenuButtonDiv=1&ScaleControl=0&LinksCheckboxChecked=1&LinksRangeValue=10&MapStyle=3&MapStyleRangeValue=4&Advertisment=0#9/43.316238/21.85834" style="width: 555px; max-width: 100%; aspect-ratio: 1/1; display: inline; float: left;"></iframe></div><br>
-
 {% endblock %}
+
 {% block body %}
+<center>
+      <meta http-equiv="refresh" content="300" url="https://www.timeanddate.com/scripts/sunmap.php">
+      <img src="https://www.timeanddate.com/scripts/sunmap.php?iso=&amp;earth=1" width="100%" height="100%">
+      <meta img="sunmap.php" src-equiv="refresh" content="300">
+    </center>
   <table class="table table-bordered table-sm table-striped" id="passes">
     <thead class="thead-dark">
       <tr class="text-center">
@@ -90,18 +89,11 @@
   </table>
 
   <br>
-  <center><h1><strong>Live ISS View</strong></h1></center>
+  <center><h4>Coronal Mass Ejection Activity</h4>
   <br>
-  <center><div style="position: relative; width: 100%; padding-bottom: 56.25%;"><iframe src="https://ustream.tv/embed/17074538" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-color: transparent; border: none; object-fit: cover; overflow: hidden" allowfullscreen="" title="Live Stream Feed"></iframe></center>
-  <br>
-  <br>
-
-  <center><h4><strong>Coronal Mass Ejection Activity & Sunspots</strong></h4>
-  <br>
-<!--   <img src="https://sohowww.nascom.nasa.gov/data/LATEST/current_c2.gif" height=350 style="margin-right=2em; margin-bottom:2em;"> -->
-<!--   <img src="https://sohowww.nascom.nasa.gov/data/LATEST/current_c3.gif" height=350 style="margin-right=2em; margin-bottom:2em;"> -->
-<!--   <img src="https://stereo.gsfc.nasa.gov/beacon/latest_512/ahead_cor2_latest.jpg" height=350 style="margin-right=2em; margin-bottom:2em;"> -->
-  <img src="https://soho.nascom.nasa.gov/data/synoptic/sunspots_earth/mdi_sunspots_1024.jpg" style="margin-right=2em; margin-bottom:2em; max-width:100%; height:auto;"></center>
+  <img src="https://sohowww.nascom.nasa.gov/data/LATEST/current_c2.gif" height=300 style="margin-right=2em; margin-bottom:2em;">
+  <img src="https://sohowww.nascom.nasa.gov/data/LATEST/current_c3.gif" height=300 style="margin-right=2em; margin-bottom:2em;">
+  <img src="https://stereo.gsfc.nasa.gov/beacon/latest_512/ahead_cor2_latest.jpg" height=300 style="margin-right=2em; margin-bottom:2em;"></center>
 
 {% endblock %}
 
