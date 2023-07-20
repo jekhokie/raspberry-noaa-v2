@@ -34,6 +34,9 @@ fi
 if [ "$OBJ_NAME" == "METEOR-M 2" ]; then
   SAT_MIN_ELEV=$METEOR_M2_SAT_MIN_ELEV
 fi
+if [ "$OBJ_NAME" == "METEOR-M2 3" ]; then
+  SAT_MIN_ELEV=$METEOR_M2_SAT_MIN_ELEV
+fi
 
 # come up with prediction start/end timings for pass
 predict_start=$($PREDICT -t $TLE_FILE -p "${OBJ_NAME}" "${START_TIME_MS}" | head -1)

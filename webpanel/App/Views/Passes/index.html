@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block pre_body %}
+  <br><center><h1><strong>NOAA APT and Meteor LRPT Satellite Receiver</strong></h1></center><br>
   <div id="instruments" class="flex-container">
     {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
       <div id="satvis" class="d-none d-sm-block flex-child">
@@ -21,6 +22,11 @@
 {% endblock %}
 
 {% block body %}
+<center>
+      <meta http-equiv="refresh" content="300" url="https://www.timeanddate.com/scripts/sunmap.php">
+      <img src="https://www.timeanddate.com/scripts/sunmap.php?iso=&amp;earth=1" width="100%" height="100%">
+      <meta img="sunmap.php" src-equiv="refresh" content="300">
+    </center>
   <table class="table table-bordered table-sm table-striped" id="passes">
     <thead class="thead-dark">
       <tr class="text-center">
@@ -85,9 +91,9 @@
   <br>
   <center><h4>Coronal Mass Ejection Activity</h4>
   <br>
-  <img src="https://sohowww.nascom.nasa.gov/data/LATEST/current_c2.gif" height=350 style="margin-right=2em; margin-bottom:2em;">
-  <img src="https://sohowww.nascom.nasa.gov/data/LATEST/current_c3.gif" height=350 style="margin-right=2em; margin-bottom:2em;">
-  <img src="https://stereo.gsfc.nasa.gov/beacon/latest_512/ahead_cor2_latest.jpg" height=350 style="margin-right=2em; margin-bottom:2em;"></center>
+  <img src="https://sohowww.nascom.nasa.gov/data/LATEST/current_c2.gif" height=300 style="margin-right=2em; margin-bottom:2em;">
+  <img src="https://sohowww.nascom.nasa.gov/data/LATEST/current_c3.gif" height=300 style="margin-right=2em; margin-bottom:2em;">
+  <img src="https://stereo.gsfc.nasa.gov/beacon/latest_512/ahead_cor2_latest.jpg" height=300 style="margin-right=2em; margin-bottom:2em;"></center>
 
 {% endblock %}
 

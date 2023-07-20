@@ -1,5 +1,7 @@
 server {
   listen {{ web_tls_port }};
+  # Enabling IPv6 support making the server accessible from the internet
+  listen [::]:{{ web_tls_port }};
 
   ssl on;
   ssl_certificate {{ tls_cert }};

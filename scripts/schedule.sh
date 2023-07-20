@@ -17,6 +17,7 @@
 # TLE data files
 WEATHER_TXT="${NOAA_HOME}/tmp/weather.txt"
 AMATEUR_TXT="${NOAA_HOME}/tmp/amateur.txt"
+ACTIVE_TXT="${NOAA_HOME}/tmp/active.txt"
 TLE_OUTPUT="${NOAA_HOME}/tmp/orbit.tle"
 
 # check if TLE file should be updated
@@ -62,6 +63,7 @@ if [ "${update_tle}" == "1" ]; then
   log "Downloading new TLE files from source" "INFO"
   wget -r "http://${tle_addr}/NORAD/elements/weather.txt" --no-check-certificate -O "${WEATHER_TXT}" >> $NOAA_LOG 2>&1
   wget -r "http://${tle_addr}/NORAD/elements/amateur.txt" --no-check-certificate -O "${AMATEUR_TXT}" >> $NOAA_LOG 2>&1
+  wget -r "http://${tle_addr}/NORAD/elements/active.txt" --no-check-certificate -O "${ACTIVE_TXT}" >> $NOAA_LOG 2>&1
 
   # create tle files for scheduling
   #   note: it's really unfortunate but a directory structure any deeper than 'tmp' in the
@@ -73,6 +75,7 @@ if [ "${update_tle}" == "1" ]; then
   grep "NOAA 18" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
   grep "NOAA 19" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
   grep "METEOR-M 2" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
+  grep "METEOR-M2 3" $WEATHER_TXT -A 2 >> $TLE_OUTPUT  #To be changed to new name when the satellite gets renamed
 elif [ ! -f $WEATHER_TXT ] || [ ! -f $AMATEUR_TXT ] || [ ! -f $TLE_OUTPUT ]; then
   log "TLE update not specified '-t' but no TLE files present - please re-run with '-t'" "INFO"
   exit 1
@@ -135,8 +138,9 @@ if [ "$NOAA_19_SCHEDULE" == "true" ]; then
   $NOAA_HOME/scripts/schedule_captures.sh "NOAA 19" "receive_noaa.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
 fi
 if [ "$METEOR_M2_SCHEDULE" == "true" ]; then
-  log "Scheduling Meteor-M 2 captures..." "INFO"
-  $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M 2" "receive_meteor.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
+  log "Scheduling Meteor-M2 3 captures..." "INFO"
+  #$NOAA_HOME/scripts/schedule_captures.sh "METEOR-M 2" "receive_meteor.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
+  $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M2 3" "receive_meteor.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
 fi
 log "Done scheduling jobs!" "INFO"
 

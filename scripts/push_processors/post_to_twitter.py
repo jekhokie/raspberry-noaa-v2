@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 #
 # Purpose: Send a list of images and corresponding annotation to a Twitter feed.
 #
@@ -21,10 +21,13 @@ CONSUMER_SECRET = os.environ['TWITTER_CONSUMER_API_KEY_SECRET']
 ACCESS_TOKEN_KEY = os.environ['TWITTER_ACCESS_TOKEN']
 ACCESS_TOKEN_SECRET = os.environ['TWITTER_ACCESS_TOKEN_SECRET']
 
+SerbianFlag = u'\U0001F1F7' + u'\U0001F1F8'
+
 # create instance of tweepy for pushing
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET)
 api = tweepy.API(auth)
+client = tweepy.Client(consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET, access_token=ACCESS_TOKEN_KEY, access_token_secret=ACCESS_TOKEN_SECRET)
 
 # parse input annotation and images
 annotation = sys.argv[1]
@@ -46,4 +49,4 @@ for image_group in images:
     image_links.append(res.media_id)
 
   # create post
-  api.update_status(status=annotation, media_ids=image_links)
+  client.create_tweet(text=SerbianFlag + ' ' + annotation + '\n\n#NOAA #NOAA15 #NOAA18 #NOAA19 #MeteorM2_3 #weather #weathersats #APT #LRPT #wxtoimg #MeteorDemod #rtlsdr #gpredict #raspberrypi #serbia #serbiasat #ISS', media_ids=image_links)

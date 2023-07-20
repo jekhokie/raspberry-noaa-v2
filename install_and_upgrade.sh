@@ -85,6 +85,9 @@ if [ $? -ne 0 ]; then
   fi
 fi
 
+log_running "Setting ~/.config/meteordemod ownership to the current user"
+sudo chown $USER:$USER -R ~/.config/meteordemod
+
 log_running "Checking for configuration settings..."
 if [ -f config/settings.yml ]; then
   log_done "  Settings file ready!"
@@ -110,6 +113,22 @@ fi
 
 # source some env vars
 . "$HOME/.noaa-v2.conf"
+
+log_running "Installing certbot for SSL certificates signed by the Let's Encrypt..."
+if [ $? -eq 0 ]; then
+  sudo apt install certbot
+else
+  die "  Something failed with the install - please inspect the logs above"
+fi
+
+#log_running "Installing SSL certificates..."
+#if [ $? -eq 0 ] && [ $ENABLE_TLS == "true" ] && [ -n $WEB_SERVER_NAME ]; then
+#  sudo certbot certonly --webroot -w /var/www/wx-new/public -d $WEB_SERVER_NAME
+#  log_running "Restarting NGINX web server..."
+#  sudo systemctl restart nginx
+#else
+#  die "  Something failed with the install - please inspect the logs above"
+#fi
 
 # TLE data files
 # NOTE: This should be DRY-ed up with the scripts/schedule.sh script

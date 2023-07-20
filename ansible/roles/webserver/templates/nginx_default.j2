@@ -1,5 +1,8 @@
 server {
   listen {{ web_port }};
+ # Disabling IPv6 support for HTTP leaving only HTTPS accessible via IPv6 from the internet
+ # listen [::]:{{ web_port }};
+  
   root {{ web_home }}/public/;
   index index.php index.html index.htm index.nginx-debian.html;
   autoindex on;

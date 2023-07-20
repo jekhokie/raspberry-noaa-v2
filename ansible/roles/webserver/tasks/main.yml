@@ -14,6 +14,26 @@
     state: present
   when: raspbian_version.stdout == 'buster'
 
+- name: php repository gpg key (buster only)
+  become: yes
+  apt_key:
+    url: "https://packages.sury.org/php/apt.gpg"
+    state: present
+  when: raspbian_version.stdout == 'buster'
+
+- name: php repository (buster only)
+  become: yes
+  apt_repository:
+    repo: deb https://packages.sury.org/php/ buster main
+    filename: php7.list
+    state: present
+  when: raspbian_version.stdout == 'buster'
+
+- name: install the package, force upgrade
+  pip: 
+    name: numpy
+    extra_args: --upgrade
+
 - name: install nginx
   become: yes
   apt:
@@ -136,19 +156,19 @@
     group: www-data
     mode: 0770
 
-- name: check if self-signed certificate is expired
-  command: openssl x509 -checkend 86400 -noout -in /etc/ssl/certs/local_server.crt
-  register: cert_valid
-  failed_when: no
-  changed_when: no
-  when: enable_tls|bool
+#- name: check if self-signed certificate is expired
+#  command: openssl x509 -checkend 86400 -noout -in /etc/ssl/certs/local_server.crt
+#  register: cert_valid
+#  failed_when: no
+#  changed_when: no
+#  when: enable_tls|bool
 
-- name: create self-signed certificate
-  become: yes
-  command: >
-    openssl req -x509 -nodes -subj '/CN={{ web_server_name }}' -days {{ cert_valid_days }}
-    -newkey rsa:4096 -sha256 -keyout {{ tls_cert_key }} -out {{ tls_cert }}
-  when: enable_tls|bool and cert_valid.rc != 0
+#- name: create self-signed certificate
+#  become: yes
+#  command: >
+#    openssl req -x509 -nodes -subj '/CN={{ web_server_name }}' -days {{ cert_valid_days }}
+#    -newkey rsa:4096 -sha256 -keyout {{ tls_cert_key }} -out {{ tls_cert }}
+#  when: enable_tls|bool and cert_valid.rc != 0
 
 - name: nginx tls config file
   become: yes
