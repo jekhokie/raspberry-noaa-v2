@@ -33,7 +33,7 @@ test_freq_offset: 0
 receiver_type: 'rtlsdr'
 
 noaa_receiver: 'gnuradio'
-meteor_receiver: 'gnuradio'
+meteor_receiver: 'satdump'
 
 # whether to schedule specific orbiting objects for capture
 #   <satellite_name>_schedule - whether to schedule captures for the satellite

@@ -140,7 +140,7 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   #log "Free memory : ${FREE_MEMORY} ; Available memory : ${AVAILABLE_MEMORY} ; Total RAMFS usage : ${RAMFS_USAGE}" "INFO"
 
   log "Running MeteorDemod to demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
-  $METEORDEMOD -m oqpsk -diff 1 -int 1 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+  $METEORDEMOD -m oqpsk -diff 1 -s 72000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
 
   rm *.gcp *.bmp "${RAMFS_AUDIO_BASE}.wav"
 
@@ -179,7 +179,7 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 
   log "Running MeteorDemod to demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
 
-  $METEORDEMOD -m oqpsk -diff 1 -int 1 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+  $METEORDEMOD -m oqpsk -diff 1 -s 72000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
   
   rm *.gcp *.bmp "${RAMFS_AUDIO_BASE}.wav"
 
@@ -209,8 +209,8 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 elif [ "$METEOR_RECEIVER" == "satdump" ]; then
 
   log "Starting gnuradio record" "INFO"
-  satdump live meteor_m2-x_lrpt_80k . --source rtlsdr --samplerate 1.024e6 --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
-  rm satdump.logs meteor_m2-x_lrpt_80k.cadu dataset.json
+  satdump live meteor_m2-x_lrpt_72k . --source rtlsdr --samplerate 1.024e6 --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+  rm satdump.logs meteor_m2-x_lrpt_72k.cadu dataset.json
 
   log "Waiting for files to close" "INFO"
   sleep 2
