@@ -23,12 +23,18 @@ NOAA and Meteor-M 2 satellite imagery capture setup for the Raspberry Pi!
 See "Credits" for the awesome way this version of the framework came to be.
 
 ## Super Easy setup: Use a maintained image
-Want a really simple way to get up and running? VE3ELB has been maintaining a pre-built image of Raspberry-Noaa-V2 ('RN2') over here:
+Want a really simple way to get up and running? 
 
+VE3ELB has been maintaining a pre-built image of Raspberry-Noaa-V2 ('RN2') over here:
 [https://qsl.net/ve3elb/RaspiNOAA/](https://qsl.net/ve3elb/RaspiNOAA/)
-
 Setup instructions are in the PDF that is included. 
-This is not always up to speed with the latest code, but lots of folks find it a great way to get started quickly!
+
+There is also an image maintained by Jochen Köster DC9DD here. 
+[https://www.qsl.net/do3mla/raspberry-pi-images.html](https://www.qsl.net/do3mla/raspberry-pi-images.html)
+For interest Jochen's image is the base for this offgrid system in Northern Norway! 
+[https://usradioguy.com/science/off-grid-apt-lrpt-satellite-ground-station/](https://usradioguy.com/science/off-grid-apt-lrpt-satellite-ground-station/)
+
+These images are not always up to speed with the latest code, but lots of folks find images are a great way to get started quickly!
 
 ## Quick Start - building latest from the source on this repo
 
@@ -53,7 +59,6 @@ cp config/settings.yml.sample config/settings.yml
 vi config/settings.yml
 
 # perform install
-./install_MeteorDemod.sh
 ./install_and_upgrade.sh
 ```
 
@@ -78,6 +83,8 @@ Check out the release notes for fixes and enhancements for each of the various r
 Also, check out [THIS LINK](docs/webpanel_screenshots.md) for some screen shots of the webpanel, which is now mobile friendly!
 
 ## Compatibility
+
+**NOTE: ONLY 32bit OS is supported : Recommended is 'Bullseye' Release.**
 
 The original raspberry-noaa was tested on Raspberry Pi 2 and up. However, while it's possible this compatibility has been maintained
 with raspberry-noaa-v2, this version was developed and tested on a Raspberry Pi 4 - it has not been exhaustively tested on other variants
@@ -131,7 +138,6 @@ cp config/settings.yml.sample config/settings.yml
 vi config/settings.yml
 
 # perform install
-./install_MeteorDemod.sh
 ./install_and_upgrade.sh
 ```
 
@@ -164,8 +170,6 @@ git pull
 # and incorporate any changes/updates
 
 # perform upgrade
-sudo chmod +x install_MeteorDemod.sh
-./install_MeteorDemod.sh
 ./install_and_upgrade.sh
 ```
 
@@ -224,9 +228,7 @@ or form to the success of this repository/framework. Below are some direct contr
 * **[Pascal P.](https://github.com/Cirromulus)**: Frequency/spectrum analysis test scripts for visualizing frequency spectrum of environment.
 * **[Socowi's Time Functionality](https://stackoverflow.com/a/50434292)**: Time parser to calculate end date for scanner scripts.
 * **[Vince VE3ELB](https://github.com/ve3elb)**: Took on the invaluable task to create fully working images of RN2 for the PI and maintains [https://qsl.net/ve3elb/RaspiNOAA/](https://qsl.net/ve3elb/RaspiNOAA/).
-*  **[mihajlo2003petkovic](https://github.com/mihajlo2003petkovic)**: Updates to the web browser and general updating and debugging. Was the key man with  the integration of MeteorDemod [https://github.com/Digitelektro/MeteorDemod](https://github.com/Digitelektro/MeteorDemod).
-*  **[digitalelectro](https://github.com/Digitelektro)**: for the awesome Meteordemod [https://github.com/Digitelektro/MeteorDemod](https://github.com/Digitelektro/MeteorDemod).
-*  
+*  **[mihajlo2003petkovic](https://github.com/mihajlo2003petkovic)**: Updates to the web browser and general updating and debugging. Integrated MeteorDemod in `receive_meteor.sh` and shrunk code quite a bit in `receive_noaa.sh`.
 ## Contributing
 
 Pull requests are welcome! Simply follow the below pattern:

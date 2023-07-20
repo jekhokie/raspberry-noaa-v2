@@ -1,18 +1,18 @@
 ---
-- name: php repository gpg key (stretch only)
+- name: php repository gpg key (buster only)
   become: yes
   apt_key:
     url: "https://packages.sury.org/php/apt.gpg"
     state: present
-  when: raspbian_version.stdout == 'stretch'
+  when: raspbian_version.stdout == 'buster'
 
-- name: php repository (stretch only)
+- name: php repository (buster only)
   become: yes
   apt_repository:
-    repo: deb https://packages.sury.org/php/ stretch main
+    repo: deb https://packages.sury.org/php/ buster main
     filename: php7.list
     state: present
-  when: raspbian_version.stdout == 'stretch'
+  when: raspbian_version.stdout == 'buster'
 
 - name: php repository gpg key (buster only)
   become: yes

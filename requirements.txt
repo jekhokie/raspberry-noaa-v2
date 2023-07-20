@@ -1,4 +1,6 @@
 envbash==1.2.0
+# The following packages should ideally be installed through apt
+# For the moment, I am pinning their versions here to the ones available in debian bullseye
 ephem==3.7.7.1
 idna==2.8
 jsonschema==3.2.0

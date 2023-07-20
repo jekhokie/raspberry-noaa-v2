@@ -156,7 +156,7 @@ def gzip_wrap(path):
             if type(line) == bytes:
                 line = line.decode('utf-8')
             yield line
-        except IOError:
+        except (EOFError, StopIteration):
             running = False
 
 def time_compression(y, decay):
