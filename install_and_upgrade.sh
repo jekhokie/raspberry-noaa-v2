@@ -33,6 +33,10 @@ if [ ! -e "$HOME/raspberry-noaa-v2" ]; then
   die "Please clone https://github.com/jekhokie/raspberry-noaa-v2 to your home directory"
 fi
 
+log_running "Make all Bash and Python scripts executable"
+find . -name "*.sh" -exec sudo chmod +x {} \;
+find . -name "*.py" -exec sudo chmod +x {} \;
+
 # check if this is a new install or an upgrade based on modprobe settings
 # which is likey a safe way to tell if the user has already installed
 # tools and rebooted
