@@ -209,8 +209,8 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 elif [ "$METEOR_RECEIVER" == "satdump" ]; then
 
   log "Starting gnuradio record" "INFO"
-  satdump live meteor_m2-x_lrpt_72k . --source rtlsdr --samplerate 1.024e6 --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
-  rm satdump.logs meteor_m2-x_lrpt_72k.cadu dataset.json
+  satdump live meteor_m2-x_lrpt . --source rtlsdr --samplerate 1.024e6 --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+  rm satdump.logs meteor_m2-x_lrpt.cadu dataset.json
 
   log "Waiting for files to close" "INFO"
   sleep 2
