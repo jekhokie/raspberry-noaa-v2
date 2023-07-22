@@ -58,7 +58,7 @@ class airspy_r2_m2_lrpt_rx(gr.top_block):
                 decimation=decim,
                 taps=[],
                 fractional_bw=None)
-        self.osmosdr_source_0 = osmosdr.source(args="numchan=" + str(1) + " " + "airspy=0,pack=1,bias=" + bias_t)
+        self.osmosdr_source_0 = osmosdr.source(args="numchan=" + str(1) + " " + "airspy=0,pack=1,linearity,bias=" + bias_t)
         self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(samp_rate_airspy)
         self.osmosdr_source_0.set_center_freq(freq, 0)
@@ -66,8 +66,8 @@ class airspy_r2_m2_lrpt_rx(gr.top_block):
         self.osmosdr_source_0.set_dc_offset_mode(0, 0)
         self.osmosdr_source_0.set_iq_balance_mode(0, 0)
         self.osmosdr_source_0.set_gain_mode(False, 0)
-        self.osmosdr_source_0.set_gain(17, 0)
-        self.osmosdr_source_0.set_if_gain(14, 0)
+        self.osmosdr_source_0.set_gain(gain, 0)
+        self.osmosdr_source_0.set_if_gain(0, 0)
         self.osmosdr_source_0.set_bb_gain(0, 0)
         self.osmosdr_source_0.set_antenna('', 0)
         self.osmosdr_source_0.set_bandwidth(1500000, 0)
