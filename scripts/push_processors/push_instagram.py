@@ -5,8 +5,41 @@ import sys
 import requests
 import json
 
-ACCESS_TOKEN = os.environ['INSTAGRAM_ACCESS_TOKEN']
-ACCOUNT_ID = os.environ['INSTAGRAM_ACCOUNT_ID']
+def parse_instagram_config(file_path):
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+
+    # Initialize variables to store the values
+    access_token = None
+    account_id = None
+
+    # Process each line in the file
+    for line in lines:
+        # Remove leading and trailing whitespaces from the line
+        line = line.strip()
+
+        # Skip empty lines or lines starting with a '#' (comments)
+        if not line or line.startswith('#'):
+            continue
+
+        # Split the line into key and value using the '=' separator
+        key, value = line.split('=', 1)
+
+        # Remove leading and trailing whitespaces from the key and value
+        key = key.strip()
+        value = value.strip()
+
+        # Check if the key is 'INSTAGRAM_ACCESS_TOKEN' or 'INSTAGRAM_ACCOUNT_ID'
+        if key == 'INSTAGRAM_ACCESS_TOKEN':
+            access_token = value
+        elif key == 'INSTAGRAM_ACCOUNT_ID':
+            account_id = value
+
+    return access_token, account_id
+
+config_path = os.path.expanduser("~/.instagram.conf")
+
+ACCESS_TOKEN, ACCOUNT_ID = parse_instagram_config(config_path)
 
 graph_url = 'https://graph.facebook.com/v17.0/'
 
