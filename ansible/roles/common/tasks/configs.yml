@@ -38,6 +38,15 @@
     owner: pi
     group: pi
     mode: 0644
+
+- name: SatDump config file
+  become: yes
+  template:
+    src: satdump_cfg.json.j2
+    dest: /usr/share/satdump/satdump.cfg.json
+    owner: root
+    group: root
+    mode: 0644
     
 - name: wxtoimg license terms acceptance file
   copy:
