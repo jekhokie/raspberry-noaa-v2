@@ -31,9 +31,9 @@ def parse_instagram_config(file_path):
 
         # Check if the key is 'INSTAGRAM_ACCESS_TOKEN' or 'INSTAGRAM_ACCOUNT_ID'
         if key == 'INSTAGRAM_ACCESS_TOKEN':
-            access_token = value
+            access_token = value.strip('\'"')
         elif key == 'INSTAGRAM_ACCOUNT_ID':
-            account_id = value
+            account_id = value.strip('\'"')
 
     return access_token, account_id
 
