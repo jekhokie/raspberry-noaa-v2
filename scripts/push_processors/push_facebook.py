@@ -29,7 +29,7 @@ def parse_facebook_config(file_path):
 
         # Check if the key is 'FACEBOOK_ACCESS_TOKEN'
         if key == 'FACEBOOK_ACCESS_TOKEN':
-            access_token = value
+            access_token = value.strip('\'"')
             break  # No need to continue after finding the access token
 
     return access_token
