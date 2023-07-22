@@ -45,11 +45,12 @@ graph_url = 'https://graph.facebook.com/v17.0/'
 
 annotation = sys.argv[1]
 image = sys.argv[2]
+website = sys.argv[3]
 
 def publish_image():
   #post_url = 'https://graph.facebook.com/v17.0/{}/media'.format(ACCOUNT_ID)
   post_url = f'https://graph.facebook.com/v17.0/{ACCOUNT_ID}/media'
-  image_url = f'https://voxgalactica.com/images/{image}'
+  image_url = f'https://{website}/images/{image}'
 
   payload = {
              'image_url': image_url,

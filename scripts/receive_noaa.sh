@@ -352,6 +352,9 @@ if [ -f "${AUDIO_FILE_BASE}.wav" ]; then
     else
       convert +append "${IMAGE_FILE_BASE}-MCIR.jpg" "${IMAGE_FILE_BASE}-MCIR-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
     fi
+
+    ${PUSH_PROC_DIR}/push_instagram.py "${instagram_push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME}
+    rm "${IMAGE_FILE_BASE}-instagram.jpg"
   fi
   # handle matrix pushing if enabled
   if [ "${ENABLE_MATRIX_PUSH}" == "true" ]; then
