@@ -360,7 +360,7 @@ if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
     convert "${IMAGE_FILE_BASE}-1-122-rectified.jpg" -resize "1080x1350>" -gravity center -background black -extent 1080x1350 "${IMAGE_FILE_BASE}-instagram.jpg"
 
     log "Pushing image enhancements to Instagram" "INFO"
-    ${PUSH_PROC_DIR}/push_instagram.py "${instagram_push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg")
+    ${PUSH_PROC_DIR}/push_instagram.py "${instagram_push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME}
     rm "${IMAGE_FILE_BASE}-instagram.jpg"
     #if [[ "$daylight" -eq 1 ]]; then
     #  convert +append "${IMAGE_FILE_BASE}-MSA.jpg" "${IMAGE_FILE_BASE}-MSA-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"

@@ -4,7 +4,39 @@ import os
 import sys
 import facebook as fb
 
-ACCESS_TOKEN_KEY = os.environ['FACEBOOK_ACCESS_TOKEN']
+def parse_facebook_config(file_path):
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+
+    # Initialize variable to store the access token
+    access_token = None
+
+    # Process each line in the file
+    for line in lines:
+        # Remove leading and trailing whitespaces from the line
+        line = line.strip()
+
+        # Skip empty lines or lines starting with a '#' (comments)
+        if not line or line.startswith('#'):
+            continue
+
+        # Split the line into key and value using the '=' separator
+        key, value = line.split('=', 1)
+
+        # Remove leading and trailing whitespaces from the key and value
+        key = key.strip()
+        value = value.strip()
+
+        # Check if the key is 'FACEBOOK_ACCESS_TOKEN'
+        if key == 'FACEBOOK_ACCESS_TOKEN':
+            access_token = value
+            break  # No need to continue after finding the access token
+
+    return access_token
+
+config_path = os.path.expanduser("~/.facebook.conf")
+
+ACCESS_TOKEN_KEY = parse_facebook_config(config_path)
 
 bot = fb.GraphAPI(ACCESS_TOKEN_KEY)
 
