@@ -78,6 +78,7 @@
       "maximum": 90
     },
     "meteor_m2_memory_threshold":      { "type": "number" },
+    "meteor_80k_interleaving":         { "type": "boolean" },
     "days_to_schedule_passes":         { "type": "number" },
     "delete_audio":                    { "type": "boolean" },
     "flip_meteor_image":               { "type": "boolean" },

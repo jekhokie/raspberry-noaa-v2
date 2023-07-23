@@ -140,7 +140,11 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   #log "Free memory : ${FREE_MEMORY} ; Available memory : ${AVAILABLE_MEMORY} ; Total RAMFS usage : ${RAMFS_USAGE}" "INFO"
 
   log "Running MeteorDemod to demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
-  $METEORDEMOD -m oqpsk -diff 1 -int 1 -s 80000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+  if [[ "$METEOR_80K_INTERLEAVING" == "true" ]]; then
+    $METEORDEMOD -m oqpsk -diff 1 -int 1 -s 80000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+  else
+    $METEORDEMOD -m oqpsk -diff 1 -s 72000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+  fi
 
   rm *.gcp *.bmp "${RAMFS_AUDIO_BASE}.wav"
 
@@ -178,8 +182,11 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
   sleep 2
 
   log "Running MeteorDemod to demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
-
-  $METEORDEMOD -m oqpsk -diff 1 -int 1 -s 80000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+  if [[ "$METEOR_80K_INTERLEAVING" == "true" ]]; then
+    $METEORDEMOD -m oqpsk -diff 1 -int 1 -s 80000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+  else
+    $METEORDEMOD -m oqpsk -diff 1 -s 72000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+  fi
   
   rm *.gcp *.bmp "${RAMFS_AUDIO_BASE}.wav"
 
@@ -208,9 +215,14 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
   fi
 elif [ "$METEOR_RECEIVER" == "satdump" ]; then
 
-  log "Starting gnuradio record" "INFO"
-  satdump live meteor_m2-x_lrpt . --source rtlsdr --samplerate 1.024e6 --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
-  rm satdump.logs meteor_m2-x_lrpt.cadu dataset.json
+  log "Starting SatDump live recording and decoding" "INFO"
+  if [[ "$METEOR_80K_INTERLEAVING" == "true" ]]; then
+    satdump live meteor_m2-x_lrpt_80k . --source rtlsdr --samplerate 1.024e6 --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+    rm satdump.logs meteor_m2-x_lrpt_80k.cadu dataset.json
+  else
+    satdump live meteor_m2-x_lrpt . --source rtlsdr --samplerate 1.024e6 --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+    rm satdump.logs meteor_m2-x_lrpt.cadu dataset.json
+  fi
 
   log "Waiting for files to close" "INFO"
   sleep 2
