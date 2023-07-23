@@ -322,7 +322,7 @@ else
   done
 fi
 
-if [ -n "$(find . -maxdepth 1 -type f -name "${IMAGE_FILE_BASE}*.jpg" -print -quit)" ]; then
+if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_BASE")*.jpg" -print -quit)" ]; then
     # If any matching images are found, push images
       # handle Slack pushing if enabled
   if [ "${ENABLE_SLACK_PUSH}" == "true" ]; then
