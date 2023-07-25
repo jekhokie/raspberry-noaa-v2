@@ -79,7 +79,7 @@ class airspy_mini_noaa_apt_rx(gr.top_block):
                 taps=None,
                 fractional_bw=None)
         self.osmosdr_source_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + "airspy=0" + ",bias=" + bias_t + ""
+            args="numchan=" + str(1) + " " + "airspy=0,linearity,bias=" + bias_t + ""
         )
         self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(samp_rate)
@@ -88,9 +88,9 @@ class airspy_mini_noaa_apt_rx(gr.top_block):
         self.osmosdr_source_0.set_dc_offset_mode(0, 0)
         self.osmosdr_source_0.set_iq_balance_mode(0, 0)
         self.osmosdr_source_0.set_gain_mode(False, 0)
-        self.osmosdr_source_0.set_gain(20, 0)
-        self.osmosdr_source_0.set_if_gain(10, 0)
-        self.osmosdr_source_0.set_bb_gain(20, 0)
+        self.osmosdr_source_0.set_gain(gain, 0)
+        self.osmosdr_source_0.set_if_gain(0, 0)
+        self.osmosdr_source_0.set_bb_gain(0, 0)
         self.osmosdr_source_0.set_antenna('', 0)
         self.osmosdr_source_0.set_bandwidth(0, 0)
         self.low_pass_filter_0 = filter.fir_filter_ccf(
