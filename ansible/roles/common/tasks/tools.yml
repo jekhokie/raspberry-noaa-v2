@@ -1,18 +1,4 @@
 ---
-- name: install wxtoimg
-  become: yes
-  apt:
-    deb: "{{ noaa_home }}/software/wxtoimg-armhf-2.11.2-beta.deb"
-    state: present
-    update_cache: no
-
-- name: install SatDump
-  become: yes
-  apt:
-    deb: "{{ noaa_home }}/software/satdump_1.1.0_armhf.deb"
-    state: present
-    update_cache: no
-
 #- name: check if meteor_demod software is installed
 #  stat:
 #    path: /usr/bin/meteor_demod
