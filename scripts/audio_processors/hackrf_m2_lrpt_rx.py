@@ -53,7 +53,7 @@ class hackrf_m2_lrpt_rx(gr.top_block):
                 decimation=decim,
                 taps=[],
                 fractional_bw=None)
-        self.osmosdr_source_0 = osmosdr.source(args="numchan=" + str(1) + " " + "hackrf=0,bias=" + bias_t)
+        self.osmosdr_source_0 = osmosdr.source(args="numchan=" + str(1) + " " + "hackrf=0,linearity,bias=" + bias_t)
         self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(samp_rate_hackrf)
         self.osmosdr_source_0.set_center_freq(freq, 0)
@@ -61,9 +61,9 @@ class hackrf_m2_lrpt_rx(gr.top_block):
         self.osmosdr_source_0.set_dc_offset_mode(0, 0)
         self.osmosdr_source_0.set_iq_balance_mode(0, 0)
         self.osmosdr_source_0.set_gain_mode(False, 0)
-        self.osmosdr_source_0.set_gain(20, 0)
-        self.osmosdr_source_0.set_if_gain(10, 0)
-        self.osmosdr_source_0.set_bb_gain(20, 0)
+        self.osmosdr_source_0.set_gain(gain, 0)
+        self.osmosdr_source_0.set_if_gain(0, 0)
+        self.osmosdr_source_0.set_bb_gain(0, 0)
         self.osmosdr_source_0.set_antenna('', 0)
         self.osmosdr_source_0.set_bandwidth(1500000, 0)
         self.blocks_wavfile_sink_0 = blocks.wavfile_sink(output_baseband, 2, int(samp_rate_hackrf/decim), 8)
@@ -72,11 +72,10 @@ class hackrf_m2_lrpt_rx(gr.top_block):
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.blocks_complex_to_float_0, 0), (self.blocks_wavfile_sink_0, 0))
         self.connect((self.blocks_complex_to_float_0, 1), (self.blocks_wavfile_sink_0, 1))
+        self.connect((self.blocks_complex_to_float_0, 0), (self.blocks_wavfile_sink_0, 0))
         self.connect((self.osmosdr_source_0, 0), (self.rational_resampler_xxx_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.blocks_complex_to_float_0, 0))
-
 
     def get_samp_rate_hackrf(self):
         return self.samp_rate_hackrf

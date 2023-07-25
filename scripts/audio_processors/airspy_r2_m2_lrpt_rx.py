@@ -45,14 +45,9 @@ class airspy_r2_m2_lrpt_rx(gr.top_block):
         self.decim = decim = 20
         output_baseband = stream_name
 
-        ###############################################################
-        # Blocks - note the fcd_freq, freq_offset rtl device, bias-t and gain are carried
-        #          in from settings.yml using the 'variables' block above.
-        #          NOTE: If you edit and replace this .py in gnucomposer
-        #          these will be overwritten with hard-coded values and
-        #          need to be manually reintroduced to make the script take
-        #          settings from your own settings.yml.
-        ################################################################
+        ##################################################
+        # Blocks
+        ##################################################
         self.rational_resampler_xxx_0 = filter.rational_resampler_ccc(
                 interpolation=1,
                 decimation=decim,
@@ -81,7 +76,6 @@ class airspy_r2_m2_lrpt_rx(gr.top_block):
         self.connect((self.blocks_complex_to_float_0, 0), (self.blocks_wavfile_sink_0, 0))
         self.connect((self.osmosdr_source_0, 0), (self.rational_resampler_xxx_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.blocks_complex_to_float_0, 0))
-
 
     def get_samp_rate_airspy(self):
         return self.samp_rate_airspy
