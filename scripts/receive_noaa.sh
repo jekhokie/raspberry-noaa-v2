@@ -105,24 +105,6 @@ sleep 2
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-$SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine, has_polar_az_el, has_polar_direction, has_histogram, gain) \
-                                    VALUES ( \
-                                      (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
-                                      $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $polar_az_el, $polar_direction, $histogram, $GAIN \
-                                    );"
-
-pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
-$SQLITE3 $DB_FILE "UPDATE predict_passes \
-                  SET is_active = 0 \
-                  WHERE (predict_passes.pass_start) \
-                  IN ( \
-                    SELECT predict_passes.pass_start \
-                    FROM predict_passes \
-                    INNER JOIN decoded_passes \
-                    ON predict_passes.pass_start = decoded_passes.pass_start \
-                    WHERE decoded_passes.id = $pass_id \
-                  );"
-
 polar_az_el=0
 if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
   log "Producing polar graph of azimuth and elevation for pass" "INFO"
@@ -415,6 +397,24 @@ else
     # If no matching images are found, there is no need to push images
     log "No images found - not pushing anywhere" "INFO"
 fi
+
+$SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_pristine, has_polar_az_el, has_polar_direction, has_histogram, gain) \
+                                    VALUES ( \
+                                      (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
+                                      $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $polar_az_el, $polar_direction, $histogram, $GAIN \
+                                    );"
+
+pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
+$SQLITE3 $DB_FILE "UPDATE predict_passes \
+                  SET is_active = 0 \
+                  WHERE (predict_passes.pass_start) \
+                  IN ( \
+                    SELECT predict_passes.pass_start \
+                    FROM predict_passes \
+                    INNER JOIN decoded_passes \
+                    ON predict_passes.pass_start = decoded_passes.pass_start \
+                    WHERE decoded_passes.id = $pass_id \
+                  );"
 
 # calculate and report total time for capture
 TIMER_END=$(date '+%s')
