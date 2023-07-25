@@ -32,10 +32,10 @@ class rtlsdr_m2_lrpt_rx(gr.top_block):
         # Arguments:
         #   1. Full path and name of stream file (including file extension)
         #   2. Gain to be used
-        #   3. Frequency offset (PPM)
-        #   4. SDR Device ID from settings.yml (for RTL-SDR source block)
-        #   5. Bias-T (0/1 for RTL-SDR)
-
+        #   3. Meteor Frequency (MHz)
+        #   4. Frequency offset (PPM)
+        #   5. SDR Device ID from settings.yml (for RTL-SDR source block)
+        #   6. Bias-T (0/1 for RTL-SDR)
 
         stream_name = sys.argv[1]
         gain = float(sys.argv[2])
@@ -65,12 +65,8 @@ class rtlsdr_m2_lrpt_rx(gr.top_block):
         self.rtlsdr_source_0.set_freq_corr(freq_offset, 0)
         self.rtlsdr_source_0.set_dc_offset_mode(0, 0)
         self.rtlsdr_source_0.set_iq_balance_mode(0, 0)
-        # determine if gain is specified or if auto-gain should be used
-        if (gain == 0):
-          self.rtlsdr_source_0.set_gain_mode(True, 0)
-        else:
-          self.rtlsdr_source_0.set_gain_mode(False, 0)
-          self.rtlsdr_source_0.set_gain(gain, 0)
+        self.rtlsdr_source_0.set_gain_mode(False, 0)
+        self.rtlsdr_source_0.set_gain(gain, 0)
         self.rtlsdr_source_0.set_if_gain(0, 0)
         self.rtlsdr_source_0.set_bb_gain(0, 0)
         self.rtlsdr_source_0.set_antenna('', 0)
@@ -83,8 +79,6 @@ class rtlsdr_m2_lrpt_rx(gr.top_block):
         self.blocks_wavfile_sink_0 = blocks.wavfile_sink(output_baseband, 2, int(samp_rate_rtlsdr/decim), 8)
         self.blocks_complex_to_float_0 = blocks.complex_to_float(1)
 
-
-
         ##################################################
         # Connections
         ##################################################
@@ -92,7 +86,6 @@ class rtlsdr_m2_lrpt_rx(gr.top_block):
         self.connect((self.blocks_complex_to_float_0, 0), (self.blocks_wavfile_sink_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.blocks_complex_to_float_0, 0))
         self.connect((self.rtlsdr_source_0, 0), (self.rational_resampler_xxx_0, 0))
-
 
     def get_samp_rate_rtlsdr(self):
         return self.samp_rate_rtlsdr

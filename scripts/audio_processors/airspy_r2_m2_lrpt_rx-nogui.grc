@@ -8,7 +8,7 @@ options:
     description: ''
     gen_cmake: 'On'
     gen_linking: dynamic
-    generate_options: hb
+    generate_options: no_gui
     hier_block_src_path: '.:'
     id: airspy_r2_m2_lrpt_rx
     max_nouts: '0'
