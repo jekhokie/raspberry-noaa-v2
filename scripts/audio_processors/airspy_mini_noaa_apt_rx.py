@@ -79,7 +79,7 @@ class airspy_mini_noaa_apt_rx(gr.top_block):
                 taps=None,
                 fractional_bw=None)
         self.osmosdr_source_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + "airspy=0,linearity,bias=" + bias_t + ""
+            args="numchan=" + str(1) + " " + "airspy=0,pack=1,linearity,bias=" + bias_t + ""
         )
         self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(samp_rate)
