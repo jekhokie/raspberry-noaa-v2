@@ -96,7 +96,7 @@ elif [ "$NOAA_RECEIVER" == "gnuradio" ]; then
   ${AUDIO_PROC_DIR}/noaa_record_gnuradio.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav" >> $NOAA_LOG 2>&1
 elif [ "$NOAA_RECEIVER" == "satdump" ]; then
   log "Starting SatDump recording and live decoding" "INFO"
-  satdump live noaa_apt . --source rtlsdr --samplerate 1.024e6 --frequency "${NOAA_FREQUENCY}e6" --satellite ${SAT_NUMBER} --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+  satdump live noaa_apt . --source rtlsdr --samplerate 1.024e6 --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
   rm satdump.logs product.cbor dataset.json
 fi
 
