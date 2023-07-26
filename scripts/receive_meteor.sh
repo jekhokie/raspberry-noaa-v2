@@ -47,7 +47,7 @@ AUDIO_FILE_BASE="${METEOR_AUDIO_OUTPUT}/${FILENAME_BASE}"
 IMAGE_FILE_BASE="${IMAGE_OUTPUT}/${FILENAME_BASE}"
 IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 
-case "$METEOR_RECEIVER" in
+case "$RECEIVER_TYPE" in
     "rtlsdr")
         samplerate="1.024e6"
         receiver="rtlsdr"
@@ -65,7 +65,7 @@ case "$METEOR_RECEIVER" in
         receiver="hackrf"
         ;;
     *)
-        echo "Invalid METEOR_RECEIVER value: $METEOR_RECEIVER"
+        echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE"
         exit 1
         ;;
 esac
@@ -107,10 +107,14 @@ if pgrep "rtl_fm" > /dev/null; then
   pkill -9 -f rtl_fm
 fi
 # then for gnuradio mode active instances
-if pgrep -f ${METEOR_RECEIVER}_noaa_apt_rx.py > /dev/null; then
+if pgrep -f ${RECEIVER_TYPE}_noaa_apt_rx.py > /dev/null; then
   log "There is an already running gnuradio noaa capture instance but I dont care for now, I prefer this pass" "INFO"
-  kill $(pgrep -f ${METEOR_RECEIVER}_noaa_apt_rx.py)
-fi 
+  kill $(pgrep -f ${RECEIVER_TYPE}_noaa_apt_rx.py)
+fi
+if pgrep "satdump" > /dev/null; then
+  log "There is an already running satdump noaa capture instance but I dont care for now, I prefer this pass" "INFO"
+  pkill -9 -f satdump
+fi
 
 # determine if auto-gain is set - handles "0" and "0.0" floats
 gain=$GAIN
