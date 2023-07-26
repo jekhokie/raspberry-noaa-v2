@@ -27,7 +27,7 @@
       <td style="width: 69.000px;"><center><img src="apt-icon-small.png"><br>
       </td>
       <td style="width: 650.13px;"><center>
-      <font color="black">RaspiNOAA V2 | V1.8 | Build: 9-MD<br>http://{{ web_server_name }}<br>--------------------------------------<br>
+      <font color="black">RaspiNOAA V2 | V2.0 | Build: 9-MD<br>https://{{ web_server_name }}<br>--------------------------------------<br>
       Antenna: {{ antenna_information }}</font></center>
       </td>
       <td style="width: 1313.13px;"><font color="black">
