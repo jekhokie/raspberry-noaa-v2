@@ -69,6 +69,29 @@ AUDIO_FILE_BASE="${NOAA_AUDIO_OUTPUT}/${FILENAME_BASE}"
 IMAGE_FILE_BASE="${IMAGE_OUTPUT}/${FILENAME_BASE}"
 IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 
+case "$RECEIVER_TYPE" in
+    "rtlsdr")
+        samplerate="1.024e6"
+        receiver="rtlsdr"
+        ;;
+    "airspy_mini")
+        samplerate="3e6"
+        receiver="airspy"
+        ;;
+    "airspy_r2")
+        samplerate="2.5e6"
+        receiver="airspy"
+        ;;
+    "hackrf")
+        samplerate="4e6"
+        receiver="hackrf"
+        ;;
+    *)
+        echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE"
+        exit 1
+        ;;
+esac
+
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
 export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
@@ -76,10 +99,10 @@ export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 if pgrep "rtl_fm" > /dev/null; then
   log "There is an existing rtl_fm instance running, I quit" "ERROR"
   exit 1
-elif pgrep -f rtlsdr_noaa_apt_rx.py > /dev/null; then
+elif pgrep -f ${RECEIVER_TYPE}_noaa_apt_rx.py > /dev/null; then
   log "There is an existing gnuradio noaa capture instance running, I quit" "ERROR"
   exit 1
-elif pgrep -f rtlsdr_m2_lrpt_rx.py > /dev/null; then
+elif pgrep -f ${RECEIVER_TYPE}_m2_lrpt_rx.py > /dev/null; then
   log "There is an existing gnuradio M2 capture instance running, I quit" "ERROR"
   exit 1
 elif pgrep "satdump" > /dev/null; then
@@ -96,7 +119,7 @@ elif [ "$NOAA_RECEIVER" == "gnuradio" ]; then
   ${AUDIO_PROC_DIR}/noaa_record_gnuradio.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav" >> $NOAA_LOG 2>&1
 elif [ "$NOAA_RECEIVER" == "satdump" ]; then
   log "Starting SatDump recording and live decoding" "INFO"
-  satdump live noaa_apt . --source rtlsdr --samplerate 1.024e6 --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+  satdump live noaa_apt . --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
   rm satdump.logs product.cbor dataset.json
 fi
 
