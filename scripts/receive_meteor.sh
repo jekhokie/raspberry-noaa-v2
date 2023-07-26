@@ -47,6 +47,29 @@ AUDIO_FILE_BASE="${METEOR_AUDIO_OUTPUT}/${FILENAME_BASE}"
 IMAGE_FILE_BASE="${IMAGE_OUTPUT}/${FILENAME_BASE}"
 IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 
+case "$METEOR_RECEIVER" in
+    "rtlsdr")
+        samplerate="1.024e6"
+        receiver="rtlsdr"
+        ;;
+    "airspy_mini")
+        samplerate="3e6"
+        receiver="airspy"
+        ;;
+    "airspy_r2")
+        samplerate="2.5e6"
+        receiver="airspy"
+        ;;
+    "hackrf")
+        samplerate="4e6"
+        receiver="hackrf"
+        ;;
+    *)
+        echo "Invalid METEOR_RECEIVER value: $METEOR_RECEIVER"
+        exit 1
+        ;;
+esac
+
 # check if there is enough free memory to store pass on RAM
 FREE_MEMORY=$(free -m | grep Mem | awk '{print $7}')
 if [ "$FREE_MEMORY" -lt $METEOR_M2_MEMORY_TRESHOLD ]; then
@@ -84,9 +107,9 @@ if pgrep "rtl_fm" > /dev/null; then
   pkill -9 -f rtl_fm
 fi
 # then for gnuradio mode active instances
-if pgrep -f rtlsdr_noaa_apt_rx.py > /dev/null; then
+if pgrep -f ${METEOR_RECEIVER}_noaa_apt_rx.py > /dev/null; then
   log "There is an already running gnuradio noaa capture instance but I dont care for now, I prefer this pass" "INFO"
-  kill $(pgrep -f rtlsdr_noaa_apt_rx.py)
+  kill $(pgrep -f ${METEOR_RECEIVER}_noaa_apt_rx.py)
 fi 
 
 # determine if auto-gain is set - handles "0" and "0.0" floats
@@ -217,10 +240,10 @@ elif [ "$METEOR_RECEIVER" == "satdump" ]; then
 
   log "Starting SatDump live recording and decoding" "INFO"
   if [[ "$METEOR_80K_INTERLEAVING" == "true" ]]; then
-    satdump live meteor_m2-x_lrpt_80k . --source rtlsdr --samplerate 1.024e6 --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+    satdump live meteor_m2-x_lrpt_80k . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
     rm satdump.logs meteor_m2-x_lrpt_80k.cadu dataset.json
   else
-    satdump live meteor_m2-x_lrpt . --source rtlsdr --samplerate 1.024e6 --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+    satdump live meteor_m2-x_lrpt . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
     rm satdump.logs meteor_m2-x_lrpt.cadu dataset.json
   fi
 
