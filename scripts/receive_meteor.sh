@@ -246,16 +246,21 @@ elif [ "$METEOR_RECEIVER" == "satdump" ]; then
   if [[ "$METEOR_80K_INTERLEAVING" == "true" ]]; then
     satdump live meteor_m2-x_lrpt_80k . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
     rm satdump.logs meteor_m2-x_lrpt_80k.cadu dataset.json
-    find ./MSU-MR -type f -name "MSU-MR-[1-6].png" -delete;
   else
     satdump live meteor_m2-x_lrpt . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
     rm satdump.logs meteor_m2-x_lrpt.cadu dataset.json
-    find ./MSU-MR -type f -name "MSU-MR-[1-6].png" -delete;
   fi
-
+  
   log "Waiting for files to close" "INFO"
   sleep 2
-
+  
+  find MSU-MR/ -type f -name "MSU-MR-[1-6].png" -delete;
+  
+  for i in MSU-MR/*_corrected.png
+  do
+    $CONVERT $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
+  done
+  
   log "Annotating images and creating thumbnails" "INFO"
   counter=1
   for i in MSU-MR/*.png; do
