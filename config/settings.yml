@@ -90,7 +90,7 @@ meteor_80k_interleaving: false
 days_to_schedule_passes: 1
 
 # whether audio files should be deleted after images are created
-delete_audio: false
+delete_audio: true
 
 # processing settings
 #   flip_meteor_image - whether the meteor image should be flipped
