@@ -99,9 +99,6 @@ export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 if pgrep "rtl_fm" > /dev/null; then
   log "There is an existing rtl_fm instance running, I quit" "ERROR"
   exit 1
-elif pgrep -f ${RECEIVER_TYPE}_noaa_apt_rx.py > /dev/null; then
-  log "There is an existing gnuradio noaa capture instance running, I quit" "ERROR"
-  exit 1
 elif pgrep -f ${RECEIVER_TYPE}_m2_lrpt_rx.py > /dev/null; then
   log "There is an existing gnuradio M2 capture instance running, I quit" "ERROR"
   exit 1
