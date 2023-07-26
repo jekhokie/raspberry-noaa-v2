@@ -1,9 +1,9 @@
 ---
-# environment configuration files
-- include: configs.yml
-
 # dependent packages and libs to be installed
 - include: dependencies.yml
+
+# environment configuration files
+- include: configs.yml
 
 # ntp configurations
 - include: ntp.yml
