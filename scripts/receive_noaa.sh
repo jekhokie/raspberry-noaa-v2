@@ -99,6 +99,9 @@ export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 if pgrep "rtl_fm" > /dev/null; then
   log "There is an existing rtl_fm instance running, I quit" "ERROR"
   exit 1
+elif pgrep -f ${RECEIVER_TYPE}_noaa_apt_rx.py > /dev/null; then
+  log "There is an existing gnuradio noaa capture instance running, I quit" "ERROR"
+  exit 1
 elif pgrep -f ${RECEIVER_TYPE}_m2_lrpt_rx.py > /dev/null; then
   log "There is an existing gnuradio M2 capture instance running, I quit" "ERROR"
   exit 1
@@ -392,7 +395,8 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     else
       convert +append "${IMAGE_FILE_BASE}-MCIR.jpg" "${IMAGE_FILE_BASE}-MCIR-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
     fi
-
+   
+    log "Pushing image enhancements to Instagram" "INFO"
     ${PUSH_PROC_DIR}/push_instagram.py "${instagram_push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME}
     rm "${IMAGE_FILE_BASE}-instagram.jpg"
   fi
