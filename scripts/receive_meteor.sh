@@ -254,7 +254,7 @@ elif [ "$METEOR_RECEIVER" == "satdump" ]; then
   log "Waiting for files to close" "INFO"
   sleep 2
   
-  find MSU-MR/ -type f -name "MSU-MR-[1-6].png" -delete;
+  find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
   
   for i in MSU-MR/*_corrected.png
   do
