@@ -105,9 +105,6 @@ elif pgrep -f ${RECEIVER_TYPE}_noaa_apt_rx.py > /dev/null; then
 elif pgrep -f ${RECEIVER_TYPE}_m2_lrpt_rx.py > /dev/null; then
   log "There is an existing gnuradio M2 capture instance running, I quit" "ERROR"
   exit 1
-elif pgrep "satdump" > /dev/null; then
-  log "There is an existing SatDump instance running, I quit" "ERROR"
-  exit 1
 fi
 
 #start capture
