@@ -106,8 +106,6 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
         	audio_decimation=8,
         )
 
-
-
         ##################################################
         # Connections
         ##################################################
@@ -116,7 +114,6 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
         self.connect((self.low_pass_filter_0, 0), (self.blks2_wfm_rcv_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.blocks_multiply_const_vxx_0, 0))
         self.connect((self.rtlsdr_source_0, 0), (self.low_pass_filter_0, 0))
-
 
     def get_trans(self):
         return self.trans
@@ -159,10 +156,6 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
 
     def set_centre_freq(self, centre_freq):
         self.centre_freq = centre_freq
-
-
-
-
 
 def main(top_block_cls=rtlsdr_noaa_apt_rx, options=None):
     tb = top_block_cls()

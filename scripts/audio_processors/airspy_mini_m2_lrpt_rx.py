@@ -51,8 +51,8 @@ class airspy_mini_m2_lrpt_rx(gr.top_block):
         self.rational_resampler_xxx_0 = filter.rational_resampler_ccc(
                 interpolation=1,
                 decimation=decim,
-                taps=[],
-                fractional_bw=None)
+                taps=None,
+                fractional_bw=0.4)
         self.osmosdr_source_0 = osmosdr.source(args="numchan=" + str(1) + " " + "airspy=0,pack=1,linearity,bias=" + bias_t)
         self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(samp_rate_airspy)

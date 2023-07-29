@@ -27,6 +27,10 @@ class rtlsdr_m2_lrpt_rx(gr.top_block):
     def __init__(self):
         gr.top_block.__init__(self, "Meteor QPSK LRPT")
 
+        ###############################################################
+        # Variables - added for Raspberry-Noaa-V2 manually after export
+        ###############################################################
+
         # get some variables in place for inputs
         #
         # Arguments:
@@ -74,8 +78,8 @@ class rtlsdr_m2_lrpt_rx(gr.top_block):
         self.rational_resampler_xxx_0 = filter.rational_resampler_ccc(
                 interpolation=1,
                 decimation=decim,
-                taps=[],
-                fractional_bw=None)
+                taps=None,
+                fractional_bw=0.4)
         self.blocks_wavfile_sink_0 = blocks.wavfile_sink(output_baseband, 2, int(samp_rate_rtlsdr/decim), 8)
         self.blocks_complex_to_float_0 = blocks.complex_to_float(1)
 
