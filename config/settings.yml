@@ -27,9 +27,7 @@ test_freq_offset: 0
 # receiver settings
 #   receiver_type - the receiver type which program uses ('rtlsdr', 'airspy_mini', 'airspy_r2' or 'hackrf')
 #   noaa_receiver  - which receiver method to use (either 'rtl_fm' or 'gnuradio')
-#   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'satdump')
-#     **WARNING**: 'gnuradio' does not work with certain SDR devices (e.g. it will not currently
-#                  work with a RTL-SDR v3 dongle, as no image will be decoded from the bitstream)
+#   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'gnuradio' or 'satdump')
 receiver_type: 'rtlsdr'
 
 noaa_receiver: 'gnuradio'
