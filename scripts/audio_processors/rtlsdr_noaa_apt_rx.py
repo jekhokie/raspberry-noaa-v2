@@ -85,8 +85,8 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
         else:   
           self.rtlsdr_source_0.set_gain_mode(False, 0) 
           self.rtlsdr_source_0.set_gain(gain, 0)
-        self.rtlsdr_source_0.set_if_gain(20, 0) #This probably needs to be zero
-        self.rtlsdr_source_0.set_bb_gain(20, 0) #This also
+        self.rtlsdr_source_0.set_if_gain(0, 0)
+        self.rtlsdr_source_0.set_bb_gain(0, 0)
         self.rtlsdr_source_0.set_antenna('', 0)
         self.rtlsdr_source_0.set_bandwidth(0, 0)
         self.rational_resampler_xxx_0 = filter.rational_resampler_fff(
