@@ -106,7 +106,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [523, 268]
+    coordinate: [520, 252.0]
     rotation: 0
     state: enabled
 - name: blocks_multiply_const_vxx_0
@@ -124,7 +124,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [949, 276]
+    coordinate: [952, 260.0]
     rotation: 0
     state: enabled
 - name: gr_wavfile_sink_0_0_0_0
@@ -141,7 +141,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1131, 256]
+    coordinate: [1136, 244.0]
     rotation: 0
     state: enabled
 - name: low_pass_filter_0
@@ -165,7 +165,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [313, 220]
+    coordinate: [312, 212.0]
     rotation: 0
     state: enabled
 - name: osmosdr_source_0
@@ -542,7 +542,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [740, 248]
+    coordinate: [744, 236.0]
     rotation: 0
     state: enabled
 

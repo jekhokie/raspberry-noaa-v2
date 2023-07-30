@@ -89,7 +89,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    bits_per_sample: '8'
+    bits_per_sample: '16'
     comment: ''
     file: baseband.wav
     nchan: '2'
@@ -108,11 +108,11 @@ blocks:
     alias: ''
     comment: ''
     decim: decim
-    fbw: '0'
+    fbw: '0.4'
     interp: '1'
     maxoutbuf: '0'
     minoutbuf: '0'
-    taps: '[]'
+    taps: ''
     type: ccc
   states:
     bus_sink: false
@@ -232,7 +232,7 @@ blocks:
     clock_source6: ''
     clock_source7: ''
     comment: ''
-    corr0: '68'
+    corr0: '0'
     corr1: '0'
     corr10: '0'
     corr11: '0'

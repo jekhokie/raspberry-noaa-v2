@@ -66,7 +66,7 @@ class airspy_r2_m2_lrpt_rx(gr.top_block):
         self.osmosdr_source_0.set_bb_gain(0, 0)
         self.osmosdr_source_0.set_antenna('', 0)
         self.osmosdr_source_0.set_bandwidth(1500000, 0)
-        self.blocks_wavfile_sink_0 = blocks.wavfile_sink(output_baseband, 2, int(samp_rate_airspy/decim), 8)
+        self.blocks_wavfile_sink_0 = blocks.wavfile_sink(output_baseband, 2, int(samp_rate_airspy/decim), 16)
         self.blocks_complex_to_float_0 = blocks.complex_to_float(1)
 
         ##################################################
