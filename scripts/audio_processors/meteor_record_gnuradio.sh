@@ -24,7 +24,7 @@ if [ ${OUT_FILE: -4} != ".wav" ]; then
 fi
 
 if [ "$RECEIVER_TYPE" == "rtlsdr" ]; then
-  log "Recording ${NOAA_HOME} via RTL-SDR at ${freq} MHz...to " "INFO"
+  log "Recording ${NOAA_HOME} via RTL-SDR at ${METEOR_FREQ} MHz...to " "INFO"
   timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/rtlsdr_m2_lrpt_rx.py" "${OUT_FILE}" "${GAIN}" "${METEOR_FREQ}" "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
 fi
 
