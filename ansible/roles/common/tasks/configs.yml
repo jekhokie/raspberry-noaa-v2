@@ -145,7 +145,7 @@
     group: pi
     mode: 0600
 
-- name: annotation file image (sample for modification)
+- name: RaspbiNOAA v2 Logo
   copy:
     src: raspberry-noaa-v2-logo.png
     dest: ~pi/raspberry-noaa-v2/config/annotation/raspberry-noaa-v2-logo.png

@@ -21,21 +21,28 @@
   directory alongside this file.
 -->
 
-<table style="width: 850px; text-align: left; background-color: rgba(202,202,202, .6); border: 2px black solid; border-radius: 35px; padding: 3px; height: 20px;">
+<table style="width: 830px; text-align: left; background-color: silver; border-radius: 20px; padding: 2px; height: 20px;">
   <tbody>
-      <tr>
-      <td style="width: 69.000px;"><center><img src="apt-icon-small.png"><br>
+    <tr>
+      <td style="width: 310px;">
+        <center>
+          <img height="72" src="raspberry-noaa-v2-logo.png" alt="RaspbiNOAA v2 Logo">
+          <br>
+          <font color="black">RaspiNOAA V2 | v3.0 | Bullseye<br>https://{{ web_server_name }}</font>
+        </center>
       </td>
-      <td style="width: 650.13px;"><center>
-      <font color="black">RaspiNOAA V2 | V2.0 | Build: 9-MD<br>https://{{ web_server_name }}<br>--------------------------------------<br>
-      Antenna: {{ antenna_information }}</font></center>
+      <td style="width: 1313.13px;">
+        <font color="black">
+          <center>
+            Ground Station: {{ ground_station_location }}<br>
+            Antenna: {{ antenna_info }}<br>
+            Receiver: {{ receiver_type }}<br>
+            Satellite: {{ sat_name }} | {{ capture_start }}<br>
+            Max Elevation: {{ sat_max_elevation }}&#176; {{ pass_side_long }} | Sun Elevation: {{ sun_elevation }}&#176; <br>
+            Direction: {{ pass_direction }} | {{ enhancement }} | Gain: {{ gain }}
+          </center>
+        </font>
       </td>
-      <td style="width: 1313.13px;"><font color="black">
-      <center>Ground Station: {{ ground_station_location }}<br>
-      Satellite: {{ sat_name }} | {{ capture_start }}<br>
-      Max Elevation: {{ sat_max_elevation }}&#176; {{ pass_side_long }} | Sun Elevation: {{ sun_elevation }}&#176; <br>
-      Direction: {{ pass_direction }} | {{ enhancement }} | Gain: {{ gain }}</center>
-      </font></td>
     </tr>
   </tbody>
 </table>
