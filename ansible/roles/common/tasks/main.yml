@@ -20,6 +20,12 @@
 # email setup
 - include: email.yml
 
-# twitter push setup
+# Twitter push setup
 - include: twitter.yml
+
+# Facebook push setup
+- include: facebook.yml
+
+# Instagram push setup
+- include: instagram.yml
 ...
