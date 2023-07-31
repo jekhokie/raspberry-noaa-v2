@@ -69,8 +69,12 @@ class rtlsdr_m2_lrpt_rx(gr.top_block):
         self.rtlsdr_source_0.set_freq_corr(freq_offset, 0)
         self.rtlsdr_source_0.set_dc_offset_mode(0, 0)
         self.rtlsdr_source_0.set_iq_balance_mode(0, 0)
-        self.rtlsdr_source_0.set_gain_mode(False, 0)
-        self.rtlsdr_source_0.set_gain(gain, 0)
+        # determine if gain is specified or if auto-gain should be used 
+        if (gain == 0): 
+          self.rtlsdr_source_0.set_gain_mode(True, 0) 
+        else:   
+          self.rtlsdr_source_0.set_gain_mode(False, 0) 
+          self.rtlsdr_source_0.set_gain(gain, 0)
         self.rtlsdr_source_0.set_if_gain(0, 0)
         self.rtlsdr_source_0.set_bb_gain(0, 0)
         self.rtlsdr_source_0.set_antenna('', 0)
@@ -80,7 +84,7 @@ class rtlsdr_m2_lrpt_rx(gr.top_block):
                 decimation=decim,
                 taps=None,
                 fractional_bw=0.4)
-        self.blocks_wavfile_sink_0 = blocks.wavfile_sink(output_baseband, 2, int(samp_rate_rtlsdr/decim), 8)
+        self.blocks_wavfile_sink_0 = blocks.wavfile_sink(output_baseband, 2, int(samp_rate_rtlsdr/decim), 16)
         self.blocks_complex_to_float_0 = blocks.complex_to_float(1)
 
         ##################################################

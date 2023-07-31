@@ -4,10 +4,10 @@
 #
 # Inputs:
 #   1. capture_time: time (in seconds) for length capture
-#   2. out_s_file: fully-qualified filename for output bitstream file, including '.s' extension
+#   2. out_wav_file: fully-qualified filename for output baseband file, including '.wav' extension
 #
-# Example (record meteor audio for 15 seconds, output to /srv/audio/meteor/METEORM2.s):
-#   ./meteor_record_gnuradio.sh 15 /srv/audio/meteor/METEORM2.s
+# Example (record meteor audio for 15 seconds, output to /srv/audio/meteor/METEORM2.wav):
+#   ./meteor_record_gnuradio.sh 15 /srv/audio/meteor/METEORM2.wav
 
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
@@ -24,7 +24,7 @@ if [ ${OUT_FILE: -4} != ".wav" ]; then
 fi
 
 if [ "$RECEIVER_TYPE" == "rtlsdr" ]; then
-  log "Recording ${NOAA_HOME} via RTL-SDR at ${freq} MHz...to " "INFO"
+  log "Recording ${NOAA_HOME} via RTL-SDR at ${METEOR_FREQ} MHz...to " "INFO"
   timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/rtlsdr_m2_lrpt_rx.py" "${OUT_FILE}" "${GAIN}" "${METEOR_FREQ}" "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
 fi
 

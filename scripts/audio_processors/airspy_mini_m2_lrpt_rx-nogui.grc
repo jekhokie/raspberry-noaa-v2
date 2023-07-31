@@ -41,7 +41,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [496, 88.0]
+    coordinate: [504, 84.0]
     rotation: 180
     state: enabled
 - name: freq
@@ -53,7 +53,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [392, 88.0]
+    coordinate: [400, 84.0]
     rotation: 0
     state: enabled
 - name: samp_rate_airspy
@@ -65,7 +65,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [256, 88.0]
+    coordinate: [264, 84.0]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_float_0
@@ -89,7 +89,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    bits_per_sample: '8'
+    bits_per_sample: '16'
     comment: ''
     file: baseband.wav
     nchan: '2'
@@ -138,8 +138,8 @@ blocks:
     ant7: ''
     ant8: ''
     ant9: ''
-    args: '"airspy=0,pack=1"'
-    bb_gain0: '20'
+    args: '"airspy=0,linearity,pack=1"'
+    bb_gain0: '0'
     bb_gain1: '20'
     bb_gain10: '20'
     bb_gain11: '20'
@@ -212,7 +212,7 @@ blocks:
     clock_source6: ''
     clock_source7: ''
     comment: ''
-    corr0: '68'
+    corr0: '0'
     corr1: '0'
     corr10: '0'
     corr11: '0'
@@ -308,7 +308,7 @@ blocks:
     freq7: 100e6
     freq8: 100e6
     freq9: 100e6
-    gain0: '20'
+    gain0: '15'
     gain1: '10'
     gain10: '10'
     gain11: '10'
@@ -372,7 +372,7 @@ blocks:
     gain_mode7: 'False'
     gain_mode8: 'False'
     gain_mode9: 'False'
-    if_gain0: '10'
+    if_gain0: '0'
     if_gain1: '20'
     if_gain10: '20'
     if_gain11: '20'
@@ -455,7 +455,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [64, 204.0]
+    coordinate: [56, 204.0]
     rotation: 0
     state: true
 - name: rational_resampler_xxx_0
@@ -465,17 +465,17 @@ blocks:
     alias: ''
     comment: ''
     decim: decim
-    fbw: '0'
+    fbw: '0.4'
     interp: '1'
     maxoutbuf: '0'
     minoutbuf: '0'
-    taps: '[]'
+    taps: ''
     type: ccc
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [352, 276.0]
+    coordinate: [344, 276.0]
     rotation: 0
     state: true
 

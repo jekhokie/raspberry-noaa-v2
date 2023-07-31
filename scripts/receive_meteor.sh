@@ -166,7 +166,7 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   #RAMFS_USAGE=$(du -sh ${RAMFS_AUDIO} | awk '{print $1}')
   #log "Free memory : ${FREE_MEMORY} ; Available memory : ${AVAILABLE_MEMORY} ; Total RAMFS usage : ${RAMFS_USAGE}" "INFO"
 
-  log "Running MeteorDemod to demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
+  log "Running MeteorDemod to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
   if [[ "$METEOR_80K_INTERLEAVING" == "true" ]]; then
     $METEORDEMOD -m oqpsk -diff 1 -int 1 -s 80000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
   else
@@ -208,7 +208,7 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
   log "Waiting for files to close" "INFO"
   sleep 2
 
-  log "Running MeteorDemod to demodulate QPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
+  log "Running MeteorDemod to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
   if [[ "$METEOR_80K_INTERLEAVING" == "true" ]]; then
     $METEORDEMOD -m oqpsk -diff 1 -int 1 -s 80000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
   else
