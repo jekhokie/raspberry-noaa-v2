@@ -255,7 +255,7 @@ enable_email_push: false
 email_push_address: test@ifttt.com
 enable_email_schedule_push: false
 enable_discord_push: false
-discord_webhook_url: ''
+discord_webhook_url: 'https://discord.com/api/webhooks/1135901731918717068/ZELG3Sv1fRxQ8KgoYtMMOBYM07az0yIkzeLdad-8WxxhV-F8LhPQdZFFon044awMvLsD'
 enable_twitter_push: false
 enable_slack_push: false
 slack_push_url: ''
