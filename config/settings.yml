@@ -266,7 +266,7 @@ enable_email_push: false
 email_push_address: test@ifttt.com
 enable_email_schedule_push: false
 enable_discord_push: false
-discord_webhook_url: 'https://discord.com/api/webhooks/811418973593403393/Rwz1jn7IqaepgzfbhfhVpwZSvOvjutc4mq2ERtcHUUyWtpPnjx3w6doU1TOPIa4Nf2RX'
+discord_webhook_url: 'https://discord.com/api/webhooks/1135901731918717068/ZELG3Sv1fRxQ8KgoYtMMOBYM07az0yIkzeLdad-8WxxhV-F8LhPQdZFFon044awMvLsD'
 enable_twitter_push: false
 enable_facebook_push: false
 enable_instagram_push: false
