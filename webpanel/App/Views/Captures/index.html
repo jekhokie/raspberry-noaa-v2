@@ -18,6 +18,18 @@
 {% set i = 0 %}
 {% set img_count = capture.list|length %}
 
+{% set meteor_suffixes = [
+        '-321-corrected.jpg',
+        '-221-corrected.jpg',
+        '-Thermal_Channel_corrected.jpg',
+        '-spread_rain.jpg',
+        '-spread_IR.jpg',
+        '-spread_321.jpg',
+        '-spread_654.jpg',
+        '-spread_123.jpg',
+        '-spread_221.jpg',
+    ] %}
+
 {% for capture in capture.list %}
   {% if col_count % 3 == 0 %}
     <div class="card-group capture-image-cards">
@@ -26,28 +38,25 @@
   <div class="card bg-light m-2 p-2 image-card">
     <a href="/captures/listImages?pass_id={{ capture.id }}">
       {% if capture.sat_type == 0 %}
-        {% if capture.daylight_pass == 1 %}
-          {% set image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ '-321-corrected.jpg' %}
-          {% set fallback_image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ '-1-122-rectified.jpg' %}
-          {% if capture.fileExists(image_path) %}
+        {% set satellite_image_found = false %}
+        {% for suffix in meteor_suffixes %}
+          {% set image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ suffix %}
+          {% if not satellite_image_found and capture.fileExists(image_path) %}
             <img class="card-img-top" src="{{ image_path }}">
-          {% else %}
-            <img class="card-img-top" src="{{ fallback_image_path }}">
+            {% set satellite_image_found = true %}
           {% endif %}
-        {% else %}
-          {% set image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ '-Thermal_Channel_corrected.jpg' %}
+        {% endfor %}
+        {% if not satellite_image_found %}
           {% set fallback_image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ '-1-122-rectified.jpg' %}
-          {% if capture.fileExists(image_path) %}
-            <img class="card-img-top" src="{{ image_path }}">
-          {% else %}
-            <img class="card-img-top" src="{{ fallback_image_path }}">
-          {% endif %}
+          <img class="card-img-top" src="{{ fallback_image_path }}">
         {% endif %}
       {% elseif capture.sat_type == 1 %}
         {% if capture.daylight_pass == 1 %}
-          <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-MSA.jpg">
+          {% set image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ '-MSA.jpg' %}
+          <img class="card-img-top" src="{{ image_path }}">
         {% else %}
-          <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-MCIR.jpg">
+          {% set image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ '-MCIR.jpg' %}
+          <img class="card-img-top" src="{{ image_path }}">
         {% endif %}
       {% elseif capture.sat_type == 2 %}
         {% set image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ '-0.jpg' %}
@@ -56,30 +65,30 @@
     </a>
     <div class="card-body my-0 py-0 pt-3">
       <h5 class="card-title">{{ capture.sat_name }}</h5>
-       <p>
-      <strong>{{ lang.elev }}: </strong>{{ capture.max_elev }}&#176;&nbsp;
-      {% if capture.azimuth_at_max != "" %}
-        {% if capture.azimuth_at_max >= 0 and capture.azimuth_at_max <= 180 %}E{% else %}W{% endif %}
-      {% endif %}
+      <p>
+        <strong>{{ lang.elev }}: </strong>{{ capture.max_elev }}&#176;&nbsp;
+        {% if capture.azimuth_at_max != "" %}
+          {% if capture.azimuth_at_max >= 0 and capture.azimuth_at_max <= 180 %}E{% else %}W{% endif %}
+        {% endif %}
 
-      <br>
-      {% if capture.pass_start_azimuth != '' %}
-        <strong>{{ lang.pass_start_azimuth }}: </strong>{{ capture.pass_start_azimuth }}&#176;<br>
-      {% endif %}
-      {% if capture.direction != '' %}
-        <strong>{{ lang.travel_direction }}: </strong>{{ capture.direction }}<br>
-      {% endif %}
-      <strong>{{ lang.pass_start }}: </strong>{{ capture.pass_start|date(constant('Config\\Config::DATETIME_FORMAT')) }}<br>
-      <strong>{{ lang.gain }}: </strong>
-      {% if capture.gain == '0' %}
-        Auto
-      {% elseif capture.gain == '' %}
-        Unknown
-      {% else %}
-        {{ capture.gain }}
-      {% endif %}
-       </p>
-     </div>
+        <br>
+        {% if capture.pass_start_azimuth != '' %}
+          <strong>{{ lang.pass_start_azimuth }}: </strong>{{ capture.pass_start_azimuth }}&#176;<br>
+        {% endif %}
+        {% if capture.direction != '' %}
+          <strong>{{ lang.travel_direction }}: </strong>{{ capture.direction }}<br>
+        {% endif %}
+        <strong>{{ lang.pass_start }}: </strong>{{ capture.pass_start|date(constant('Config\\Config::DATETIME_FORMAT')) }}<br>
+        <strong>{{ lang.gain }}: </strong>
+        {% if capture.gain == '0' %}
+          Auto
+        {% elseif capture.gain == '' %}
+          Unknown
+        {% else %}
+          {{ capture.gain }}
+        {% endif %}
+      </p>
+    </div>
   </div>
 
   {% set i = i + 1 %}
