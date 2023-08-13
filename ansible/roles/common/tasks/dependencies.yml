@@ -49,7 +49,7 @@
 - name: install MeteorDemod
   become: yes
   apt:
-    deb: https://github.com/Digitelektro/MeteorDemod/releases/download/2.5.5/meteordemod_2.5.5_armhf.deb
+    deb: https://github.com/Digitelektro/MeteorDemod/releases/download/2.5.6-beta/meteordemod_2.5.6_armhf.deb
     state: present
 
 - name: install SatDump
