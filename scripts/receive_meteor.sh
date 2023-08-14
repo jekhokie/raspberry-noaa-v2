@@ -250,12 +250,19 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
   fi
 elif [ "$METEOR_RECEIVER" == "satdump" ]; then
 
+  gain_option=""
+  if [[ "$receiver" == "rtlsdr" ]]; then
+    gain_option="--source_id $SDR_DEVICE_ID --gain"
+  else
+    gain_option="--general_gain"
+  fi
+
   log "Starting SatDump live recording and decoding" "INFO"
   if [[ "$METEOR_80K_INTERLEAVING" == "true" ]]; then
-    satdump live meteor_m2-x_lrpt_80k . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+    satdump live meteor_m2-x_lrpt_80k . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" $gain_option $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
     rm satdump.logs meteor_m2-x_lrpt_80k.cadu dataset.json
   else
-    satdump live meteor_m2-x_lrpt . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+    satdump live meteor_m2-x_lrpt . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" $gain_option $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
     rm satdump.logs meteor_m2-x_lrpt.cadu dataset.json
   fi
   
