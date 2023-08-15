@@ -304,7 +304,7 @@ fi
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
+if [[ -n $(find /srv/images -maxdepth 1 -type f -name "${IMAGE_FILE_BASE#/srv/images/}*{rectified,projected,corrected,equidistant,mercator,spread}*.jpg") ]]; then
   if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
     log "Producing polar graph of azimuth and elevation for pass" "INFO"
     polar_az_el=1
