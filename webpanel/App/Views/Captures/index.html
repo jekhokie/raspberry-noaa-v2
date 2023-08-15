@@ -45,9 +45,16 @@
     <a href="/captures/listImages?pass_id={{ capture.id }}">
       {% if capture.sat_type == 0 %}
         {% set satellite_image_found = false %}
+        {% set current_image_file_exists = false %}
         {% for suffix in meteor_suffixes %}
           {% set image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ suffix %}
-          {% if not satellite_image_found and capture.fileExists(image_path) %}
+          <?php
+            if (file_exists($image_path)) {
+                $current_image_file_exists = true;
+                break;
+            }
+          ?>
+          {% if not satellite_image_found and current_image_file_exists == 1 %}
             <img class="card-img-top" src="{{ image_path }}">
             {% set satellite_image_found = true %}
           {% endif %}
