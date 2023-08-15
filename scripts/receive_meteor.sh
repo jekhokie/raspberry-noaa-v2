@@ -182,7 +182,6 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
   done
 
-  #counter=1
   for file in *.jpg; do
     new_filename=$(echo "$file" | sed -E 's/_[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+\.jpg$/.jpg/')
     mv "$file" "$new_filename"
@@ -192,7 +191,6 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     mv "$new_filename" "${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg"
     mv "${new_filename%.jpg}-thumb.jpg" "${IMAGE_THUMB_BASE}-${new_filename%.jpg}.jpg"
     push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg "
-   # ((counter++))
   done
 
   if [ "$DELETE_AUDIO" = true ]; then
@@ -226,7 +224,6 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
   done
 
-  #counter=1
   for file in *.jpg; do
     new_filename=$(echo "$file" | sed -E 's/_[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+\.jpg$/.jpg/')
     mv "$file" "$new_filename"
@@ -236,7 +233,6 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     mv "$new_filename" "${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg"
     mv "${new_filename%.jpg}-thumb.jpg" "${IMAGE_THUMB_BASE}-${new_filename%.jpg}.jpg"
     push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg "
-   # ((counter++))
   done
 
   if [ "$DELETE_AUDIO" = true ]; then
