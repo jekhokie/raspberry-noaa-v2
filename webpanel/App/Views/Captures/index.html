@@ -34,6 +34,7 @@
         '-Thermal_Channel_corrected.jpg',
         '-spread_rain.jpg',
         '-spread_IR.jpg',
+        '-1-122-rectified.jpg'
     ] %}
 
 {% for capture in capture.list %}
@@ -60,7 +61,7 @@
           {% endif %}
         {% endfor %}
         {% if not satellite_image_found %}
-          {% set fallback_image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ '-1-122-rectified.jpg' %}
+          {% set fallback_image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ '-equidistant_321.jpg' %}
           <img class="card-img-top" src="{{ fallback_image_path }}">
         {% endif %}
       {% elseif capture.sat_type == 1 %}
