@@ -292,6 +292,7 @@ fi
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 if [[ -n $(find /srv/images -maxdepth 1 -type f \( -name "${IMAGE_FILE_BASE}*rectified*.jpg" -o -name "${IMAGE_FILE_BASE}*projected*.jpg" -o -name "${IMAGE_FILE_BASE}*corrected*.jpg" -o -name "${IMAGE_FILE_BASE}*equidistant*.jpg" -o -name "${IMAGE_FILE_BASE}*mercator*.jpg" -o -name "${IMAGE_FILE_BASE}*spread*.jpg" \)) ]]; then
+  log "Some images were produced, let's push them to the database and social media" "INFO"
   if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
     log "Producing polar graph of azimuth and elevation for pass" "INFO"
     polar_az_el=1
@@ -456,6 +457,8 @@ if [[ -n $(find /srv/images -maxdepth 1 -type f \( -name "${IMAGE_FILE_BASE}*rec
       sleep 2
     done
   fi
+else
+  log "No images found, not pushing anything" "INFO"
 fi
 
 # calculate and report total time for capture
