@@ -32,11 +32,8 @@
     mode: 0644
     
 - name: Set ownership of ~/.config/meteordemod folder to pi
-  hosts: target
   become: yes
-  tasks:
-    - name: Change ownership of the folder
-      command: chown -R pi:pi ~/.config/meteordemod
+  command: chown -R pi:pi ~pi/.config/meteordemod
 
 - name: MeteorDemod config settings.ini file
   template:
