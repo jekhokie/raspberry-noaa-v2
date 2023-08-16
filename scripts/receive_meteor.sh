@@ -148,23 +148,13 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
 
   sleep 2
 
-  #log "Demodulation in progress (OQPSK)" "INFO"
-  #$METEOR_DEMOD -B -m oqpsk -r 80000 -o "${RAMFS_AUDIO_BASE}.s" "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
-  #sleep 2
-
   if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
     log "Producing spectrogram" "INFO"
     spectrogram=1
     spectro_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
-    ${IMAGE_PROC_DIR}/spectrogram.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" "${spectro_text}" >> $NOAA_LOG 2>&1    #Bilo je ${AUDIO_FILE_BASE}.wav
+    ${IMAGE_PROC_DIR}/spectrogram.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" "${spectro_text}" >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png" >> $NOAA_LOG 2>&1
   fi
-
-  # how are we about memory usage at this point ?
-  #FREE_MEMORY=$(free -m | grep Mem | awk '{print $4}')
-  #AVAILABLE_MEMORY=$(free -m | grep Mem | awk '{print $7}')
-  #RAMFS_USAGE=$(du -sh ${RAMFS_AUDIO} | awk '{print $1}')
-  #log "Free memory : ${FREE_MEMORY} ; Available memory : ${AVAILABLE_MEMORY} ; Total RAMFS usage : ${RAMFS_USAGE}" "INFO"
 
   log "Running MeteorDemod to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
   if [[ "$METEOR_80K_INTERLEAVING" == "true" ]]; then
@@ -225,14 +215,14 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
   done
 
   for file in *.jpg; do
-    new_filename=$(echo "$file" | sed -E 's/_[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+\.jpg$/.jpg/')
+    new_filename=$(echo "$file" | sed -E 's/_[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+\.jpg$/.jpg/')        #This part removes unecessary numbers from the MeteorDemod image names using RegEx
     mv "$file" "$new_filename"
 
     ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$new_filename" "$new_filename" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$new_filename" "${new_filename%.jpg}-thumb.jpg" >> $NOAA_LOG 2>&1
     mv "$new_filename" "${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg"
     mv "${new_filename%.jpg}-thumb.jpg" "${IMAGE_THUMB_BASE}-${new_filename%.jpg}.jpg"
-    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg "
+    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg"
   done
 
   if [ "$DELETE_AUDIO" = true ]; then
@@ -286,17 +276,14 @@ elif [ "$METEOR_RECEIVER" == "satdump" ]; then
   done
   
   log "Annotating images and creating thumbnails" "INFO"
-  counter=1
   for i in MSU-MR/*.png; do
     ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "${i%.png}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.jpg}-thumb-122-rectified.jpg" >> $NOAA_LOG 2>&1
-    mv "${i%.png}.jpg" "${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
-    mv "${i%.jpg}-thumb-122-rectified.jpg" "${IMAGE_THUMB_BASE}-${counter}-122-rectified.jpg"
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.png}-thumb.jpg" >> $NOAA_LOG 2>&1
+    mv "${i%.png}.jpg" "${IMAGE_FILE_BASE}-${i%.png}.jpg"
+    mv "${i%.png}-thumb.jpg" "${IMAGE_THUMB_BASE}-${i%.png}.jpg"
     rm $i
-    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${counter}-122-rectified.jpg"
-    ((counter++))
+    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${i%.png}.jpg"
   done
-  counter=1
   rm -r MSU-MR
 else
   log "Receiver type '$METEOR_RECEIVER' not valid" "ERROR"
@@ -423,7 +410,7 @@ if [[ -n $(find /srv/images -maxdepth 1 -type f \( -name "${IMAGE_FILE_BASE}*rec
     instagram_push_annotation="${instagram_push_annotation} Gain: ${gain}"
     instagram_push_annotation="${instagram_push_annotation} | ${PASS_DIRECTION}"
 
-    convert "${IMAGE_FILE_BASE}-1-122-rectified.jpg" -resize "1080x1350>" -gravity center -background black -extent 1080x1350 "${IMAGE_FILE_BASE}-instagram.jpg"
+    convert "${IMAGE_FILE_BASE}-equidistant_321.jpg" -resize "1080x1350>" -gravity center -background black -extent 1080x1350 "${IMAGE_FILE_BASE}-instagram.jpg"
 
     log "Pushing image enhancements to Instagram" "INFO"
     ${PUSH_PROC_DIR}/push_instagram.py "${instagram_push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME}
@@ -454,24 +441,20 @@ if [[ -n $(find /srv/images -maxdepth 1 -type f \( -name "${IMAGE_FILE_BASE}*rec
 
   if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
     log "Emailing images" "INFO"
-    if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
-      for i in $push_file_list
-      do
-        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
-        sleep 2
-      done
-    fi
+    for i in $push_file_list
+    do
+      ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+      sleep 2
+    done
   fi
 
   if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
     log "Pushing images to Discord" "INFO"
-    if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
-      for i in $push_file_list
-      do
-        ${PUSH_PROC_DIR}/push_discord.sh "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
-        sleep 2
-      done
-    fi
+    for i in $push_file_list
+    do
+      ${PUSH_PROC_DIR}/push_discord.sh "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+      sleep 2
+    done
   fi
 fi
 
