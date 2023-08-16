@@ -85,9 +85,6 @@ if [ $? -ne 0 ]; then
   fi
 fi
 
-#log_running "Setting ~/.config/meteordemod ownership to the current user"
-#sudo chown $USER:$USER -R ~/.config/meteordemod
-
 log_running "Checking for configuration settings..."
 if [ -f config/settings.yml ]; then
   log_done "  Settings file ready!"
