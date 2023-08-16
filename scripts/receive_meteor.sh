@@ -304,7 +304,7 @@ fi
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if [[ -n $(find /srv/images -maxdepth 1 -type f -name "${IMAGE_FILE_BASE#/srv/images/}*{rectified,projected,corrected,equidistant,mercator,spread}*.jpg") ]]; then
+if [[ -n $(find /srv/images -maxdepth 1 -type f \( -name "${IMAGE_FILE_BASE}*rectified*.jpg" -o -name "${IMAGE_FILE_BASE}*projected*.jpg" -o -name "${IMAGE_FILE_BASE}*corrected*.jpg" -o -name "${IMAGE_FILE_BASE}*equidistant*.jpg" -o -name "${IMAGE_FILE_BASE}*mercator*.jpg" -o -name "${IMAGE_FILE_BASE}*spread*.jpg" \)) ]]; then
   if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
     log "Producing polar graph of azimuth and elevation for pass" "INFO"
     polar_az_el=1
@@ -342,27 +342,23 @@ if [[ -n $(find /srv/images -maxdepth 1 -type f -name "${IMAGE_FILE_BASE#/srv/im
 
   # check if we got an image, and post-process if so
 
-  if [ -f "${IMAGE_FILE_BASE}-1-122-rectified.jpg" ]; then
-    log "I got a successful jpg images" "INFO"
+  log "I got a successful jpg images" "INFO"
 
-    # insert or replace in case there was already an insert due to the spectrogram creation
-    $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, has_polar_direction, gain) \
-                                        VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $polar_direction, $GAIN);"
+  # insert or replace in case there was already an insert due to the spectrogram creation
+  $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, has_polar_direction, gain) \
+                                      VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $polar_direction, $GAIN);"
 
-    pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
-    $SQLITE3 $DB_FILE "UPDATE predict_passes \
-                      SET is_active = 0 \
-                      WHERE (predict_passes.pass_start) \
-                      IN ( \
-                        SELECT predict_passes.pass_start \
-                        FROM predict_passes \
-                        INNER JOIN decoded_passes \
-                        ON predict_passes.pass_start = decoded_passes.pass_start \
-                        WHERE decoded_passes.id = $pass_id \
-                      );"
-  else
-    log "Did not get a successful .bmp image - stopping processing" "ERROR"
-  fi
+  pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
+  $SQLITE3 $DB_FILE "UPDATE predict_passes \
+                    SET is_active = 0 \
+                    WHERE (predict_passes.pass_start) \
+                    IN ( \
+                      SELECT predict_passes.pass_start \
+                      FROM predict_passes \
+                      INNER JOIN decoded_passes \
+                      ON predict_passes.pass_start = decoded_passes.pass_start \
+                      WHERE decoded_passes.id = $pass_id \
+                    );"
 
   # handle Slack pushing if enabled
   if [ "${ENABLE_SLACK_PUSH}" == "true" ]; then
