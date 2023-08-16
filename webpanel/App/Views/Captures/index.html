@@ -49,7 +49,7 @@
         {% set current_image_file_exists = false %}
         {% for suffix in meteor_suffixes %}
           {% set image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ suffix %}
-          {% set current_image_file_exists = capture|file_exists(image_path) %}
+          {{ $current_image_file_exists = file_exists($image_path) }}
           {% if not satellite_image_found and current_image_file_exists %}
             {% set satellite_image_found = true %}
             <img class="card-img-top" src="{{ image_path }}">
