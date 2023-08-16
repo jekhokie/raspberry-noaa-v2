@@ -32,7 +32,6 @@
     mode: 0644
     
 - name: Set ownership of ~/.config/meteordemod folder to pi
-  hosts: target
   become: yes
   tasks:
     - name: Change ownership of the folder
