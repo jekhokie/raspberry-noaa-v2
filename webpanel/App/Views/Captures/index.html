@@ -46,10 +46,10 @@
     <a href="/captures/listImages?pass_id={{ capture.id }}">
       {% if capture.sat_type == 0 %}
         {% if capture.daylight_pass == 1 %}
-          {% set image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ '-equidistant_321.jpg' %}
+          {% set image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ '-website-thumbnail.jpg' %}
           <img class="card-img-top" src="{{ image_path }}">
         {% else %}
-          {% set image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ '-Thermal_Channel_corrected.jpg' %}
+          {% set image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ '-website-thumbnail.jpg' %}
           <img class="card-img-top" src="{{ image_path }}">
       {% endif %}
       {% elseif capture.sat_type == 1 %}
