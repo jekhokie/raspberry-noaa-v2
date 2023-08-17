@@ -292,6 +292,34 @@ fi
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_BASE")*.jpg" -print -quit)" ]; then
+
+  meteor_suffixes=(
+      '-321-corrected.jpg'
+      '-equidistant_321.jpg'
+      '-mercator_321.jpg'
+      '-spread_321.jpg'
+      '-spread_123.jpg'
+      '-221-corrected.jpg'
+      '-equidistant_221.jpg'
+      '-mercator_321.jpg'
+      '-spread_221.jpg'
+      '-equidistant_654.jpg'
+      '-mercator_654.jpg'
+      '-spread_654.jpg'
+      '-Thermal_Channel_corrected.jpg'
+      '-spread_rain.jpg'
+      '-spread_IR.jpg'
+      '-1-122-rectified.jpg'
+  )
+
+  # Iterate through the meteor_suffixes array
+  for suffix in "${meteor_suffixes[@]}"; do
+      if [[ -f "${IMAGE_THUMB_BASE}${suffix}" ]]; then
+          cp "${IMAGE_THUMB_BASE}${suffix}" "${IMAGE_THUMB_BASE}-website-thumbnail.jpg"
+          break
+      fi
+  done
+
   log "Some images were produced, let's push them to the database and social media" "INFO"
   if [[ "${PRODUCE_POLAR_AZ_EL}" == "true" ]]; then
     log "Producing polar graph of azimuth and elevation for pass" "INFO"
