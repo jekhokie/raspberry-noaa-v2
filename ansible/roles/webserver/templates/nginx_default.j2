@@ -1,5 +1,6 @@
 server {
   listen {{ web_port }};
+  # Enabling IPv6 support making the server accessible from the internet
   listen [::]:{{ web_port }};
   
   root {{ web_home }}/public/;
