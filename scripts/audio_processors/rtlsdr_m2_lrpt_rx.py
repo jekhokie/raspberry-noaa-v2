@@ -84,7 +84,7 @@ class rtlsdr_m2_lrpt_rx(gr.top_block):
                 decimation=decim,
                 taps=None,
                 fractional_bw=0.4)
-        self.blocks_wavfile_sink_0 = blocks.wavfile_sink(output_baseband, 2, int(samp_rate_rtlsdr/decim), 16)
+        self.blocks_wavfile_sink_0 = blocks.wavfile_sink(output_baseband, 2, int(samp_rate_rtlsdr/decim), 8)
         self.blocks_complex_to_float_0 = blocks.complex_to_float(1)
 
         ##################################################
