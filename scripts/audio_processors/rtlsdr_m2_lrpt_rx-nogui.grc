@@ -89,7 +89,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    bits_per_sample: '16'
+    bits_per_sample: '8'
     comment: ''
     file: baseband.wav
     nchan: '2'
