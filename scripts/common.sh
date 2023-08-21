@@ -43,6 +43,7 @@ WXMAP="/usr/local/bin/wxmap"
 WXTOIMG="/usr/local/bin/wxtoimg"
 WKHTMLTOIMG="/usr/local/bin/wkhtmltoimage"
 METEORDEMOD="/usr/bin/meteordemod"
+SATDUMP="/usr/bin/satdump"
 
 # base directories for scripts
 SCRIPTS_DIR="${NOAA_HOME}/scripts"
