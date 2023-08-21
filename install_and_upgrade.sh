@@ -100,14 +100,6 @@ else
   die "  Something failed with the install - please inspect the logs above"
 fi
 
-log_running "Installing WXtoImg..."
-sudo apt install -y ~/raspberry-noaa-v2/software/wxtoimg-armhf-2.11.2-beta.deb
-if [ $? -eq 0 ]; then
-  log_done "WXtoImg installed successfully!"
-else
-  die "  Something failed with the WXtoImg install - please inspect the logs above"
-fi
-
 # source some env vars
 . "$HOME/.noaa-v2.conf"
 
