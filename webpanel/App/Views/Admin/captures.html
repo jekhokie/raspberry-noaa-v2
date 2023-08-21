@@ -67,9 +67,9 @@
             <a href="/captures/listImages?pass_id={{ capture.id }}">
               {% if capture.sat_type == 0 %}
                {% if capture.daylight_pass == 1 %}
-                 <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-2-122-rectified.jpg">
+                 <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-website-thumbnail.jpg">
                {% else %}
-                 <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-1-122-rectified.jpg">
+                 <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-website-thumbnail.jpg">
                {% endif %}
                {% elseif capture.sat_type == 1 %}
                  {% if capture.daylight_pass == 1 %}
