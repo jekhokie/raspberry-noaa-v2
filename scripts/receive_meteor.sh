@@ -111,7 +111,7 @@ if pgrep -f ${RECEIVER_TYPE}_noaa_apt_rx.py > /dev/null; then
   log "There is an already running gnuradio noaa capture instance but I dont care for now, I prefer this pass" "INFO"
   kill $(pgrep -f ${RECEIVER_TYPE}_noaa_apt_rx.py)
 fi
-if pgrep "satdump" > /dev/null; then
+if pgrep "$SATDUMP" > /dev/null; then
   log "There is an already running satdump noaa capture instance but I dont care for now, I prefer this pass" "INFO"
   pkill -9 -f satdump
 fi
@@ -245,10 +245,10 @@ elif [ "$METEOR_RECEIVER" == "satdump" ]; then
 
   log "Starting SatDump live recording and decoding" "INFO"
   if [[ "$METEOR_80K_INTERLEAVING" == "true" ]]; then
-    satdump live meteor_m2-x_lrpt_80k . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" $gain_option $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+    $SATDUMP live meteor_m2-x_lrpt_80k . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" $gain_option $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
     rm satdump.logs meteor_m2-x_lrpt_80k.cadu dataset.json
   else
-    satdump live meteor_m2-x_lrpt . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" $gain_option $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+    $SATDUMP live meteor_m2-x_lrpt . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" $gain_option $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
     rm satdump.logs meteor_m2-x_lrpt.cadu dataset.json
   fi
   
@@ -438,15 +438,15 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     instagram_push_annotation="${instagram_push_annotation} Gain: ${gain}"
     instagram_push_annotation="${instagram_push_annotation} | ${PASS_DIRECTION}"
 
-    convert "${IMAGE_FILE_BASE}-equidistant_321.jpg" -resize "1080x1350>" -gravity center -background black -extent 1080x1350 "${IMAGE_FILE_BASE}-instagram.jpg"
+    $CONVERT "${IMAGE_FILE_BASE}-equidistant_321.jpg" -resize "1080x1350>" -gravity center -background black -extent 1080x1350 "${IMAGE_FILE_BASE}-instagram.jpg"
 
     log "Pushing image enhancements to Instagram" "INFO"
     ${PUSH_PROC_DIR}/push_instagram.py "${instagram_push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME}
     rm "${IMAGE_FILE_BASE}-instagram.jpg"
     #if [[ "$daylight" -eq 1 ]]; then
-    #  convert +append "${IMAGE_FILE_BASE}-MSA.jpg" "${IMAGE_FILE_BASE}-MSA-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
+    #  $CONVERT +append "${IMAGE_FILE_BASE}-MSA.jpg" "${IMAGE_FILE_BASE}-MSA-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
     #else
-    #  convert +append "${IMAGE_FILE_BASE}-MCIR.jpg" "${IMAGE_FILE_BASE}-MCIR-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
+    #  $CONVERT +append "${IMAGE_FILE_BASE}-MCIR.jpg" "${IMAGE_FILE_BASE}-MCIR-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
   fi
 
   # handle matrix pushing if enabled
