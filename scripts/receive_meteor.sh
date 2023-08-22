@@ -206,7 +206,7 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
   else
     $METEORDEMOD -m oqpsk -diff 1 -s 72000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
   fi
-  
+
   rm *.gcp *.bmp "${RAMFS_AUDIO_BASE}.wav"
 
   for i in spread_*.jpg
@@ -251,40 +251,42 @@ elif [ "$METEOR_RECEIVER" == "satdump" ]; then
     $SATDUMP live meteor_m2-x_lrpt . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" $gain_option $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
     rm satdump.logs meteor_m2-x_lrpt.cadu dataset.json
   fi
-  
+
   log "Waiting for files to close" "INFO"
   sleep 2
-  
+
   find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
 
   # Renaming files
-  for i in MSU-MR/*.png; do
+  for i in MSU-MR/*.jpg; do
+    path="$(pwd)"
+    new_name="$(basename "$i")"
     # Use parameter expansion to remove the specified prefixes
-    new_name="${i#msu_mr_rgb_}"
+    new_name="${new_name#msu_mr_rgb_}"
     new_name="${new_name#rgb_msu_mr_rgb_}"
     new_name="${new_name#rgb_msu_mr_rgb_}"
     new_name="${new_name#rgb_msu_mr_}"
     new_name="${new_name#msu_mr_}"
-
     # Rename the file with the new name
-    mv "$i" "$new_name"
+    mv "$i" "$path/MSU-MR/$new_name" >> $NOAA_LOG 2>&1
   done
-  
+
   for i in MSU-MR/*_corrected.png
   do
     $CONVERT $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
   done
-  
+
   log "Annotating images and creating thumbnails" "INFO"
   for i in MSU-MR/*.png; do
     ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "${i%.png}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.png}-thumb.jpg" >> $NOAA_LOG 2>&1
-    mv "${i%.png}.jpg" "${IMAGE_FILE_BASE}-${i%.png}.jpg"
-    mv "${i%.png}-thumb.jpg" "${IMAGE_THUMB_BASE}-${i%.png}.jpg"
-    rm $i
-    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${i%.png}.jpg"
+    image_filename=$(basename "$i") >> $NOAA_LOG 2>&1
+    mv "${i%.png}.jpg" "${IMAGE_FILE_BASE}-${image_filename%.png}.jpg" >> $NOAA_LOG 2>&1
+    mv "${i%.png}-thumb.jpg" "${IMAGE_THUMB_BASE}-${image_filename%.png}.jpg" >> $NOAA_LOG 2>&1
+    rm $i >> $NOAA_LOG 2>&1
+    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${image_filename%.png}.jpg"
   done
-  rm -r MSU-MR
+  rm -r MSU-MR >> $NOAA_LOG 2>&1
 else
   log "Receiver type '$METEOR_RECEIVER' not valid" "ERROR"
 fi
@@ -294,12 +296,14 @@ fi
 if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_BASE")*.jpg" -print -quit)" ]; then
 
   meteor_suffixes=(
-      '-321-corrected.jpg'
+      '-321_corrected.jpg'
+      '-321_projected.jpg'
       '-equidistant_321.jpg'
       '-mercator_321.jpg'
       '-spread_321.jpg'
       '-spread_123.jpg'
-      '-221-corrected.jpg'
+      '-221_corrected.jpg'
+      '-221_projected.jpg'
       '-equidistant_221.jpg'
       '-mercator_321.jpg'
       '-spread_221.jpg'
