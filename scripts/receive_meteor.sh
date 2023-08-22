@@ -258,7 +258,7 @@ elif [ "$METEOR_RECEIVER" == "satdump" ]; then
   find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
 
   # Renaming files
-  for i in MSU-MR/*.jpg; do
+  for i in MSU-MR/*.png; do
     path="$(pwd)"
     new_name="$(basename "$i")"
     # Use parameter expansion to remove the specified prefixes
