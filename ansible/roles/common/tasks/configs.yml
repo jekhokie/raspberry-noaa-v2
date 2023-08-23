@@ -144,7 +144,7 @@
   copy:
     src: annotation.html.j2_file
     dest: ~pi/raspberry-noaa-v2/config/annotation/annotation.html.j2
-    force: yes
+    force: no
     owner: pi
     group: pi
     mode: 0600
