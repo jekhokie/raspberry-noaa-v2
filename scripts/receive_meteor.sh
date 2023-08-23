@@ -442,7 +442,7 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     instagram_push_annotation="${instagram_push_annotation} Gain: ${gain}"
     instagram_push_annotation="${instagram_push_annotation} | ${PASS_DIRECTION}"
 
-    $CONVERT "${IMAGE_FILE_BASE}-equidistant_321.jpg" -resize "1080x1350>" -gravity center -background black -extent 1080x1350 "${IMAGE_FILE_BASE}-instagram.jpg"
+    $CONVERT "${IMAGE_FILE_BASE}${suffix}" -resize "1080x1350>" -gravity center -background black -extent 1080x1350 "${IMAGE_FILE_BASE}-instagram.jpg"
 
     log "Pushing image enhancements to Instagram" "INFO"
     ${PUSH_PROC_DIR}/push_instagram.py "${instagram_push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME}
