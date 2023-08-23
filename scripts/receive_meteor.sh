@@ -279,7 +279,7 @@ elif [ "$METEOR_RECEIVER" == "satdump" ]; then
   log "Annotating images and creating thumbnails" "INFO"
   for i in MSU-MR/*.png; do
     ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "${i%.png}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${i%.png}-thumb.jpg" >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${i%.png}.jpg" "${i%.png}-thumb.jpg" >> $NOAA_LOG 2>&1
     image_filename=$(basename "$i") >> $NOAA_LOG 2>&1
     mv "${i%.png}.jpg" "${IMAGE_FILE_BASE}-${image_filename%.png}.jpg" >> $NOAA_LOG 2>&1
     mv "${i%.png}-thumb.jpg" "${IMAGE_THUMB_BASE}-${image_filename%.png}.jpg" >> $NOAA_LOG 2>&1
