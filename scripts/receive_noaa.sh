@@ -96,6 +96,13 @@ case "$RECEIVER_TYPE" in
          ;; 
 esac
 
+gain_option=""
+if [[ "$receiver" == "rtlsdr" ]]; then
+  gain_option="--source_id $SDR_DEVICE_ID --gain"
+else
+  gain_option="--general_gain"
+fi
+
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
 export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
@@ -120,7 +127,7 @@ elif [ "$NOAA_RECEIVER" == "gnuradio" ]; then
   ${AUDIO_PROC_DIR}/noaa_record_gnuradio.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav" >> $NOAA_LOG 2>&1
 elif [ "$NOAA_RECEIVER" == "satdump" ]; then
   log "Starting SatDump recording and live decoding" "INFO"
-  satdump live noaa_apt . --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} --general_gain $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+  satdump live noaa_apt . --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
   rm satdump.logs product.cbor dataset.json
 fi
 
@@ -313,7 +320,7 @@ if [ -f "${AUDIO_FILE_BASE}.wav" ]; then
 
   rm $map_overlay
 
-  if [ "$DELETE_AUDIO" = true ]; then
+  if [ "$DELETE_NOAA_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
     rm "${AUDIO_FILE_BASE}.wav"
   fi

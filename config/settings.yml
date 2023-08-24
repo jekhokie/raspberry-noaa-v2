@@ -25,7 +25,7 @@ test_enable_bias_tee: false
 test_freq_offset: 0
 
 # receiver settings
-#   receiver_type - the receiver type which program uses ('rtlsdr', 'airspy_mini', 'airspy_r2' or 'hackrf')
+#   receiver_type - the receiver type which program uses ('rtlsdr', 'airspy_mini', 'airspy_r2' or 'hackrf' or 'sdrplay')
 #   noaa_receiver  - which receiver method to use (either 'rtl_fm' or 'gnuradio')
 #   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'gnuradio' or 'satdump')
 receiver_type: 'rtlsdr'
@@ -88,7 +88,8 @@ meteor_80k_interleaving: false
 days_to_schedule_passes: 1
 
 # whether audio files should be deleted after images are created
-delete_audio: true
+delete_noaa_audio: true
+delete_meteor_audio: true
 
 # processing settings
 #   flip_meteor_image - whether the meteor image should be flipped
@@ -141,6 +142,7 @@ meteor_create_spreaded_images_without_overlay: true
 meteor_create_rain_probability_overlay: true
 meteor_create_equidistant_projection: true
 meteor_create_mercator_projection: false
+satdump_image_scaling_factor: 1
 
 # noaa map configurations
 # http://usradioguy.com/wp-content/uploads/2020/05/wxtoimgcommand-line.pdf

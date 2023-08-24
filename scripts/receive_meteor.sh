@@ -74,6 +74,13 @@ case "$RECEIVER_TYPE" in
          ;; 
 esac
 
+gain_option=""
+if [[ "$receiver" == "rtlsdr" ]]; then
+  gain_option="--source_id $SDR_DEVICE_ID --gain"
+else
+  gain_option="--general_gain"
+fi
+
 # check if there is enough free memory to store pass on RAM
 FREE_MEMORY=$(free -m | grep Mem | awk '{print $7}')
 if [ "$FREE_MEMORY" -lt $METEOR_M2_MEMORY_TRESHOLD ]; then
@@ -187,7 +194,7 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg "
   done
 
-  if [ "$DELETE_AUDIO" = true ]; then
+  if [ "$DELETE_METEOR_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
     rm "${RAMFS_AUDIO_BASE}.s"
   else
@@ -229,7 +236,7 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg"
   done
 
-  if [ "$DELETE_AUDIO" = true ]; then
+  if [ "$DELETE_METEOR_AUDIO" = true ]; then
     log "Deleting audio files" "INFO"
     rm "${RAMFS_AUDIO_BASE}.s"
   else
@@ -239,13 +246,6 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     fi
   fi
 elif [ "$METEOR_RECEIVER" == "satdump" ]; then
-
-  gain_option=""
-  if [[ "$receiver" == "rtlsdr" ]]; then
-    gain_option="--source_id $SDR_DEVICE_ID --gain"
-  else
-    gain_option="--general_gain"
-  fi
 
   log "Starting SatDump live recording and decoding" "INFO"
   if [[ "$METEOR_80K_INTERLEAVING" == "true" ]]; then
