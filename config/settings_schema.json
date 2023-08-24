@@ -77,6 +77,7 @@
       "minimum": 0,
       "maximum": 90
     },
+    "noaa_memory_threshold":           { "type": "number" },
     "meteor_m2_memory_threshold":      { "type": "number" },
     "meteor_80k_interleaving":         { "type": "boolean" },
     "days_to_schedule_passes":         { "type": "number" },
@@ -222,7 +223,8 @@
     "meteor_m2_sat_min_elevation",
     "meteor_m2_memory_threshold",
     "days_to_schedule_passes",
-    "delete_audio",
+    "delete_noaa_audio",
+    "delete_meteor_audio",
     "flip_meteor_image",
     "produce_spectrogram",
     "noaa_crop_telemetry",

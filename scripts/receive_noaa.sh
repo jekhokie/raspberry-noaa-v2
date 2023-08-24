@@ -65,9 +65,23 @@ elif [ "$SAT_NAME" == "NOAA 19" ]; then
 fi
 
 # base directory plus filename helper variables
+RAMFS_AUDIO_BASE="${RAMFS_AUDIO}/${FILENAME_BASE}"
 AUDIO_FILE_BASE="${NOAA_AUDIO_OUTPUT}/${FILENAME_BASE}"
 IMAGE_FILE_BASE="${IMAGE_OUTPUT}/${FILENAME_BASE}"
 IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
+
+# check if there is enough free memory to store pass on RAM
+FREE_MEMORY=$(free -m | grep Mem | awk '{print $7}')
+if [ "$FREE_MEMORY" -lt $NOAA_MEMORY_THRESHOLD ]; then
+  log "The system doesn't have enough space to store a Meteor pass on RAM" "INFO"
+  log "Free : ${FREE_MEMORY} ; Required : ${NOAA_MEMORY_THRESHOLD}" "INFO"
+  RAMFS_AUDIO_BASE="${AUDIO_FILE_BASE}"
+  in_mem=false
+else
+  log "The system have enough space to store a Meteor pass on RAM" "INFO"
+  log "Free : ${FREE_MEMORY} ; Required : ${NOAA_MEMORY_THRESHOLD}" "INFO"
+  in_mem=true
+fi
 
 case "$RECEIVER_TYPE" in 
      "rtlsdr") 
@@ -108,7 +122,7 @@ PASS_START=$(expr "$EPOCH_START" + 90)
 export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 
 if pgrep "rtl_fm" > /dev/null; then
-  log "There is an existing rtl_fm instance running, I quit" "ERROR"
+  log "There is an existing RTL_FM instance running, I quit" "ERROR"
   exit 1
 elif pgrep -f ${RECEIVER_TYPE}_noaa_apt_rx.py > /dev/null; then
   log "There is an existing gnuradio noaa capture instance running, I quit" "ERROR"
@@ -120,11 +134,17 @@ fi
 
 #start capture
 if [ "$NOAA_RECEIVER" == "rtl_fm" ]; then
-  log "Starting rtl_fm record" "INFO"
-  ${AUDIO_PROC_DIR}/noaa_record_rtl_fm.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav" >> $NOAA_LOG 2>&1
+  log "Starting rtl_fm record at ${freq} MHz..." "INFO"
+  if [ ${GAIN} == 0 ]; then
+    timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -f "${NOAA_FREQUENCY}"M -p "${FREQ_OFFSET}" -s 60k  -E wav -E deemp -F 9 - | $SOX -t raw -e signed -c 1 -b 16 -r 60000 - "${RAMFS_AUDIO_BASE}.wav" rate 11025
+  else
+    timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -f "${NOAA_FREQUENCY}"M -p "${FREQ_OFFSET}" -s 60k -g "${GAIN}" -E wav -E deemp -F 9 - | $SOX -t raw -e signed -c 1 -b 16 -r 60000 - "${RAMFS_AUDIO_BASE}.wav" rate 11025
+  fi
 elif [ "$NOAA_RECEIVER" == "gnuradio" ]; then
   log "Starting gnuradio record" "INFO"
-  ${AUDIO_PROC_DIR}/noaa_record_gnuradio.sh "${SAT_NAME}" $CAPTURE_TIME "${AUDIO_FILE_BASE}.wav" >> $NOAA_LOG 2>&1
+  log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via GNU Radio " "INFO"
+  timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/${RECEIVER_TYPE}_noaa_apt_rx.py" "${RAMFS_AUDIO_BASE}.wav" "${GAIN}" "${NOAA_FREQUENCY}"M "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
+  ffmpeg -hide_banner -loglevel error -i "$3" -c:a copy "${3%.*}_tmp.wav" && ffmpeg -i "${3%.*}_tmp.wav" -c:a copy -y "$3" && rm "${3%.*}_tmp.wav"
 elif [ "$NOAA_RECEIVER" == "satdump" ]; then
   log "Starting SatDump recording and live decoding" "INFO"
   satdump live noaa_apt . --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
@@ -172,14 +192,14 @@ if [[ "${PRODUCE_POLAR_DIRECTION}" == "true" ]]; then
   ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png" >> $NOAA_LOG 2>&1
 fi
 
-if [ -f "${AUDIO_FILE_BASE}.wav" ]; then
+if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
   #generate outputs
   spectrogram=0
   if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
     log "Producing spectrogram" "INFO"
     spectrogram=1
     spectro_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
-    ${IMAGE_PROC_DIR}/spectrogram.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" "${spectro_text}" >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/spectrogram.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" "${spectro_text}" >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png" >> $NOAA_LOG 2>&1
   fi
 
@@ -187,7 +207,7 @@ if [ -f "${AUDIO_FILE_BASE}.wav" ]; then
   if [[ "${PRODUCE_NOAA_PRISTINE}" == "true" ]]; then
     log "Producing pristine image" "INFO"
     pristine=1
-    ${IMAGE_PROC_DIR}/noaa_pristine.sh "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/noaa_pristine.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_THUMB_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
   fi
 
@@ -198,7 +218,7 @@ if [ -f "${AUDIO_FILE_BASE}.wav" ]; then
     histogram_text="${capture_start} @ ${SAT_MAX_ELEVATION}° Gain: ${GAIN}"
 
     log "Generating Data for Histogram" "INFO"
-    ${IMAGE_PROC_DIR}/noaa_histogram_data.sh "${AUDIO_FILE_BASE}.wav" "${tmp_dir}/${FILENAME_BASE}-a.png" "${tmp_dir}/${FILENAME_BASE}-b.png" >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/noaa_histogram_data.sh "${RAMFS_AUDIO_BASE}.wav" "${tmp_dir}/${FILENAME_BASE}-a.png" "${tmp_dir}/${FILENAME_BASE}-b.png" >> $NOAA_LOG 2>&1
 
     log "Producing histogram of NOAA pristine image channel A" "INFO"
     ${IMAGE_PROC_DIR}/histogram.sh "${tmp_dir}/${FILENAME_BASE}-a.png" "${IMAGE_FILE_BASE}-histogram-a.jpg" "${SAT_NAME} - Channel A" "${histogram_text}" >> $NOAA_LOG 2>&1
@@ -267,9 +287,9 @@ if [ -f "${AUDIO_FILE_BASE}.wav" ]; then
     log "Decoding image" "INFO"
 
     if [$enhancement == "avi"]; then
-      ${IMAGE_PROC_DIR}/noaa_avi.sh $map_overlay "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" $enhancement >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/noaa_avi.sh $map_overlay "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" $enhancement >> $NOAA_LOG 2>&1
     else
-      ${IMAGE_PROC_DIR}/noaa_enhancements.sh $map_overlay "${AUDIO_FILE_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" $enhancement >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/noaa_enhancements.sh $map_overlay "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" $enhancement >> $NOAA_LOG 2>&1
     fi
 
     if [ -f "${IMAGE_FILE_BASE}-$enhancement.jpg" ]; then
@@ -320,9 +340,14 @@ if [ -f "${AUDIO_FILE_BASE}.wav" ]; then
 
   rm $map_overlay
 
-  if [ "$DELETE_NOAA_AUDIO" = true ]; then
+  if [ "$DELETE_NOAA_AUDIO" == true ]; then
     log "Deleting audio files" "INFO"
-    rm "${AUDIO_FILE_BASE}.wav"
+    rm "${RAMFS_AUDIO_BASE}.wav"
+  else
+    if [ "$in_mem" == "true" ]; then
+      log "Moving audio files out to the SD card" "INFO"
+      mv "${RAMFS_AUDIO_BASE}.wav" "${AUDIO_FILE_BASE}.wav"
+	fi
   fi
 else
   for i in *.png; do

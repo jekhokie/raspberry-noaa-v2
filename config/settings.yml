@@ -43,6 +43,9 @@ meteor_receiver: 'satdump'
 #   <satellite_name>_sat_min_elevation - threshold for sat elevation for specific satellite captures
 #   <satellite_name>_memory_threshold - for METEOR satellite, minimum free memory (MB) required to store pass in RAM
 
+noaa_memory_threshold: 100
+meteor_m2_memory_threshold: 600
+
 noaa_15_schedule: true
 noaa_15_sdr_device_id: 0
 noaa_15_freq_offset: 0
@@ -74,7 +77,6 @@ meteor_m2_enable_bias_tee: false
 meteor_m2_gain: 30
 meteor_m2_sun_min_elevation: 6
 meteor_m2_sat_min_elevation: 30
-meteor_m2_memory_threshold: 600
 meteor_80k_interleaving: false
 
 # how many days to schedule passes - note this MUST be an even integer,
