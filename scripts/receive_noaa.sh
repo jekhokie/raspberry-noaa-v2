@@ -94,7 +94,7 @@ case "$RECEIVER_TYPE" in
          echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE" 
          exit 1 
          ;; 
- esac
+esac
 
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
