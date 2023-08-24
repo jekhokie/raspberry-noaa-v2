@@ -72,7 +72,7 @@ case "$RECEIVER_TYPE" in
          echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE" 
          exit 1 
          ;; 
- esac
+esac
 
 # check if there is enough free memory to store pass on RAM
 FREE_MEMORY=$(free -m | grep Mem | awk '{print $7}')
