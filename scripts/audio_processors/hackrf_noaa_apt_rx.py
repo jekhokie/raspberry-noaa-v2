@@ -29,12 +29,37 @@ class hackrf_noaa_apt_rx(gr.top_block):
     def __init__(self):
         gr.top_block.__init__(self, "HackRF NOAA APT Receiver V1.0.0")
 
+        ###############################################################
+        # Variables - added for Raspberry-Noaa-V2 manually after export
+        ###############################################################
+
+        # get some variables in place for inputs
+        #
+        # Arguments:
+        #   1. Full path and name of stream file (including file extension)
+        #   2. Gain to be used
+        #   3. Frequency (in Mhz)
+        #   4. Frequency offset (PPM)
+        #   5. SDR Device ID from settings.yml (for RTL-SDR source block)
+        #   6. Bias-T (0/1 for RTL-SDR)
+
+        stream_name = sys.argv[1]
+        gain = float(sys.argv[2])
+        import decimal
+        freq = int(decimal.Decimal(sys.argv[3].strip("M"))*decimal.Decimal(1000000))
+        freq_offset = int(sys.argv[4])
+        sdr_dev_id = sys.argv[5]
+        bias_t_string = sys.argv[6]
+        bias_t = "1"
+        if not bias_t_string:
+           bias_t = "0"
+
         ##################################################
         # Variables
         ##################################################
         self.trans = trans = 25000
         self.samp_rate_hackrf = samp_rate_hackrf = 4e6
-        self.recfile = recfile = "/srv/audio/noaa/capture.wav"
+        self.recfile = recfile = stream_name
         self.fcd_freq = fcd_freq = 137500000
         self.cutoff = cutoff = 75000
 
@@ -46,19 +71,17 @@ class hackrf_noaa_apt_rx(gr.top_block):
                 decimation=4000,
                 taps=None,
                 fractional_bw=None)
-        self.osmosdr_source_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + "hackrf=0,linearity,bias=0"
-        )
+        self.osmosdr_source_0 = osmosdr.source(args="numchan=" + str(1) + " " + "hackrf=0,linearity,bias=0")
         self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(samp_rate_hackrf)
         self.osmosdr_source_0.set_center_freq(fcd_freq, 0)
-        self.osmosdr_source_0.set_freq_corr(0, 0)
+        self.osmosdr_source_0.set_freq_corr(freq_offset, 0)
         self.osmosdr_source_0.set_dc_offset_mode(0, 0)
         self.osmosdr_source_0.set_iq_balance_mode(0, 0)
         self.osmosdr_source_0.set_gain_mode(False, 0)
-        self.osmosdr_source_0.set_gain(14, 0)
-        self.osmosdr_source_0.set_if_gain(18, 0)
-        self.osmosdr_source_0.set_bb_gain(16, 0)
+        self.osmosdr_source_0.set_gain(gain, 0)
+        self.osmosdr_source_0.set_if_gain(0, 0)
+        self.osmosdr_source_0.set_bb_gain(0, 0)
         self.osmosdr_source_0.set_antenna('', 0)
         self.osmosdr_source_0.set_bandwidth(0, 0)
         self.low_pass_filter_0 = filter.fir_filter_ccf(
@@ -76,8 +99,6 @@ class hackrf_noaa_apt_rx(gr.top_block):
         	quad_rate=100000,
         	audio_decimation=1,
         )
-
-
 
         ##################################################
         # Connections
@@ -124,10 +145,6 @@ class hackrf_noaa_apt_rx(gr.top_block):
     def set_cutoff(self, cutoff):
         self.cutoff = cutoff
         self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate_hackrf, self.cutoff, self.trans, firdes.WIN_HAMMING, 6.76))
-
-
-
-
 
 def main(top_block_cls=hackrf_noaa_apt_rx, options=None):
     tb = top_block_cls()
