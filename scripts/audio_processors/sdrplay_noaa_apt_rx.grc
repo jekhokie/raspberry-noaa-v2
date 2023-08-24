@@ -10,7 +10,7 @@ options:
     gen_linking: dynamic
     generate_options: no_gui
     hier_block_src_path: '.:'
-    id: hackrf_noaa_apt_rx
+    id: sdrplay_noaa_apt_rx
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -21,7 +21,7 @@ options:
     run_options: run
     sizing_mode: fixed
     thread_safe_setters: ''
-    title: HackRF NOAA APT Receiver V1.0.0
+    title: SDRPlay NOAA APT Receiver V1.0.0
     window_size: 1280, 1050
   states:
     bus_sink: false
@@ -68,11 +68,11 @@ blocks:
     coordinate: [632, 52]
     rotation: 0
     state: enabled
-- name: samp_rate_hackrf
+- name: samp_rate
   id: variable
   parameters:
     comment: ''
-    value: 4e6
+    value: 2e6
   states:
     bus_sink: false
     bus_source: false
@@ -152,12 +152,12 @@ blocks:
     beta: '6.76'
     comment: ''
     cutoff_freq: cutoff
-    decim: '40'
+    decim: '20'
     gain: '1'
     interp: '1'
     maxoutbuf: '0'
     minoutbuf: '0'
-    samp_rate: samp_rate_hackrf
+    samp_rate: samp_rate
     type: fir_filter_ccf
     width: trans
     win: firdes.WIN_HAMMING
@@ -205,7 +205,7 @@ blocks:
     ant7: ''
     ant8: ''
     ant9: ''
-    args: '"hackrf=0,linearity,bias=0"'
+    args: '"sdrplay=0,bias=0"'
     bb_gain0: '16'
     bb_gain1: '20'
     bb_gain10: '20'
@@ -507,7 +507,7 @@ blocks:
     minoutbuf: '0'
     nchan: '1'
     num_mboards: '1'
-    sample_rate: samp_rate_hackrf
+    sample_rate: samp_rate
     sync: sync
     time_source0: ''
     time_source1: ''
