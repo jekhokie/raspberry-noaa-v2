@@ -69,28 +69,32 @@ AUDIO_FILE_BASE="${NOAA_AUDIO_OUTPUT}/${FILENAME_BASE}"
 IMAGE_FILE_BASE="${IMAGE_OUTPUT}/${FILENAME_BASE}"
 IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 
-case "$RECEIVER_TYPE" in
-    "rtlsdr")
-        samplerate="1.024e6"
-        receiver="rtlsdr"
-        ;;
-    "airspy_mini")
-        samplerate="3e6"
-        receiver="airspy"
-        ;;
-    "airspy_r2")
-        samplerate="2.5e6"
-        receiver="airspy"
-        ;;
-    "hackrf")
-        samplerate="4e6"
-        receiver="hackrf"
-        ;;
-    *)
-        echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE"
-        exit 1
-        ;;
-esac
+case "$RECEIVER_TYPE" in 
+     "rtlsdr") 
+         samplerate="1.024e6" 
+         receiver="rtlsdr" 
+         ;; 
+     "airspy_mini") 
+         samplerate="3e6" 
+         receiver="airspy" 
+         ;; 
+     "airspy_r2") 
+         samplerate="2.5e6" 
+         receiver="airspy" 
+         ;; 
+     "hackrf") 
+         samplerate="4e6" 
+         receiver="hackrf" 
+         ;; 
+     "sdrplay") 
+         samplerate="2e6" 
+         receiver="sdrplay" 
+         ;; 
+     *) 
+         echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE" 
+         exit 1 
+         ;; 
+ esac
 
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
