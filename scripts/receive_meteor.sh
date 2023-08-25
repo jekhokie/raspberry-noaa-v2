@@ -86,7 +86,7 @@ FREE_MEMORY=$(free -m | grep Mem | awk '{print $7}')
 if [ "$FREE_MEMORY" -lt $METEOR_M2_MEMORY_THRESHOLD ]; then
   log "The system doesn't have enough space to store a Meteor pass on RAM" "INFO"
   log "Free : ${FREE_MEMORY} ; Required : ${METEOR_M2_MEMORY_THRESHOLD}" "INFO"
-  RAMFS_AUDIO_BASE="${METEOR_AUDIO_OUTPUT}/${FILENAME_BASE}"
+  RAMFS_AUDIO_BASE="${AUDIO_FILE_BASE}"
   in_mem=false
 else
   log "The system have enough space to store a Meteor pass on RAM" "INFO"
