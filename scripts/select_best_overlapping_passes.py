@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-import sqlite3                                  from datetime import datetime
+import sqlite3
+from datetime import datetime
 import os
 import sys
 
@@ -15,7 +16,9 @@ def delete_job(target_datetime_str):
     # Get the list of at jobs
     atq_output = os.popen("atq").read().strip()
     atq_lines = atq_output.split("\n")
-                                                    # Loop through the at jobs and find the ones scheduled around the target datetime               for line in atq_lines:
+
+    # Loop through the at jobs and find the ones scheduled around the target datetime
+    for line in atq_lines:
         job_id, job_datetime = line.split(None, 1)
 
         # Extract the full date and time string
