@@ -15,7 +15,7 @@
 
     {% if constant('Config\\Config::ENABLE_ANIMATION') == 'true' %}
       <div id="noaa-animation" class="d-none d-sm-block flex-child">
-        <video playsinline autoplay muted loop controls src="{{ constant('Config\\Config::ANIMATION_VIDEO_FILE') }}" width="100%" height="100%" type="video/mp4"></video>
+        <video playsinline autoplay muted loop controls src="{{ constant('Config\\Config::ANIMATION_VIDEO_FILE') }}" width="100%" height="100%" type="video/webm, codecs=vp9"></video>
       </div>
     {% endif %}
   </div>
