@@ -70,13 +70,13 @@ while [ "$(date --date="@${end_epoch_time}" +"%s")" -le "${END_TIME_MS}" ]; do
     if [ $azimuth_at_max -ge 0 ] && [ $azimuth_at_max -le 180 ]; then
       pass_side="E"
     fi
-    
+
     # should at send mail ?
     mail_arg=""
     if [ "${DISABLE_AT_MAIL}" == "true" ]; then
       mail_arg="-M"
     fi
-    
+
     printf -v safe_obj_name "%q" $(echo "${OBJ_NAME}" | sed "s/ /-/g")
     log "Scheduling capture for: ${safe_obj_name} ${file_date_ext} ${max_elev}" "INFO"
     job_output=$(echo "${NOAA_HOME}/scripts/${RECEIVE_SCRIPT} \"${OBJ_NAME}\" ${safe_obj_name}-${file_date_ext} ${TLE_FILE} \
