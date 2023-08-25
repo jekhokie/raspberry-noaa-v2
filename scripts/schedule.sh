@@ -144,6 +144,14 @@ if [ "$METEOR_M2_SCHEDULE" == "true" ]; then
 fi
 log "Done scheduling jobs!" "INFO"
 
+# Check if the variable is set and true
+if [ "$SELECT_BEST_OVERLAPPING_PASSES" = true ]; then
+    log "Program automatically selected the best pass!" "INFO"
+    $NOAA_HOME/scripts/select_best_overlapping_passes.py $DB_FILE
+else
+    log "You should manually remove overlapping passes." "INFO"
+fi
+
 if [ "${ENABLE_EMAIL_SCHEDULE_PUSH}" == "true" ]; then
   # create annotation to send as subject for email
   annotation="Scheduled Passes | "
