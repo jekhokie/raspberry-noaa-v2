@@ -17,6 +17,7 @@
     "noaa_receiver": {
       "type": "string"
     },
+    "select_best_overlapping_passes": { "type": "boolean" },
     "noaa_15_schedule":        { "type": "boolean" },
     "noaa_15_sdr_device_id":   { "type": "number" },
     "noaa_15_freq_offset":     { "type": "number" },

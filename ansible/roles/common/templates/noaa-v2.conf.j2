@@ -15,6 +15,7 @@ TEST_GAIN={{ test_gain }}
 TEST_SDR_DEVICE_ID={{ test_sdr_device_id }}
 TEST_ENABLE_BIAS_TEE="{% if test_enable_bias_tee|lower == 'true' %}-T{% endif %}"
 TEST_FREQ_OFFSET={{ test_freq_offset }}
+SELECT_BEST_OVERLAPPING_PASSES={{ select_best_overlapping_passes|lower }}
 NOAA_15_SCHEDULE={{ noaa_15_schedule|lower }}
 NOAA_15_SDR_DEVICE_ID={{ noaa_15_sdr_device_id }}
 NOAA_15_FREQ_OFFSET={{ noaa_15_freq_offset }}

@@ -83,31 +83,31 @@ else
   in_mem=true
 fi
 
-case "$RECEIVER_TYPE" in 
-     "rtlsdr") 
-         samplerate="1.024e6" 
-         receiver="rtlsdr" 
-         ;; 
-     "airspy_mini") 
-         samplerate="3e6" 
-         receiver="airspy" 
-         ;; 
-     "airspy_r2") 
-         samplerate="2.5e6" 
-         receiver="airspy" 
-         ;; 
-     "hackrf") 
-         samplerate="4e6" 
-         receiver="hackrf" 
-         ;; 
-     "sdrplay") 
-         samplerate="2e6" 
-         receiver="sdrplay" 
-         ;; 
-     *) 
-         echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE" 
-         exit 1 
-         ;; 
+case "$RECEIVER_TYPE" in
+     "rtlsdr")
+         samplerate="1.024e6"
+         receiver="rtlsdr"
+         ;;
+     "airspy_mini")
+         samplerate="3e6"
+         receiver="airspy"
+         ;;
+     "airspy_r2")
+         samplerate="2.5e6"
+         receiver="airspy"
+         ;;
+     "hackrf")
+         samplerate="4e6"
+         receiver="hackrf"
+         ;;
+     "sdrplay")
+         samplerate="2e6"
+         receiver="sdrplay"
+         ;;
+     *)
+         echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE"
+         exit 1
+         ;;
 esac
 
 gain_option=""
@@ -347,7 +347,7 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
     if [ "$in_mem" == "true" ]; then
       log "Moving audio files out to the SD card" "INFO"
       mv "${RAMFS_AUDIO_BASE}.wav" "${AUDIO_FILE_BASE}.wav"
-	fi
+    fi
   fi
 else
   for i in *.png; do

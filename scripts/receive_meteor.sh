@@ -47,31 +47,31 @@ AUDIO_FILE_BASE="${METEOR_AUDIO_OUTPUT}/${FILENAME_BASE}"
 IMAGE_FILE_BASE="${IMAGE_OUTPUT}/${FILENAME_BASE}"
 IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 
-case "$RECEIVER_TYPE" in 
-     "rtlsdr") 
-         samplerate="1.024e6" 
-         receiver="rtlsdr" 
-         ;; 
-     "airspy_mini") 
-         samplerate="3e6" 
-         receiver="airspy" 
-         ;; 
-     "airspy_r2") 
-         samplerate="2.5e6" 
-         receiver="airspy" 
-         ;; 
-     "hackrf") 
-         samplerate="4e6" 
-         receiver="hackrf" 
-         ;; 
-     "sdrplay") 
-         samplerate="2e6" 
-         receiver="sdrplay" 
-         ;; 
-     *) 
-         echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE" 
-         exit 1 
-         ;; 
+case "$RECEIVER_TYPE" in
+     "rtlsdr")
+         samplerate="1.024e6"
+         receiver="rtlsdr"
+         ;;
+     "airspy_mini")
+         samplerate="3e6"
+         receiver="airspy"
+         ;;
+     "airspy_r2")
+         samplerate="2.5e6"
+         receiver="airspy"
+         ;;
+     "hackrf")
+         samplerate="4e6"
+         receiver="hackrf"
+         ;;
+     "sdrplay")
+         samplerate="2e6"
+         receiver="sdrplay"
+         ;;
+     *)
+         echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE"
+         exit 1
+         ;;
 esac
 
 gain_option=""
@@ -160,9 +160,9 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   else
     timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -M raw -f "${METEOR_FREQ}"M -p "${FREQ_OFFSET}" -s 288k -g "${GAIN}" | $SOX -t raw -r 288k -c 2 -b 16 -e s - -t wav "${RAMFS_AUDIO_BASE}.wav" rate 96k >> $NOAA_LOG 2>&1
   fi
-  
+
   sleep 2
-  
+
   if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
     log "Producing spectrogram" "INFO"
     spectrogram=1
@@ -205,7 +205,7 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
     if [ "$in_mem" == "true" ]; then
       log "Moving audio files out to the SD card" "INFO"
       mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
-	fi
+    fi
   fi
 elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 
@@ -246,7 +246,7 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     if [ "$in_mem" == "true" ]; then
       log "Moving audio files out to the SD card" "INFO"
       mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
-	fi
+    fi
   fi
 elif [ "$METEOR_RECEIVER" == "satdump" ]; then
 

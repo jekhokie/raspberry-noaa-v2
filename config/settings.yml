@@ -45,6 +45,7 @@ meteor_receiver: 'satdump'
 
 noaa_memory_threshold: 100
 meteor_m2_memory_threshold: 600
+select_best_overlapping_passes: true
 
 noaa_15_schedule: true
 noaa_15_sdr_device_id: 0
