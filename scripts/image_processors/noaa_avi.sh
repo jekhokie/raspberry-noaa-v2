@@ -39,4 +39,4 @@ $WXTOIMG -o -M 49 -m "${MAP_OVERLAY}" ${extra_args} -e "MCIR" "${INPUT_WAV}" "${
 
 # convert updated AVI to web-display ready mp4
 # ffmpeg -i ${OUTPUT_IMAGE} -c:v libx264 -c:a copy -y /srv/images/RollingAnimation.mp4
-$FFMPEG -hide_banner -loglevel error -an -i ${OUTPUT_IMAGE} -vcodec libx264 -pix_fmt yuv420p -profile:v baseline -level 3 -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -y ${NOAA_ANIMATION_OUTPUT}
+$FFMPEG -hide_banner -loglevel error -an -i ${OUTPUT_IMAGE} -vcodec libvpx-vp9 -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -y ${NOAA_ANIMATION_OUTPUT}
