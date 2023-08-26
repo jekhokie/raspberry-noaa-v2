@@ -184,7 +184,7 @@ noaa_map_state_border_color: "0xffff00"
 #   noaa_thermal_temp_overlay - whether to overlay a thermal map for color codes to temperature
 #   noaa_thermal_temp_overlay_location - where to place the thermal map in images - valid options are:
 #        NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
-noaa_thermal_temp_overlay: false
+noaa_thermal_temp_overlay: true
 noaa_thermal_temp_overlay_location: 'NorthEast'
 
 # locale settings for timezone and language
