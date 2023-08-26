@@ -285,11 +285,9 @@ elif [ "$METEOR_RECEIVER" == "satdump" ]; then
 
   log "Annotating images and creating thumbnails" "INFO"
   for i in MSU-MR/*.png; do
-    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "${i%.png}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${i%.png}.jpg" "${i%.png}-thumb.jpg" >> $NOAA_LOG 2>&1
     image_filename=$(basename "$i") >> $NOAA_LOG 2>&1
-    mv "${i%.png}.jpg" "${IMAGE_FILE_BASE}-${image_filename%.png}.jpg" >> $NOAA_LOG 2>&1
-    mv "${i%.png}-thumb.jpg" "${IMAGE_THUMB_BASE}-${image_filename%.png}.jpg" >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "${IMAGE_FILE_BASE}-${image_filename%.png}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${i%.png}.jpg" "${IMAGE_THUMB_BASE}-${image_filename%.png}.jpg" >> $NOAA_LOG 2>&1
     rm $i >> $NOAA_LOG 2>&1
     push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${image_filename%.png}.jpg"
   done
@@ -491,7 +489,7 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     log "Pushing images to Discord" "INFO"
     for i in $push_file_list
     do
-      ${PUSH_PROC_DIR}/push_discord.sh "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+      ${PUSH_PROC_DIR}/push_discord.sh "$DISCORD_METEOR_WEBHOOK" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
       sleep 2
     done
   fi

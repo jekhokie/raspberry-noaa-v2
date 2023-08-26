@@ -9,20 +9,17 @@ altitude: 0.0
 # time zone offset from UTC (for example, '-5' for US Eastern)
 timezone_offset: -5
 
+# locale settings for timezone and language
+#   timezone: see https://www.php.net/manual/en/timezones.php
+#   lang_setting: see the 'webpanel/App/Lang' folder for available
+#                 languages (2-letter filename - e.g. ar, bg, de, en, es, nl, sr)
+timezone: America/New_York
+lang_setting: en
+
 # ntp configurations
 #   ntp_server - if you have a local server (e.g. stratum1), you can use this setting
 #        to specify a hostname or ip address to communicate with the ntp server
 ntp_server: ''
-
-# test settings when running test scripts
-#   test_gain - gain to use for scanner test scripts
-#   test_sdr_device_id - device ID of the SDR device to be used for scanner test scripts
-#   test_enable_bias_tee - whether to enable bias tee when running scanner test scripts
-#   test_freq_offset - receiver frequency offset (PPM)
-test_gain: 7.7
-test_sdr_device_id: 0
-test_enable_bias_tee: false
-test_freq_offset: 0
 
 # receiver settings
 #   receiver_type - the receiver type which program uses ('rtlsdr', 'airspy_mini', 'airspy_r2' or 'hackrf' or 'sdrplay')
@@ -32,6 +29,16 @@ receiver_type: 'rtlsdr'
 
 noaa_receiver: 'gnuradio'
 meteor_receiver: 'satdump'
+
+# test settings when running test scripts
+#   test_gain - gain to use for scanner test scripts
+#   test_sdr_device_id - device ID of the SDR device to be used for scanner test scripts
+#   test_enable_bias_tee - whether to enable bias tee when running scanner test scripts
+#   test_freq_offset - receiver frequency offset (PPM)
+test_gain: 29.7
+test_sdr_device_id: 0
+test_enable_bias_tee: false
+test_freq_offset: 0
 
 # whether to schedule specific orbiting objects for capture
 #   <satellite_name>_schedule - whether to schedule captures for the satellite
@@ -51,7 +58,7 @@ noaa_15_schedule: true
 noaa_15_sdr_device_id: 0
 noaa_15_freq_offset: 0
 noaa_15_enable_bias_tee: false
-noaa_15_gain: 30
+noaa_15_gain: 29.7
 noaa_15_sun_min_elevation: 6
 noaa_15_sat_min_elevation: 30
 
@@ -59,7 +66,7 @@ noaa_18_schedule: true
 noaa_18_sdr_device_id: 0
 noaa_18_freq_offset: 0
 noaa_18_enable_bias_tee: false
-noaa_18_gain: 30
+noaa_18_gain: 29.7
 noaa_18_sun_min_elevation: 6
 noaa_18_sat_min_elevation: 30
 
@@ -67,7 +74,7 @@ noaa_19_schedule: true
 noaa_19_sdr_device_id: 0
 noaa_19_freq_offset: 0
 noaa_19_enable_bias_tee: false
-noaa_19_gain: 30
+noaa_19_gain: 29.7
 noaa_19_sun_min_elevation: 6
 noaa_19_sat_min_elevation: 30
 
@@ -75,7 +82,7 @@ meteor_m2_schedule: true
 meteor_m2_sdr_device_id: 0
 meteor_m2_freq_offset: 0
 meteor_m2_enable_bias_tee: false
-meteor_m2_gain: 30
+meteor_m2_gain: 29.7
 meteor_m2_sun_min_elevation: 6
 meteor_m2_sat_min_elevation: 30
 meteor_80k_interleaving: false
@@ -88,7 +95,13 @@ meteor_80k_interleaving: false
 #       value, you must run the schedule script manually and pass the '-x' switch
 #       after re-running the ./install_and_upgrade.sh script to align the variables:
 #           ./scripts/schedule.sh -x
-days_to_schedule_passes: 1
+days_to_schedule_passes: 7
+
+# pruning capabilities - must be configured in cron (see documentation)
+#   delete_oldest_n - how many oldest captures to delete on each run
+#   delete_older_than_n - delete all images older than this many days
+delete_oldest_n: 0
+delete_older_than_n: 30
 
 # whether audio files should be deleted after images are created
 delete_noaa_audio: true
@@ -122,30 +135,10 @@ delete_meteor_audio: true
 #        (note: default value seen includes list of ALL supported image processors excluding 'avi' which must be explicitly added when opting to 'enable_animation' below )
 #   noaa_crop_toptobottom - whether to crop the top and bottom noise out of the noaa capture
 #   noaa_interpolate - whether to interpolate and oversample the images (larger images produced)
-flip_meteor_image: true
-produce_spectrogram: true
-noaa_crop_telemetry: false
-noaa_crop_toptobottom: false
-image_annotation_location: 'North'
-extend_for_annotation: true
-produce_noaa_pristine_image: false
-produce_noaa_pristine_histogram: false
-produce_polar_az_el_graph: false
-produce_polar_direction_graph: true
-ground_station_location: ''
-antenna_information: ''
-show_sun_elevation: true
-show_pass_direction: true
-noaa_daytime_enhancements: 'MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT ZA therm CC HE HF MD BD MB JF JJ LC TA WV NO sea' 
-noaa_nighttime_enhancements: 'MCIR MCIR-precip HVCT ZA therm NO TA sea'
-noaa_interpolate: false
-noaa_jpg_image_quality: 90
-meteor_jpg_image_quality: 90
-meteor_create_spreaded_images_without_overlay: true
-meteor_create_rain_probability_overlay: true
-meteor_create_equidistant_projection: true
-meteor_create_mercator_projection: false
-satdump_image_scaling_factor: 1
+# settings for thermal map output for NOAA captures
+#   noaa_thermal_temp_overlay - whether to overlay a thermal map for color codes to temperature
+#   noaa_thermal_temp_overlay_location - where to place the thermal map in images - valid options are:
+#        NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
 
 # noaa map configurations
 # http://usradioguy.com/wp-content/uploads/2020/05/wxtoimgcommand-line.pdf
@@ -171,8 +164,29 @@ satdump_image_scaling_factor: 1
 #   noaa_map_country_border_color - color of country borders
 #   noaa_map_state_border_enable - whether to enable state borders in images (Americas only)
 #   noaa_map_state_border_color - color of state borders (Americas only)
+
+extend_for_annotation: true
+image_annotation_location: 'North'
+produce_polar_az_el_graph: false
+produce_polar_direction_graph: true
+ground_station_location: ''
+antenna_information: ''
+show_sun_elevation: true
+show_pass_direction: true
+produce_spectrogram: true
+
+noaa_crop_telemetry: false
+produce_noaa_pristine_image: false
+produce_noaa_pristine_histogram: false
+noaa_daytime_enhancements: 'MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT ZA therm CC HE HF MD BD MB JF JJ LC TA WV NO sea histeq'
+noaa_nighttime_enhancements: 'MCIR MCIR-precip HVCT ZA therm NO TA sea histeq'
+noaa_crop_toptobottom: false
+noaa_interpolate: false
+noaa_jpg_image_quality: 90
+noaa_thermal_temp_overlay: true
+noaa_thermal_temp_overlay_location: 'NorthEast'
 noaa_map_crosshair_enable: true
-noaa_map_crosshair_color: "0xffff00"
+noaa_map_crosshair_color: "0xcc3030"
 noaa_map_grid_degrees: 10.0
 noaa_map_grid_color: "0xff0000"
 noaa_map_country_border_enable: true
@@ -180,19 +194,16 @@ noaa_map_country_border_color: "0xffff00"
 noaa_map_state_border_enable: true
 noaa_map_state_border_color: "0xffff00"
 
-# settings for thermal map output for NOAA captures
-#   noaa_thermal_temp_overlay - whether to overlay a thermal map for color codes to temperature
-#   noaa_thermal_temp_overlay_location - where to place the thermal map in images - valid options are:
-#        NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
-noaa_thermal_temp_overlay: true
-noaa_thermal_temp_overlay_location: 'NorthEast'
-
-# locale settings for timezone and language
-#   timezone: see https://www.php.net/manual/en/timezones.php
-#   lang_setting: see the 'webpanel/App/Lang' folder for available
-#                 languages (2-letter filename - e.g. ar, bg, de, en, es, nl, sr)
-timezone: America/New_York
-lang_setting: en
+flip_meteor_image: true
+meteor_jpg_image_quality: 90
+satdump_image_scaling_factor: 1
+meteor_map_crosshair_enable: true
+meteor_map_crosshair_color: "#CC3030"
+meteor_map_country_border_color: "#FFFF00"
+meteor_create_rain_probability_overlay: true
+meteor_create_equidistant_projection: true
+meteor_create_mercator_projection: false
+meteor_create_spreaded_images_without_overlay: true
 
 # web server configuration settings
 #   web_server_name - server name to use for the TLS certs and web endpoint - this MUST be
@@ -241,12 +252,6 @@ enable_satvis: true
 # to the processing and space requirements
 enable_animation: false
 
-# pruning capabilities - must be configured in cron (see documentation)
-#   delete_oldest_n - how many oldest captures to delete on each run
-#   delete_older_than_n - delete all images older than this many days
-delete_oldest_n: 0
-delete_older_than_n: 30
-
 # operating system configurations
 #   disable_wifi_power_mgmt - if running wireless internet and you want to
 #       disable "sleep" mode of your wifi device (assuming it's wlan0), set
@@ -270,8 +275,9 @@ disable_at_mail: false
 enable_email_push: false
 email_push_address: test@ifttt.com
 enable_email_schedule_push: false
-enable_discord_push: false
-discord_webhook_url: 'https://discord.com/api/webhooks/1135901731918717068/ZELG3Sv1fRxQ8KgoYtMMOBYM07az0yIkzeLdad-8WxxhV-F8LhPQdZFFon044awMvLsD'
+enable_discord_push: true
+discord_noaa_webhook_url: 'https://discord.com/api/webhooks/1135901731918717068/ZELG3Sv1fRxQ8KgoYtMMOBYM07az0yIkzeLdad-8WxxhV-F8LhPQdZFFon044awMvLsD'
+discord_meteor_webhook_url: 'https://discord.com/api/webhooks/1135901731918717068/ZELG3Sv1fRxQ8KgoYtMMOBYM07az0yIkzeLdad-8WxxhV-F8LhPQdZFFon044awMvLsD'
 enable_twitter_push: false
 enable_facebook_push: false
 enable_instagram_push: false
