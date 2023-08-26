@@ -58,11 +58,11 @@ Width=3
 Text=
 
 [ReceiverLocation]
-Draw=true
+Draw={{ meteor_map_crosshair_enable }}
 Latitude={{ latitude }}
 Longitude={{ longitude }}
 #It was Color=#FFFF00
-Color=#CC3030
+Color={{ meteor_map_crosshair_color }}
 Size=30
 Thickness=6
 #MarkType options: STAR, CROSS, SQUARE, DIAMOND, TRIANGLE_UP, TRIANGLE_DOWN, TILTED_CROSS
@@ -80,7 +80,7 @@ Thickness=2
 
 [ShapeFileBoundaryLines]
 FileName=ShapeFiles/ne_50m_admin_0_boundary_lines_land.shp
-Color=#FFFF00
+Color={{ meteor_map_country_border_color }}
 Thickness=2
 
 [ShapeFilePopulatedPlaces] 
