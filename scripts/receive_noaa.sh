@@ -303,6 +303,8 @@ for enhancement in $ENHANCEMENTS; do
     "sea")
       proc_script="noaa_sea.sh"
       ;;
+    "apt")
+      proc_script="noaa_apt.sh"
   esac
 
   if [ -z "${proc_script}" ]; then
