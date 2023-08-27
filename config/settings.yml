@@ -164,7 +164,6 @@ delete_meteor_audio: true
 #   noaa_map_country_border_color - color of country borders
 #   noaa_map_state_border_enable - whether to enable state borders in images (Americas only)
 #   noaa_map_state_border_color - color of state borders (Americas only)
-
 extend_for_annotation: true
 image_annotation_location: 'North'
 produce_polar_az_el_graph: false
