@@ -351,9 +351,9 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
   fi
 else
   for i in *.png; do
-    ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$i" "${IMAGE_FILE_BASE}${i%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${IMAGE_THUMB_BASE}${i%.png}.jpg" >> $NOAA_LOG 2>&1
-    push_file_list="${push_file_list} ${IMAGE_FILE_BASE}${i%.png}.jpg"
+    ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$i" "${IMAGE_FILE_BASE}-${i%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${IMAGE_THUMB_BASE}-${i%.png}.jpg" >> $NOAA_LOG 2>&1
+    push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${i%.png}.jpg"
     rm $i >> $NOAA_LOG 2>&1
   done
 fi
