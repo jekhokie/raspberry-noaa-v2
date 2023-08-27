@@ -188,14 +188,13 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   done
 
   for file in *.jpg; do
-    new_filename=$(echo "$file" | sed -E 's/_[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+\.jpg$/.jpg/')
+    new_filename=$(echo "$file" | sed -E 's/_[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+\.jpg$/.jpg/')        #This part removes unecessary numbers from the MeteorDemod image names using RegEx
     mv "$file" "$new_filename"
 
-    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$new_filename" "$new_filename" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$new_filename" "${new_filename%.jpg}-thumb.jpg" >> $NOAA_LOG 2>&1
-    mv "$new_filename" "${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg"
-    mv "${new_filename%.jpg}-thumb.jpg" "${IMAGE_THUMB_BASE}-${new_filename%.jpg}.jpg"
-    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg "
+    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$new_filename" "${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$new_filename" "${IMAGE_THUMB_BASE}-${new_filename%.jpg}.jpg" >> $NOAA_LOG 2>&1
+    rm "$new_filename"
+    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg"
   done
 
   if [ "$DELETE_METEOR_AUDIO" == true ]; then
@@ -232,10 +231,9 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
     new_filename=$(echo "$file" | sed -E 's/_[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+\.jpg$/.jpg/')        #This part removes unecessary numbers from the MeteorDemod image names using RegEx
     mv "$file" "$new_filename"
 
-    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$new_filename" "$new_filename" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$new_filename" "${new_filename%.jpg}-thumb.jpg" >> $NOAA_LOG 2>&1
-    mv "$new_filename" "${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg"
-    mv "${new_filename%.jpg}-thumb.jpg" "${IMAGE_THUMB_BASE}-${new_filename%.jpg}.jpg"
+    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$new_filename" "${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$new_filename" "${IMAGE_THUMB_BASE}-${new_filename%.jpg}.jpg" >> $NOAA_LOG 2>&1
+    rm "$new_filename"
     push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg"
   done
 
@@ -264,32 +262,32 @@ elif [ "$METEOR_RECEIVER" == "satdump" ]; then
 
   find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
 
-  # Renaming files
+  for i in MSU-MR/*_corrected.png
+  do
+    $CONVERT $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
+  done
+
+    # Renaming files, annotating images, and creating thumbnails
   for i in MSU-MR/*.png; do
     path="$(pwd)"
-    new_name="$(basename "$i")"
+    image_filename=$(basename "$i")
+    new_name="$image_filename"
+  
     # Use parameter expansion to remove the specified prefixes
     new_name="${new_name#msu_mr_rgb_}"
     new_name="${new_name#rgb_msu_mr_rgb_}"
     new_name="${new_name#rgb_msu_mr_rgb_}"
     new_name="${new_name#rgb_msu_mr_}"
     new_name="${new_name#msu_mr_}"
+  
     # Rename the file with the new name
     mv "$i" "$path/MSU-MR/$new_name" >> $NOAA_LOG 2>&1
-  done
-
-  for i in MSU-MR/*_corrected.png
-  do
-    $CONVERT $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
-  done
-
-  log "Annotating images and creating thumbnails" "INFO"
-  for i in MSU-MR/*.png; do
-    image_filename=$(basename "$i") >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$i" "${IMAGE_FILE_BASE}-${image_filename%.png}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${i%.png}.jpg" "${IMAGE_THUMB_BASE}-${image_filename%.png}.jpg" >> $NOAA_LOG 2>&1
-    rm $i >> $NOAA_LOG 2>&1
-    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${image_filename%.png}.jpg"
+  
+    log "Annotating images and creating thumbnails" "INFO"
+    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$path/MSU-MR/$new_name" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$path/MSU-MR/$new_name" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
+    rm "$path/MSU-MR/$new_name" >> $NOAA_LOG 2>&1
+    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
   done
   rm -r MSU-MR >> $NOAA_LOG 2>&1
 else
