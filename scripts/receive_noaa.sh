@@ -280,6 +280,7 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
   fi
 
   # build images based on enhancements defined
+  log "Normalizing and annotating NOAA images" "INFO"
   has_one_image=0
   push_file_list=""
   for enhancement in $ENHANCEMENTS; do
@@ -321,16 +322,6 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
         push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
         push_annotation="${push_annotation} Gain: ${gain}"
         push_annotation="${push_annotation} | ${PASS_DIRECTION}"
-
-        if [ "${ENABLE_EMAIL_PUSH}" == "true" ]; then
-          log "Emailing image enhancement $enhancement" "INFO"
-          ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "${IMAGE_FILE_BASE}-$enhancement.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
-        fi
-
-        if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
-          log "Pushing image enhancement $enhancement to Discord" "INFO"
-          ${PUSH_PROC_DIR}/push_discord.sh "$DISCORD_NOAA_WEBHOOK" "${IMAGE_FILE_BASE}-$enhancement.jpg" "${push_annotation}" >> $NOAA_LOG 2>&1
-        fi
       else
         log "No image with enhancement $enhancement created - not pushing anywhere" "INFO"
         rm "${IMAGE_FILE_BASE}-$enhancement.jpg"
@@ -350,6 +341,7 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
     fi
   fi
 else
+  log "Normalizing and annotating NOAA images" "INFO"
   for i in *.png; do
     ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$i" "${IMAGE_FILE_BASE}-${i%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${IMAGE_THUMB_BASE}-${i%.png}.jpg" >> $NOAA_LOG 2>&1
@@ -410,7 +402,6 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     log "Pushing image enhancements to Facebook" "INFO"
     ${PUSH_PROC_DIR}/push_facebook.py "${facebook_push_annotation}" "${push_file_list}"
   fi
-
   # handle instagram pushing if enabled
   if [ "${ENABLE_INSTAGRAM_PUSH}" == "true" ]; then
     instagram_push_annotation=""
@@ -428,7 +419,6 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     else
       $CONVERT +append "${IMAGE_FILE_BASE}-MCIR.jpg" "${IMAGE_FILE_BASE}-MCIR-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
     fi
-
     log "Pushing image enhancements to Instagram" "INFO"
     ${PUSH_PROC_DIR}/push_instagram.py "${instagram_push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME}
     rm "${IMAGE_FILE_BASE}-instagram.jpg"
@@ -450,6 +440,18 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
       log "Pushing image enhancements to Matrix" "INFO"
       ${PUSH_PROC_DIR}/push_matrix.sh "${matrix_push_annotation}" $push_file_list
   fi
+  if [ "${ENABLE_EMAIL_PUSH}" == "true" ]; then
+      for i in ${push_file_list}; do
+        log "Emailing image enhancement $enhancement" "INFO"
+        ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+      done
+  fi
+  if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
+      for i in ${push_file_list}; do
+        log "Pushing image enhancement $enhancement to Discord" "INFO"
+        ${PUSH_PROC_DIR}/push_discord.sh "$DISCORD_NOAA_WEBHOOK" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
+      done
+  fi 
 else
     # If no matching images are found, there is no need to push images
     log "No images found - not pushing anywhere" "INFO"
