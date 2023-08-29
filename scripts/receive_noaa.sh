@@ -441,13 +441,15 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
       ${PUSH_PROC_DIR}/push_matrix.sh "${matrix_push_annotation}" $push_file_list
   fi
   if [ "${ENABLE_EMAIL_PUSH}" == "true" ]; then
-      for i in "${push_file_list[@]}"; do
+      IFS=' ' read -ra image_file_array <<< "$push_file_list"
+      for i in "${image_file_array[@]}"; do
         log "Emailing image enhancement $enhancement" "INFO"
         ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
       done
   fi
   if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
-      for i in "${push_file_list[@]}"; do
+      IFS=' ' read -ra image_file_array <<< "$push_file_list"
+      for i in "${image_file_array[@]}"; do
         log "Pushing image enhancement $enhancement to Discord" "INFO"
         ${PUSH_PROC_DIR}/push_discord.sh "$DISCORD_NOAA_WEBHOOK" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
       done
