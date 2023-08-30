@@ -89,7 +89,7 @@ if [ "$FREE_MEMORY" -lt $METEOR_M2_MEMORY_THRESHOLD ]; then
   RAMFS_AUDIO_BASE="${AUDIO_FILE_BASE}"
   in_mem=false
 else
-  log "The system have enough space to store a Meteor pass on RAM" "INFO"
+  log "The system has enough space to store a Meteor pass on RAM" "INFO"
   log "Free : ${FREE_MEMORY} ; Required : ${METEOR_M2_MEMORY_THRESHOLD}" "INFO"
   in_mem=true
 fi
