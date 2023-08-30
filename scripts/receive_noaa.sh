@@ -73,12 +73,12 @@ IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 # check if there is enough free memory to store pass on RAM
 FREE_MEMORY=$(free -m | grep Mem | awk '{print $7}')
 if [ "$FREE_MEMORY" -lt $NOAA_MEMORY_THRESHOLD ]; then
-  log "The system doesn't have enough space to store a Meteor pass on RAM" "INFO"
+  log "The system doesn't have enough space to store a NOAA pass on RAM" "INFO"
   log "Free : ${FREE_MEMORY} ; Required : ${NOAA_MEMORY_THRESHOLD}" "INFO"
   RAMFS_AUDIO_BASE="${AUDIO_FILE_BASE}"
   in_mem=false
 else
-  log "The system have enough space to store a Meteor pass on RAM" "INFO"
+  log "The system has enough space to store a NOAA pass on RAM" "INFO"
   log "Free : ${FREE_MEMORY} ; Required : ${NOAA_MEMORY_THRESHOLD}" "INFO"
   in_mem=true
 fi
