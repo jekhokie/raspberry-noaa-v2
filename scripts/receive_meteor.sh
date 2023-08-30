@@ -89,7 +89,7 @@ if [ "$FREE_MEMORY" -lt $METEOR_M2_MEMORY_THRESHOLD ]; then
   RAMFS_AUDIO_BASE="${AUDIO_FILE_BASE}"
   in_mem=false
 else
-  log "The system have enough space to store a Meteor pass on RAM" "INFO"
+  log "The system has enough space to store a Meteor pass on RAM" "INFO"
   log "Free : ${FREE_MEMORY} ; Required : ${METEOR_M2_MEMORY_THRESHOLD}" "INFO"
   in_mem=true
 fi
@@ -380,7 +380,7 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
 
   # insert or replace in case there was already an insert due to the spectrogram creation
   $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (pass_start, file_path, daylight_pass, sat_type, has_spectrogram, has_polar_az_el, has_polar_direction, gain) \
-                                      VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $polar_direction, $GAIN);"
+                                      VALUES ($EPOCH_START, \"$FILENAME_BASE\", $daylight, 0, $spectrogram, $polar_az_el, $polar_direction, $GAIN);" >> $NOAA_LOG 2>&1
 
   pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
   $SQLITE3 $DB_FILE "UPDATE predict_passes \
@@ -392,7 +392,7 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
                       INNER JOIN decoded_passes \
                       ON predict_passes.pass_start = decoded_passes.pass_start \
                       WHERE decoded_passes.id = $pass_id \
-                    );"
+                    );" >> $NOAA_LOG 2>&1
 
   # handle Slack pushing if enabled
   if [ "${ENABLE_SLACK_PUSH}" == "true" ]; then

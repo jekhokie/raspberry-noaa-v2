@@ -73,12 +73,12 @@ IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 # check if there is enough free memory to store pass on RAM
 FREE_MEMORY=$(free -m | grep Mem | awk '{print $7}')
 if [ "$FREE_MEMORY" -lt $NOAA_MEMORY_THRESHOLD ]; then
-  log "The system doesn't have enough space to store a Meteor pass on RAM" "INFO"
+  log "The system doesn't have enough space to store a NOAA pass on RAM" "INFO"
   log "Free : ${FREE_MEMORY} ; Required : ${NOAA_MEMORY_THRESHOLD}" "INFO"
   RAMFS_AUDIO_BASE="${AUDIO_FILE_BASE}"
   in_mem=false
 else
-  log "The system have enough space to store a Meteor pass on RAM" "INFO"
+  log "The system has enough space to store a NOAA pass on RAM" "INFO"
   log "Free : ${FREE_MEMORY} ; Required : ${NOAA_MEMORY_THRESHOLD}" "INFO"
   in_mem=true
 fi
@@ -463,9 +463,10 @@ $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_p
                                     VALUES ( \
                                       (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
                                       $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $polar_az_el, $polar_direction, $histogram, $GAIN \
-                                    );"
+                                    );" >> $NOAA_LOG 2>&1
 
-pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
+pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;") >> $NOAA_LOG 2>&1
+
 $SQLITE3 $DB_FILE "UPDATE predict_passes \
                   SET is_active = 0 \
                   WHERE (predict_passes.pass_start) \
@@ -475,7 +476,7 @@ $SQLITE3 $DB_FILE "UPDATE predict_passes \
                     INNER JOIN decoded_passes \
                     ON predict_passes.pass_start = decoded_passes.pass_start \
                     WHERE decoded_passes.id = $pass_id \
-                  );"
+                  );" >> $NOAA_LOG 2>&1
 
 # calculate and report total time for capture
 TIMER_END=$(date '+%s')
