@@ -463,9 +463,10 @@ $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO decoded_passes (id, pass_start, file_p
                                     VALUES ( \
                                       (SELECT id FROM decoded_passes WHERE pass_start = $EPOCH_START), \
                                       $EPOCH_START, \"$FILENAME_BASE\", $daylight, 1, $spectrogram, $pristine, $polar_az_el, $polar_direction, $histogram, $GAIN \
-                                    );"
+                                    );" >> $NOAA_LOG 2>&1
 
-pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
+pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;") >> $NOAA_LOG 2>&1
+
 $SQLITE3 $DB_FILE "UPDATE predict_passes \
                   SET is_active = 0 \
                   WHERE (predict_passes.pass_start) \
@@ -475,7 +476,7 @@ $SQLITE3 $DB_FILE "UPDATE predict_passes \
                     INNER JOIN decoded_passes \
                     ON predict_passes.pass_start = decoded_passes.pass_start \
                     WHERE decoded_passes.id = $pass_id \
-                  );"
+                  );" >> $NOAA_LOG 2>&1
 
 # calculate and report total time for capture
 TIMER_END=$(date '+%s')
