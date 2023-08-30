@@ -147,7 +147,7 @@ elif [ "$NOAA_RECEIVER" == "gnuradio" ]; then
   ffmpeg -hide_banner -loglevel error -i "$3" -c:a copy "${3%.*}_tmp.wav" && ffmpeg -i "${3%.*}_tmp.wav" -c:a copy -y "$3" && rm "${3%.*}_tmp.wav"
 elif [ "$NOAA_RECEIVER" == "satdump" ]; then
   log "Starting SatDump recording and live decoding" "INFO"
-  satdump live noaa_apt . --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+  satdump live noaa_apt . --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN --start_timestamp $EPOCH_START --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
   rm satdump.logs product.cbor dataset.json
 fi
 
