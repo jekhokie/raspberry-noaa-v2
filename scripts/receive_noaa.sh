@@ -292,8 +292,6 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
       has_one_image=1
       # capture list of files to push to Twitter
       push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-$enhancement.jpg"
-      log "No image with enhancement $enhancement created - not pushing anywhere" "INFO"
-      rm "${IMAGE_FILE_BASE}-$enhancement.jpg"
     fi
   done
 
