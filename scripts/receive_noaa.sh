@@ -121,6 +121,10 @@ fi
 PASS_START=$(expr "$EPOCH_START" + 90)
 export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 
+# run all enhancements all the time - any that cannot be produced will
+# simply be left out/not included, so there is no harm in running all of them
+daylight=$((SUN_ELEV > SUN_MIN_ELEV ? 1 : 0))
+
 if pgrep "rtl_fm" > /dev/null; then
   log "There is an existing RTL_FM instance running, I quit" "ERROR"
   exit 1
@@ -259,14 +263,10 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
   map_overlay="${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
   $WXMAP -T "${SAT_NAME}" -H "${TLE_FILE}" -p 0 ${extra_map_opts} -o "${epoch_adjusted}" "$map_overlay" >> "$NOAA_LOG" 2>&1
 
-  # run all enhancements all the time - any that cannot be produced will
-  # simply be left out/not included, so there is no harm in running all of them
-  if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then
+  if [ "$daylight" -eq 1 ]; then
     ENHANCEMENTS="${NOAA_DAY_ENHANCEMENTS}"
-    daylight=1
   else
     ENHANCEMENTS="${NOAA_NIGHT_ENHANCEMENTS}"
-    daylight=0
   fi
 
   # build images based on enhancements defined
