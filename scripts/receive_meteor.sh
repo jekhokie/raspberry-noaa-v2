@@ -127,24 +127,6 @@ if pgrep "$SATDUMP" > /dev/null; then
   pkill -9 -f satdump
 fi
 
-# determine if auto-gain is set - handles "0" and "0.0" floats
-gain=$GAIN
-if [ $(echo "$GAIN==0"|bc) -eq 1 ]; then
-  gain='Automatic'
-fi
-
-# create push annotation string (annotation in the email subject, discord text, etc.)
-# note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
-push_annotation=""
-if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-  push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
-fi
-push_annotation="${push_annotation}${SAT_NAME} ${capture_start}"
-push_annotation="${push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
-push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
-push_annotation="${push_annotation} Gain: ${gain}"
-push_annotation="${push_annotation} | ${PASS_DIRECTION}"
-
 # TODO: Fix this up - this conditional selection is a massive bit of complexity that
 #       needs to be handled, but in the interest of not breaking everything (at least in
 #       the first round), keeping it simple.
@@ -153,6 +135,8 @@ spectrogram=0
 polar_az_el=0
 polar_direction=0
 
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   log "Recording with RTL_FM at ${METEOR_FREQ} MHz..." "INFO"
   if [ "${GAIN}" == 0 ]; then
@@ -160,9 +144,29 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
   else
     timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -M raw -f "${METEOR_FREQ}"M -p "${FREQ_OFFSET}" -s 288k -g "${GAIN}" | $SOX -t raw -r 288k -c 2 -b 16 -e s - -t wav "${RAMFS_AUDIO_BASE}.wav" rate 96k >> $NOAA_LOG 2>&1
   fi
-
   sleep 2
+elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
+  log "Recording ${NOAA_HOME} via RTL-SDR at ${METEOR_FREQ} MHz using GNU Radio " "INFO"
+  timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/${RECEIVER_TYPE}_m2_lrpt_rx.py" "${RAMFS_AUDIO_BASE}.wav" "${GAIN}" "${METEOR_FREQ}" "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
+  log "Waiting for files to close" "INFO"
+  sleep 2
+elif [ "$METEOR_RECEIVER" == "satdump" ]; then
+  log "Starting SatDump live recording and decoding" "INFO"
 
+  # Set mode based on METEOR_80K_INTERLEAVING
+  mode="$([[ "$METEOR_80K_INTERLEAVING" == "true" ]] && echo "_80k" || echo "")"
+  $SATDUMP live meteor_m2-x_lrpt$mode . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" $gain_option $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+  rm satdump.logs meteor_m2-x_lrpt$mode.cadu dataset.json
+
+  log "Waiting for files to close" "INFO"
+  sleep 2
+else
+  log "Receiver type '$METEOR_RECEIVER' not valid" "ERROR"
+fi
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+if [[ "$METEOR_RECEIVER" == "rtl_fm" || "$METEOR_RECEIVER" == "gnuradio" ]]; then
   if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
     log "Producing spectrogram" "INFO"
     spectrogram=1
@@ -180,8 +184,6 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
 
   rm *.gcp *.bmp "${RAMFS_AUDIO_BASE}.wav"
 
-  sleep 2
-
   for i in spread_*.jpg
   do
     $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
@@ -206,60 +208,7 @@ if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
       mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
     fi
   fi
-elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
-
-  log "Recording ${NOAA_HOME} via RTL-SDR at ${METEOR_FREQ} MHz using GNU Radio " "INFO"
-  timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/${RECEIVER_TYPE}_m2_lrpt_rx.py" "${RAMFS_AUDIO_BASE}.wav" "${GAIN}" "${METEOR_FREQ}" "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
-  log "Waiting for files to close" "INFO"
-  sleep 2
-
-  log "Running MeteorDemod to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
-  if [[ "$METEOR_80K_INTERLEAVING" == "true" ]]; then
-    $METEORDEMOD -m oqpsk -diff 1 -int 1 -s 80000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
-  else
-    $METEORDEMOD -m oqpsk -diff 1 -s 72000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
-  fi
-
-  rm *.gcp *.bmp "${RAMFS_AUDIO_BASE}.wav"
-
-  for i in spread_*.jpg
-  do
-    $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
-  done
-
-  for file in *.jpg; do
-    new_filename=$(echo "$file" | sed -E 's/_[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+\.jpg$/.jpg/')        #This part removes unecessary numbers from the MeteorDemod image names using RegEx
-    mv "$file" "$new_filename"
-
-    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$new_filename" "${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$new_filename" "${IMAGE_THUMB_BASE}-${new_filename%.jpg}.jpg" >> $NOAA_LOG 2>&1
-    rm "$new_filename"
-    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg"
-  done
-
-  if [ "$DELETE_METEOR_AUDIO" == true ]; then
-    log "Deleting audio files" "INFO"
-    rm "${RAMFS_AUDIO_BASE}.s"
-  else
-    if [ "$in_mem" == "true" ]; then
-      log "Moving audio files out to the SD card" "INFO"
-      mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
-    fi
-  fi
-elif [ "$METEOR_RECEIVER" == "satdump" ]; then
-
-  log "Starting SatDump live recording and decoding" "INFO"
-  if [[ "$METEOR_80K_INTERLEAVING" == "true" ]]; then
-    $SATDUMP live meteor_m2-x_lrpt_80k . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" $gain_option $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
-    rm satdump.logs meteor_m2-x_lrpt_80k.cadu dataset.json
-  else
-    $SATDUMP live meteor_m2-x_lrpt . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" $gain_option $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
-    rm satdump.logs meteor_m2-x_lrpt.cadu dataset.json
-  fi
-
-  log "Waiting for files to close" "INFO"
-  sleep 2
-
+elif [[ "$METEOR_RECEIVER" == "satdump" ]]; then
   find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
 
   for projected_file in MSU-MR/*_projected.png; do
@@ -303,12 +252,30 @@ elif [ "$METEOR_RECEIVER" == "satdump" ]; then
   done
   rm -r MSU-MR >> $NOAA_LOG 2>&1
 else
-  log "Receiver type '$METEOR_RECEIVER' not valid" "ERROR"
+    echo "Unknown receiver: $METEOR_RECEIVER"
 fi
 
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_BASE")*.jpg" -print -quit)" ]; then
+
+  # determine if auto-gain is set - handles "0" and "0.0" floats
+  gain=$GAIN
+  if [ $(echo "$GAIN==0"|bc) -eq 1 ]; then
+    gain='Automatic'
+  fi
+
+  # create push annotation string (annotation in the email subject, discord text, etc.)
+  # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
+  push_annotation=""
+  if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+    push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
+  fi
+  push_annotation="${push_annotation}${SAT_NAME} ${capture_start}"
+  push_annotation="${push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
+  push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
+  push_annotation="${push_annotation} Gain: ${gain}"
+  push_annotation="${push_annotation} | ${PASS_DIRECTION}"
 
   meteor_suffixes=(
       '-321_corrected.jpg'
@@ -396,94 +363,33 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
 
   # handle Slack pushing if enabled
   if [ "${ENABLE_SLACK_PUSH}" == "true" ]; then
-    slack_push_annotation=""
-    if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-      slack_push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n "
-    fi
-    slack_push_annotation="${slack_push_annotation}${SAT_NAME} ${capture_start}\n"
-    slack_push_annotation="${slack_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}\n"
-    slack_push_annotation="${slack_push_annotation} Sun Elevation: ${SUN_ELEV}°\n"
-    slack_push_annotation="${slack_push_annotation} Gain: ${gain} | ${PASS_DIRECTION}\n"
-
-    pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
-    slack_push_annotation="${slack_push_annotation} <${SLACK_LINK_URL}?pass_id=${pass_id}>\n";
-
-    ${PUSH_PROC_DIR}/push_slack.sh "${slack_push_annotation}" $push_file_list
+    ${PUSH_PROC_DIR}/push_slack.sh "${push_annotation} <${SLACK_LINK_URL}?pass_id=${pass_id}>\n" $push_file_list
   fi
 
   # handle twitter pushing if enabled
   if [ "${ENABLE_TWITTER_PUSH}" == "true" ]; then
-    # create push annotation specific to twitter
-    # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
-    twitter_push_annotation=""
-    if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-      twitter_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
-    fi
-    twitter_push_annotation="${twitter_push_annotation}${SAT_NAME} ${capture_start}"
-    twitter_push_annotation="${twitter_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
-    twitter_push_annotation="${twitter_push_annotation} Sun Elevation: ${SUN_ELEV}°"
-    twitter_push_annotation="${twitter_push_annotation} Gain: ${gain}"
-    twitter_push_annotation="${twitter_push_annotation} | ${PASS_DIRECTION}"
-
     log "Pushing image enhancements to Twitter" "INFO"
-    ${PUSH_PROC_DIR}/push_twitter.sh "${twitter_push_annotation}" $push_file_list
+    ${PUSH_PROC_DIR}/push_twitter.sh "${push_annotation}" $push_file_list
   fi
 
   # handle facebook pushing if enabled
   if [ "${ENABLE_FACEBOOK_PUSH}" == "true" ]; then
-    facebook_push_annotation=""
-    if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-      facebook_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
-    fi
-    facebook_push_annotation="${facebook_push_annotation}${SAT_NAME} ${capture_start}"
-    facebook_push_annotation="${facebook_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
-    facebook_push_annotation="${facebook_push_annotation} Sun Elevation: ${SUN_ELEV}°"
-    facebook_push_annotation="${facebook_push_annotation} Gain: ${gain}"
-    facebook_push_annotation="${facebook_push_annotation} | ${PASS_DIRECTION}"
-
     log "Pushing image enhancements to Facebook" "INFO"
-    ${PUSH_PROC_DIR}/push_facebook.py "${facebook_push_annotation}" "${push_file_list}"
+    ${PUSH_PROC_DIR}/push_facebook.py "${push_annotation}" "${push_file_list}"
   fi
 
   # handle instagram pushing if enabled
   if [ "${ENABLE_INSTAGRAM_PUSH}" == "true" ]; then
-    instagram_push_annotation=""
-    if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-      instagram_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
-    fi
-    instagram_push_annotation="${instagram_push_annotation}${SAT_NAME} ${capture_start}"
-    instagram_push_annotation="${instagram_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
-    instagram_push_annotation="${instagram_push_annotation} Sun Elevation: ${SUN_ELEV}°"
-    instagram_push_annotation="${instagram_push_annotation} Gain: ${gain}"
-    instagram_push_annotation="${instagram_push_annotation} | ${PASS_DIRECTION}"
-
-    $CONVERT "${IMAGE_FILE_BASE}${suffix}" -resize "1080x1350>" -gravity center -background black -extent 1080x1350 "${IMAGE_FILE_BASE}-instagram.jpg"
-
     log "Pushing image enhancements to Instagram" "INFO"
-    ${PUSH_PROC_DIR}/push_instagram.py "${instagram_push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME}
+    $CONVERT "${IMAGE_FILE_BASE}${suffix}" -resize "1080x1350>" -gravity center -background black -extent 1080x1350 "${IMAGE_FILE_BASE}-instagram.jpg"
+    ${PUSH_PROC_DIR}/push_instagram.py "${push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME}
     rm "${IMAGE_FILE_BASE}-instagram.jpg"
-    #if [[ "$daylight" -eq 1 ]]; then
-    #  $CONVERT +append "${IMAGE_FILE_BASE}-MSA.jpg" "${IMAGE_FILE_BASE}-MSA-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
-    #else
-    #  $CONVERT +append "${IMAGE_FILE_BASE}-MCIR.jpg" "${IMAGE_FILE_BASE}-MCIR-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
   fi
 
   # handle matrix pushing if enabled
   if [ "${ENABLE_MATRIX_PUSH}" == "true" ]; then
-    # create push annotation specific to matrix
-    # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
-    matrix_push_annotation=""
-    if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-        matrix_push_annotation="Ground Station: ${GROUND_STATION_LOCATION} "
-    fi
-    matrix_push_annotation="${matrix_push_annotation}${SAT_NAME} ${capture_start}"
-    matrix_push_annotation="${matrix_push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
-    matrix_push_annotation="${matrix_push_annotation} Sun Elevation: ${SUN_ELEV}°"
-    matrix_push_annotation="${matrix_push_annotation} Gain: ${gain}"
-    matrix_push_annotation="${matrix_push_annotation} | ${PASS_DIRECTION}"
-
     log "Pushing image enhancements to Matrix" "INFO"
-    ${PUSH_PROC_DIR}/push_matrix.sh "${matrix_push_annotation}" $push_file_list
+    ${PUSH_PROC_DIR}/push_matrix.sh "${push_annotation}" $push_file_list
   fi
 
   if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
