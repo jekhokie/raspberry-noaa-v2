@@ -34,6 +34,41 @@
     name: numpy
     extra_args: --upgrade
 
+- name: install UFW firewall
+  become: yes
+  apt:
+    update_cache: no
+    state: present
+    name: ufw
+
+- name: Allow SSH (Port 22)
+  become: yes
+  command: ufw allow 22/tcp
+
+- name: Allow VNC (Port 5800)
+  become: yes
+  command: ufw allow 5800/tcp
+
+- name: Allow VNC (Port 5900)
+  become: yes
+  command: ufw allow 5900/tcp
+
+- name: Allow TeamViewer (Port 5938)
+  become: yes
+  command: ufw allow 5938/tcp
+
+- name: Allow Remote Desktop (Port 3389)
+  become: yes
+  command: ufw allow 3389/tcp
+
+- name: Allow Samba Share (Port 139)
+  become: yes
+  command: ufw allow 139/tcp
+
+- name: Allow Samba Share (Port 445)
+  become: yes
+  command: ufw allow 445/tcp
+
 - name: install nginx
   become: yes
   apt:
