@@ -129,7 +129,7 @@
 
 - name: Enable or disable HTTP port in firewall
   become: yes
-  command: "ufw allow {{ web_port }}/tcp" if enable_non_tls|bool else "ufw delete allow {{ web_port }}/tcp"
+  command: "ufw allow web_port/tcp" if enable_non_tls|bool else "ufw delete allow web_port/tcp"
   when: enable_non_tls is defined
 
 - name: nginx non-tls config file
@@ -212,7 +212,7 @@
 
 - name: Enable or disable HTTPS port in firewall
   become: yes
-  command: "ufw allow {{ web_tls_port }}/tcp" if enable_tls|bool else "ufw delete allow {{ web_tls_port }}/tcp"
+  command: "ufw allow web_tls_port/tcp" if enable_tls|bool else "ufw delete allow web_tls_port/tcp"
   when: enable_tls is defined
 
 - name: nginx tls config file
