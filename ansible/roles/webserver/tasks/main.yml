@@ -259,4 +259,8 @@
     owner: root
     group: root
     mode: 0440
+
+- name: Allow the firewall
+  become: yes
+  command: ufw enable
 ...
