@@ -80,11 +80,13 @@ Thickness=2
 
 [ShapeFileBoundaryLines]
 FileName={% if meteor_draw_map_overlay|lower|bool %}ShapeFiles/ne_50m_admin_0_boundary_lines_land.shp{% else %}''{% endif %}
+
 Color={{ meteor_map_country_border_color }}
 Thickness=2
 
 [ShapeFilePopulatedPlaces] 
 FileName={% if meteor_draw_cities|lower|bool %}ShapeFiles/ne_50m_populated_places.shp{% else %}''{% endif %}
+
 Color=#5A42F5
 #Font height in pixels
 Size=40
