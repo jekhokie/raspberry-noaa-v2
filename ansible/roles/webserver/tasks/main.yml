@@ -260,7 +260,7 @@
     group: root
     mode: 0440
 
-- name: Allow the firewall
+- name: Enable the UFW firewall
   become: yes
   command: ufw enable
 ...
