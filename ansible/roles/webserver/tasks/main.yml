@@ -34,6 +34,41 @@
     name: numpy
     extra_args: --upgrade
 
+- name: install UFW firewall
+  become: yes
+  apt:
+    update_cache: no
+    state: present
+    name: ufw
+
+- name: Allow SSH (Port 22)
+  become: yes
+  command: ufw allow 22/tcp
+
+- name: Allow VNC (Port 5800)
+  become: yes
+  command: ufw allow 5800/tcp
+
+- name: Allow VNC (Port 5900)
+  become: yes
+  command: ufw allow 5900/tcp
+
+- name: Allow TeamViewer (Port 5938)
+  become: yes
+  command: ufw allow 5938/tcp
+
+- name: Allow Remote Desktop (Port 3389)
+  become: yes
+  command: ufw allow 3389/tcp
+
+- name: Allow Samba Share (Port 139)
+  become: yes
+  command: ufw allow 139/tcp
+
+- name: Allow Samba Share (Port 445)
+  become: yes
+  command: ufw allow 445/tcp
+
 - name: install nginx
   become: yes
   apt:
@@ -92,7 +127,12 @@
     group: www-data
     mode: 0644
 
-- name: nginx config file
+- name: Enable or disable HTTP (Port 80) in firewall
+  become: yes
+  command: "{{ 'ufw allow 80/tcp' if enable_non_tls|bool else 'ufw delete allow 80/tcp' }}"
+  when: enable_non_tls is defined
+
+- name: nginx non-tls config file
   become: yes
   template:
     src: nginx_default.j2
@@ -169,6 +209,11 @@
 #    openssl req -x509 -nodes -subj '/CN={{ web_server_name }}' -days {{ cert_valid_days }}
 #    -newkey rsa:4096 -sha256 -keyout {{ tls_cert_key }} -out {{ tls_cert }}
 #  when: enable_tls|bool and cert_valid.rc != 0
+
+- name: Enable or disable HTTPS (Port 443) in firewall
+  become: yes
+  command: "{{ 'ufw allow 443/tcp' if enable_tls|bool else 'ufw delete allow 443/tcp' }}"
+  when: enable_tls is defined
 
 - name: nginx tls config file
   become: yes
