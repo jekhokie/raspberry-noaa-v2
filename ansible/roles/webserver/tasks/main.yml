@@ -127,19 +127,12 @@
     group: www-data
     mode: 0644
 
-- name: Enable HTTP port in firewall
+- name: Enable or disable HTTP port in firewall
   become: yes
   ufw:
-    rule: allow
-    name: "{{ web_port }}/tcp"
-  when: enable_non_tls|bool
-
-- name: Disable HTTP port in firewall
-  become: yes
-  ufw:
-    rule: delete
-    name: "{{ web_port }}/tcp"
-  when: enable_non_tls is defined and not enable_non_tls|bool
+    rule: "{{ 'allow' if enable_non_tls|bool else 'delete' }}"
+    port: "{{ web_port }}/tcp"
+  when: enable_non_tls is defined
 
 - name: nginx non-tls config file
   become: yes
@@ -219,19 +212,12 @@
 #    -newkey rsa:4096 -sha256 -keyout {{ tls_cert_key }} -out {{ tls_cert }}
 #  when: enable_tls|bool and cert_valid.rc != 0
 
-- name: Enable HTTPS port in firewall
+- name: Enable or disable HTTPS port in firewall
   become: yes
   ufw:
-    rule: allow
-    name: "{{ web_tls_port }}/tcp"
-  when: enable_tls|bool
-
-- name: Disable HTTPS port in firewall
-  become: yes
-  ufw:
-    rule: delete
-    name: "{{ web_tls_port }}/tcp"
-  when: enable_tls is defined and not enable_tls|bool
+    rule: "{{ 'allow' if enable_tls|bool else 'delete' }}"
+    port: "{{ web_tls_port }}/tcp"
+  when: enable_tls is defined
 
 - name: nginx tls config file
   become: yes
