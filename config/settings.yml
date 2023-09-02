@@ -196,6 +196,8 @@ noaa_map_state_border_color: "0xffff00"
 flip_meteor_image: true
 meteor_jpg_image_quality: 90
 satdump_image_scaling_factor: 1
+meteor_draw_map_overlay: true
+meteor_draw_cities: true
 meteor_map_crosshair_enable: true
 meteor_map_crosshair_color: "#CC3030"
 meteor_map_country_border_color: "#FFFF00"
