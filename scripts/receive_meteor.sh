@@ -81,6 +81,12 @@ else
   gain_option="--general_gain"
 fi
 
+if [ "$BIAS_TEE" == "-T" ]; then
+    bias_tee_option="--bias"
+else
+    bias_tee_option=""
+fi
+
 # check if there is enough free memory to store pass on RAM
 FREE_MEMORY=$(free -m | grep Mem | awk '{print $7}')
 if [ "$FREE_MEMORY" -lt $METEOR_M2_MEMORY_THRESHOLD ]; then
@@ -155,7 +161,7 @@ elif [ "$METEOR_RECEIVER" == "satdump" ]; then
 
   # Set mode based on METEOR_80K_INTERLEAVING
   mode="$([[ "$METEOR_80K_INTERLEAVING" == "true" ]] && echo "_80k" || echo "")"
-  $SATDUMP live meteor_m2-x_lrpt$mode . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" $gain_option $GAIN --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+  $SATDUMP live meteor_m2-x_lrpt$mode . --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQ}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
   rm satdump.logs meteor_m2-x_lrpt$mode.cadu dataset.json
 
   log "Waiting for files to close" "INFO"
