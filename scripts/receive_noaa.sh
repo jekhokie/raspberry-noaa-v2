@@ -170,6 +170,8 @@ sleep 2
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
+
+  push_file_list=""
   #generate outputs
   spectrogram=0
   if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
@@ -186,6 +188,7 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
     pristine=1
     ${IMAGE_PROC_DIR}/noaa_pristine.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_THUMB_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
+    push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-pristine.jpg"
   fi
 
   histogram=0
@@ -242,7 +245,6 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
   # build images based on enhancements defined
   log "Normalizing and annotating NOAA images" "INFO"
   has_one_image=0
-  push_file_list=""
   for enhancement in $ENHANCEMENTS; do
     export ENHANCEMENT=$enhancement
     log "Decoding image" "INFO"
