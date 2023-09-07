@@ -140,7 +140,7 @@
     "timezone":                                      { "type": "string" },
     "lang_setting": {
       "type": "string",
-      "enum": [ "ar", "bg", "cn", "de", "en", "es", "fr", "lt", "nl", "pt", "sr" ]
+      "enum": [ "ar", "bg", "cn", "de", "en", "es", "fr", "lt", "nl", "pt", "sr", "ru", "it" ]
     },
     "web_server_name": { "type": "string" },
     "enable_non_tls":  { "type": "boolean" },
