@@ -21,7 +21,7 @@ TIMER_START=$(date '+%s')
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
-capture_start=$START_DATE
+capture_start="$START_DATE $(date '+%Z')"
 
 # input params
 export SAT_NAME=$1
