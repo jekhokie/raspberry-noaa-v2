@@ -80,14 +80,14 @@ noaa_19_gain: 29.7
 noaa_19_sun_min_elevation: 6
 noaa_19_sat_min_elevation: 30
 
-meteor_m2-3_schedule: true
-meteor_m2-3_sdr_device_id: 0
-meteor_m2-3_freq_offset: 0
-meteor_m2-3_enable_bias_tee: false
-meteor_m2-3_gain: 29.7
-meteor_m2-3_sun_min_elevation: 6
-meteor_m2-3_sat_min_elevation: 30
-meteor_m2-3_80k_interleaving: false
+meteor_m2_3_schedule: true
+meteor_m2_3_sdr_device_id: 0
+meteor_m2_3_freq_offset: 0
+meteor_m2_3_enable_bias_tee: false
+meteor_m2_3_gain: 29.7
+meteor_m2_3_sun_min_elevation: 6
+meteor_m2_3_sat_min_elevation: 30
+meteor_m2_3_80k_interleaving: false
 
 # how many days to schedule passes - note this MUST be an even integer,
 # and the current day counts as "1" - passes will be scheduled until midnight

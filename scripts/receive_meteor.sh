@@ -35,11 +35,11 @@ export PASS_SIDE=$8
 # export some variables for use in the annotation - note that we do not
 # want to export all of .noaa-v2.conf because it contains sensitive info
 export GAIN=$METEOR_M2-3_GAIN
-export SUN_MIN_ELEV=$METEOR_M2-3_SUN_MIN_ELEV
-export SDR_DEVICE_ID=$METEOR_M2-3_SDR_DEVICE_ID
-export BIAS_TEE=$METEOR_M2-3_ENABLE_BIAS_TEE
-export FREQ_OFFSET=$METEOR_M2-3_FREQ_OFFSET
-export SAT_MIN_ELEV=$METEOR_M2-3_SAT_MIN_ELEV
+export SUN_MIN_ELEV=$METEOR_M2_3_SUN_MIN_ELEV
+export SDR_DEVICE_ID=$METEOR_M2_3_SDR_DEVICE_ID
+export BIAS_TEE=$METEOR_M2_3_ENABLE_BIAS_TEE
+export FREQ_OFFSET=$METEOR_M2_3_FREQ_OFFSET
+export SAT_MIN_ELEV=$METEOR_M2_3_SAT_MIN_ELEV
 
 # base directory plus filename_base for re-use
 RAMFS_AUDIO_BASE="${RAMFS_AUDIO}/${FILENAME_BASE}"
@@ -149,25 +149,25 @@ polar_direction=0
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
-  log "Recording with RTL_FM at ${METEOR_M2-3_FREQ} MHz..." "INFO"
+  log "Recording with RTL_FM at ${METEOR_M2_3_FREQ} MHz..." "INFO"
   if [ "${GAIN}" == 0 ]; then
-    timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -M raw -f "${METEOR_M2-3_FREQ}"M -p "${FREQ_OFFSET}" -s 288k | $SOX -t raw -r 288k -c 2 -b 16 -e s - -t wav "${RAMFS_AUDIO_BASE}.wav" rate 96k >> $NOAA_LOG 2>&1
+    timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -M raw -f "${METEOR_M2_3_FREQ}"M -p "${FREQ_OFFSET}" -s 288k | $SOX -t raw -r 288k -c 2 -b 16 -e s - -t wav "${RAMFS_AUDIO_BASE}.wav" rate 96k >> $NOAA_LOG 2>&1
   else
-    timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -M raw -f "${METEOR_M2-3_FREQ}"M -p "${FREQ_OFFSET}" -s 288k -g "${GAIN}" | $SOX -t raw -r 288k -c 2 -b 16 -e s - -t wav "${RAMFS_AUDIO_BASE}.wav" rate 96k >> $NOAA_LOG 2>&1
+    timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -M raw -f "${METEOR_M2_3_FREQ}"M -p "${FREQ_OFFSET}" -s 288k -g "${GAIN}" | $SOX -t raw -r 288k -c 2 -b 16 -e s - -t wav "${RAMFS_AUDIO_BASE}.wav" rate 96k >> $NOAA_LOG 2>&1
   fi
   sleep 2
 elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
-  log "Recording ${NOAA_HOME} via $receiver at ${METEOR_M2-3_FREQ} MHz using GNU Radio " "INFO"
-  timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/${RECEIVER_TYPE}_m2_lrpt_rx.py" "${RAMFS_AUDIO_BASE}.wav" "${GAIN}" "${METEOR_M2-3_FREQ}" "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
+  log "Recording ${NOAA_HOME} via $receiver at ${METEOR_M2_3_FREQ} MHz using GNU Radio " "INFO"
+  timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/${RECEIVER_TYPE}_m2_lrpt_rx.py" "${RAMFS_AUDIO_BASE}.wav" "${GAIN}" "${METEOR_M2_3_FREQ}" "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
 elif [ "$METEOR_RECEIVER" == "satdump_record" ]; then
-  log "Recording ${NOAA_HOME} via $receiver at ${METEOR_M2-3_FREQ} MHz using SatDump record " "INFO"
-  $SATDUMP record "${RAMFS_AUDIO_BASE}.wav" --source $receiver --samplerate $samplerate --decimation $decimation --frequency "${METEOR_M2-3_FREQ}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+  log "Recording ${NOAA_HOME} via $receiver at ${METEOR_M2_3_FREQ} MHz using SatDump record " "INFO"
+  $SATDUMP record "${RAMFS_AUDIO_BASE}.wav" --source $receiver --samplerate $samplerate --decimation $decimation --frequency "${METEOR_M2_3_FREQ}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
 elif [ "$METEOR_RECEIVER" == "satdump_live" ]; then
   log "Starting SatDump live recording and decoding" "INFO"
 
-  # Set mode based on METEOR_M2-3_80K_INTERLEAVING
-  mode="$([[ "$METEOR_M2-3_80K_INTERLEAVING" == "true" ]] && echo "_80k" || echo "")"
-  $SATDUMP live meteor_m2-x_lrpt$mode . --source $receiver --samplerate $samplerate --frequency "${METEOR_M2-3_FREQ}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+  # Set mode based on METEOR_M2_3_80K_INTERLEAVING
+  mode="$([[ "$METEOR_M2_3_80K_INTERLEAVING" == "true" ]] && echo "_80k" || echo "")"
+  $SATDUMP live meteor_m2-x_lrpt$mode . --source $receiver --samplerate $samplerate --frequency "${METEOR_M2_3_FREQ}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
   rm satdump.logs meteor_m2-x_lrpt$mode.cadu dataset.json
 
   log "Waiting for files to close" "INFO"
@@ -188,7 +188,7 @@ if [[ "$METEOR_RECEIVER" == "rtl_fm" || "$METEOR_RECEIVER" == "gnuradio" || "$ME
   fi
 
   log "Running MeteorDemod to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
-  if [[ "$METEOR_M2-3_80K_INTERLEAVING" == "true" ]]; then
+  if [[ "$METEOR_M2_3_80K_INTERLEAVING" == "true" ]]; then
     $METEORDEMOD -m oqpsk -diff 1 -int 1 -s 80000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
   else
     $METEORDEMOD -m oqpsk -diff 1 -s 72000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
