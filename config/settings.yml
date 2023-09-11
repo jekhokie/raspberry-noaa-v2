@@ -12,7 +12,7 @@ timezone_offset: -5
 # locale settings for timezone and language
 #   timezone: see https://www.php.net/manual/en/timezones.php
 #   lang_setting: see the 'webpanel/App/Lang' folder for available
-#                 languages (2-letter filename - e.g. ar, bg, de, en, es, nl, sr)
+#                 languages (2-letter filename - e.g. ar, bg, de, en, es, nl, sr, ru, it, hu)
 timezone: America/New_York
 lang_setting: en
 
@@ -28,7 +28,7 @@ ntp_server: ''
 receiver_type: 'rtlsdr'
 
 noaa_receiver: 'gnuradio'
-meteor_receiver: 'satdump_record'
+meteor_receiver: 'gnuradio'
 
 # test settings when running test scripts
 #   test_gain - gain to use for scanner test scripts
