@@ -47,6 +47,12 @@ AUDIO_FILE_BASE="${METEOR_AUDIO_OUTPUT}/${FILENAME_BASE}"
 IMAGE_FILE_BASE="${IMAGE_OUTPUT}/${FILENAME_BASE}"
 IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 
+if [ "$SAT_NAME" == "METEOR-M2 3" ]; then
+  SAT_NUMBER=M2_3
+elif [ "$SAT_NAME" == "METEOR-M2 4" ]; then
+  SAT_NUMBER=M2_4
+fi
+
 case "$RECEIVER_TYPE" in
      "rtlsdr")
          samplerate="1.024e6"
@@ -166,9 +172,9 @@ elif [ "$METEOR_RECEIVER" == "satdump_live" ]; then
   log "Starting SatDump live recording and decoding" "INFO"
 
   # Set mode based on METEOR_M2_3_80K_INTERLEAVING
-  mode="$([[ "$METEOR_M2_3_80K_INTERLEAVING" == "true" ]] && echo "_80k" || echo "")"
-  $SATDUMP live meteor_m2-x_lrpt$mode . --source $receiver --samplerate $samplerate --frequency "${METEOR_M2_3_FREQ}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
-  rm satdump.logs meteor_m2-x_lrpt$mode.cadu dataset.json
+  mode="$([[ "$METEOR_${SAT_NUMBER}_80K_INTERLEAVING" == "true" ]] && echo "_80k" || echo "")"
+  $SATDUMP live meteor_m2-x_lrpt${mode} . --source $receiver --samplerate $samplerate --frequency "${METEOR_M2_3_FREQ}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+  rm satdump.logs meteor_m2-x_lrpt${mode}.cadu dataset.json
 
   log "Waiting for files to close" "INFO"
   sleep 2
@@ -188,7 +194,7 @@ if [[ "$METEOR_RECEIVER" == "rtl_fm" || "$METEOR_RECEIVER" == "gnuradio" || "$ME
   fi
 
   log "Running MeteorDemod to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
-  if [[ "$METEOR_M2_3_80K_INTERLEAVING" == "true" ]]; then
+  if [[ "$METEOR_${SAT_NUMBER}_80K_INTERLEAVING" == "true" ]]; then
     $METEORDEMOD -m oqpsk -diff 1 -int 1 -s 80000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
   else
     $METEORDEMOD -m oqpsk -diff 1 -s 72000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
