@@ -34,7 +34,7 @@ export PASS_SIDE=$8
 
 # export some variables for use in the annotation - note that we do not
 # want to export all of .noaa-v2.conf because it contains sensitive info
-export GAIN=$METEOR_M2-3_GAIN
+export GAIN=$METEOR_M2_3_GAIN
 export SUN_MIN_ELEV=$METEOR_M2_3_SUN_MIN_ELEV
 export SDR_DEVICE_ID=$METEOR_M2_3_SDR_DEVICE_ID
 export BIAS_TEE=$METEOR_M2_3_ENABLE_BIAS_TEE
