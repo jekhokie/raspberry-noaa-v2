@@ -158,7 +158,7 @@ if [ "${ENABLE_EMAIL_SCHEDULE_PUSH}" == "true" ]; then
   if [ "${GROUND_STATION_LOCATION}" != "" ]; then
     annotation="${annotation}Ground Station: ${GROUND_STATION_LOCATION} | "
   fi
-  annotation="${annotation}Timezone Offset: ${TZ_OFFSET}"
+  annotation="${annotation}Timezone: $(date '+%Z')"
 
   log "Generating image of pass list schedule for email" "INFO"
   pass_image="${NOAA_HOME}/tmp/pass-list.jpg"
