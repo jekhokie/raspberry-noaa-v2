@@ -118,6 +118,10 @@
     group: www-data
     mode: 0775
 
+- name: Fetch system timezone
+  command: timedatectl show --property=Timezone --value
+  register: system_timezone
+
 - name: php config file
   become: yes
   template:

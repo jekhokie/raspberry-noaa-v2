@@ -138,7 +138,6 @@
     "noaa_thermal_temp_overlay_location": {
       "type": "string"
     },
-    "timezone":                                      { "type": "string" },
     "lang_setting": {
       "type": "string",
       "enum": [ "ar", "bg", "cn", "de", "en", "es", "fr", "lt", "nl", "pt", "sr", "ru", "it", "hu" ]
@@ -263,7 +262,6 @@
     "noaa_map_state_border_color",
     "noaa_thermal_temp_overlay",
     "noaa_thermal_temp_overlay_location",
-    "timezone",
     "lang_setting",
     "web_server_name",
     "enable_non_tls",
