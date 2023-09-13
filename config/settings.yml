@@ -9,11 +9,9 @@ altitude: 0.0
 # time zone offset from UTC (for example, '-5' for US Eastern)
 timezone_offset: -5
 
-# locale settings for timezone and language
-#   timezone: see https://www.php.net/manual/en/timezones.php
+#Website language settings
 #   lang_setting: see the 'webpanel/App/Lang' folder for available
-#                 languages (2-letter filename - e.g. ar, bg, de, en, es, nl, sr)
-timezone: America/New_York
+#                 languages (2-letter filename - e.g. ar, bg, de, en, es, nl, sr, ru, it, hu)
 lang_setting: en
 
 # ntp configurations
@@ -23,12 +21,12 @@ ntp_server: ''
 
 # receiver settings
 #   receiver_type - the receiver type which program uses ('rtlsdr', 'airspy_mini', 'airspy_r2' or 'hackrf' or 'sdrplay')
-#   noaa_receiver  - which receiver method to use (either 'rtl_fm' or 'gnuradio')
-#   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'gnuradio' or 'satdump')
+#   noaa_receiver  - which receiver method to use (either 'rtl_fm' or 'gnuradio' or 'satdump_record' or 'satdump_live')
+#   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'gnuradio' or 'satdump_record' or 'satdump_live')
 receiver_type: 'rtlsdr'
 
 noaa_receiver: 'gnuradio'
-meteor_receiver: 'satdump'
+meteor_receiver: 'gnuradio'
 
 # test settings when running test scripts
 #   test_gain - gain to use for scanner test scripts
@@ -52,7 +50,9 @@ test_freq_offset: 0
 
 noaa_memory_threshold: 40
 meteor_m2_memory_threshold: 600
+
 select_best_overlapping_passes: true
+select_meteor_pass_over_noaa: true
 
 noaa_15_schedule: true
 noaa_15_sdr_device_id: 0
@@ -78,14 +78,14 @@ noaa_19_gain: 29.7
 noaa_19_sun_min_elevation: 6
 noaa_19_sat_min_elevation: 30
 
-meteor_m2_schedule: true
-meteor_m2_sdr_device_id: 0
-meteor_m2_freq_offset: 0
-meteor_m2_enable_bias_tee: false
-meteor_m2_gain: 29.7
-meteor_m2_sun_min_elevation: 6
-meteor_m2_sat_min_elevation: 30
-meteor_80k_interleaving: false
+meteor_m2_3_schedule: true
+meteor_m2_3_sdr_device_id: 0
+meteor_m2_3_freq_offset: 0
+meteor_m2_3_enable_bias_tee: false
+meteor_m2_3_gain: 29.7
+meteor_m2_3_sun_min_elevation: 6
+meteor_m2_3_sat_min_elevation: 30
+meteor_m2_3_80k_interleaving: false
 
 # how many days to schedule passes - note this MUST be an even integer,
 # and the current day counts as "1" - passes will be scheduled until midnight

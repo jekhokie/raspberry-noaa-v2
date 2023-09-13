@@ -22,7 +22,7 @@ class Config {
   const DATE_FORMAT = '{{ web_passes_date_format }}';
 
   # use https://www.php.net/manual/en/timezones.php
-  const TIMEZONE = '{{ timezone }}';
+  const TIMEZONE = '{{ system_timezone.stdout }}';
 
   # location of images
   const IMAGE_PATH = '{{ images_output }}';

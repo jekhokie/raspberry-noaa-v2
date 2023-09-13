@@ -137,7 +137,7 @@ if [ "$NOAA_19_SCHEDULE" == "true" ]; then
   log "Scheduling NOAA 19 captures..." "INFO"
   $NOAA_HOME/scripts/schedule_captures.sh "NOAA 19" "receive_noaa.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
 fi
-if [ "$METEOR_M2_SCHEDULE" == "true" ]; then
+if [ "$METEOR_M2_3_SCHEDULE" == "true" ]; then
   log "Scheduling Meteor-M2 3 captures..." "INFO"
   #$NOAA_HOME/scripts/schedule_captures.sh "METEOR-M 2" "receive_meteor.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
   $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M2 3" "receive_meteor.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
@@ -147,7 +147,7 @@ log "Done scheduling jobs!" "INFO"
 # Check if the variable is set and true
 if [ "$SELECT_BEST_OVERLAPPING_PASSES" == true ]; then
     log "Program automatically selected the best pass!" "INFO"
-    $NOAA_HOME/scripts/select_best_overlapping_passes.py $DB_FILE
+    $NOAA_HOME/scripts/select_best_overlapping_passes.py $DB_FILE $SELECT_METEOR_PASS_OVER_NOAA
 else
     log "You should manually remove overlapping passes." "INFO"
 fi

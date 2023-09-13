@@ -21,7 +21,7 @@ TIMER_START=$(date '+%s')
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
-capture_start=$START_DATE
+capture_start="$START_DATE $(date '+%Z')"
 
 # input params
 export SAT_NAME=$1
@@ -87,22 +87,27 @@ case "$RECEIVER_TYPE" in
      "rtlsdr")
          samplerate="1.024e6"
          receiver="rtlsdr"
+         decimation=25
          ;;
      "airspy_mini")
          samplerate="3e6"
          receiver="airspy"
+         decimation=75
          ;;
      "airspy_r2")
          samplerate="2.5e6"
          receiver="airspy"
+         decimation=50
          ;;
      "hackrf")
          samplerate="4e6"
          receiver="hackrf"
+         decimation=100
          ;;
      "sdrplay")
          samplerate="2e6"
          receiver="sdrplay"
+         decimation=50
          ;;
      *)
          echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE"
@@ -155,9 +160,14 @@ elif [ "$NOAA_RECEIVER" == "gnuradio" ]; then
   log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via GNU Radio " "INFO"
   timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/${RECEIVER_TYPE}_noaa_apt_rx.py" "${RAMFS_AUDIO_BASE}.wav" "${GAIN}" "${NOAA_FREQUENCY}"M "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
   ffmpeg -hide_banner -loglevel error -i "$3" -c:a copy "${3%.*}_tmp.wav" && ffmpeg -i "${3%.*}_tmp.wav" -c:a copy -y "$3" && rm "${3%.*}_tmp.wav"
-elif [ "$NOAA_RECEIVER" == "satdump" ]; then
+elif [ "$NOAA_RECEIVER" == "satdump_record" ]; then
+  log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump record " "INFO"
+  $SATDUMP record "${RAMFS_AUDIO_BASE}" --source $receiver --baseband_format w16 --samplerate $samplerate --decimation $decimation --frequency "${NOAA_FREQUENCY}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+  #TO BE ADDED: "${RAMFS_AUDIO_BASE}.wav" is a baseband file and needs to be demodulated first to FM audio
+  rm satdump.logs product.cbor dataset.json
+elif [ "$NOAA_RECEIVER" == "satdump_live" ]; then
   log "Starting SatDump recording and live decoding" "INFO"
-  satdump live noaa_apt . --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+  $SATDUMP live noaa_apt . --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
   rm satdump.logs product.cbor dataset.json
   spectrogram=0
   pristine=0
@@ -244,7 +254,6 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
 
   # build images based on enhancements defined
   log "Normalizing and annotating NOAA images" "INFO"
-  has_one_image=0
   for enhancement in $ENHANCEMENTS; do
     export ENHANCEMENT=$enhancement
     log "Decoding image" "INFO"
@@ -256,13 +265,8 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
     fi
 
     if [ -f "${IMAGE_FILE_BASE}-$enhancement.jpg" ]; then
-      filesize=$(wc -c "${IMAGE_FILE_BASE}-$enhancement.jpg" | awk '{print $1}')
       ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_FILE_BASE}-$enhancement.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
       ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_THUMB_BASE}-$enhancement.jpg" >> $NOAA_LOG 2>&1
-      # check that the file actually has content
-      # at least one good image
-      has_one_image=1
-      # capture list of files to push to Twitter
       push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-$enhancement.jpg"
     fi
   done
@@ -281,9 +285,11 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
 else
   log "Normalizing and annotating NOAA images" "INFO"
   for i in *.png; do
-    ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$i" "${IMAGE_FILE_BASE}-${i%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$i" "${IMAGE_THUMB_BASE}-${i%.png}.jpg" >> $NOAA_LOG 2>&1
-    push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${i%.png}.jpg"
+    new_name="${i#avhrr_apt_rgb_}"
+    new_name="${new_name#avhrr_apt_}"
+    ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$i" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
+    push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
     rm $i >> $NOAA_LOG 2>&1
   done
 fi

@@ -32,11 +32,12 @@ def delete_job(target_datetime_str):
             os.system("atrm {}".format(job_id))
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: {} <database_path>".format(sys.argv[0]))
+    if len(sys.argv) != 3:
+        print("Usage: {} <database_path> <select_meteor_pass_over_noaa>".format(sys.argv[0]))
         sys.exit(1)
 
     database_path = os.path.expanduser(sys.argv[1])
+    select_meteor_pass_over_noaa = sys.argv[2].lower() == "true"
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
 
@@ -52,7 +53,7 @@ if __name__ == "__main__":
         pass_start_next_str = datetime.fromtimestamp(pass_start_next).strftime("%Y-%m-%d %H:%M:%S")
 
         if pass_start_curr < pass_start_next and pass_start_next < pass_end_curr:
-            if "METEOR" in sat_name_curr or "METEOR" in sat_name_next:
+            if ("METEOR" in sat_name_curr or "METEOR" in sat_name_next) and select_meteor_pass_over_noaa:
                 if "METEOR" in sat_name_curr and "METEOR" not in sat_name_next:
                     if at_job_id_next != 0:
                         delete_job(pass_start_next_str)

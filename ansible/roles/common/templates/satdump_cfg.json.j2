@@ -18,8 +18,9 @@
                 "no_live": true
             },
             "samplerate": {
-                "type": "int",
+                "type": "notated_int",
                 "value": 6000000,
+                "units": "sps",
                 "name": "Samplerate",
                 "no_live": true
             },
@@ -36,8 +37,9 @@
                 "description": "In some cases, the I and Q branches can be swapped.\nThat can happen when using some downconverters,\nor perhaps some software that records the file in an unusual way."
             },
             "freq_shift": {
-                "type": "int",
+                "type": "notated_int",
                 "value": 0,
+                "units": "Hz",
                 "name": "Frequency Shift",
                 "description": "Can be used to offset the signal."
             }
@@ -54,8 +56,8 @@
         "manual_dpi_scaling": {
             "type": "float",
             "value": 1.0,
-            "name": "DPI Scaling",
-            "description": "DPI Scaling defines the overall UI scale. This can be used to make it bigger or smaller depending on your display's pixel density."
+            "name": "UI Scaling",
+            "description": "Defines the overall UI scale. This can be used to make UI elements bigger or smaller\n\n1.0 = normal\n0.5 = half size\n2.0 = double size"
         },
         "finish_processing_after_live": {
             "type": "bool",
@@ -145,7 +147,7 @@
         },
         "update_tles_startup": {
             "type": "bool",
-            "value": false,
+            "value": true,
             "name": "Update TLEs on Startup",
             "description": "If this is enabled, TLEs will be updated each time SatDump is started"
         },
@@ -393,20 +395,16 @@
                             "height": 2048,
                             "old_algo": true,
                             "draw_map": true,
-                            "equalize": true,
+                            "individual_equalize": true,
                             "config": {
                                 "type": "equirectangular"
                             }
                         }
                     },
                     "3a21": {
-                        "equation": "ch3a, ch2, ch1",
+                        "equation": "cch3a, cch2, cch1",
+                        "equalize": true,
                         "geo_correct": true
-                    },
-                    "3a21/221 Mix": {
-                        "equation": "(ch3a * 0.4 + ch2 * 0.6) * 2.2 - 0.15, ch2 * 2.2 - 0.15, ch1 * 2.2 - 0.15",
-                        "geo_correct": true,
-                        "autogen": false
                     },
                     "4/221 Merge": {
                         "equation": "ch1 < 0.065 ? (ch4 - 0.7) * 2.66 : ch2 * 2.2 - 0.15, ch1 < 0.065 ? (ch4 - 0.7) * 2.66 : ch2 * 2.2 - 0.15, ch1 < 0.065 ? (ch4 - 0.7) * 2.66 : ch1 * 2.2 - 0.15",
@@ -414,7 +412,7 @@
                     },
                     "NOAA Natural Color": {
                         "equation": "cch2 * 0.6 + min(cch1, cch2) * 0.4, cch2, cch1",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true
                     },
                     "Natural Color": {
@@ -423,17 +421,17 @@
                     },
                     "543b": {
                         "equation": "ch5, ch4, ch3b",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true
                     },
                     "3b45": {
                         "equation": "ch3b, ch4, ch5",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true
                     },
                     "124": {
                         "equation": "ch1, ch2, ch4",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true,
                         "project": {
                             "width": 4096,
@@ -447,19 +445,19 @@
                     },
                     "Thermal Channel": {
                         "equation": "cch4",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true
                     },
                     "Night Microphysics": {
                         "equation": "cch5-cch4,cch4-cch3b,cch4",
                         "geo_correct": true,
-                        "equalize": true,
+                        "individual_equalize": true,
                         "white_balance": true
                     },
                     "Day Microphysics": {
                         "equation": "cch1, cch3b^2.5,cch4",
                         "geo_correct": true,
-                        "equalize": true
+                        "individual_equalize": true
                     },
                     "Clouds Underlay (Merge)": {
                         "channels": "ch4",
@@ -485,7 +483,7 @@
                     },
                     "Snow enhancement": {
                         "equation": "((3*ch1-ch4)/2)^1.7, ((3*ch1+ch4)/4)^1.7, (ch1-ch3a)^1.7",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "white_balance": true,
                         "geo_correct": true,
                         "autogen": false
@@ -500,7 +498,7 @@
                         "channels": "ch3b, ch4",
                         "autogen": false,
                         "geo_correct": true,
-                        "equalize": true,
+                        "individual_equalize": true,
                         "draw_map": true,
                         "map_overlay_colors": [
                             1,
@@ -523,13 +521,17 @@
                             }
                         },
                         "autogen": false
+                    },
+                    "NOAA BD (Hurricane)": {
+                        "channels": "cch4",
+                        "lut": "lut/bd.png"
                     }
                 },
                 "project_channels": {
                     "channels": "4",
                     "width": 4096,
                     "height": 2048,
-                    "equalize": true,
+                    "individual_equalize": true,
                     "old_algo": true,
                     "draw_map": true,
                     "config": {
@@ -543,15 +545,35 @@
                 "rgb_composites": {
                     "224": {
                         "equation": "cha + 0.01, cha, chb - 0.2",
-                        "autogen": false
+                        "autogen": false,
+                        "map_overlay": {{ noaa_map_country_border_enable|lower }},
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ]
                     },
-                    "A Equalized": {
+                    "A individual_equalized": {
                         "equation": "cha",
-                        "equalize": true
+                        "individual_equalize": true,
+                        "autogen": false,
+                        "map_overlay": {{ noaa_map_country_border_enable|lower }},
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ]
                     },
-                    "B Equalized": {
+                    "B individual_equalized": {
                         "equation": "chb",
-                        "equalize": true
+                        "individual_equalize": true,
+                        "autogen": false,
+                        "map_overlay": {{ noaa_map_country_border_enable|lower }},
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ]
                     },
                     "Clouds Underlay": {
                         "channels": "chb",
@@ -562,10 +584,17 @@
                             "thresold": 0.15,
                             "blend": 0
                         },
-                        "autogen": false
+                        "autogen": false,
+                        "map_overlay": {{ noaa_map_country_border_enable|lower }},
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ]
                     },
                     "MCIR": {
                         "channels": "chb",
+                        "autogen": {{ "true" if "MCIR" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "lua": "scripted_compos/underlay_with_clouds.lua",
                         "lua_vars": {
                             "minoffset": 0.35,
@@ -573,7 +602,7 @@
                             "thresold": 0,
                             "blend": 1
                         },
-                        "map_overlay": true,
+                        "map_overlay": {{ noaa_map_country_border_enable|lower }},
                         "map_overlay_colors": [
                             1,
                             1,
@@ -582,6 +611,7 @@
                     },
                     "MSA": {
                         "channels": "cha",
+                        "autogen": {{ "true" if "MSA" in noaa_daytime_enhancements.split(' ') else "false" }},
                         "lua": "scripted_compos/underlay_with_clouds.lua",
                         "lua_vars": {
                             "minoffset": 0.02,
@@ -589,7 +619,7 @@
                             "thresold": 0,
                             "blend": 1
                         },
-                        "map_overlay": true,
+                        "map_overlay": {{ noaa_map_country_border_enable|lower }},
                         "map_overlay_colors": [
                             1,
                             1,
@@ -598,6 +628,7 @@
                     },
                     "MCIR Rain": {
                         "channels": "cha, chb",
+                        "autogen": {{ "true" if "MCIR-precip" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "lua": "scripted_compos/underlay_with_clouds_lut.lua",
                         "lua_vars": {
                             "minoffset": 0.2,
@@ -605,7 +636,7 @@
                             "thresold": 0,
                             "lut": "noaa_apt/WXtoImg-NO_mod.png"
                         },
-                        "map_overlay": true,
+                        "map_overlay": {{ noaa_map_country_border_enable|lower }},
                         "map_overlay_colors": [
                             1,
                             1,
@@ -615,22 +646,46 @@
                     "WXtoImg HVC N15": {
                         "lut": "noaa_apt/WXtoImg-N15-HVC.png",
                         "channels": "cha, chb",
-                        "autogen": false
+                        "autogen": {{ "true" if "HVC" in noaa_nighttime_enhancements.split(' ') else "false" }},
+                        "map_overlay": {{ noaa_map_country_border_enable|lower }},
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ]
                     },
                     "WXtoImg HVC N18": {
                         "lut": "noaa_apt/WXtoImg-N18-HVC.png",
                         "channels": "cha, chb",
-                        "autogen": false
+                        "autogen": {{ "true" if "HVC" in noaa_nighttime_enhancements.split(' ') else "false" }},
+                        "map_overlay": {{ noaa_map_country_border_enable|lower }},
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ]
                     },
                     "WXtoImg HVC N19": {
                         "lut": "noaa_apt/WXtoImg-N19-HVC.png",
                         "channels": "cha, chb",
-                        "autogen": false
+                        "autogen": {{ "true" if "HVC" in noaa_nighttime_enhancements.split(' ') else "false" }},
+                        "map_overlay": {{ noaa_map_country_border_enable|lower }},
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ]
                     },
                     "WXtoImg NO": {
                         "lut": "noaa_apt/WXtoImg-NO.png",
                         "channels": "cha, chb",
-                        "autogen": false
+                        "autogen": {{ "true" if "NO" in noaa_nighttime_enhancements.split(' ') else "false" }},
+                        "map_overlay": {{ noaa_map_country_border_enable|lower }},
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ]
                     }
                 }
                 //,"project_channels": {}
@@ -641,19 +696,19 @@
                 "rgb_composites": {
                     "221": {
                         "equation": "ch2, ch2, ch1",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true
                     },
                     "621": {
                         "equation": "ch6, ch2, ch1",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true,
                         "project": {
                             "width": 4096,
                             "height": 2048,
                             "old_algo": true,
                             "draw_map": true,
-                            "equalize": true,
+                            "individual_equalize": true,
                             "config": {
                                 "type": "equirectangular"
                             }
@@ -661,14 +716,14 @@
                     },
                     "197": {
                         "equation": "ch1, ch9, ch7",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true,
                         "project": {
                             "width": 4096,
                             "height": 2048,
                             "old_algo": true,
                             "draw_map": true,
-                            "equalize": true,
+                            "individual_equalize": true,
                             "config": {
                                 "type": "equirectangular"
                             }
@@ -676,7 +731,7 @@
                     },
                     "4/221 Merge": {
                         "equation": "ch1 < 0.015 ? (ch4 - 0.45) * 2.66 : ch2 * 7.2 - 0.07, ch1 < 0.015 ? (ch4 - 0.45) * 2.66 : ch2 * 7.2 - 0.07, ch1 < 0.015 ? (ch4 - 0.45) * 2.66 : ch1 * 7.2 - 0.07",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true,
                         "project": {
                             "width": 4096,
@@ -688,27 +743,37 @@
                             }
                         }
                     },
-                    "4 Equalized": {
+                    "4 individual_equalized": {
                         "equation": "ch4",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true,
                         "project": {
                             "width": 4096,
                             "height": 2048,
                             "old_algo": true,
                             "draw_map": true,
-                            "equalize": true,
+                            "individual_equalize": true,
                             "config": {
                                 "type": "equirectangular"
                             }
                         }
+                    },
+                    "543": {
+                        "equation": "ch5, ch4, ch3",
+                        "individual_equalize": true,
+                        "geo_correct": true
+                    },
+                    "Night Microphysics": {
+                        "equation": "(1-ch5)-(1-ch4), (1-ch4)-(1-ch3), (1-ch4)",
+                        "individual_equalize": true,
+                        "geo_correct": true
                     }
                 },
                 "project_channels": {
                     "channels": "4",
                     "width": 4096,
                     "height": 2048,
-                    "equalize": true,
+                    "individual_equalize": true,
                     "old_algo": true,
                     "draw_map": true,
                     "config": {
@@ -720,53 +785,127 @@
                 "handler": "image_handler",
                 "name": "MSU-MR",
                 "rgb_composites": {
-                   "221": {
-                       "equation": "ch2, ch2, ch1",
-                       "geo_correct": true,
-                       "map_overlay": {{ meteor_draw_map_overlay|lower }},
-                       "project": {
-                           "width": 2048,
-                           "height": 2048,
-                           "old_algo": false,
-                           "draw_map": {{ meteor_draw_map_overlay|lower }},
-                           "equalize": false,
-                           "config": {
-                               "type": "stereo",
-                               "center_lat": {{ latitude }},
-                               "center_lon": {{ longitude }},
-                               "scale": {{ satdump_image_scaling_factor }}
-                           }
-                       }
-                   },
-                  "321": {
-                       "equation": "ch3, ch2, ch1",
-                       "geo_correct": true,
-                       "map_overlay": {{ meteor_draw_map_overlay|lower }},
-                       "project": {
-                           "width": 2048,
-                           "height": 2048,
-                           "old_algo": false,
-                           "draw_map": {{ meteor_draw_map_overlay|lower }},
-                           "equalize": false,
-                           "config": {
-                               "type": "stereo",
-                               "center_lat": {{ latitude }},
-                               "center_lon": {{ longitude }},
-                               "scale": {{ satdump_image_scaling_factor }}
-                           }
-                       }
-                   },
-                    "Thermal Channel": {
-                        "equation": "1 - ch5",
-                        "equalize": false,
+                    "221": {
+                        "equation": "ch2, ch2, ch1",
                         "geo_correct": true,
                         "map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ],
                         "project": {
                             "width": 2048,
                             "height": 2048,
                             "old_algo": false,
                             "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "equalize": false,
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
+                    },
+                    "321": {
+                        "equation": "ch3, ch2, ch1",
+                        "geo_correct": true,
+                        "map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "old_algo": false,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
+                    },
+                    "124": {
+                        "equation": "ch1, ch2, ch4",
+                        "geo_correct": true,
+                        "individual_equalize": true
+                    },
+                    "Natural Color": {
+                        "equation": "((0.5*max(ch4,min(ch2,ch1)) + 0.5*ch2)+0.3*ch3)*0.85, ch2, ch1",
+                        "geo_correct": true,
+                        "white_balance": true
+                    },
+                    "Thermal Channel": {
+                        "equation": "1 - ch5",
+                        "individual_equalize": false,
+                        "geo_correct": true,
+                        "map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "old_algo": false,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
+                    },
+                    "Day Microphysics": {
+                        "equation": "ch1, ch4^2.5, ch5",
+                        "individual_equalize": true,
+                        "geo_correct": true
+                    },
+                    "Night Microphysics": {
+                        "equation": "ch6-ch5, ch5-ch4, ch5",
+                        "individual_equalize": true,
+                        "geo_correct": true,
+                        "map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "old_algo": false,
+                            "draw_map": true,
+                            "equalize": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
                             "config": {
                                 "type": "stereo",
                                 "center_lat": {{ latitude }},
@@ -777,16 +916,26 @@
                     },
                     "654": {
                         "equation": "1 - ch6, 1 - ch5, 1 - ch4",
-                        "equalize": true,
-                        "autogen": true,
+                        "individual_equalize": true,
                         "geo_correct": true,
+                        "autogen": true,
                         "map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ],
                         "project": {
                             "width": 2048,
                             "height": 2048,
                             "old_algo": false,
                             "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "equalize": true,
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": true,
                             "config": {
                                 "type": "stereo",
                                 "center_lat": {{ latitude }},
@@ -795,24 +944,24 @@
                            }
                         }
                     },
-                    "Night Microphysics": {
-                        "equation": "ch6 - ch5, ch5 - ch4, ch5",
-                        "equalize": true,
+                    "456": {
+                        "equation": "1 - ch4, 1 - ch5, 1 - ch6",
+                        "individual_equalize": true,
                         "geo_correct": true,
-                        "map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "old_algo": false,
-                            "draw_map": true,
-                            "equalize": {{ meteor_draw_map_overlay|lower }},
-                            "config": {
-                                "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
-                            }
-                        }
+                        "autogen": true
+                    },
+                    "WXtoImg NO": {
+                        "lut": "noaa_apt/WXtoImg-NO.png",
+                        "channels": "1-ch5, 1-ch4",
+                        "autogen": true,
+                        "geo_correct": true,
+                        "individual_equalize": true,
+                        "draw_map": true,
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ]
                     }
                 }
             },
@@ -821,15 +970,17 @@
                 "name": "VIIRS",
                 "rgb_composites": {
                     "I221": {
-                        "equation": "chi2, chi2, chi1"
+                        "equation": "chi2, chi2, chi1",
+                        "equalize": true
                     },
                     "I321": {
-                        "equation": "chi3, chi2, chi1"
+                        "equation": "chi3, chi2, chi1",
+                        "equalize": true
                     },
                     "I321/I221 Mix": {
                         "equation": "(chi3 * 0.4 + chi2 * 0.6) * 4 - 0.2, chi2 * 4 - 0.2, chi1 * 4 - 0.2"
                     },
-                    "M543 True Color": {
+                    "True Color": {
                         "equation": "chm5, chm4, chm3",
                         "equalize": true
                     },
@@ -838,16 +989,16 @@
                     },
                     "Night Microphysics": {
                         "equation": "(1-chi5)-(1-chi4),(1-chi4)-(1-chi3),(1-chi4)",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "white_balance": true
                     },
                     "Day Microphysics": {
                         "equation": "chi1, (1-chi3)^2.5,(1-chi4)",
-                        "equalize": true
+                        "individual_equalize": true
                     },
                     "Thermal Channel": {
                         "equation": "1-chi4",
-                        "equalize": true
+                        "individual_equalize": true
                     }
                 }
             },
@@ -863,7 +1014,7 @@
                             "height": 2048,
                             "old_algo": true,
                             "draw_map": true,
-                            "equalize": true,
+                            "individual_equalize": true,
                             "config": {
                                 "type": "equirectangular"
                             }
@@ -878,7 +1029,7 @@
                             "height": 2048,
                             "old_algo": true,
                             "draw_map": true,
-                            "equalize": true,
+                            "individual_equalize": true,
                             "config": {
                                 "type": "equirectangular"
                             }
@@ -892,7 +1043,7 @@
                     "Day Microphysics": {
                         "equation": "ch17, ch22^2.5, ch31",
                         "geo_correct": true,
-                        "equalize": true,
+                        "individual_equalize": true,
                         "white_balance": true
                     }
                 }
@@ -903,7 +1054,7 @@
                 "rgb_composites": {
                     "321": {
                         "equation": "ch3, ch2, ch1",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true
                     },
                     "441": {
@@ -916,14 +1067,14 @@
                 "handler": "image_handler",
                 "name": "MERSI-2",
                 "rgb_composites": {
-                    "321": {
+                    "True Color": {
                         "equation": "ch3, ch2, ch1",
                         "equalize": true,
                         "geo_correct": true
                     },
                     "3(24)1": {
                         "equation": "ch3, (ch2 * 0.43 + ch4 * 0.57), ch1",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true
                     },
                     "17.19.18": {
@@ -932,26 +1083,26 @@
                     },
                     "9.12.11": {
                         "equation": "ch9, ch12, ch11",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true
                     },
                     "441": {
                         "equation": "ch4, ch4, ch1",
                         "geo_correct": true
                     },
-                    "5 Equalized": {
+                    "5 individual_equalized": {
                         "equation": "1.0 - ch5",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true
                     },
                     "Thermal Channel": {
                         "equation": "1.0 - ch5",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true
                     },
                     "Day Microphysics": {
                         "equation": "ch14,ch22^2.5,ch5",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true,
                         "white_balance": true
                     }
@@ -963,12 +1114,12 @@
                 "rgb_composites": {
                     "321": {
                         "equation": "ch3, ch2, ch1",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true
                     },
                     "3(24)1": {
                         "equation": "ch3, (ch2 * 0.43 + ch4 * 0.57), ch1",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true
                     },
                     "17.19.18": {
@@ -977,16 +1128,16 @@
                     },
                     "9.12.11": {
                         "equation": "ch9, ch12, ch11",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true
                     },
                     "441": {
                         "equation": "ch4, ch4, ch1",
                         "geo_correct": true
                     },
-                    "5 Equalized": {
+                    "5 individual_equalized": {
                         "equation": "1.0 - ch5",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true
                     }
                 }
@@ -1008,9 +1159,9 @@
                         "equation": "min(((1 - ch4) - 0.9) * 8, ch10 < 0.03 ? 1 : ch10)",
                         "geo_correct": true
                     },
-                    "1 Equalized": {
+                    "1 individual_equalized": {
                         "equation": "1.0 - ch1",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true
                     }
                 }
@@ -1021,20 +1172,22 @@
                 "rgb_composites": {
                     "321": {
                         "equation": "ch3, ch2, ch1",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true
                     },
                     "221": {
                         "equation": "ch2, ch2, ch1",
+                        "individual_equalize": true,
                         "geo_correct": true
                     },
                     "521": {
                         "equation": "ch5, ch2, ch1",
                         "geo_correct": true
                     },
-                    "nat": {
-                        "equation": "((ch2*0.75 + ch1*0.25)-0.1)*1.2, (ch2-0.1)*1.2, (ch1-0.1)*1.2",
-                        "equalize": false,
+                    "Natural Color": {
+                        "equation": "((0.1*max(ch6,min(ch2,ch1)) + 0.5*ch2)+0.3*ch3)*0.5, ch2, ch1",
+                        "individual_equalize": true,
+                        "white_balance": true,
                         "geo_correct": true
                     }
                 }
@@ -1044,23 +1197,27 @@
                 "name": "MHS",
                 "rgb_composites": {
                     "221": {
-                        "equation": "ch2, ch2, ch1",
-                        "equalize": true
+                        "equation": "cch2, cch2, cch1",
+                        "individual_equalize": true
                     },
                     "421": {
-                        "equation": "ch4, ch2, ch1",
-                        "equalize": true
+                        "equation": "cch4, cch2, cch1",
+                        "individual_equalize": true
                     },
                     "543": {
-                        "equation": "ch5, ch4, ch3",
-                        "equalize": true
+                        "equation": "cch5, cch4, cch3",
+                        "individual_equalize": true
+                    },
+                    "Rainfall": {
+                        "equation": "((1-(cch5-cch4))-0.9)^0.25",
+                        "apply_lut": true
                     }
                 },
                 "project_channels": {
                     "channels": "all",
                     "width": 2048,
                     "height": 1024,
-                    "equalize": true,
+                    "individual_equalize": true,
                     "old_algo": true,
                     "draw_map": true,
                     "config": {
@@ -1074,18 +1231,18 @@
                 "rgb_composites": {
                     "421": {
                         "equation": "ch4, ch2, ch1",
-                        "equalize": true
+                        "individual_equalize": true
                     },
                     "543": {
                         "equation": "ch5, ch4, ch3",
-                        "equalize": true
+                        "individual_equalize": true
                     }
                 },
                 "project_channels": {
                     "channels": "all",
                     "width": 2048,
                     "height": 1024,
-                    "equalize": true,
+                    "individual_equalize": true,
                     "old_algo": true,
                     "draw_map": true,
                     "config": {
@@ -1095,22 +1252,30 @@
             },
             "mwhs2": {
                 "handler": "image_handler",
-                "name": "MHWS-2",
+                "name": "MWHS-2",
                 "rgb_composites": {
-                    "421": {
+                    "MWHS 421": {
                         "equation": "ch8, ch12, ch8",
-                        "equalize": true
+                        "individual_equalize": true
                     },
-                    "543": {
-                        "equation": "ch5, ch4, ch3",
-                        "equalize": true
+                    "ATMS False Color": {
+                        "equation": "ch1, ch10, ch13",
+                        "individual_equalize": true
+                    },
+                    "MHS 421": {
+                        "equation": "ch13, ch10, ch1",
+                        "individual_equalize": true
+                    },
+                    "Microwave Airmass": {
+                        "equation": "ch11,ch12,ch13",
+                        "individual_equalize": true
                     }
                 },
                 "project_channels": {
                     "channels": "all",
                     "width": 2048,
                     "height": 1024,
-                    "equalize": true,
+                    "individual_equalize": true,
                     "old_algo": true,
                     "draw_map": true,
                     "config": {
@@ -1126,7 +1291,7 @@
                     "channels": "all",
                     "width": 2048,
                     "height": 1024,
-                    "equalize": true,
+                    "individual_equalize": true,
                     "old_algo": true,
                     "draw_map": true,
                     "config": {
@@ -1137,12 +1302,33 @@
             "mwts2": {
                 "handler": "image_handler",
                 "name": "MWTS-2",
-                "rgb_composites": {},
+                "rgb_composites": {
+                    "550hPa Temperature (~5 km)": {
+                        "equation": "ch4",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "350hPa Temperature (~10 km)": {
+                        "equation": "ch5",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "200hPa Temperature (~12 km)": {
+                        "equation": "ch6",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "100hPa Temperature (~15 km)": {
+                        "equation": "ch7",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    }
+                },
                 "project_channels": {
                     "channels": "all",
                     "width": 2048,
                     "height": 1024,
-                    "equalize": true,
+                    "individual_equalize": true,
                     "old_algo": true,
                     "draw_map": true,
                     "config": {
@@ -1158,7 +1344,7 @@
                     "channels": "all",
                     "width": 2048,
                     "height": 1024,
-                    "equalize": true,
+                    "individual_equalize": true,
                     "old_algo": true,
                     "draw_map": true,
                     "config": {
@@ -1172,14 +1358,24 @@
                 "rgb_composites": {
                     "123": {
                         "equation": "ch1, ch2, ch3",
-                        "equalize": true
+                        "individual_equalize": true
+                    },
+                    "Low Level Water Vapor": {
+                        "equation": "1-((ch2+ch1)/2)",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "High Level Water Vapor": {
+                        "equation": "1-((ch4+ch3)/2)",
+                        "individual_equalize": true,
+                        "apply_lut": true
                     }
                 },
                 "project_channels": {
                     "channels": "all",
                     "width": 2048,
                     "height": 1024,
-                    "equalize": true,
+                    "individual_equalize": true,
                     "old_algo": true,
                     "draw_map": true,
                     "config": {
@@ -1193,14 +1389,32 @@
                 "rgb_composites": {
                     "10.20.23": {
                         "equation": "ch10, ch20, ch23",
-                        "equalize": true
+                        "individual_equalize": true
+                    },
+                    "MHS 221": {
+                        "equation": "ch21, ch21, ch15",
+                        "individual_equalize": true
+                    },
+                    "MHS 421": {
+                        "equation": "ch22, ch21, ch15",
+                        "individual_equalize": true
+                    },
+                    "Low Level Water Vapor": {
+                        "equation": "1-((ch2+ch1)/2)",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "High Level Water Vapor": {
+                        "equation": "1-((ch4+ch3)/2)",
+                        "individual_equalize": true,
+                        "apply_lut": true
                     }
                 },
                 "project_channels": {
                     "channels": "all",
                     "width": 2048,
                     "height": 1024,
-                    "equalize": true,
+                    "individual_equalize": true,
                     "old_algo": true,
                     "draw_map": true,
                     "config": {
@@ -1214,14 +1428,24 @@
                 "rgb_composites": {
                     "10.20.23": {
                         "equation": "ch10, ch20, ch23",
-                        "equalize": true
+                        "individual_equalize": true
+                    },
+                    "Low Level Water Vapor": {
+                        "equation": "1-((ch2+ch1)/2)",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "High Level Water Vapor": {
+                        "equation": "1-((ch4+ch3)/2)",
+                        "individual_equalize": true,
+                        "apply_lut": true
                     }
                 },
                 "project_channels": {
                     "channels": "all",
                     "width": 2048,
                     "height": 1024,
-                    "equalize": true,
+                    "individual_equalize": true,
                     "old_algo": true,
                     "draw_map": true,
                     "config": {
@@ -1233,16 +1457,53 @@
                 "handler": "image_handler",
                 "name": "ATMS",
                 "rgb_composites": {
-                    "16-17-18": {
+                    "ATMS False Color": {
                         "equation": "ch16, ch17, ch18",
-                        "equalize": true
+                        "individual_equalize": true
+                    },
+                    "MHS 221": {
+                        "equation": "ch17,ch17,ch16",
+                        "individual_equalize": true
+                    },
+                    "MHS 421": {
+                        "equation": "ch20,ch17,ch16",
+                        "individual_equalize": true
+                    },
+                    "Microwave Airmass": {
+                        "equation": "ch18,ch19,ch20",
+                        "individual_equalize": true
+                    },
+                    "AMSU Surface Relative Temperature": {
+                        "equation": "cos(ln(ch1) + ln(ch2)+0.8)",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "550hPa Temperature (~5 km)": {
+                        "equation": "ch6",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "350hPa Temperature (~10 km)": {
+                        "equation": "ch7",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "200hPa Temperature (~12 km)": {
+                        "equation": "ch8",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "100hPa Temperature (~15 km)": {
+                        "equation": "ch9",
+                        "individual_equalize": true,
+                        "apply_lut": true
                     }
                 },
                 "project_channels": {
                     "channels": "all",
                     "width": 2048,
                     "height": 1024,
-                    "equalize": true,
+                    "individual_equalize": true,
                     "old_algo": true,
                     "draw_map": true,
                     "config": {
@@ -1254,24 +1515,41 @@
                 "handler": "image_handler",
                 "name": "AMSU-A",
                 "rgb_composites": {
-                    "221": {
-                        "equation": "ch2, ch2, ch1",
-                        "equalize": true
-                    },
-                    "421": {
-                        "equation": "ch4, ch2, ch1",
-                        "equalize": true
-                    },
                     "543": {
                         "equation": "ch5, ch4, ch3",
-                        "equalize": true
+                        "individual_equalize": true
+                    },
+                    "Surface Relative Temperature": {
+                        "equation": "cos(ln(ch1) + ln(ch2)+0.3)",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "550hPa Temperature (~5 km)": {
+                        "equation": "ch5",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "350hPa Temperature (~10 km)": {
+                        "equation": "ch6",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "200hPa Temperature (~12 km)": {
+                        "equation": "ch7",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "100hPa Temperature (~15 km)": {
+                        "equation": "ch8",
+                        "individual_equalize": true,
+                        "apply_lut": true
                     }
                 },
                 "project_channels": {
                     "channels": "all",
                     "width": 2048,
                     "height": 1024,
-                    "equalize": true,
+                    "individual_equalize": true,
                     "old_algo": true,
                     "draw_map": true,
                     "config": {
@@ -1283,21 +1561,62 @@
                 "handler": "image_handler",
                 "name": "HIRS",
                 "rgb_composites": {
-                    "221": {
-                        "equation": "ch2, ch2, ch1",
-                        "equalize": true
-                    },
                     "421": {
                         "equation": "ch4, ch2, ch1",
-                        "equalize": true
+                        "individual_equalize": true
                     },
                     "543": {
                         "equation": "ch5, ch4, ch3",
-                        "equalize": true
+                        "individual_equalize": true
                     },
-                    "Clouds Only": {
-                        "equation": "ch14, ch13, ch9",
-                        "equalize": true
+                    "Clouds Only (N2O Sounding)": {
+                        "equation": "ch14, ch13, 1",
+                        "individual_equalize": true
+                    },
+                    "Low Level Water Vapor": {
+                        "equation": "ch10",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "Mid Level Water Vapor": {
+                        "equation": "ch11",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "Mid Stratosphere CO2 Temperature": {
+                        "equation": "1-ch2",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "Low Stratosphere CO2 Temperature": {
+                        "equation": "1-ch3",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "Top Troposphere CO2 Temperature": {
+                        "equation": "1-ch4",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "High Troposphere CO2 Temperature": {
+                        "equation": "1-ch5",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "Mid Troposphere CO2/H2O Temperature": {
+                        "equation": "1-ch6",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "Low Troposphere CO2/H2O Temperature": {
+                        "equation": "1-ch7",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "Cloud Detection Channel": {
+                        "equation": "ch17",
+                        "individual_equalize": true,
+                        "apply_lut": true
                     }
                 }
             },
@@ -1307,19 +1626,42 @@
                 "rgb_composites": {
                     "443 (AMSU 221 equivalent)": {
                         "equation": "ch4, ch4, ch3",
-                        "equalize": true
+                        "individual_equalize": true
                     },
                     "843 (AMSU 421 equivalent)": {
                         "equation": "ch8, ch4, ch3",
-                        "equalize": true
+                        "individual_equalize": true
                     },
-                    "Basic False Color": {
-                        "equation": "ch1, ch8, ch15",
-                        "equalize": true
+                    "Soil Moisture (WIP)": {
+                        "equation": "ch14,ch13,ch12",
+                        "individual_equalize": true
                     },
-                    "Clouds Only": {
-                        "equation": "ch29, ch28, ch1",
-                        "equalize": true
+                    "Test1": {
+                        "equation": "1-ch37",
+                        "individual_equalize": true,
+                        "apply_lut": true,
+                        "project": {
+                            "width": 2048,
+                            "height": 1024,
+                            "old_algo": true,
+                            "draw_map": true,
+                            "config": {
+                                "type": "equirectangular"
+                            }
+                        }
+                    },
+                    "Test2": {
+                        "equation": "1-ch33,1-ch34,1-ch35",
+                        "individual_individual_equalize": true,
+                        "project": {
+                            "width": 2048,
+                            "height": 1024,
+                            "old_algo": true,
+                            "draw_map": true,
+                            "config": {
+                                "type": "equirectangular"
+                            }
+                        }
                     }
                 }
             },
@@ -1332,16 +1674,16 @@
                 "handler": "image_handler",
                 "name": "IASI Imaging",
                 "rgb_composites": {
-                    "Inverted Equalized": {
+                    "Inverted individual_equalized": {
                         "equation": "1 - ch1",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "geo_correct": true,
                         "project": {
                             "width": 4096,
                             "height": 2048,
                             "old_algo": true,
                             "draw_map": true,
-                            "equalize": true,
+                            "individual_equalize": true,
                             "config": {
                                 "type": "equirectangular"
                             }
@@ -1391,15 +1733,15 @@
                 "handler": "image_handler",
                 "name": "ERM",
                 "rgb_composites": {
-                    "1 Equalized": {
+                    "1 individual_equalized": {
                         "equation": "ch1",
-                        "equalize": true,
+                        "individual_equalize": true,
                         "project": {
                             "width": 2048,
                             "height": 1024,
                             "old_algo": true,
                             "draw_map": true,
-                            "equalize": true,
+                            "individual_equalize": true,
                             "config": {
                                 "type": "equirectangular"
                             }
@@ -1469,11 +1811,11 @@
                 "rgb_composites": {
                     "VIS/IR Mix": {
                         "equation": "1-chir, chvis, chvis",
-                        "equalize": true
+                        "individual_equalize": true
                     },
-                    "Equalized IR": {
+                    "individual_equalized IR": {
                         "equation": "1-chir",
-                        "equalize": true
+                        "individual_equalize": true
                     }
                 }
             },
