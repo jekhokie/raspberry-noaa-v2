@@ -4,7 +4,6 @@
     "latitude":              { "type": "number" },
     "longitude":             { "type": "number" },
     "altitude":              { "type": "number" },
-    "timezone_offset":       { "type": "number" },
     "ntp_server":            { "type": "string" },
     "test_gain":             { "type": "number" },
     "test_sdr_device_id":    { "type": "number" },
