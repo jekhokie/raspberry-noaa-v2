@@ -130,8 +130,6 @@
     owner: pi
     group: www-data
     mode: 0644
-  vars:
-    timezone: "{{ system_timezone.stdout }}"
 
 - name: nginx non-tls config file
   become: yes
