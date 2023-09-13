@@ -365,7 +365,7 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
   if [ "${GROUND_STATION_LOCATION}" != "" ]; then
     push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
   fi
-  push_annotation="${push_annotation}${SAT_NAME} ${capture_start}"
+  push_annotation="${push_annotation}${SAT_NAME} ${capture_start} $(date "+%Z")"
   push_annotation="${push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
   push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
   push_annotation="${push_annotation} Gain: ${gain}"
