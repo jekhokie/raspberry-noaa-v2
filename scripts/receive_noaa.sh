@@ -175,7 +175,7 @@ elif [ "$NOAA_RECEIVER" == "satdump_record" ]; then
 elif [ "$NOAA_RECEIVER" == "satdump_live" ]; then
   log "Starting SatDump recording and live decoding" "INFO"
   $SATDUMP live noaa_apt . --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
-  rm satdump.logs product.cbor dataset.json
+  rm satdump.logs product.cbor dataset.json APT-A.png APT-B.png raw.png
   spectrogram=0
   pristine=0
   histogram=0
