@@ -254,7 +254,6 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
 
   # build images based on enhancements defined
   log "Normalizing and annotating NOAA images" "INFO"
-  has_one_image=0
   for enhancement in $ENHANCEMENTS; do
     export ENHANCEMENT=$enhancement
     log "Decoding image" "INFO"
@@ -266,13 +265,8 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
     fi
 
     if [ -f "${IMAGE_FILE_BASE}-$enhancement.jpg" ]; then
-      filesize=$(wc -c "${IMAGE_FILE_BASE}-$enhancement.jpg" | awk '{print $1}')
       ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_FILE_BASE}-$enhancement.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
       ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_THUMB_BASE}-$enhancement.jpg" >> $NOAA_LOG 2>&1
-      # check that the file actually has content
-      # at least one good image
-      has_one_image=1
-      # capture list of files to push to Twitter
       push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-$enhancement.jpg"
     fi
   done
