@@ -128,6 +128,13 @@ else
     bias_tee_option=""
 fi
 
+FLIP="" 
+log "Direction $PASS_DIRECTION" "INFO" 
+if [ "$PASS_DIRECTION" == "Northbound" ]; then 
+  log "I'll flip this image pass because PASS_DIRECTION is Northbound" "INFO" 
+  FLIP="-rotate 180" 
+fi
+ 
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
 export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
@@ -285,6 +292,7 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
 else
   log "Normalizing and annotating NOAA images" "INFO"
   for i in *.png; do
+    $CONVERT "$i" $FLIP "$i"
     new_name="${i#avhrr_apt_rgb_}"
     new_name="${new_name#avhrr_apt_}"
     ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$i" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
