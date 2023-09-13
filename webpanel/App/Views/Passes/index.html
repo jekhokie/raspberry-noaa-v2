@@ -9,7 +9,7 @@
   <div id="instruments" class="flex-container">
     {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
       <div id="satvis" class="d-none d-sm-block flex-child">
-        <iframe name="satvis" src="https://satvis.space/?elements=Point,Label,SensorCone&layers=ArcGis&terrain=Maptiler&gs={{ constant('Config\\Config::BASE_STATION_LAT') }},{{ constant('Config\\Config::BASE_STATION_LON') }}&tags=Weather"></iframe>
+        <iframe name="satvis" src="https://satvis.space/?elements=Point,Label,SensorCone&layers=ArcGis&terrain=None&gs={{ constant('Config\\Config::BASE_STATION_LAT') }},{{ constant('Config\\Config::BASE_STATION_LON') }}&tags=Weather"></iframe>
       </div>
     {% endif %}
 
@@ -65,7 +65,7 @@
             <td{% if prev_pass_end >= pass.pass_start %} class="conflict"{% endif %}>
               {% if prev_pass_end >= pass.pass_start %}<i class="fa fa-exclamation-triangle conflict-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['conflicting_pass'] }}"></i>{% endif %}
               {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
-                <a href='https://satvis.space/?elements=Point,Label,SensorCone&layers=ArcGis&terrain=Maptiler&tags=Weather&sat={{ pass.sat_name }}&gs={{ constant('Config\\Config::BASE_STATION_LAT') }},{{ constant('Config\\Config::BASE_STATION_LON') }}' target='satvis'>{{ pass.sat_name }}</a>
+                <a href='https://satvis.space/?elements=Point,Label,SensorCone&layers=ArcGis&terrain=None&tags=Weather&sat={{ pass.sat_name }}&gs={{ constant('Config\\Config::BASE_STATION_LAT') }},{{ constant('Config\\Config::BASE_STATION_LON') }}' target='satvis'>{{ pass.sat_name }}</a>
               {% else %}
                 {{ pass.sat_name }}
               {% endif %}
@@ -89,11 +89,13 @@
   </table>
 
   <br>
-  <center><h4>Coronal Mass Ejection Activity</h4>
+  <center>
+  <h1>Coronal Mass Ejection Activity</h1>
   <br>
   <img src="https://sohowww.nascom.nasa.gov/data/LATEST/current_c2.gif" height=300 style="margin-right=2em; margin-bottom:2em;">
   <img src="https://sohowww.nascom.nasa.gov/data/LATEST/current_c3.gif" height=300 style="margin-right=2em; margin-bottom:2em;">
-  <img src="https://stereo.gsfc.nasa.gov/beacon/latest_512/ahead_cor2_latest.jpg" height=300 style="margin-right=2em; margin-bottom:2em;"></center>
+  <img src="https://stereo.gsfc.nasa.gov/beacon/latest_512/ahead_cor2_latest.jpg" height=300 style="margin-right=2em; margin-bottom:2em;">
+  </center>
 
 {% endblock %}
 
