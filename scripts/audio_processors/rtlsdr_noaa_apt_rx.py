@@ -70,7 +70,7 @@ class rtlsdr_noaa_apt_rx(gr.top_block):
         #          settings from your own settings.yml.
         ################################################################
 
-        self.rtlsdr_source_0 = osmosdr.source( args='numchan=' + str(1) + ' ' + 'rtl=' + str(sdr_dev_id) + ',bias=' + bias_t + '' )
+        self.rtlsdr_source_0 = osmosdr.source( args='numchan=' + str(1) + ' ' + 'rtlsdr=' + str(sdr_dev_id) + ',bias=' + bias_t + '' )
         self.rtlsdr_source_0.set_sample_rate(samp_rate)
         self.rtlsdr_source_0.set_center_freq(fcd_freq, 0)
         self.rtlsdr_source_0.set_freq_corr(freq_offset, 0)

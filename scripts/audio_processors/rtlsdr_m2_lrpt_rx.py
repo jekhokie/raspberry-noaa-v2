@@ -61,7 +61,7 @@ class top_block(gr.top_block):
     # Blocks -- *** NOTE HOW THE VARIABLES ARE CARRIED IN FROM settings.yml - this has to be re-done every time you export the .py from gnuradio
     ###############################################################################################################################################
 
-    self.rtlsdr_source_0 = osmosdr.source( args='numchan=' + str(1) + ' ' + 'rtl=' + str(sdr_dev_id) + ',bias=' + bias_t + '' )
+    self.rtlsdr_source_0 = osmosdr.source( args='numchan=' + str(1) + ' ' + 'rtlsdr=' + str(sdr_dev_id) + ',bias=' + bias_t + '' )
     self.rtlsdr_source_0.set_sample_rate(samp_rate_airspy)
     self.rtlsdr_source_0.set_center_freq(freq, 0)
     self.rtlsdr_source_0.set_freq_corr(freq_offset, 0)
