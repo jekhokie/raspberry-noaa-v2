@@ -192,7 +192,6 @@
     "latitude",
     "longitude",
     "altitude",
-    "timezone_offset",
     "ntp_server",
     "test_gain",
     "test_sdr_device_id",
