@@ -292,6 +292,7 @@ else
   log "Normalizing and annotating NOAA images" "INFO"
   for i in *.png; do
     new_name="${i#avhrr_apt_rgb_}"
+    new_name="${i#avhrr_apt_}"
     mv "$i" "$new_name"
     ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$new_name" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "$new_name" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
