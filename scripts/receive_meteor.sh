@@ -229,15 +229,17 @@ elif [[ "$METEOR_RECEIVER" == "satdump_live" ]]; then
   find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
 
   log "Deleting SatDump projected composites which have been generated, but the channels aren't broadcast" "INFO"
-  for projected_file in MSU-MR/*_projected.png; do
-    # Extract the corresponding corrected.png filename
-    corrected_file="${projected_file/_projected/_corrected}"
 
-    # Check if the corrected.png file does not exist
-    if [ ! -e "$corrected_file" ]; then
-        log "$corrected_file doesn't exist, hence deleting $projected_file" "INFO"
-        rm "$projected_file"
-    fi
+  for projected_file in MSU-MR/rgb_msu_mr_rgb_*_projected.png; do
+      # Extract the corresponding corrected.png filename
+      corrected_file="${projected_file/rgb_msu_mr_rgb_/msu_mr_rgb_}"
+      corrected_file="${corrected_file/_projected.png/_corrected.png}"
+
+      # Check if the corrected.png file does not exist
+      if [ ! -e "$corrected_file" ]; then
+          log "$corrected_file doesn't exist, hence deleting $projected_file" "INFO"
+          rm "$projected_file"
+      fi
   done
 
   log "Removing images without a map if they exist" "INFO"
