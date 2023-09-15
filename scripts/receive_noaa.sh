@@ -290,6 +290,11 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
     fi
   fi
 else
+  log "Removing images without a map if they exist" "INFO"
+  for file in *map.png; do
+    mv "$file" "${file/_map.png/.png}"
+  done
+
   log "Normalizing and annotating NOAA images" "INFO"
   for i in *.png; do
     $CONVERT "$i" $FLIP "$i"

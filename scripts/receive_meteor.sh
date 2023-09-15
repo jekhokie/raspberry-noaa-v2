@@ -240,9 +240,14 @@ elif [[ "$METEOR_RECEIVER" == "satdump_live" ]]; then
     fi
   done
 
+  log "Removing images without a map if they exist" "INFO"
+  for file in *map.png; do
+    mv "$file" "${file/_map.png/.png}"
+  done
+
   for i in MSU-MR/*_corrected.png
   do
-    $CONVERT $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
+    $CONVERT "$i" $FLIP "$i" >> $NOAA_LOG 2>&1
   done
 
     # Renaming files, annotating images, and creating thumbnails
@@ -257,7 +262,7 @@ elif [[ "$METEOR_RECEIVER" == "satdump_live" ]]; then
     new_name="${new_name#rgb_msu_mr_rgb_}"
     new_name="${new_name#rgb_msu_mr_}"
     new_name="${new_name#msu_mr_}"
-  
+
     # Rename the file with the new name
     mv "$i" "$path/MSU-MR/$new_name" >> $NOAA_LOG 2>&1
   
