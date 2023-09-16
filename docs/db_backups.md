@@ -8,7 +8,7 @@ of backing up mid-stream of scheduled passes being recorded):
 
 ```bash
 # back up database nightly at 12:05AM local and retain 3 copies
-cat <(crontab -l) <(echo "5 0 * * * /home/pi/raspberry-noaa-v2/scripts/tools/db_backup.sh") | crontab -
+cat <(crontab -l) <(echo "5 0 * * * /home/{{ target_user }}/raspberry-noaa-v2/scripts/tools/db_backup.sh") | crontab -
 ```
 
 Backups will be created in the `db_backups` directory of this framework, with the last 3 days of backup files
@@ -22,7 +22,7 @@ ensure that there are no scripts/captures running at the time of copy that could
 same time (ideally):
 
 ```bash
-cp /home/pi/raspberry-noaa-v2/db_backups/panel.db.20210212.backup /home/pi/raspberry-noaa-v2/db/panel.db
+cp /home/{{ target_user }}/raspberry-noaa-v2/db_backups/panel.db.20210212.backup /home/{{ target_user }}/raspberry-noaa-v2/db/panel.db
 ```
 
 Following this copy/overwrite, visit your webpanel page and you should see data up to the last write to the

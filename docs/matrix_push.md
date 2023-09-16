@@ -8,7 +8,7 @@ images to a Matrix room. See below headings for the sequence of steps required t
 First, update your `config/settings.yml` file to set `enable_matrix_push: true`.
 
 Finally, re-run the `./install_and_upgrade.sh` script to propagate the settings and install a sample/template
-`~pi/.matrix.conf` configuration file.
+`/home/{{ target_user }}/.matrix.conf` configuration file.
 
 ## Matrix Configuration Requirements
 
@@ -22,7 +22,7 @@ You will need to know three things to configure the notifications:
 The alias you can get from room settings for an existing room, or set one when creating the room.
 The address and the access token you can get from the "Help and About" settings in Element web/desktop if you don't already know them.
 
-Once you have these add them to a file named `~pi/.matrix.conf` so it looks like this:
+Once you have these add them to a file named `/home/{{ target_user }}/.matrix.conf` so it looks like this:
 
 ```
 MATRIX_HOMESERVER="https://matrix.org"
