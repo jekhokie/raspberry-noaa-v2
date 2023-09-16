@@ -147,7 +147,7 @@ log "Done scheduling jobs!" "INFO"
 # Check if the variable is set and true
 if [ "$SELECT_BEST_OVERLAPPING_PASSES" == true ]; then
     log "Program automatically selected the best pass!" "INFO"
-    $NOAA_HOME/scripts/select_best_overlapping_passes.py $DB_FILE $SELECT_BEST_OVERLAPPING_PASSES
+    $NOAA_HOME/scripts/select_best_overlapping_passes.py $DB_FILE $SELECT_METEOR_PASS_OVER_NOAA
 else
     log "You should manually remove overlapping passes." "INFO"
 fi
