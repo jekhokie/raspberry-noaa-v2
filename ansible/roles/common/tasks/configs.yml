@@ -3,32 +3,32 @@
   template:
     src: noaa-v2.conf.j2
     dest: /home/{{ target_user }}/.noaa-v2.conf
-    owner: {{ target_user }}
-    group: {{ target_user }}
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0644
 
 - name: predict directory
   file:
     path: /home/{{ target_user }}/.predict
     state: directory
-    owner: {{ target_user }}
-    group: {{ target_user }}
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0755
 
 - name: predict config file
   template:
     src: predict.qth.j2
     dest: /home/{{ target_user }}/.predict/predict.qth
-    owner: {{ target_user }}
-    group: {{ target_user }}
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0644
 
 - name: wxtoimg config file
   template:
     src: wxtoimgrc.j2
     dest: /home/{{ target_user }}/.wxtoimgrc
-    owner: {{ target_user }}
-    group: {{ target_user }}
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0644
     
 - name: Set ownership of ~/.config/meteordemod folder to pi
@@ -39,8 +39,8 @@
   template:
     src: settings.ini.j2
     dest: /home/{{ target_user }}/.config/meteordemod/settings.ini
-    owner: {{ target_user }}
-    group: {{ target_user }}
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0644
 
 - name: SatDump config file
@@ -56,8 +56,8 @@
   copy:
     src: wxtoimglic
     dest: /home/{{ target_user }}/.wxtoimglic
-    owner: {{ target_user }}
-    group: {{ target_user }}
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0644
 
 - name: log directory for raspberry-noaa-v2 logs
@@ -65,8 +65,8 @@
   file:
     path: /var/log/raspberry-noaa-v2
     state: directory
-    owner: {{ target_user }}
-    group: {{ target_user }}
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0755
 
 - name: logrotate settings for raspberry-noaa-v2 logs
@@ -82,24 +82,24 @@
   file:
     path: /home/{{ target_user }}/.gnuradio
     state: directory
-    owner: {{ target_user }}
-    group: {{ target_user }}
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0755
 
 - name: gnuradio prefs directory
   file:
     path: /home/{{ target_user }}/.gnuradio/prefs
     state: directory
-    owner: {{ target_user }}
-    group: {{ target_user }}
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0755
 
 - name: gnuradio prefs file
   copy:
     src: vmcircbuf_default_factory
     dest: /home/{{ target_user }}/.gnuradio/prefs/vmcircbuf_default_factory
-    owner: {{ target_user }}
-    group: {{ target_user }}
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0644
 
 - name: disable wifi power mgmt script
@@ -136,8 +136,8 @@
   file:
     path: /home/{{ target_user }}/config/annotation
     state: directory
-    owner: {{ target_user }}
-    group: {{ target_user }}
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0755
 
 - name: annotation file (sample for modification)
@@ -145,8 +145,8 @@
     src: annotation.html.j2_file
     dest: /home/{{ target_user }}/raspberry-noaa-v2/config/annotation/annotation.html.j2
     force: no
-    owner: {{ target_user }}
-    group: {{ target_user }}
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0600
 
 - name: RaspbiNOAA v2 Logo
@@ -154,7 +154,7 @@
     src: raspberry-noaa-v2-logo.png
     dest: /home/{{ target_user }}/raspberry-noaa-v2/config/annotation/raspberry-noaa-v2-logo.png
     force: yes
-    owner: {{ target_user }}
-    group: {{ target_user }}
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0600
 ...
