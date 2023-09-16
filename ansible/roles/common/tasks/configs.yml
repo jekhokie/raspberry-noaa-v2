@@ -33,7 +33,7 @@
     
 - name: Set ownership of ~/.config/meteordemod folder to pi
   become: yes
-  command: chown -R $USER:$USER /home/{{ target_user }}/.config/meteordemod
+  command: chown -R {{ target_user }}:{{ target_user }} /home/{{ target_user }}/.config/meteordemod
 
 - name: MeteorDemod config settings.ini file
   template:
