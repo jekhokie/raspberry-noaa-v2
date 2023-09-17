@@ -42,7 +42,7 @@ SQLITE3="/usr/bin/sqlite3"
 WXMAP="/usr/local/bin/wxmap"
 WXTOIMG="/usr/local/bin/wxtoimg"
 WKHTMLTOIMG="/usr/local/bin/wkhtmltoimage"
-METEORDEMOD="/usr/bin/meteordemod"
+METEORDEMOD="/usr/local/bin/meteordemod"
 SATDUMP="/usr/bin/satdump"
 
 # base directories for scripts
