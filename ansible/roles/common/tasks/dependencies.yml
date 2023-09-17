@@ -41,11 +41,11 @@
     state: present
     update_cache: no
 
-- name: install MeteorDemod
-  become: yes
-  apt:
-    deb: "https://github.com/Digitelektro/MeteorDemod/releases/download/2.5.6-beta/meteordemod_2.5.6_{{ system_architecture }}.deb"
-    state: present
+#- name: install MeteorDemod
+#  become: yes
+#  apt:
+#    deb: "https://github.com/Digitelektro/MeteorDemod/releases/download/2.5.6-beta/meteordemod_2.5.6_{{ system_architecture }}.deb"
+#    state: present
 
 - name: install SatDump
   become: yes
