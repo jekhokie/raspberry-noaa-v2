@@ -111,7 +111,7 @@ if [ $extend_annotation -eq 1 ]; then
 fi
 
 # generate final image with annotation
-$CONVERT -quality $QUALITY -colorspace RGB \
+$CONVERT -interlace Line -quality $QUALITY -colorspace RGB \
          -format jpg "${next_in}" "${tmp_dir}/annotation.png" \
          -gravity $IMAGE_ANNOTATION_LOCATION \
          -geometry $geometry \
