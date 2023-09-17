@@ -3,8 +3,8 @@
   file:
     path: ramfs_path
     state: directory
-    owner: pi
-    group: pi
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0770
 
 - name: get system memory

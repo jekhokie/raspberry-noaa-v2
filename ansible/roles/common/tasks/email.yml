@@ -13,10 +13,10 @@
 - name: drop template email msmtp config file
   copy:
     src: msmtprc
-    dest: /home/pi/.msmtprc
+    dest: /home/{{ target_user }}/.msmtprc
     force: no
-    owner: pi
-    group: pi
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0600
   when: enable_email_push | bool
 
@@ -25,8 +25,8 @@
   file:
     path: /var/log/msmtp
     state: directory
-    owner: pi
-    group: pi
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0750
   when: enable_email_push | bool
 
@@ -34,8 +34,8 @@
   become: yes
   file:
     path: /var/log/msmtp/output.log
-    owner: pi
-    group: pi
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0644
     state: touch
   when: enable_email_push | bool

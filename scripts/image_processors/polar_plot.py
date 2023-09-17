@@ -16,7 +16,7 @@
 #
 # Example:
 #   ./scripts/tools/polar_plot.py "NOAA 15" \
-#                                 "/home/pi/raspberry-noaa-v2/tmp/orbit.tle" \
+#                                 "/home/{{ target_user }}/raspberry-noaa-v2/tmp/orbit.tle" \
 #                                 102394157 \
 #                                 102394167 \
 #                                 40.712776 \

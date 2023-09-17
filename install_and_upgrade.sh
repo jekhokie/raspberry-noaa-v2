@@ -157,7 +157,7 @@ log_running "Updating web content..."
 (
   find $WEB_HOME/ -mindepth 1 -type d -name "Config" -prune -o -print | xargs rm -rf &&
   cp -r $NOAA_HOME/webpanel/* $WEB_HOME/ &&
-  sudo chown -R pi:www-data $WEB_HOME/ &&
+  sudo chown -R $USER:www-data $WEB_HOME/ &&
   composer install -d $WEB_HOME/
 ) || die "  Something went wrong updating web content - please inspect the logs above"
 

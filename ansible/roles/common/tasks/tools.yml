@@ -68,32 +68,32 @@
   file:
     path: "{{ noaa_home }}/tmp/map"
     state: directory
-    owner: pi
-    group: pi
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0755
 
 - name: create meteor directory
   file:
     path: "{{ noaa_home }}/tmp/meteor"
     state: directory
-    owner: pi
-    group: pi
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0755
 
 - name: create annotation directory
   file:
     path: "{{ noaa_home }}/tmp/annotation"
     state: directory
-    owner: pi
-    group: pi
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0755
 
 - name: create scanner directory
   file:
     path: "{{ noaa_home }}/tmp/scanner"
     state: directory
-    owner: pi
-    group: pi
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0755
 
 - name: create images directory
@@ -101,7 +101,7 @@
   file:
     path: "{{ images_output }}"
     state: directory
-    owner: pi
+    owner: "{{ target_user }}"
     mode: 0775
 
 - name: create thumbnails directory
@@ -109,7 +109,7 @@
   file:
     path: "{{ images_output }}/thumb"
     state: directory
-    owner: pi
+    owner: "{{ target_user }}"
     mode: 0775
 
 - name: create audio root directory
@@ -117,8 +117,8 @@
   file:
     path: "{{ audio_output }}"
     state: directory
-    owner: pi
-    group: pi
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0775
 
 - name: create noaa audio directory
@@ -126,8 +126,8 @@
   file:
     path: "{{ audio_output }}/noaa"
     state: directory
-    owner: pi
-    group: pi
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0775
 
 - name: create meteor audio directory
@@ -135,8 +135,8 @@
   file:
     path: "{{ audio_output }}/meteor"
     state: directory
-    owner: pi
-    group: pi
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0775
 
 - name: create videos directory
@@ -144,6 +144,6 @@
   file:
     path: "{{ videos_output }}"
     state: directory
-    owner: pi
+    owner: "{{ target_user }}"
     mode: 0775
 ...

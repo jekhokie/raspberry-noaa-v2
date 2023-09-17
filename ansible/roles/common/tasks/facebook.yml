@@ -10,10 +10,10 @@
 - name: drop template facebook facebook-sdk config file
   copy:
     src: facebook.conf
-    dest: /home/pi/.facebook.conf
+    dest: /home/{{ target_user }}/.facebook.conf
     force: no
-    owner: pi
-    group: pi
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0600
   when: enable_facebook_push | bool
 ...

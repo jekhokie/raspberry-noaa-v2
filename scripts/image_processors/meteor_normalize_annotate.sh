@@ -108,7 +108,7 @@ if [ $extend_annotation -eq 1 ]; then
   # clean up
   rm "${tmp_out}"
 else
-  $CONVERT -format jpg "${INPUT_JPG}" "${annotation}" -colorspace RGB \
+  $CONVERT -interlace Line -format jpg "${INPUT_JPG}" "${annotation}" -colorspace RGB \
            -gravity $IMAGE_ANNOTATION_LOCATION \
            -geometry +10+10 \
            -composite "${OUTPUT_JPG}"

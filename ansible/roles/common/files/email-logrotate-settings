@@ -4,5 +4,5 @@
   rotate 7
   nocompress
   notifempty
-  create 0700 pi pi
+  create 0700 {{ target_user }} {{ target_user }}
 }

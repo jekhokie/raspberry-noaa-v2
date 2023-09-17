@@ -105,7 +105,7 @@
   file:
     path: "{{ web_home }}"
     state: directory
-    owner: pi
+    owner: "{{ target_user }}"
     group: www-data
     mode: 0775
 
@@ -114,7 +114,7 @@
   file:
     path: "{{ web_home }}/Config"
     state: directory
-    owner: pi
+    owner: "{{ target_user }}"
     group: www-data
     mode: 0775
 
@@ -127,7 +127,7 @@
   template:
     src: Config.php.j2
     dest: "{{ web_home }}/Config/Config.php"
-    owner: pi
+    owner: "{{ target_user }}"
     group: www-data
     mode: 0644
 

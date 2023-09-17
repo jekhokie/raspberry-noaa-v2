@@ -1,1 +1,1 @@
-%www-data ALL=(pi) NOPASSWD: /usr/bin/atrm
+%www-data ALL=($USER) NOPASSWD: /usr/bin/atrm
