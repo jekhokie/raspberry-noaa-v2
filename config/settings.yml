@@ -174,7 +174,7 @@ produce_spectrogram: true
 noaa_crop_telemetry: false
 produce_noaa_pristine_image: false
 produce_noaa_pristine_histogram: false
-noaa_daytime_enhancements: 'MCIR MCIR-precip MSA MSA-precip HVC-precip HVCT-precip HVC HVCT ZA therm CC HE HF MD BD MB JF JJ LC TA WV NO sea histeq'
+noaa_daytime_enhancements: 'MSA MSA-precip MCIR MCIR-precip HVC-precip HVCT-precip HVC HVCT ZA therm sea CC HE HF MD BD MB JF JJ LC TA WV NO histeq'
 noaa_nighttime_enhancements: 'MCIR MCIR-precip HVCT ZA therm NO TA sea histeq'
 noaa_crop_toptobottom: false
 noaa_interpolate: false
