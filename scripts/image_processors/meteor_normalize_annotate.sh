@@ -99,20 +99,16 @@ if [ $extend_annotation -eq 1 ]; then
            -background black \
            -splice "0x${img_expand_px}" "${tmp_out}"
 
-  # generate final image with annotation
-  $CONVERT -format jpg "${tmp_out}" "${annotation}" -colorspace RGB \
-           -gravity $IMAGE_ANNOTATION_LOCATION \
-           -geometry +0+10 \
-           -composite "${OUTPUT_JPG}"
-
   # clean up
   rm "${tmp_out}"
-else
-  $CONVERT -interlace Line -format jpg "${INPUT_JPG}" "${annotation}" -colorspace RGB \
-           -gravity $IMAGE_ANNOTATION_LOCATION \
-           -geometry +10+10 \
-           -composite "${OUTPUT_JPG}"
 fi
+
+# generate final image with annotation
+$CONVERT -interlace Line -format jpg "${INPUT_JPG}" "${annotation}" -colorspace RGB \
+          -gravity $IMAGE_ANNOTATION_LOCATION \
+          -geometry +10+10 \
+          -composite "${OUTPUT_JPG}"
+
 
 # clean up the annotation
 rm "${annotation}"

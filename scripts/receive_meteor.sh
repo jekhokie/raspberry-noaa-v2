@@ -243,7 +243,7 @@ elif [[ "$METEOR_RECEIVER" == "satdump_live" ]]; then
   done
 
   log "Removing images without a map if they exist" "INFO"
-  for file in *map.png; do
+  for file in MSU-MR/*map.png; do
     mv "$file" "${file/_map.png/.png}"
   done
 
