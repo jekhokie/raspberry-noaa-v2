@@ -105,9 +105,9 @@ fi
 
 # generate final image with annotation
 $CONVERT -interlace Line -format jpg "${INPUT_JPG}" "${annotation}" -colorspace RGB \
-           -gravity $IMAGE_ANNOTATION_LOCATION \
-           -geometry +10+10 \
-           -composite "${OUTPUT_JPG}"
+          -gravity $IMAGE_ANNOTATION_LOCATION \
+          -geometry +10+10 \
+          -composite "${OUTPUT_JPG}"
 
 
 # clean up the annotation
