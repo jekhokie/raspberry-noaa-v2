@@ -101,7 +101,7 @@ if [ $extend_annotation -eq 1 ]; then
     gravity_var="North"
   fi
 
-  $CONVERT -quality 100 -colorspace RGB \
+  $CONVERT -interlace Line -quality 100 -colorspace RGB \
            -format jpg "${next_in}" \
            -gravity "${gravity_var}" \
            -background black \
