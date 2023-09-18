@@ -100,7 +100,7 @@ if [ $extend_annotation -eq 1 ]; then
            -splice "0x${img_expand_px}" "${tmp_out}"
 
   # generate final image with annotation
-  $CONVERT -format jpg "${tmp_out}" "${annotation}" -colorspace RGB \
+  $CONVERT -interlace Line -format jpg "${tmp_out}" "${annotation}" -colorspace RGB \
            -gravity $IMAGE_ANNOTATION_LOCATION \
            -geometry +0+10 \
            -composite "${OUTPUT_JPG}"
