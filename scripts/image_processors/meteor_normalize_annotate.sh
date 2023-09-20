@@ -9,7 +9,7 @@
 #   3. Image quality percent (whole number)
 #
 # Example:
-#   ./meteor_normalize_annotate.sh /path/to/inputfile.jpg /path/to/outputfile.jpg
+#   ./meteor_normalize_annotate.sh /path/to/inputfile.jpg /path/to/outputfile.jpg 95
 
 # import common lib and settings
 . "$HOME/.noaa-v2.conf"
@@ -49,22 +49,14 @@ yml_config=$(echo "${yml_config}" | sed -e "s/\.\.\.$/gain: $gain\n.../")       
 # vars for image manipulation
 tmp_dir="${NOAA_HOME}/tmp/annotation"
 rendered_file="${tmp_dir}/index.html"
-annotation="${tmp_dir}/annotation.png"
 
 # generate annotation html and copy any assets
 $SCRIPTS_DIR/tools/jinja2_to_file.py "${NOAA_HOME}/config/annotation/annotation.html.j2" "${yml_config}" "${rendered_file}"
 find $NOAA_HOME/config/annotation/* -type f -not -name "*.j2" -exec cp {} "${tmp_dir}/" \;
 
 # generate annotation png and crop to content
-$WKHTMLTOIMG --enable-local-file-access --format png --quality 100 --transparent "file://${rendered_file}" "${annotation}"
-$CONVERT -colorspace RGB -format png "${annotation}" -background none -flatten -trim +repage "${annotation}"
-
-# resize the annotation appropriately, keeping aspect ratio
-img_w=$($CONVERT "${annotation}" -format "%w" info:)
-img_h=$($CONVERT "${annotation}" -format "%h" info:)
-new_img_w=$((img_w * 2))
-new_img_h=$((img_h * 2))
-$CONVERT "${annotation}" -colorspace RGB -resize "${new_img_w}x${new_img_h}^" "${annotation}"
+$WKHTMLTOIMG --enable-local-file-access --format png --quality 100 --transparent "file://${rendered_file}" "${tmp_dir}/annotation.png"
+$CONVERT -format png -colorspace RGB "${tmp_dir}/annotation.png" -background none -flatten -trim +repage "${tmp_dir}/annotation.png"
 
 # extend the image if the user specified and didn't use
 # one of [West|Center|East] for the annotation location
@@ -79,10 +71,17 @@ if [ "${EXTEND_FOR_ANNOTATION}" == "true" ]; then
   fi
 fi
 
+# resize the annotation appropriately, keeping aspect ratio
+img_w=$($CONVERT "${tmp_dir}/annotation.png" -format "%w" info:)
+img_h=$($CONVERT "${tmp_dir}/annotation.png" -format "%h" info:)
+new_img_w=$((img_w * 2))
+new_img_h=$((img_h * 2))
+$CONVERT "${tmp_dir}/annotation.png" -colorspace RGB -resize "${new_img_w}x${new_img_h}^" "${tmp_dir}/annotation.png"
+
 # generate the final image with annotation
 if [ $extend_annotation -eq 1 ]; then
   # calculate expansion height needed to fit annotation
-  annotation_h=$($IDENTIFY -format "%h" "${annotation}")
+  annotation_h=$($IDENTIFY -format "%h" "${tmp_dir}/annotation.png")
   img_expand_px=$(($annotation_h + 20))
   out_file=$(basename $OUTPUT_JPG)
   tmp_out="${NOAA_HOME}/tmp/${out_file%%.*}-tmp.jpg"
@@ -98,17 +97,15 @@ if [ $extend_annotation -eq 1 ]; then
            -gravity "${gravity_var}" \
            -background black \
            -splice "0x${img_expand_px}" "${tmp_out}"
-
-  # clean up
-  rm "${tmp_out}"
 fi
 
 # generate final image with annotation
-$CONVERT -interlace Line -format jpg "${INPUT_JPG}" "${annotation}" -colorspace RGB \
+$CONVERT -interlace Line -format jpg "${tmp_out}" -colorspace RGB \
           -gravity $IMAGE_ANNOTATION_LOCATION \
           -geometry +10+10 \
           -composite "${OUTPUT_JPG}"
 
 
 # clean up the annotation
-rm "${annotation}"
+rm "${tmp_dir}/annotation.png"
+rm "${tmp_out}"

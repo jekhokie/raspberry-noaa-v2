@@ -34,23 +34,31 @@
       - sqlite3
       - certbot
 
-- name: install wxtoimg
+- name: Installing WXtoImg
   become: yes
   apt:
     deb: "{{ noaa_home }}/software/wxtoimg-{{ system_architecture }}-2.11.2-beta.deb"
     state: present
     update_cache: no
 
-#- name: install MeteorDemod
+#- name: Installing MeteorDemod
 #  become: yes
 #  apt:
 #    deb: "https://github.com/Digitelektro/MeteorDemod/releases/download/2.5.6-beta/meteordemod_2.5.6_{{ system_architecture }}.deb"
 #    state: present
+#    update_cache: no
 
-- name: install SatDump
+- name: Installing SatDump
   become: yes
   apt:
     deb: "{{ noaa_home }}/software/satdump_1.1.0_{{ system_architecture }}.deb"
+    state: present
+    update_cache: no
+
+- name: Installing AnyDesk remote desktop
+  become: yes
+  apt:
+    deb: "{{ noaa_home }}/software/anydesk_6.3.0-1_{{ system_architecture }}.deb"
     state: present
     update_cache: no
 ...
