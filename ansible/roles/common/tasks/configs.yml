@@ -35,8 +35,8 @@
   become: yes
   file:
     path: /home/{{ target_user }}/.config/meteordemod
-    owner: {{ target_user }}
-    group: {{ target_user }}
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     recurse: yes
 
 - name: MeteorDemod config settings.ini file
