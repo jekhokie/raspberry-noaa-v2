@@ -57,31 +57,15 @@
     state: present
     update_cache: no
 
-- name: Check if libbrcmGLESV2.50 link exists
-  stat:
-    path: /usr/lib/libbrcmGLESV2.50
-  register: libGLESV2_link
-
 - name: Create symbolic link for libGLESV2.so
   become: yes
-  file:
-    src: /usr/lib/arm-linux-gnueabihf/libGLESV2.so
-    dest: /usr/lib/libbrcmGLESV2.50
-    state: link
-  when: not libGLESV2_link.stat.exists
-
-- name: Check if libbrcmEGL.so link exists
-  stat:
-    path: /usr/lib/libbrcmEGL.so
-  register: libEGL_link
+  command: ln -s /usr/lib/arm-linux-gnueabihf/libGLESV2.so /usr/lib/libbrcmGLESV2.50
+  creates: /usr/lib/libbrcmGLESV2.50
 
 - name: Create symbolic link for libEGL.so
   become: yes
-  file:
-    src: /usr/lib/arm-linux-gnueabihf/libEGL.so
-    dest: /usr/lib/libbrcmEGL.so
-    state: link
-  when: not libEGL_link.stat.exists
+  command: ln -s /usr/lib/arm-linux-gnueabihf/libEGL.so /usr/lib/libbrcmEGL.so
+  creates: /usr/lib/libbrcmEGL.so
 
 - name: Installing AnyDesk remote desktop
   become: yes
