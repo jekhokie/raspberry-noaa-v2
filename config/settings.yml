@@ -230,7 +230,7 @@ web_port: 80
 enable_tls: false
 web_tls_port: 443
 cert_valid_days: 365
-lock_admin_page: false
+lock_admin_page: true
 admin_username: 'admin'
 admin_password: 'admin'
 web_passes_date_format: 'm/d/Y'
