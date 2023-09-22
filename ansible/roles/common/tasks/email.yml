@@ -42,8 +42,8 @@
 
 - name: logrotate settings for msmtp
   become: yes
-  copy:
-    src: email-logrotate-settings
+  template:
+    src: email-logrotate-settings.j2
     dest: /etc/logrotate.d/msmtp
     owner: root
     group: root
