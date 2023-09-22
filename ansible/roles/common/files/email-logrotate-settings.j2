@@ -1,8 +1,0 @@
-/var/log/msmtp/*.log {
-  missingok
-  daily
-  rotate 7
-  nocompress
-  notifempty
-  create 0700 {{ target_user }} {{ target_user }}
-}
