@@ -5,6 +5,7 @@
     update_cache: yes
     state: present
     name:
+      - python3-pip
       - at
       - bc
       - cmake
@@ -18,8 +19,7 @@
       - libegl-dev
       - libatlas-base-dev
       - libgfortran5
-      - libjpeg9
-      - libjpeg9-dev
+      - libjpeg-dev
       - libncurses5-dev
       - libncursesw5-dev
       - libsox-fmt-mp3
@@ -27,7 +27,6 @@
       - libusb-1.0-0-dev
       - libxft-dev
       - libxft2
-      - predict
       - wkhtmltopdf
       - python3-pip
       - python-setuptools
@@ -35,6 +34,48 @@
       - sox
       - sqlite3
       - certbot
+      - zlib1g-dev
+      - libsqlite3-dev
+
+- name: Installing predict on computers
+  become: yes
+  apt:
+    deb: "{{ noaa_home }}/software/predict_2.2.3-4-b2_amd64.deb"
+    state: present
+    update_cache: no
+  when: system_architecture == 'amd64'
+
+- name: Installing predict on Raspberry Pi
+  become: yes
+  apt:
+    deb: "{{ noaa_home }}/software/predict_2.2.5+dfsg.1-1_armhf.deb"
+    state: present
+    update_cache: no
+  when: system_architecture == 'armhf'
+
+- name: Ensure pip3 is installed
+  become: yes
+  apt:
+    name: python3-pip
+    state: present
+
+- name: Install required Python packages using pip3
+  pip:
+    name:
+      - envbash==1.2.0
+      - ephem==3.7.7.1
+      - idna==2.8
+      - jsonschema==3.2.0
+      - matplotlib==3.3.4
+      - numpy
+      - Pillow==7.1.2
+      - pyyaml==5.4.1
+      - requests==2.27.0
+      - urllib3==1.26.3
+      - facebook-sdk==3.1.0
+      - pysqlite3==0.5.1
+    state: present
+    executable: pip3
 
 - name: Installing WXtoImg
   become: yes
@@ -66,7 +107,7 @@
 - name: Create symbolic link for libGLESV2.so
   command: ln -s /usr/lib/arm-linux-gnueabihf/libGLESV2.so /usr/lib/libbrcmGLESV2.50
   become: yes
-  when: not libGLESV2_link.stat.exists
+  when: not libGLESV2_link.stat.exists and system_architecture == 'armhf'
 
 - name: Check if libbrcmEGL.so link exists
   stat:
@@ -77,7 +118,7 @@
 - name: Create symbolic link for libEGL.so
   command: ln -s /usr/lib/arm-linux-gnueabihf/libEGL.so /usr/lib/libbrcmEGL.so
   become: yes
-  when: not libEGL_link.stat.exists
+  when: not libEGL_link.stat.exists and system_architecture == 'armhf'
 
 - name: Installing AnyDesk remote desktop
   become: yes
