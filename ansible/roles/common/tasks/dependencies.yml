@@ -58,7 +58,6 @@
   apt:
     name: python3-pip
     state: present
-  when: ansible_distribution == 'Ubuntu'
 
 - name: Install required Python packages using pip3
   pip:
