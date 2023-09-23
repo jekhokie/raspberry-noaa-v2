@@ -41,6 +41,9 @@ if [ -f /etc/modprobe.d/rtlsdr.conf ]; then
   install_type='upgrade'
 fi
 
+log_running "Installing pip dependencies..."
+sudo apt install libjpeg-dev zlib1g-dev libsqlite3-dev
+
 log_running "Checking for python3-pip..."
 dpkg -l python3-pip 2>&1 >/dev/null
 if [ $? -eq 0 ]; then
