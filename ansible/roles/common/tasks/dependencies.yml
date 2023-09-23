@@ -5,6 +5,7 @@
     update_cache: yes
     state: present
     name:
+      - python3-pip
       - at
       - bc
       - cmake
@@ -33,6 +34,8 @@
       - sox
       - sqlite3
       - certbot
+      - zlib1g-dev
+      - libsqlite3-dev
 
 - name: Installing predict on computers
   become: yes
