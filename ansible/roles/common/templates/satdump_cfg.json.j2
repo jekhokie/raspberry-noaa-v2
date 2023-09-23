@@ -161,13 +161,13 @@
             "type": "float",
             "value": {{ latitude }},
             "name": "QTH Latitude",
-            "description": "Latitude of your station's QTH"
+            "description": "Latitude of your station's QTH (North is positive; South is negative)"
         },
         "qth_lon": {
             "type": "float",
             "value": {{ longitude }},
             "name": "QTH Longitude",
-            "description": "Longitude of your station's QTH"
+            "description": "Longitude of your station's QTH (East is positive; West is negative)"
         },
         "qth_alt": {
             "type": "float",
@@ -615,7 +615,7 @@
                         "lua": "scripted_compos/underlay_with_clouds.lua",
                         "lua_vars": {
                             "minoffset": 0.02,
-                            "scalar": 1.6,
+                            "scalar": 2.0,
                             "thresold": 0,
                             "blend": 1
                         },
