@@ -66,6 +66,9 @@ fi
 #  die "  Could not install dependent Python packages - please check the logs above"
 #fi
 
+log_running "Installing yaml and jsonschema Python modules..."
+sudo apt install python3-yaml python3-jsonschema
+
 log_running "Checking configuration files..."
 python3 scripts/tools/validate_yaml.py config/settings.yml config/settings_schema.json
 if [ $? -eq 0 ]; then
