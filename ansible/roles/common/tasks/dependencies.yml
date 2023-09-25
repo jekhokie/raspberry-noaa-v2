@@ -27,7 +27,6 @@
       - libusb-1.0-0-dev
       - libxft-dev
       - libxft2
-      - wkhtmltopdf
       - python3-pip
       - python-setuptools
       - socat
@@ -36,6 +35,20 @@
       - certbot
       - zlib1g-dev
       - libsqlite3-dev
+
+- name: Install wkhtmltox (wkhtmltoimg) on Raspberry Pi
+  become: yes
+  apt:
+    deb: https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.raspberrypi.buster_armhf.deb
+    state: present
+  when: system_architecture == 'armhf'
+
+- name: Install wkhtmltox (wkhtmltoimg) on computers
+  become: yes
+  apt:
+    deb: https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb
+    state: present
+  when: system_architecture == 'amd64'
 
 - name: Installing predict on computers
   become: yes
