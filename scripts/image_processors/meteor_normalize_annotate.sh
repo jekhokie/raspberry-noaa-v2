@@ -56,7 +56,7 @@ $SCRIPTS_DIR/tools/jinja2_to_file.py "${NOAA_HOME}/config/annotation/annotation.
 find $NOAA_HOME/config/annotation/* -type f -not -name "*.j2" -exec cp {} "${tmp_dir}/" \;
 
 # generate annotation png and crop to content
-$WKHTMLTOIMG --enable-local-file-access --format png --quality 100 --transparent "file://${rendered_file}" "${annotation}"
+$WKHTMLTOIMG --enable-local-file-access --format png --quality 100 "file://${rendered_file}" "${annotation}"
 $CONVERT -colorspace RGB -format png "${annotation}" -background none -flatten -trim +repage "${annotation}"
 
 # resize the annotation appropriately, keeping aspect ratio
