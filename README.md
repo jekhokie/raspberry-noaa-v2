@@ -18,7 +18,9 @@ how to use a cheap rabbit ears antenna as a dipole for capturing NOAA and Meteor
 
 # Raspberry NOAA (...and Meteor) V2
 
-NOAA and Meteor-M 2 satellite imagery capture setup for the Raspberry Pi!
+NOAA and Meteor-M 2 satellite imagery capture setup for the regular 64 bit Debian Bullseye computers and Raspberry Pi!
+
+As of the September 2023 raspberry-noaa-v2 officially works on any Debian Bullseye based distro! This project has been developed and tested on LMDE 5 "Elsie" which is similar to the original Linux Mint, although the regular Mint is based on Ubuntu, while LMDE is based directly on Debian (It's short for Linux Mint Debian Edition). It can be downloaded from here: [https://mirrors.layeronline.com/linuxmint/debian/lmde-5-cinnamon-64bit.iso](https://mirrors.layeronline.com/linuxmint/debian/lmde-5-cinnamon-64bit.iso)
 
 See "Credits" for the awesome way this version of the framework came to be.
 
@@ -128,10 +130,29 @@ patching, and even then it would still be questionable), updating your Pi user p
 
 ## Install
 
-To install the product and get going, simply clone the project to the `pi` user's home directory, set up your settings, and run the
+To install the product, and get going if you're using 64 bit Debian Bullseye based computer, you first need to do stop sudo from asking to enter password. It will ensure all commands are handled well, and that our project can access superuser priviliges for certain things like moving files around in the audio and image directory etc.
+
+To achieve this, run:
+
+`echo "$USER ALL=(ALL) NOPASSWD: /bin/ls" | sudo tee -a /etc/sudoers`
+
+Then reboot the computer:
+
+`sudo reboot`
+
+The following steps are for both regular computers and Raspberry Pi:
+
+Clone the project to the user's home directory, set up your settings, and run the
 install script:
 
 ```bash
+# update the system
+sudo apt update
+sudo apt full-upgrade -y
+
+# reboot the system
+sudo reboot
+
 # install git
 sudo apt install git -y
 
@@ -160,11 +181,17 @@ on how to handle self-signed certificates when attempting to visit your webpanel
 
 Want to get the latest and greatest content from the GitHub master branch? Easy!
 Run:
+
 `git pull`
+
 inside the raspberry-noaa-v2 folder. If it complains about rhe changes to `settings.yml` file, make a backup of it somewhere else on your Pi like the desktop:
+
 `mv config/settings.yml ~/Desktop`
+
 and run:
+
 `git pull`
+
 Then, open settings file and edit it to match settings from the previous file.
 
 ***NOTE***: you may notice some extra variables or some variables missing. Don't worry, that's normal as some variables have been changed by the developers (either are taken care of automatically so were removed as they are reduntant now, or some new thing has been implemented, hence new variables).
