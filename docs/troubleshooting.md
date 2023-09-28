@@ -204,9 +204,9 @@ Below are some useful commands in a more summary fashion:
 * Read the main log file: `less /var/log/raspberry-noaa-v2/output.log`
 * List the scheduled passes: `atq`
 * Cancel a pass: `atrm <job_id>`
-* Location of the tmp directory: `/home/pi/raspberry-noaa-v2/tmp/`
+* Location of the tmp directory: `/home/{{ target_user }}/raspberry-noaa-v2/tmp/`
 * Location of the wav files: `/srv/audio/noaa` and `/srv/audio/meteor`
-* Location of the database: `/home/pi/raspberry-noaa-v2/db/panel.db`
+* Location of the database: `/home/{{ target_user }}/raspberry-noaa-v2/db/panel.db`
 * Location of the images: `/srv/images`
 
 # Webpanel Expired Certificate

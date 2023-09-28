@@ -10,10 +10,10 @@
 - name: drop template twitter tweepy config file
   copy:
     src: tweepy.conf
-    dest: /home/pi/.tweepy.conf
+    dest: /home/{{ target_user }}/.tweepy.conf
     force: no
-    owner: pi
-    group: pi
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
     mode: 0600
   when: enable_twitter_push | bool
 ...

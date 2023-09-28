@@ -1,0 +1,11 @@
+---
+- name: drop template instagram config file
+  copy:
+    src: instagram.conf
+    dest: /home/{{ target_user }}/.instagram.conf
+    force: no
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0600
+  when: enable_instagram_push | bool
+...

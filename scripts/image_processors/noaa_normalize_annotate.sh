@@ -55,8 +55,8 @@ $SCRIPTS_DIR/tools/jinja2_to_file.py "${NOAA_HOME}/config/annotation/annotation.
 find $NOAA_HOME/config/annotation/* -type f -not -name "*.j2" -exec cp {} "${tmp_dir}/" \;
 
 # generate annotation png and crop to content
-$WKHTMLTOIMG --enable-local-file-access --format png --quality 100 --transparent "file://${rendered_file}" "${tmp_dir}/annotation.png"
-$CONVERT -format png "${tmp_dir}/annotation.png" -background none -flatten -trim +repage "${tmp_dir}/annotation.png"
+$WKHTMLTOIMG --enable-local-file-access --format png --quality 100 "file://${rendered_file}" "${tmp_dir}/annotation.png"
+$CONVERT -format png -colorspace RGB "${tmp_dir}/annotation.png" -background none -flatten -trim +repage "${tmp_dir}/annotation.png"
 
 # extend the image if the user specified and didn't use
 # one of [West|Center|East] for the annotation location
@@ -78,7 +78,7 @@ next_in="${INPUT_JPG}"
 # generate image with thermal overlay (if specified)
 if [ "${ENHANCEMENT}" == "therm" ] && [ "${NOAA_THERMAL_TEMP_OVERLAY}" == "true" ]; then
   log "Overlaying thermal temperature gauge" "INFO"
-  $CONVERT -quality 100 \
+  $CONVERT -quality 100 -colorspace RGB \
            -format jpg "${next_in}" "${NOAA_HOME}/assets/thermal_gauge.png" \
            -gravity $NOAA_THERMAL_TEMP_OVERLAY_LOCATION \
            -geometry +10+10 \
@@ -101,7 +101,7 @@ if [ $extend_annotation -eq 1 ]; then
     gravity_var="North"
   fi
 
-  $CONVERT -quality 100 \
+  $CONVERT -interlace Line -quality 100 -colorspace RGB \
            -format jpg "${next_in}" \
            -gravity "${gravity_var}" \
            -background black \
@@ -111,7 +111,7 @@ if [ $extend_annotation -eq 1 ]; then
 fi
 
 # generate final image with annotation
-$CONVERT -quality $QUALITY \
+$CONVERT -interlace Line -quality $QUALITY -colorspace RGB \
          -format jpg "${next_in}" "${tmp_dir}/annotation.png" \
          -gravity $IMAGE_ANNOTATION_LOCATION \
          -geometry $geometry \

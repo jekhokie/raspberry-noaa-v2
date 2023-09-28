@@ -8,7 +8,7 @@ images to a Twitter feed. See below headings for the sequence of steps required 
 First, update your `config/settings.yml` file to set `enable_twitter_push: true`.
 
 Finally, re-run the `./install_and_upgrade.sh` script to propagate the settings and install a sample/template
-`~pi/.tweepy.conf` configuration file.
+`/home/{{ target_user }}/.tweepy.conf` configuration file.
 
 ## Twitter Configuration Requirements
 
@@ -16,7 +16,7 @@ In order to configure Twitter pushing, you will need a [Developer account](https
 and an application from which you can get the required credentials. Once you've created a developer account
 and created an application, you must then set the application permissions to be `Read, Write, and
 Direct Messages`. Finally, for Keys and Tokens, copy the following from the Twitter interface to the
-`~pi/.tweepy.conf` file:
+`/home/{{ target_user }}/.tweepy.conf` file:
 
 * **API Key**: `TWITTER_CONSUMER_API_KEY`
 * **API Key Secret**: `TWITTER_CONSUMER_API_KEY_SECRET`

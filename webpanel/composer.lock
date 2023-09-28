@@ -4,8 +4,52 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8793cf6a4d2029bf6ba4096bd588863c",
+    "content-hash": "9714e052ef24f688ec101d8165184357",
     "packages": [
+        {
+            "name": "devknown/twig-import-function",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/devknown/twig-import-function.git",
+                "reference": "5162ef1aa6c225e5b334508177bae336770e3029"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/devknown/twig-import-function/zipball/5162ef1aa6c225e5b334508177bae336770e3029",
+                "reference": "5162ef1aa6c225e5b334508177bae336770e3029",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.3",
+                "twig/twig": "^3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Devknown\\Twig\\Extension\\": "src/Devknown/Twig/Extension/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Hassan Azzi",
+                    "email": "devknown@gmail.com"
+                }
+            ],
+            "description": "Call (almost) any PHP function from your Twig (v3) templates.",
+            "support": {
+                "issues": "https://github.com/devknown/twig-import-function/issues",
+                "source": "https://github.com/devknown/twig-import-function/tree/1.0.0"
+            },
+            "time": "2022-07-02T01:54:51+00:00"
+        },
         {
             "name": "symfony/polyfill-ctype",
             "version": "v1.22.0",
@@ -203,5 +247,6 @@
     "platform": {
         "ext-mbstring": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
 }

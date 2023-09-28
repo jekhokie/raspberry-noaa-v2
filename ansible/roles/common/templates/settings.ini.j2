@@ -1,0 +1,98 @@
+[Program]
+AzimuthalEquidistantProjection=true
+MercatorProjection=false
+SpreadImage=true
+AddRainOverlay=true
+JpgQuality=100
+NightPassTreshold=20.0
+#Scale output image, it helps to reduce memory usage and generates smaller images
+ProjectionScale=1
+CompositeProjectionScale=1
+CompositeAzimuthalEquidistantProjection=true
+CompositeMercatorProjection=false
+GenerateComposite321=true
+GenerateComposite125=true
+GenerateComposite221=true
+GenerateComposite68=true
+GenerateCompositeThermal=true
+GenerateComposite68Rain=true
+
+[METEOR-M-2]
+SatNameInTLE=METEOR-M 2
+ScanAngle=110.8
+Roll=-2.9
+Pitch=0.3
+Yaw=0
+# Onboard time offset in seconds
+TimeOffset=0
+
+[METEOR-M-2-3]
+SatNameInTLE=METEOR-M2 3
+ScanAngle=110.3
+Roll=0
+Pitch=0
+Yaw=0
+# Onboard time offset in seconds
+TimeOffset=0
+
+[Demodulator]
+#Increasing bandwidth allow the pll to lock faster on signal, while decreasing it makes the pll lock more stable
+CostasBandwidth=10
+#Increasing RRC filter order makes the filtering more accurate at the expense of speed
+RRCFilterOrder=32
+#Waiting for lock makes smaller .S files and helps to discard the imperfect part of the image at the begining of decoding
+WaitForLock=0
+
+[Treatment]
+FillBlackLines=true
+
+[Watermark]
+#Place options: top_left, top_center, top_right, bottom_left, bottom_center, bottom_right
+Place=top_center
+Color=#AD880C
+#Font height in pixels
+Size=80
+#Font line width in pixels
+Width=3
+#Text options: use '%date%' for date, '\n' for new line
+Text=
+
+[ReceiverLocation]
+Draw={{ meteor_map_crosshair_enable }}
+Latitude={{ latitude }}
+Longitude={{ longitude }}
+#It was Color=#FFFF00
+Color={{ meteor_map_crosshair_color }}
+Size=30
+Thickness=6
+#MarkType options: STAR, CROSS, SQUARE, DIAMOND, TRIANGLE_UP, TRIANGLE_DOWN, TILTED_CROSS
+MarkType=CROSS
+
+[ShapeFileGraticules]
+FileName=ShapeFiles/ne_110m_graticules_10.shp
+Color=#C8C8C8
+Thickness=1
+
+[ShapeFileCoastLines]
+FileName=ShapeFiles/ne_50m_coastline.shp
+Color=#AAE0C6
+Thickness=2
+
+[ShapeFileBoundaryLines]
+FileName={% if meteor_draw_map_overlay|lower|bool %}ShapeFiles/ne_50m_admin_0_boundary_lines_land.shp{% else %}''{% endif %}
+
+Color={{ meteor_map_country_border_color }}
+Thickness=2
+
+[ShapeFilePopulatedPlaces] 
+FileName={% if meteor_draw_cities|lower|bool %}ShapeFiles/ne_50m_populated_places.shp{% else %}''{% endif %}
+
+Color=#5A42F5
+#Font height in pixels
+Size=40
+# Font line width in pixels
+Width=2
+PointRadius=10
+FilterColumnName=ADM0CAP
+NumericFilter=1
+TextColumnName=NAME

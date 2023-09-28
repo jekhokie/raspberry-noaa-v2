@@ -14,8 +14,9 @@
 . "$NOAA_HOME/scripts/common.sh"
 
 # input params
-IMAGE=$1
-MESSAGE=$2
+DISCORD_WEBHOOK=$1
+IMAGE=$2
+MESSAGE=$3
 
 # check that the file exists and is accessible
 if [ -f "${IMAGE}" ]; then 

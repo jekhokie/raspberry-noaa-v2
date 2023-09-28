@@ -4,12 +4,12 @@ In `config/settings.yml`, setting `enable_email_push: true` and configuring an `
 captured, processed images to a destination email address. This is useful when configuring services such as If This Then That
 (IFTTT) to accept the email with the subject and email attachment and post it to services such as Facebook, Twitter, or other
 locations to store your images. Below outlines how to accomplish this, with this framework installing a basic
-`/home/pi/.msmtprc` file that enables configuring a gmail account to email images with.
+`/home/{{ target_user }}/.msmtprc` file that enables configuring a gmail account to email images with.
 
 **Note**: You need an existing email address that you have full access to in order to configure sending - this configuration
 will use that email address credentials for sending emails from your receiver device.
 
-**WARNING**: MAKE SURE YOU KEEP THE CONFIG FILE LOCKED DOWN! This file (`/home/pi/.msmtprc`) will contain your email credentials,
+**WARNING**: MAKE SURE YOU KEEP THE CONFIG FILE LOCKED DOWN! This file (`/home/{{ target_user }}/.msmtprc`) will contain your email credentials,
 and is by default written to the file system as read/write only by the `pi` user. This is why it's extremely important to not
 expose your Pi to the public internet unless you absolutely know what you're doing when it comes to security, and at a minimum,
 absolutely change the `pi` user default password to something HIGHTLY complex and hard to hack!
@@ -18,12 +18,12 @@ absolutely change the `pi` user default password to something HIGHTLY complex an
 
 To enable this functionality, first update your `config/settings.yml` to set `enable_email_push: true` and set an email
 address to forward images to as `email push address`. Then, re-run the installer script `./install_and_upgrade.sh`, which will
-align your environment to install dependencies and requirements, including a `/home/pi/.msmtprc` file that has defaults for
+align your environment to install dependencies and requirements, including a `/home/{{ target_user }}/.msmtprc` file that has defaults for
 configuring a gmail account to send emails.
 
 ## Configure Email Settings
 
-Once the installer has been run, you should see a settings file in your `pi` user home directory named `/home/pi/.msmtprc`.
+Once the installer has been run, you should see a settings file in your `pi` user home directory named `/home/{{ target_user }}/.msmtprc`.
 Edit this file for your email settings, including adding your gmail credentials for the email address you wish to use to send
 the image emails to your target address.
 
@@ -31,7 +31,7 @@ the image emails to your target address.
 an App Password for your account and use this in place of your login credentials in order to allow the `mpack` binary to
 'bypass' Multi-Factor Authentication when sending emails autonomously. Follow the instructions in
 [this article](https://support.google.com/mail/answer/185833?hl=en#app-passwords) to configure an app password for your setup
-and use this within the `/home/pi/.msmtprc` file for the `password` setting.
+and use this within the `/home/{{ target_user }}/.msmtprc` file for the `password` setting.
 
 **Note**: This file defaults to a template to configure a gmail email account to send images. If you want to know more about
 how to configure this file for additional account types, see the [msmtp](https://wiki.debian.org/msmtp) documentation.

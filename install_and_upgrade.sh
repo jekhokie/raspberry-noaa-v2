@@ -25,7 +25,7 @@ log_finished() {
 
 # run as a normal user
 if [ $EUID -eq 0 ]; then
-  die "Please run this script as the pi user (not as root)"
+  die "Don't use sudo when running this script, quitting..."
 fi
 
 # verify the repo exists as expected in the home directory
@@ -41,27 +41,33 @@ if [ -f /etc/modprobe.d/rtlsdr.conf ]; then
   install_type='upgrade'
 fi
 
-log_running "Checking for python3-pip..."
-dpkg -l python3-pip 2>&1 >/dev/null
-if [ $? -eq 0 ]; then
-  log_done "  python3-pip already installed!"
-else
-  log_running "  python3-pip not yet installed - installing..."
-  sudo apt-get -y install python3-pip
-  if [ $? -eq 0 ]; then
-    log_done "    python3-pip successfully installed!"
-  else
-    die "    Could not install python3-pip - please check the logs above"
-  fi
-fi
+#log_running "Checking for python3-pip..."
+#dpkg -l python3-pip 2>&1 >/dev/null
+#if [ $? -eq 0 ]; then
+#  log_done "  python3-pip already installed!"
+#else
+#  log_running "  python3-pip not yet installed - installing..."
+#  sudo apt-get -y install python3-pip
+#  if [ $? -eq 0 ]; then
+#    log_done "    python3-pip successfully installed!"
+#  else
+#    die "    Could not install python3-pip - please check the logs above"
+#  fi
+#fi
 
-log_running "Installing Python dependencies..."
-sudo python3 -m pip install -r $HOME/raspberry-noaa-v2/requirements.txt
-if [ $? -eq 0 ]; then
-  log_done "  Successfully aligned required Python packages!"
-else
-  die "  Could not install dependent Python packages - please check the logs above"
-fi
+#log_running "Installing pip dependencies..."
+#sudo apt install libjpeg-dev zlib1g-dev libsqlite3-dev
+
+#log_running "Installing Python dependencies..."
+#sudo python3 -m pip install -r $HOME/raspberry-noaa-v2/requirements.txt
+#if [ $? -eq 0 ]; then
+#  log_done "  Successfully aligned required Python packages!"
+#else
+#  die "  Could not install dependent Python packages - please check the logs above"
+#fi
+
+log_running "Installing yaml and jsonschema Python modules..."
+sudo apt install python3-yaml python3-jsonschema
 
 log_running "Checking configuration files..."
 python3 scripts/tools/validate_yaml.py config/settings.yml config/settings_schema.json
@@ -93,23 +99,49 @@ else
 fi
 
 log_running "Running Ansible to install and/or update your raspberry-noaa-v2..."
-ansible-playbook -i ansible/hosts --extra-vars "@config/settings.yml" ansible/site.yml
+ansible-playbook -i ansible/hosts --extra-vars "@config/settings.yml" ansible/site.yml -e "target_user=$USER system_architecture=$(dpkg --print-architecture)"
 if [ $? -eq 0 ]; then
   log_done "  Ansible apply complete!"
 else
   die "  Something failed with the install - please inspect the logs above"
 fi
 
-log_running "Installing WXtoImg..."
-sudo apt install -y ~/raspberry-noaa-v2/software/wxtoimg-armhf-2.11.2-beta.deb
-if [ $? -eq 0 ]; then
-  log_done "WXtoImg installed successfully!"
-else
-  die "  Something failed with the WXtoImg install - please inspect the logs above"
-fi
-
 # source some env vars
 . "$HOME/.noaa-v2.conf"
+
+# Allow or remove HTTP port
+if [ "$ENABLE_NON_TLS" = true ]; then
+  log_running "Adding HTTP firewall rule for port $WEBPANEL_PORT..."
+  sudo ufw allow $WEBPANEL_PORT/tcp
+else
+  log_running "Removing HTTP firewall rule for port $WEBPANEL_PORT..."
+  sudo ufw delete allow $WEBPANEL_PORT/tcp
+fi
+
+# Allow or remove HTTPS port
+if [ "$ENABLE_TLS" = true ]; then
+  log_running "Adding HTTPS firewall rule for port $WEBPANEL_TLS_PORT..."
+  sudo ufw allow $WEBPANEL_TLS_PORT/tcp
+else
+  log_running "Removing HTTP firewall rule for port $WEBPANEL_TLS_PORT..."
+  sudo ufw delete allow $WEBPANEL_TLS_PORT/tcp
+fi
+
+log_running "Installing certbot for SSL certificates signed by the Let's Encrypt..."
+if [ $? -eq 0 ]; then
+  sudo apt install certbot
+else
+  die "  Something failed with the install - please inspect the logs above"
+fi
+
+#log_running "Installing SSL certificates..."
+#if [ $? -eq 0 ] && [ $ENABLE_TLS == "true" ] && [ -n $WEB_SERVER_NAME ]; then
+#  sudo certbot certonly --webroot -w /var/www/wx-new/public -d $WEB_SERVER_NAME
+#  log_running "Restarting NGINX web server..."
+#  sudo systemctl restart nginx
+#else
+#  die "  Something failed with the install - please inspect the logs above"
+#fi
 
 # TLE data files
 # NOTE: This should be DRY-ed up with the scripts/schedule.sh script
@@ -131,7 +163,7 @@ log_running "Updating web content..."
 (
   find $WEB_HOME/ -mindepth 1 -type d -name "Config" -prune -o -print | xargs rm -rf &&
   cp -r $NOAA_HOME/webpanel/* $WEB_HOME/ &&
-  sudo chown -R pi:www-data $WEB_HOME/ &&
+  sudo chown -R $USER:www-data $WEB_HOME/ &&
   composer install -d $WEB_HOME/
 ) || die "  Something went wrong updating web content - please inspect the logs above"
 

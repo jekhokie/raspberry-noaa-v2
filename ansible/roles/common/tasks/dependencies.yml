@@ -5,6 +5,7 @@
     update_cache: yes
     state: present
     name:
+      - python3-pip
       - at
       - bc
       - cmake
@@ -13,11 +14,13 @@
       - gnuradio
       - gr-osmosdr
       - imagemagick
+      - wkhtmltopdf
       - jq
+      - libgles-dev
+      - libegl-dev
       - libatlas-base-dev
       - libgfortran5
-      - libjpeg9
-      - libjpeg9-dev
+      - libjpeg-dev
       - libncurses5-dev
       - libncursesw5-dev
       - libsox-fmt-mp3
@@ -25,16 +28,102 @@
       - libusb-1.0-0-dev
       - libxft-dev
       - libxft2
-      - predict
       - python3-pip
       - python-setuptools
       - socat
       - sox
       - sqlite3
+      - certbot
+      - zlib1g-dev
+      - libsqlite3-dev
 
-- name: install wkhtmltox (wkhtmltoimg)
+- name: Installing predict on computers
   become: yes
   apt:
-    deb: https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.raspberrypi.buster_armhf.deb
+    deb: "{{ noaa_home }}/software/predict_2.2.3-4-b2_amd64.deb"
     state: present
+    update_cache: no
+  when: system_architecture == 'amd64'
+
+- name: Installing predict on Raspberry Pi
+  become: yes
+  apt:
+    deb: "{{ noaa_home }}/software/predict_2.2.5+dfsg.1-1_armhf.deb"
+    state: present
+    update_cache: no
+  when: system_architecture == 'armhf'
+
+- name: Ensure pip3 is installed
+  become: yes
+  apt:
+    name: python3-pip
+    state: present
+
+- name: Install required Python packages using pip3
+  pip:
+    name:
+      - envbash==1.2.0
+      - ephem==3.7.7.1
+      - idna==2.8
+      - jsonschema==3.2.0
+      - matplotlib==3.3.4
+      - numpy
+      - Pillow==7.1.2
+      - pyyaml==5.4.1
+      - requests==2.27.0
+      - urllib3==1.26.3
+      - facebook-sdk==3.1.0
+      - pysqlite3==0.5.1
+    state: present
+    executable: pip3
+
+- name: Installing WXtoImg
+  become: yes
+  apt:
+    deb: "{{ noaa_home }}/software/wxtoimg-{{ system_architecture }}-2.11.2-beta.deb"
+    state: present
+    update_cache: no
+
+#- name: Installing MeteorDemod
+#  become: yes
+#  apt:
+#    deb: "https://github.com/Digitelektro/MeteorDemod/releases/download/2.5.6-beta/meteordemod_2.5.6_{{ system_architecture }}.deb"
+#    state: present
+#    update_cache: no
+
+- name: Installing SatDump
+  become: yes
+  apt:
+    deb: "{{ noaa_home }}/software/satdump_1.1.1-ddb3434a_{{ system_architecture }}.deb"
+    state: present
+    update_cache: no
+
+- name: Check if libbrcmGLESV2.50 link exists
+  stat:
+    path: /usr/lib/libbrcmGLESV2.50
+  register: libGLESV2_link
+  ignore_errors: yes
+
+- name: Create symbolic link for libGLESV2.so
+  command: ln -s /usr/lib/arm-linux-gnueabihf/libGLESV2.so /usr/lib/libbrcmGLESV2.50
+  become: yes
+  when: not libGLESV2_link.stat.exists and system_architecture == 'armhf'
+
+- name: Check if libbrcmEGL.so link exists
+  stat:
+    path: /usr/lib/libbrcmEGL.so
+  register: libEGL_link
+  ignore_errors: yes
+
+- name: Create symbolic link for libEGL.so
+  command: ln -s /usr/lib/arm-linux-gnueabihf/libEGL.so /usr/lib/libbrcmEGL.so
+  become: yes
+  when: not libEGL_link.stat.exists and system_architecture == 'armhf'
+
+- name: Installing AnyDesk remote desktop
+  become: yes
+  apt:
+    deb: "{{ noaa_home }}/software/anydesk_6.3.0-1_{{ system_architecture }}.deb"
+    state: present
+    update_cache: no
 ...

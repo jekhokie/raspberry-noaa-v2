@@ -1,0 +1,19 @@
+---
+- name: install facebook-sdk if facebook push is enabled
+  become: yes
+  pip:
+    name: facebook-sdk
+    executable: pip3
+    state: present
+  when: enable_facebook_push | bool
+
+- name: drop template facebook facebook-sdk config file
+  copy:
+    src: facebook.conf
+    dest: /home/{{ target_user }}/.facebook.conf
+    force: no
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0600
+  when: enable_facebook_push | bool
+...

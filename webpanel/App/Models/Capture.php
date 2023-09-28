@@ -69,7 +69,11 @@ class Capture extends \Lib\Model {
     # build enhancement paths based on satellite type
     switch($pass['sat_type']) {
       case 0: // Meteor-M2
-        $enhancements = ['-122-rectified.jpg','-col-122-rectified.jpg','-ir-122-rectified.jpg'];
+        if ($pass['daylight_pass'] == 1) {
+          $enhancements = ['-321_corrected.jpg','-321_projected.jpg','-221_corrected.jpg','-221_projected.jpg','-654_corrected.jpg','-654_projected.jpg','-Night_Microphysics_corrected.jpg','-Night_Microphysics_projected.jpg','-Thermal_Channel_corrected.jpg','-Thermal_Channel_projected.jpg','-equidistant_321.jpg','-equidistant_221.jpg','-equidistant_654.jpg','-equidistant_IR.jpg','-equidistant_rain_IR.jpg','-mercator_321.jpg','-mercator_221.jpg','-mercator_654.jpg','-mercator_IR.jpg','-mercator_rain_IR.jpg','-spread_321.jpg','-spread_221.jpg','-spread_654.jpg','-spread_IR.jpg','-spread_rain_IR.jpg'];
+        } else {
+          $enhancements = ['-321_corrected.jpg','-321_projected.jpg','-221_corrected.jpg','-221_projected.jpg','-654_corrected.jpg','-654_projected.jpg','-Night_Microphysics_corrected.jpg','-Night_Microphysics_projected.jpg','-Thermal_Channel_corrected.jpg','-Thermal_Channel_projected.jpg','-equidistant_321.jpg','-equidistant_221.jpg','-equidistant_654.jpg','-equidistant_IR.jpg','-equidistant_rain_IR.jpg','-mercator_321.jpg','-mercator_221.jpg','-mercator_654.jpg','-mercator_IR.jpg','-mercator_rain_IR.jpg','-spread_321.jpg','-spread_221.jpg','-spread_654.jpg','-spread_IR.jpg','-spread_rain_IR.jpg'];
+        }
         break;
       case 1: // NOAA
         if ($pass['daylight_pass'] == 1) {
@@ -77,6 +81,8 @@ class Capture extends \Lib\Model {
         } else {
           $enhancements = array_map(function($x) { return "-" . $x . ".jpg"; }, explode(' ', Config::NOAA_NIGHT_ENHANCEMENTS));
         }
+        $satdump_enhancements = ["-APT-A.jpg", "-APT-B.jpg", "-raw.jpg", "-A_individual_equalized.jpg", "-B_individual_equalized.jpg", "Clouds_Underlay.jpg", "-224.jpg", "-MSA_Rain.jpg", "-MCIR_Rain.jpg", "-WXtoImg_HVC_N15.jpg", "-WXtoImg_HVC_N18.jpg", "-WXtoImg_HVC_N19.jpg", "-WXtoImg_NO.jpg"];
+        $enhancements = array_merge($enhancements, $satdump_enhancements);
         break;
     }
 

@@ -14,6 +14,61 @@
     state: present
   when: raspbian_version.stdout == 'buster'
 
+- name: php repository gpg key (buster only)
+  become: yes
+  apt_key:
+    url: "https://packages.sury.org/php/apt.gpg"
+    state: present
+  when: raspbian_version.stdout == 'buster'
+
+- name: php repository (buster only)
+  become: yes
+  apt_repository:
+    repo: deb https://packages.sury.org/php/ buster main
+    filename: php7.list
+    state: present
+  when: raspbian_version.stdout == 'buster'
+
+- name: install the package, force upgrade
+  pip: 
+    name: numpy
+    extra_args: --upgrade
+
+- name: install UFW firewall
+  become: yes
+  apt:
+    update_cache: no
+    state: present
+    name: ufw
+
+- name: Allow SSH (Port 22)
+  become: yes
+  command: ufw allow 22/tcp
+
+- name: Allow VNC (Port 5800)
+  become: yes
+  command: ufw allow 5800/tcp
+
+- name: Allow VNC (Port 5900)
+  become: yes
+  command: ufw allow 5900/tcp
+
+- name: Allow TeamViewer (Port 5938)
+  become: yes
+  command: ufw allow 5938/tcp
+
+- name: Allow Remote Desktop (Port 3389)
+  become: yes
+  command: ufw allow 3389/tcp
+
+- name: Allow Samba Share (Port 139)
+  become: yes
+  command: ufw allow 139/tcp
+
+- name: Allow Samba Share (Port 445)
+  become: yes
+  command: ufw allow 445/tcp
+
 - name: install nginx
   become: yes
   apt:
@@ -50,7 +105,7 @@
   file:
     path: "{{ web_home }}"
     state: directory
-    owner: pi
+    owner: "{{ target_user }}"
     group: www-data
     mode: 0775
 
@@ -59,20 +114,24 @@
   file:
     path: "{{ web_home }}/Config"
     state: directory
-    owner: pi
+    owner: "{{ target_user }}"
     group: www-data
     mode: 0775
+
+- name: Fetch system timezone
+  command: timedatectl show --property=Timezone --value
+  register: system_timezone
 
 - name: php config file
   become: yes
   template:
     src: Config.php.j2
     dest: "{{ web_home }}/Config/Config.php"
-    owner: pi
+    owner: "{{ target_user }}"
     group: www-data
     mode: 0644
 
-- name: nginx config file
+- name: nginx non-tls config file
   become: yes
   template:
     src: nginx_default.j2
@@ -136,19 +195,19 @@
     group: www-data
     mode: 0770
 
-- name: check if self-signed certificate is expired
-  command: openssl x509 -checkend 86400 -noout -in /etc/ssl/certs/local_server.crt
-  register: cert_valid
-  failed_when: no
-  changed_when: no
-  when: enable_tls|bool
+#- name: check if self-signed certificate is expired
+#  command: openssl x509 -checkend 86400 -noout -in /etc/ssl/certs/local_server.crt
+#  register: cert_valid
+#  failed_when: no
+#  changed_when: no
+#  when: enable_tls|bool
 
-- name: create self-signed certificate
-  become: yes
-  command: >
-    openssl req -x509 -nodes -subj '/CN={{ web_server_name }}' -days {{ cert_valid_days }}
-    -newkey rsa:4096 -sha256 -keyout {{ tls_cert_key }} -out {{ tls_cert }}
-  when: enable_tls|bool and cert_valid.rc != 0
+#- name: create self-signed certificate
+#  become: yes
+#  command: >
+#    openssl req -x509 -nodes -subj '/CN={{ web_server_name }}' -days {{ cert_valid_days }}
+#    -newkey rsa:4096 -sha256 -keyout {{ tls_cert_key }} -out {{ tls_cert }}
+#  when: enable_tls|bool and cert_valid.rc != 0
 
 - name: nginx tls config file
   become: yes
@@ -194,4 +253,8 @@
     owner: root
     group: root
     mode: 0440
+
+- name: Enable the UFW firewall
+  become: yes
+  command: ufw enable
 ...

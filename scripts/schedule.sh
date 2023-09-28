@@ -17,6 +17,7 @@
 # TLE data files
 WEATHER_TXT="${NOAA_HOME}/tmp/weather.txt"
 AMATEUR_TXT="${NOAA_HOME}/tmp/amateur.txt"
+ACTIVE_TXT="${NOAA_HOME}/tmp/active.txt"
 TLE_OUTPUT="${NOAA_HOME}/tmp/orbit.tle"
 
 # check if TLE file should be updated
@@ -62,6 +63,7 @@ if [ "${update_tle}" == "1" ]; then
   log "Downloading new TLE files from source" "INFO"
   wget -r "http://${tle_addr}/NORAD/elements/weather.txt" --no-check-certificate -O "${WEATHER_TXT}" >> $NOAA_LOG 2>&1
   wget -r "http://${tle_addr}/NORAD/elements/amateur.txt" --no-check-certificate -O "${AMATEUR_TXT}" >> $NOAA_LOG 2>&1
+  wget -r "http://${tle_addr}/NORAD/elements/active.txt" --no-check-certificate -O "${ACTIVE_TXT}" >> $NOAA_LOG 2>&1
 
   # create tle files for scheduling
   #   note: it's really unfortunate but a directory structure any deeper than 'tmp' in the
@@ -73,6 +75,7 @@ if [ "${update_tle}" == "1" ]; then
   grep "NOAA 18" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
   grep "NOAA 19" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
   grep "METEOR-M 2" $WEATHER_TXT -A 2 >> $TLE_OUTPUT
+  grep "METEOR-M2 3" $WEATHER_TXT -A 2 >> $TLE_OUTPUT  #To be changed to new name when the satellite gets renamed
 elif [ ! -f $WEATHER_TXT ] || [ ! -f $AMATEUR_TXT ] || [ ! -f $TLE_OUTPUT ]; then
   log "TLE update not specified '-t' but no TLE files present - please re-run with '-t'" "INFO"
   exit 1
@@ -134,11 +137,19 @@ if [ "$NOAA_19_SCHEDULE" == "true" ]; then
   log "Scheduling NOAA 19 captures..." "INFO"
   $NOAA_HOME/scripts/schedule_captures.sh "NOAA 19" "receive_noaa.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
 fi
-if [ "$METEOR_M2_SCHEDULE" == "true" ]; then
-  log "Scheduling Meteor-M 2 captures..." "INFO"
-  $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M 2" "receive_meteor.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
+if [ "$METEOR_M2_3_SCHEDULE" == "true" ]; then
+  log "Scheduling Meteor-M2 3 captures..." "INFO"
+  $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M2 3" "receive_meteor.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
 fi
 log "Done scheduling jobs!" "INFO"
+
+# Check if the variable is set and true
+if [ "$SELECT_BEST_OVERLAPPING_PASSES" == true ]; then
+    log "Program automatically selected the best pass!" "INFO"
+    $NOAA_HOME/scripts/select_best_overlapping_passes.py $DB_FILE $SELECT_METEOR_PASS_OVER_NOAA
+else
+    log "You should manually remove overlapping passes." "INFO"
+fi
 
 if [ "${ENABLE_EMAIL_SCHEDULE_PUSH}" == "true" ]; then
   # create annotation to send as subject for email
@@ -146,7 +157,7 @@ if [ "${ENABLE_EMAIL_SCHEDULE_PUSH}" == "true" ]; then
   if [ "${GROUND_STATION_LOCATION}" != "" ]; then
     annotation="${annotation}Ground Station: ${GROUND_STATION_LOCATION} | "
   fi
-  annotation="${annotation}Timezone Offset: ${TZ_OFFSET}"
+  annotation="${annotation}Timezone: $(date '+%Z')"
 
   log "Generating image of pass list schedule for email" "INFO"
   pass_image="${NOAA_HOME}/tmp/pass-list.jpg"

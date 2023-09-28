@@ -43,8 +43,8 @@
       </tr>
     </thead>
     <tbody>
-      {% set now = 'now'|date('m/d/y H:i:s') %}
-      {% set cur_date = 'now'|date('m/d/y') %}
+      {% set now = 'now'|date(constant('Config\\Config::DATETIME_FORMAT')) %}
+      {% set cur_date = 'now'|date(constant('Config\\Config::PASSES_DATE_FORMAT')) %}
       {% set last_date = 0 %}
 
       {% if pass.list|length <= 0 %}
@@ -55,7 +55,7 @@
         {% for pass in pass.list %}
           {% set pass_start = pass.pass_start|date('H:i:s') %}
           {% set pass_end = pass.pass_end|date('H:i:s') %}
-          {% set cur_date = pass.pass_start|date('m/d/y') %}
+          {% set cur_date = pass.pass_start|date(constant('Config\\Config::PASSES_DATE_FORMAT')) %}
 
           {% if last_date < cur_date %}
             <tr class="date-separator">
@@ -69,9 +69,9 @@
               <button type="button" class="btn btn-sm btn-danger delete-capture" data-toggle="modal"
                                    data-pass-start-id="{{ pass.pass_start }}"
                                    data-sat-name="{{ pass.sat_name }}"
-                                   data-pass-start="{{ pass.pass_start|date('m/d/y H:i:s') }}"
-                                   data-pass-end="{{ pass.pass_end|date('m/d/y H:i:s') }}"
-                                   data-target="#confirmDeletePass">X</button>
+                                   data-pass-start="{{ pass.pass_start|date(constant('Config\\Config::DATETIME_FORMAT')) }}"
+                                   data-pass-end="{{ pass.pass_end|date(constant('Config\\Config::DATETIME_FORMAT')) }}"
+                                   data-target="#confirmDeletePass"><i class="fa fa-trash"></i></button>
             </td>
             <td{% if prev_pass_end >= pass.pass_start %} class="conflict"{% endif %}>
               {% if prev_pass_end >= pass.pass_start %}<i class="fa fa-exclamation-triangle conflict-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['conflicting_pass'] }}"></i>{% endif %}

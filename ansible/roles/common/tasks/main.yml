@@ -1,9 +1,9 @@
 ---
-# environment configuration files
-- include: configs.yml
-
 # dependent packages and libs to be installed
 - include: dependencies.yml
+
+# environment configuration files
+- include: configs.yml
 
 # ntp configurations
 - include: ntp.yml
@@ -20,6 +20,12 @@
 # email setup
 - include: email.yml
 
-# twitter push setup
+# Twitter push setup
 - include: twitter.yml
+
+# Facebook push setup
+- include: facebook.yml
+
+# Instagram push setup
+- include: instagram.yml
 ...
