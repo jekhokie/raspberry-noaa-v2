@@ -13,7 +13,7 @@ out this simple [migration document](docs/migrate_from_raspberry_noaa.md) that e
 your original data!
 
 Finally, if you're looking for one of the cheapest ways to get started from an antenna perspective, check out
-[this post](https://jekhokie.github.io/noaa/satellite/rf/antenna/sdr/2019/05/31/noaa-satellite-imagery-sdr.html), specifically around
+[this hhhkkhttps://jekhokie.github.io/noaa/satellite/rf/antenna/sdr/2019/05/31/noaa-satellite-imagery-sdr.html), specifically around
 how to use a cheap rabbit ears antenna as a dipole for capturing NOAA and Meteor images!
 
 # Raspberry NOAA (...and Meteor) V2
@@ -34,6 +34,9 @@ There is also an image maintained by Jochen Köster DC9DD here.
 For interest Jochen's image is the base for this offgrid system in Northern Norway! 
 [https://usradioguy.com/science/off-grid-apt-lrpt-satellite-ground-station/](https://usradioguy.com/science/off-grid-apt-lrpt-satellite-ground-station/)
 
+There is also image by MihajloPi maintained at: [https://drive.google.com/drive/folders/1acaZ78VEROc7BWVtJ82C6qVrccA9CkR6](https://drive.google.com/drive/folders/1acaZ78VEROc7BWVtJ82C6qVrccA9CkR6)
+This image is oriented towards the general user and doesn't come with much software installed other than necessary. It was built from the minimal desktop version of the Raspberry OS Bullseye.
+
 These images are not always up to speed with the latest code, but lots of folks find images are a great way to get started quickly!
 
 ## Quick Start - building latest from the source on this repo
@@ -43,20 +46,22 @@ Here's the quick-start - if you have questions, continue reading the rest of thi
 reach out by submitting an issue:
 
 ```bash
-# update os localisation settings
+# update os localisation settings like timezone, locale and WiFi country
 sudo raspi-config
 
 # install git
-sudo apt-get -y install git
+sudo apt install git -y
 
 # clone repository
 cd $HOME
 git clone https://github.com/jekhokie/raspberry-noaa-v2.git
 cd raspberry-noaa-v2/
 
-# copy sample settings and update for your install
-cp config/settings.yml.sample config/settings.yml
-vi config/settings.yml
+# Edit settings to match your stations location, gain and other things
+nano config/settings.yml
+
+# build MeteorDemod
+./install_MeteorDemod.ah
 
 # perform install
 ./install_and_upgrade.sh
@@ -66,7 +71,7 @@ Once complete, follow the [migration document](docs/migrate_from_raspberry_noaa.
 to this version 2 (keep your previous captures and make them visible).
 
 In addition, if you have elected to run a TLS-enabled web server, see [THIS LINK](docs/tls_webserver.md) for some additional information
-on how to handle self-signed certificates when attempting to visit your webpanel and enabling auth for the admin pages.
+on how to set up admin login and get your Let's Encrypt signed TLS/SSL certificate.
 
 To see what occurred during a capture event, check out the log file `/var/log/raspberry-noaa-v2/output.log`.
 
@@ -93,6 +98,8 @@ of Raspberry Pi (but if you get it working on a version, please do submit a PR a
 In addition, it's recommended that the Official Release of [Raspberry Pi OS](https://www.raspberrypi.org/software/) operating system is used 
 **(not the very latest build)** - this is the OS that has been tested and proven working. 
 
+As of September 2023, raspberry-noaa-v2 can also be installed on regular 64 bit computers running any Debian Bullseye-based distro. Itmhas been developed and tested on LMDE 5 "Elsie" which I also recommend for users coming from Windows, as it has many similarities. It can be downloaded here: [https://mirrors.layeronline.com/linuxmint/debian/lmde-5-cinnamon-64bit.iso](https://mirrors.layeronline.com/linuxmint/debian/lmde-5-cinnamon-64bit.iso)
+
 If you do test with another OS - again, please submit a PR and let us know how it works out!
 
 If you're interested in the details behind the original raspberry-noaa hardware compatibility tests, see the [hardware](docs/hardware.md)
@@ -114,8 +121,8 @@ OS (no desktop environment) to help avoid processing interference due to higher 
 2. Update your localisation settings on your Pi prior to installing the software using the `sudo raspi-config` command, updating
 "5 Localisation Options -> L1 Locale" and "5 Localisation Options -> L2 Timezone" settings to match your base station location for more
 consistent time and language handling.
-3. You need git installed to clone the repository - this can be done via `sudo apt-get -y install git`.
-4. It is recommended to change your `pi` user default password after logging into the Raspberry Pi for the first time. While it is not
+3. You need git installed to clone the repository - this can be done via `sudo apt install git -y`.
+4. It is recommended that you do not use a default user "pi" and the default password "raspberry". While it is not
 recommended that you expose a Pi instance to the public internet for access (unless you have a VERY strict process about security
 patching, and even then it would still be questionable), updating your Pi user password is a decent first step for security.
 
@@ -126,16 +133,18 @@ install script:
 
 ```bash
 # install git
-sudo apt-get -y install git
+sudo apt install git -y
 
 # clone repository
 cd $HOME
 git clone https://github.com/jekhokie/raspberry-noaa-v2.git
 cd raspberry-noaa-v2/
 
-# copy sample settings and update for your install
-cp config/settings.yml.sample config/settings.yml
-vi config/settings.yml
+# update your settings file to match your location, gain and other setup-specific settings
+nano config/settings.yml
+
+# build MeteorDemod from source first
+./install_MeteorDemod.sh
 
 # perform install
 ./install_and_upgrade.sh
@@ -149,29 +158,16 @@ on how to handle self-signed certificates when attempting to visit your webpanel
 
 ## Upgrade
 
-Want to get the latest and greatest content from the GitHub master branch? Easy - use the same script from the Install process
-and all of your content will automatically upgrade (obviously you'll want to do this when there isn't a scheduled capture occurring
-or about to occur). Note that once you pull the latest code down using git, you'll likely want to compare your `config/settings.yml`
-file with the new code `config/settings.yml.sample` and include/incorporate any new or renamed configuration parameters.
+Want to get the latest and greatest content from the GitHub master branch? Easy!
+Run:
+`git pull`
+inside the raspberry-noaa-v2 folder. If it complains about rhe changes to `settings.yml` file, make a backup of it somewhere else on your Pi like the desktop:
+`mv config/settings.yml ~/Desktop`
+and run:
+`git pull`
+Then, open settings file and edit it to match settings from the previous file.
 
-**Note**: You can double-check that the configuration parameters in your `config/settings.yml` file are correctly aligned to the
-expectations of the framework configurations (this is done by default now as part of the `install_and_upgrade.sh` script) by
-running `./scripts/tools/validate_yaml.py config/settings.yml config/settings_schema.json`. The output of this script will
-inform you whether there are any new configs that you need to add to your `config/settings.yml` file or if values provided for
-parameters are not within range or of the expected format to help with reducing the strain on your eyes in comparing the files.
-
-```bash
-# pull down new code
-cd $HOME/raspberry-noaa-v2/
-git pull
-
-# compare settings file:
-#   config/settings.yml.sample with config/settings.yml
-# and incorporate any changes/updates
-
-# perform upgrade
-./install_and_upgrade.sh
-```
+***NOTE***: you may notice some extra variables or some variables missing. Don't worry, that's normal as some variables have been changed by the developers (either are taken care of automatically so were removed as they are reduntant now, or some new thing has been implemented, hence new variables).
 
 If you have elected to run a TLS-enabled web server, see [THIS LINK](docs/tls_webserver.md) for some additional information
 on how to handle self-signed certificates when attempting to visit your webpanel and enabling auth for the admin pages.
@@ -198,14 +194,16 @@ If you're running into issues where you're not seeing imagery after passes compl
 out the [troubleshooting](docs/troubleshooting.md) document to try and narrow down the problem. In addition, you can inspect the log
 output file in `/var/log/raspberry-noaa-v2/output.log` to investigate potential errors or issues during capture events.
 
+Still having problems? You can email MihajloPi at mihajlo.raspberrypi@gmail.com and be sure to send him the log so he can debug the errors!
+
 ## Additional Feature Information
 
-The decoding model has been changed with release 1.8 to default to using GNURADIO based capture via Python for both Meteor 
+The decoding model has been changed with release 3.0 to default to using satdump_live based capture via Python for both Meteor 
 (which was previously an option) and now also for NOAA. This will open the platform up for developers to integrate alternative hardware capture than rtl-sdr.
 
 For additional information on some of the capabilities included in this framework, see below:
 
-  - [Meteor M2 Full Decoding](docs/meteor.md)
+  - [Meteor M2-3 Full Decoding](docs/meteor.md)
 
 ## Credits
 
@@ -228,7 +226,7 @@ or form to the success of this repository/framework. Below are some direct contr
 * **[Pascal P.](https://github.com/Cirromulus)**: Frequency/spectrum analysis test scripts for visualizing frequency spectrum of environment.
 * **[Socowi's Time Functionality](https://stackoverflow.com/a/50434292)**: Time parser to calculate end date for scanner scripts.
 * **[Vince VE3ELB](https://github.com/ve3elb)**: Took on the invaluable task to create fully working images of RN2 for the PI and maintains [https://qsl.net/ve3elb/RaspiNOAA/](https://qsl.net/ve3elb/RaspiNOAA/).
-*  **[mihajlo2003petkovic](https://github.com/mihajlo2003petkovic)**: Updates to the web browser and general updating and debugging. Integrated MeteorDemod in `receive_meteor.sh` and shrunk code quite a bit in `receive_noaa.sh`.
+*  **[mihajlo2003petkovic](https://github.com/mihajlo2003petkovic)**: Integrated MeteorDemod for Meteor decoding, and also the awesome SatDump (option satdump_live) for both NOAA and Meteor live decoding. Shrunk and optimised both NOAA and Meteor receive scripts by quite much! Implemented Facebook and Instagram posting scripts and fixed Twitter ppsting script due to the API 2.0 error. Made localisation option reduntant (automatically is handled by the computer itself). Provided support for Airspy, HackRF and SDRPlay devices. Implemented website compression, edited the website landing page and improved the perceived image loading speed by using progressive JPEGs.
 ## Contributing
 
 Pull requests are welcome! Simply follow the below pattern:
