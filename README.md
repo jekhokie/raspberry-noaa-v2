@@ -12,8 +12,8 @@ Wanting to give this version a go but not sure what's involved to get from the o
 out this simple [migration document](docs/migrate_from_raspberry_noaa.md) that explains the few commands you need to run and retain
 your original data!
 
-Finally, if you're looking for one of the cheapest ways to get started from an antenna perspective, check out
-[this hhhkkhttps://jekhokie.github.io/noaa/satellite/rf/antenna/sdr/2019/05/31/noaa-satellite-imagery-sdr.html), specifically around
+Finally, if you're looking for one of the cheapest ways to get started from an antenna perspective, check this out
+[https://jekhokie.github.io/noaa/satellite/rf/antenna/sdr/2019/05/31/noaa-satellite-imagery-sdr.html), specifically around
 how to use a cheap rabbit ears antenna as a dipole for capturing NOAA and Meteor images!
 
 # Raspberry NOAA (...and Meteor) V2
