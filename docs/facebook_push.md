@@ -31,7 +31,7 @@ from the command line and pass an actual image file (or many) to the command lik
 ```
 
 If all goes well and the image paths passed are files that actually exist, you should see a new post on your
-FAcebook page timeline!
+Facebook page timeline!
 
 ## Profit
 
