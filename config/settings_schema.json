@@ -73,6 +73,11 @@
       "minimum": -90,
       "maximum": 90
     },
+    "meteor_m2_3_schedule_sun_min_elevation": {
+      "type": "number",
+      "minimum": -90,
+      "maximum": 90
+    },
     "meteor_m2_3_sat_min_elevation": {
       "type": "number",
       "minimum": 0,

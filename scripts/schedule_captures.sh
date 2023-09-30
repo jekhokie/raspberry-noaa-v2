@@ -54,8 +54,17 @@ while [ "$(date --date="@${end_epoch_time}" +"%s")" -le "${END_TIME_MS}" ]; do
   timer=$(expr "${end_epoch_time}" - "${start_epoch_time}" + "${start_time_seconds}")
   file_date_ext=$(date --date="TZ=\"UTC\" ${start_datetime}" +%Y%m%d-%H%M%S)
 
+  schedule_enabled_by_sun_elev=1
+  if [ "$OBJ_NAME" == "METEOR-M2 3" ]; then
+      START_SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$start_epoch_time")
+      if [ "${START_SUN_ELEV}" -lt "${METEOR_M2_3_SCHEDULE_SUN_MIN_ELEV}" ]; then
+        log "Not scheduling Meteor-M2 3 with START TIME $start_epoch_time because $START_SUN_ELEV is below configured minimum sun elevation $METEOR_M2_3_SCHEDULE_SUN_MIN_ELEV" "INFO"
+        schedule_enabled_by_sun_elev=0
+      fi
+  fi
+
   # schedule capture if elevation is above configured minimum
-  if [ "${max_elev}" -gt "${SAT_MIN_ELEV}" ]; then
+  if [ "${max_elev}" -gt "${SAT_MIN_ELEV}" ] && [ "${schedule_enabled_by_sun_elev}" -eq "1" ]; then
     direction="null"
 
     # calculate travel direction
