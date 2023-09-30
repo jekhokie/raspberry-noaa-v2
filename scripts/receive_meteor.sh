@@ -174,7 +174,7 @@ elif [ "$METEOR_RECEIVER" == "satdump_live" ]; then
   # Set mode based on METEOR_M2_3_80K_INTERLEAVING
   mode="$([[ "$METEOR_${SAT_NUMBER}_80K_INTERLEAVING" == "true" ]] && echo "_80k" || echo "")"
   $SATDUMP live meteor_m2-x_lrpt${mode} . --source $receiver --samplerate $samplerate --frequency "${METEOR_M2_3_FREQ}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
-  rm satdump.logs meteor_m2-x_lrpt${mode}.cadu dataset.json
+  rm satdump.logs dataset.json
 
   log "Waiting for files to close" "INFO"
   sleep 2
@@ -231,7 +231,6 @@ elif [[ "$METEOR_RECEIVER" == "satdump_live" ]]; then
   find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
 
   log "Deleting SatDump projected composites which have been generated, but the channels aren't broadcast" "INFO"
-
   for projected_file in MSU-MR/rgb_msu_mr_rgb_*_projected.png; do
       # Extract the corresponding corrected.png filename
       corrected_file="${projected_file/rgb_msu_mr_rgb_/msu_mr_rgb_}"
@@ -277,6 +276,19 @@ elif [[ "$METEOR_RECEIVER" == "satdump_live" ]]; then
     push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
   done
   rm -r MSU-MR >> $NOAA_LOG 2>&1
+
+
+  if [ "$DELETE_METEOR_AUDIO" == true ]; then
+    log "Deleting audio files" "INFO"
+    rm meteor_m2-x_lrpt${mode}.cadu
+  else
+    if [ "$in_mem" == "true" ]; then
+      log "Moving CADU files out to the SD card" "INFO"
+      mv meteor_m2-x_lrpt${mode}.cadu "${AUDIO_FILE_BASE}-meteor_m2-x_lrpt${mode}.cadu"
+      log "Deleting Meteor audio files older than $FILES_OLDER_THAN_DAYS days" "INFO"
+      find /srv/audio/meteor -type f \( -name "*.wav" -o -name "*.s" -o -name "*.cadu" -o -name "*.gcp" -o -name "*.bmp" \) -mtime +$FILES_OLDER_THAN_DAYS -delete >> $NOAA_LOG 2>&1
+    fi
+  fi
 else
     echo "Unknown receiver: $METEOR_RECEIVER"
 fi
