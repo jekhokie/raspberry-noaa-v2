@@ -200,7 +200,7 @@ if [[ "$METEOR_RECEIVER" == "rtl_fm" || "$METEOR_RECEIVER" == "gnuradio" || "$ME
     $METEORDEMOD -m oqpsk -diff 1 -s 72000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
   fi
 
-  rm *.gcp *.bmp "${RAMFS_AUDIO_BASE}.wav"
+  rm "${RAMFS_AUDIO_BASE}.s"
 
   for i in spread_*.jpg; do
     $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
@@ -218,11 +218,13 @@ if [[ "$METEOR_RECEIVER" == "rtl_fm" || "$METEOR_RECEIVER" == "gnuradio" || "$ME
 
   if [ "$DELETE_METEOR_AUDIO" == true ]; then
     log "Deleting audio files" "INFO"
-    rm "${RAMFS_AUDIO_BASE}.s"
+    rm "${RAMFS_AUDIO_BASE}.wav"
   else
     if [ "$in_mem" == "true" ]; then
       log "Moving audio files out to the SD card" "INFO"
-      mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
+      mv "${RAMFS_AUDIO_BASE}.wav" "${AUDIO_FILE_BASE}.wav"
+      log "Deleting Meteor audio files older than $FILES_OLDER_THAN_DAYS days" "INFO"
+      find /srv/audio/meteor -type f \( -name "*.wav" -o -name "*.s" -o -name "*.cadu" -o -name "*.gcp" -o -name "*.bmp" \) -mtime +$FILES_OLDER_THAN_DAYS -delete >> $NOAA_LOG 2>&1
     fi
   fi
 elif [[ "$METEOR_RECEIVER" == "satdump_live" ]]; then
