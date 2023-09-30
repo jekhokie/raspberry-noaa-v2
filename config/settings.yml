@@ -101,8 +101,10 @@ delete_oldest_n: 0
 delete_older_than_n: 30
 
 # whether audio files should be deleted after images are created
+# if you choose to keep files, they will be automatically deleted after set number of days in delete_files_older_than_days (default is 3 days)
 delete_noaa_audio: true
 delete_meteor_audio: true
+delete_files_older_than_days: 3
 
 # processing settings
 #   flip_meteor_image - whether the meteor image should be flipped
