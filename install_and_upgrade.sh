@@ -170,4 +170,8 @@ if [ $install_type == 'install' ]; then
   log_running "not installed the original raspberry-noaa repo content), you likely need to"
   log_running "restart your device. Please do this to rule out any potential issues in the"
   log_running "software and libraries that have been installed."
+
+  log_running "Automatically rebooting your device now to finish the new install."
+  echo -e "\n\n\nAutomatically rebooting your device now to finish the new install."
+  sudo reboot
 fi
