@@ -110,7 +110,7 @@
 - name: Clone MeteorDemod repository if not installed
   git:
     repo: https://github.com/Digitelektro/MeteorDemod.git
-    dest: ~/MeteorDemod
+    dest: /home/{{ target_user }}/MeteorDemod
     version: beta
   register: meteor_demod_clone_result
   ignore_errors: yes
@@ -118,32 +118,32 @@
 - name: Update MeteorDemod submodules
   command: git submodule update --init --recursive
   args:
-    chdir: ~/MeteorDemod
+    chdir: /home/{{ target_user }}/MeteorDemod
   when: not meteor_demod_clone_result.failed
 
 - name: Create build directory
   file:
-    path: ~/MeteorDemod/build
+    path: /home/{{ target_user }}/MeteorDemod/build
     state: directory
   when: not meteor_demod_clone_result.failed
 
 - name: Build MeteorDemod
   command: cmake ../
   args:
-    chdir: ~/MeteorDemod/build
+    chdir: /home/{{ target_user }}/MeteorDemod/build
   when: not meteor_demod_clone_result.failed
 
 - name: Make MeteorDemod
   command: make -j4
   args:
-    chdir: ~/MeteorDemod/build
+    chdir: /home/{{ target_user }}/MeteorDemod/build
   when: not meteor_demod_clone_result.failed
 
 - name: Install MeteorDemod
   become: yes
   command: make install
   args:
-    chdir: ~/MeteorDemod/build
+    chdir: /home/{{ target_user }}/MeteorDemod/build
   when: not meteor_demod_clone_result.failed
 
 - name: Set ownership of configuration directory
@@ -156,7 +156,7 @@
 
 - name: Clean up
   file:
-    path: ~/MeteorDemod
+    path: /home/{{ target_user }}/MeteorDemod
     state: absent
   when: not meteor_demod_clone_result.failed
 
