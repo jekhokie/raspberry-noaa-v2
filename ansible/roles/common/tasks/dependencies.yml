@@ -48,22 +48,6 @@
       - libopencv-dev
       - python3-opencv
 
-- name: Installing predict on computers
-  become: yes
-  apt:
-    deb: "{{ noaa_home }}/software/predict_2.2.3-4-b2_amd64.deb"
-    state: present
-    update_cache: no
-  when: system_architecture == 'amd64'
-
-- name: Installing predict on Raspberry Pi
-  become: yes
-  apt:
-    deb: "{{ noaa_home }}/software/predict_2.2.5+dfsg.1-1_armhf.deb"
-    state: present
-    update_cache: no
-  when: system_architecture == 'armhf'
-
 - name: Ensure pip3 is installed
   become: yes
   apt:
@@ -88,6 +72,22 @@
     state: present
     executable: pip3
 
+- name: Installing predict on computers
+  become: yes
+  apt:
+    deb: "{{ noaa_home }}/software/predict_2.2.3-4-b2_amd64.deb"
+    state: present
+    update_cache: no
+  when: system_architecture == 'amd64'
+
+- name: Installing predict on Raspberry Pi
+  become: yes
+  apt:
+    deb: "{{ noaa_home }}/software/predict_2.2.5+dfsg.1-1_armhf.deb"
+    state: present
+    update_cache: no
+  when: system_architecture == 'armhf'
+  
 - name: Installing WXtoImg
   become: yes
   apt:
