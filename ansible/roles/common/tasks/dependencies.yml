@@ -119,43 +119,46 @@
   command: git submodule update --init --recursive
   args:
     chdir: ~/MeteorDemod
-  when: meteor_demod_clone_result|failed
+  when: not meteor_demod_clone_result.failed
 
 - name: Create build directory
   file:
     path: ~/MeteorDemod/build
     state: directory
-  when: meteor_demod_clone_result|failed
+  when: not meteor_demod_clone_result.failed
 
 - name: Build MeteorDemod
   command: cmake ../
   args:
     chdir: ~/MeteorDemod/build
-  when: meteor_demod_clone_result|failed
+  when: not meteor_demod_clone_result.failed
 
 - name: Make MeteorDemod
   command: make -j4
   args:
     chdir: ~/MeteorDemod/build
-  when: meteor_demod_clone_result|failed
+  when: not meteor_demod_clone_result.failed
 
 - name: Install MeteorDemod
   become: yes
   command: make install
   args:
     chdir: ~/MeteorDemod/build
-  when: meteor_demod_clone_result|failed
+  when: not meteor_demod_clone_result.failed
 
 - name: Set ownership of configuration directory
   become: yes
-  command: chown -R your_username:your_username ~/.config/meteordemod
-  when: meteor_demod_clone_result|failed
+  file:
+    path: /home/{{ target_user }}/.config/meteordemod
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    recurse: yes
 
 - name: Clean up
   file:
     path: ~/MeteorDemod
     state: absent
-  when: meteor_demod_clone_result|failed
+  when: not meteor_demod_clone_result.failed
 
 - name: Installing SatDump
   become: yes
