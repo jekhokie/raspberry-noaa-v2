@@ -110,7 +110,7 @@
 - name: Clone MeteorDemod repository if not installed
   git:
     repo: https://github.com/Digitelektro/MeteorDemod.git
-    dest: ~/MeteorDemod
+    dest: /home/{{ target_user }}/MeteorDemod
     version: beta
   register: meteor_demod_clone_result
   ignore_errors: yes
@@ -118,44 +118,47 @@
 - name: Update MeteorDemod submodules
   command: git submodule update --init --recursive
   args:
-    chdir: ~/MeteorDemod
-  when: meteor_demod_clone_result|failed
+    chdir: /home/{{ target_user }}/MeteorDemod
+  when: not meteor_demod_clone_result.failed
 
 - name: Create build directory
   file:
-    path: ~/MeteorDemod/build
+    path: /home/{{ target_user }}/MeteorDemod/build
     state: directory
-  when: meteor_demod_clone_result|failed
+  when: not meteor_demod_clone_result.failed
 
 - name: Build MeteorDemod
   command: cmake ../
   args:
-    chdir: ~/MeteorDemod/build
-  when: meteor_demod_clone_result|failed
+    chdir: /home/{{ target_user }}/MeteorDemod/build
+  when: not meteor_demod_clone_result.failed
 
 - name: Make MeteorDemod
   command: make -j4
   args:
-    chdir: ~/MeteorDemod/build
-  when: meteor_demod_clone_result|failed
+    chdir: /home/{{ target_user }}/MeteorDemod/build
+  when: not meteor_demod_clone_result.failed
 
 - name: Install MeteorDemod
   become: yes
   command: make install
   args:
-    chdir: ~/MeteorDemod/build
-  when: meteor_demod_clone_result|failed
+    chdir: /home/{{ target_user }}/MeteorDemod/build
+  when: not meteor_demod_clone_result.failed
 
 - name: Set ownership of configuration directory
   become: yes
-  command: chown -R your_username:your_username ~/.config/meteordemod
-  when: meteor_demod_clone_result|failed
+  file:
+    path: /home/{{ target_user }}/.config/meteordemod
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    recurse: yes
 
 - name: Clean up
   file:
-    path: ~/MeteorDemod
+    path: /home/{{ target_user }}/MeteorDemod
     state: absent
-  when: meteor_demod_clone_result|failed
+  when: not meteor_demod_clone_result.failed
 
 - name: Installing SatDump
   become: yes

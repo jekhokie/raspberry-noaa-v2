@@ -30,14 +30,6 @@
     owner: "{{ target_user }}"
     group: "{{ target_user }}"
     mode: 0644
-    
-- name: Set ownership of ~/.config/meteordemod folder to pi
-  become: yes
-  file:
-    path: /home/{{ target_user }}/.config/meteordemod
-    owner: "{{ target_user }}"
-    group: "{{ target_user }}"
-    recurse: yes
 
 - name: MeteorDemod config settings.ini file
   template:
