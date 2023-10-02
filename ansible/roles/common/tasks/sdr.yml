@@ -8,12 +8,21 @@
     group: root
     mode: 0644
 
-- name: check if rtl-sdr software is installed
+- name: blacklist Airspy modules
+  become: yes
+  copy:
+    src: airspy-blacklist.conf
+    dest: /etc/modprobe.d/airspy-blacklist.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: check if RTL-SDR software is installed
   stat:
     path: /usr/local/bin/rtl_sdr
   register: rtlsdr_bin
 
-- name: git clone rtl-sdr software
+- name: git clone RTL-SDR software
   git:
     repo: https://github.com/osmocom/rtl-sdr.git
     dest: /tmp/rtl-sdr
@@ -21,28 +30,28 @@
   register: rtlsdr
   when: not rtlsdr_bin.stat.exists
 
-- name: create rtl-sdr build directory
+- name: create RTL-SDR build directory
   file:
     path: /tmp/rtl-sdr/build
     state: directory
     mode: 0755
   when: rtlsdr.changed
 
-- name: generate build system for rtl-sdr software
+- name: generate build system for RTL-SDR software
   command: cmake ../ -DINSTALL_UDEV_RULES=ON -DDETACH_KERNEL_DRIVER=ON
   args:
     chdir: /tmp/rtl-sdr/build
     creates: /tmp/rtl-sdr/build/Makefile
   when: rtlsdr.changed
 
-- name: make rtl-sdr software
+- name: make RTL-SDR software
   command: make
   args:
     chdir: /tmp/rtl-sdr/build
     creates: /tmp/rtl-sdr/build/src/rtl_sdr
   when: rtlsdr.changed
 
-- name: install rtl-sdr software
+- name: install RTL-SDR software
   become: yes
   command: make install
   args:
@@ -50,12 +59,12 @@
     creates: /usr/local/bin/rtl_fm
   when: rtlsdr.changed
 
-- name: link files
+- name: link RTL-SDR files
   become: yes
   command: ldconfig
   when: rtlsdr.changed
 
-- name: copy udev rules
+- name: copy RTL-SDR udev rules
   become: yes
   copy:
     src: /tmp/rtl-sdr/rtl-sdr.rules
@@ -65,4 +74,13 @@
     mode: 0644
     remote_src: yes
   when: rtlsdr.changed
+
+- name: copy Airspy udev rules
+  become: yes
+  copy:
+    src: 52-airspy.rules
+    dest: /etc/udev/rules.d/52-airspy.rules
+    owner: root
+    group: root
+    mode: 0644
 ...
