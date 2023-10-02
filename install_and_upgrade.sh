@@ -41,31 +41,6 @@ if [ -f /etc/modprobe.d/rtlsdr.conf ]; then
   install_type='upgrade'
 fi
 
-#log_running "Checking for python3-pip..."
-#dpkg -l python3-pip 2>&1 >/dev/null
-#if [ $? -eq 0 ]; then
-#  log_done "  python3-pip already installed!"
-#else
-#  log_running "  python3-pip not yet installed - installing..."
-#  sudo apt-get -y install python3-pip
-#  if [ $? -eq 0 ]; then
-#    log_done "    python3-pip successfully installed!"
-#  else
-#    die "    Could not install python3-pip - please check the logs above"
-#  fi
-#fi
-
-#log_running "Installing pip dependencies..."
-#sudo apt install libjpeg-dev zlib1g-dev libsqlite3-dev
-
-#log_running "Installing Python dependencies..."
-#sudo python3 -m pip install -r $HOME/raspberry-noaa-v2/requirements.txt
-#if [ $? -eq 0 ]; then
-#  log_done "  Successfully aligned required Python packages!"
-#else
-#  die "  Could not install dependent Python packages - please check the logs above"
-#fi
-
 log_running "Installing yaml and jsonschema Python modules..."
 sudo apt install python3-yaml python3-jsonschema
 
@@ -195,4 +170,8 @@ if [ $install_type == 'install' ]; then
   log_running "not installed the original raspberry-noaa repo content), you likely need to"
   log_running "restart your device. Please do this to rule out any potential issues in the"
   log_running "software and libraries that have been installed."
+
+  log_running "Automatically rebooting your device now to finish the new install."
+  echo -e "\n\n\nAutomatically rebooting your device now to finish the new install."
+  sudo reboot
 fi

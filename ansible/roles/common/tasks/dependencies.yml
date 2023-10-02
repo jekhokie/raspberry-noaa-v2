@@ -103,9 +103,10 @@
 #    update_cache: no
 
 - name: Check if MeteorDemod is installed
-  command: meteordemod --version
+  command: meteordemod --help
   register: meteor_demod_installed
   ignore_errors: yes
+  changed_when: False
 
 - name: Clone MeteorDemod repository if not installed
   git:
@@ -113,38 +114,39 @@
     dest: /home/{{ target_user }}/MeteorDemod
     version: beta
   register: meteor_demod_clone_result
+  when: not meteor_demod_installed
   ignore_errors: yes
 
 - name: Update MeteorDemod submodules
   command: git submodule update --init --recursive
   args:
     chdir: /home/{{ target_user }}/MeteorDemod
-  when: not meteor_demod_clone_result.failed
+  when: not meteor_demod_clone_result.failed and not meteor_demod_installed
 
 - name: Create build directory
   file:
     path: /home/{{ target_user }}/MeteorDemod/build
     state: directory
-  when: not meteor_demod_clone_result.failed
+  when: not meteor_demod_clone_result.failed and not meteor_demod_installed
 
 - name: Build MeteorDemod
   command: cmake ../
   args:
     chdir: /home/{{ target_user }}/MeteorDemod/build
-  when: not meteor_demod_clone_result.failed
+  when: not meteor_demod_clone_result.failed and not meteor_demod_installed
 
 - name: Make MeteorDemod
   command: make -j4
   args:
     chdir: /home/{{ target_user }}/MeteorDemod/build
-  when: not meteor_demod_clone_result.failed
+  when: not meteor_demod_clone_result.failed and not meteor_demod_installed
 
 - name: Install MeteorDemod
   become: yes
   command: make install
   args:
     chdir: /home/{{ target_user }}/MeteorDemod/build
-  when: not meteor_demod_clone_result.failed
+  when: not meteor_demod_clone_result.failed and not meteor_demod_installed
 
 - name: Set ownership of configuration directory
   become: yes
@@ -153,12 +155,13 @@
     owner: "{{ target_user }}"
     group: "{{ target_user }}"
     recurse: yes
+  when: not meteor_demod_installed
 
 - name: Clean up
   file:
     path: /home/{{ target_user }}/MeteorDemod
     state: absent
-  when: not meteor_demod_clone_result.failed
+  when: not meteor_demod_clone_result.failed and not meteor_demod_installed
 
 - name: Installing SatDump
   become: yes
