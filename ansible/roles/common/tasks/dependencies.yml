@@ -106,45 +106,46 @@
   stat:
     path: /usr/local/bin/meteordemod
   register: meteor_demod_installed
+  changed_when: false
 
 - name: Clone MeteorDemod repository if not installed
   git:
     repo: https://github.com/Digitelektro/MeteorDemod.git
     dest: /home/{{ target_user }}/MeteorDemod
     version: beta
-  when: not meteor_demod_installed
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
   ignore_errors: yes
 
 - name: Update MeteorDemod submodules
   command: git submodule update --init --recursive
   args:
     chdir: /home/{{ target_user }}/MeteorDemod
-  when: not meteor_demod_installed
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
 
 - name: Create build directory
   file:
     path: /home/{{ target_user }}/MeteorDemod/build
     state: directory
-  when: not meteor_demod_installed
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
 
 - name: Build MeteorDemod
   command: cmake ../
   args:
     chdir: /home/{{ target_user }}/MeteorDemod/build
-  when: not meteor_demod_installed
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
 
 - name: Make MeteorDemod
   command: make -j4
   args:
     chdir: /home/{{ target_user }}/MeteorDemod/build
-  when: not meteor_demod_installed
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
 
 - name: Install MeteorDemod
   become: yes
   command: make install
   args:
     chdir: /home/{{ target_user }}/MeteorDemod/build
-  when: not meteor_demod_installed
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
 
 - name: Set ownership of configuration directory
   become: yes
@@ -153,13 +154,13 @@
     owner: "{{ target_user }}"
     group: "{{ target_user }}"
     recurse: yes
-  when: not meteor_demod_installed
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
 
 - name: Clean up
   file:
     path: /home/{{ target_user }}/MeteorDemod
     state: absent
-  when: not meteor_demod_installed
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
 
 - name: Installing SatDump
   become: yes
