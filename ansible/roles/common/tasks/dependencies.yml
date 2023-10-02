@@ -103,9 +103,9 @@
 #    update_cache: no
 
 - name: Check if MeteorDemod is installed
-    command: meteordemod --version
-    register: meteor_demod_installed
-    ignore_errors: yes
+  command: meteordemod --version
+  register: meteor_demod_installed
+  ignore_errors: yes
 
 - name: Clone MeteorDemod repository if not installed
   git:
