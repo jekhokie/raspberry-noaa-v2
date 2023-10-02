@@ -287,7 +287,6 @@ elif [[ "$METEOR_RECEIVER" == "satdump_live" ]]; then
       mv meteor_m2-x_lrpt${mode}.cadu "${AUDIO_FILE_BASE}-meteor_m2-x_lrpt${mode}.cadu" >> $NOAA_LOG 2>&1
       log "Deleting Meteor audio files older than $FILES_OLDER_THAN_DAYS days" "INFO"
       find /srv/audio/meteor -type f \( -name "*.wav" -o -name "*.s" -o -name "*.cadu" -o -name "*.gcp" -o -name "*.bmp" \) -mtime +$FILES_OLDER_THAN_DAYS -delete >> $NOAA_LOG 2>&1
-      echo "find /srv/audio/meteor -type f \( -name "*.wav" -o -name "*.s" -o -name "*.cadu" -o -name "*.gcp" -o -name "*.bmp" \) -mtime +$FILES_OLDER_THAN_DAYS -delete" >> $NOAA_LOG 2>&1
     fi
   fi
 else
