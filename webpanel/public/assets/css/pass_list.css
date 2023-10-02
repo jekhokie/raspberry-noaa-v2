@@ -13,6 +13,18 @@ table#passes tr td.conflict i.conflict-icon {
   color: #ec5645;
 }
 
+table#passes tr td.running i.running-icon {
+  color: #28a745;
+}
+
+table#passes tr td.next i.next-icon {
+  color: #ffe082;
+}
+
+table#passes tr td.no_capture i.no_capture-icon {
+  color: #dc3545;
+}
+
 table#passes tr.inactive td.conflict i.conflict-icon {
   color: lightgray;
 }
