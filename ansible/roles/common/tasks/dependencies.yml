@@ -103,7 +103,8 @@
 #    update_cache: no
 
 - name: Check if MeteorDemod is installed
-  command: meteordemod --help
+  stat:
+    path: /usr/local/bin/meteordemod
   register: meteor_demod_installed
   ignore_errors: yes
   changed_when: False
