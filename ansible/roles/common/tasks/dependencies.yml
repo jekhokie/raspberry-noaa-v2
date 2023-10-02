@@ -106,8 +106,6 @@
   stat:
     path: /usr/local/bin/meteordemod
   register: meteor_demod_installed
-  ignore_errors: yes
-  changed_when: False
 
 - name: Clone MeteorDemod repository if not installed
   git:
