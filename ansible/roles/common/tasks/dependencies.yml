@@ -91,6 +91,79 @@
 #    state: present
 #    update_cache: no
 
+- name: Check if MeteorDemod is installed
+  command: meteordemod --version
+  register: meteor_demod_installed
+  ignore_errors: yes
+
+- name: Update APT cache
+  apt:
+    update_cache: yes
+
+- name: Install required packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - python3-dev
+    - python3-pip
+    - cmake
+    - build-essential
+    - pkg-config
+    - git
+    - libatlas-base-dev
+    - liblapacke-dev
+    - gfortran
+    - libopencv-dev
+    - python3-opencv
+
+- name: Clone MeteorDemod repository if not installed
+  git:
+    repo: https://github.com/Digitelektro/MeteorDemod.git
+    dest: ~/MeteorDemod
+    version: beta
+  when: meteor_demod_installed.rc != 0
+
+- name: Update MeteorDemod submodules
+  command: git submodule update --init --recursive
+  args:
+    chdir: ~/MeteorDemod
+  when: meteor_demod_installed.rc != 0
+
+- name: Create build directory
+  file:
+    path: ~/MeteorDemod/build
+    state: directory
+  when: meteor_demod_installed.rc != 0
+
+- name: Build MeteorDemod
+  command: cmake ../
+  args:
+    chdir: ~/MeteorDemod/build
+  when: meteor_demod_installed.rc != 0
+
+- name: Make MeteorDemod
+  command: make -j4
+  args:
+    chdir: ~/MeteorDemod/build
+  when: meteor_demod_installed.rc != 0
+
+- name: Install MeteorDemod
+  command: make install
+  args:
+    chdir: ~/MeteorDemod/build
+  when: meteor_demod_installed.rc != 0
+
+- name: Set ownership of configuration directory
+  command: chown -R your_username:your_username ~/.config/meteordemod
+  when: meteor_demod_installed.rc != 0
+
+- name: Clean up
+  file:
+    path: ~/MeteorDemod
+    state: absent
+  when: meteor_demod_installed.rc != 0
+
 - name: Installing SatDump
   become: yes
   apt:
