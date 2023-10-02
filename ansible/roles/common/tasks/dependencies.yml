@@ -36,22 +36,17 @@
       - certbot
       - zlib1g-dev
       - libsqlite3-dev
-
-- name: Installing predict on computers
-  become: yes
-  apt:
-    deb: "{{ noaa_home }}/software/predict_2.2.3-4-b2_amd64.deb"
-    state: present
-    update_cache: no
-  when: system_architecture == 'amd64'
-
-- name: Installing predict on Raspberry Pi
-  become: yes
-  apt:
-    deb: "{{ noaa_home }}/software/predict_2.2.5+dfsg.1-1_armhf.deb"
-    state: present
-    update_cache: no
-  when: system_architecture == 'armhf'
+      - python3-dev
+      - python3-pip
+      - cmake
+      - build-essential
+      - pkg-config
+      - git
+      - libatlas-base-dev
+      - liblapacke-dev
+      - gfortran
+      - libopencv-dev
+      - python3-opencv
 
 - name: Ensure pip3 is installed
   become: yes
@@ -77,6 +72,22 @@
     state: present
     executable: pip3
 
+- name: Installing predict on computers
+  become: yes
+  apt:
+    deb: "{{ noaa_home }}/software/predict_2.2.3-4-b2_amd64.deb"
+    state: present
+    update_cache: no
+  when: system_architecture == 'amd64'
+
+- name: Installing predict on Raspberry Pi
+  become: yes
+  apt:
+    deb: "{{ noaa_home }}/software/predict_2.2.5+dfsg.1-1_armhf.deb"
+    state: present
+    update_cache: no
+  when: system_architecture == 'armhf'
+  
 - name: Installing WXtoImg
   become: yes
   apt:
@@ -90,6 +101,66 @@
 #    deb: "https://github.com/Digitelektro/MeteorDemod/releases/download/2.5.6-beta/meteordemod_2.5.6_{{ system_architecture }}.deb"
 #    state: present
 #    update_cache: no
+
+- name: Check if MeteorDemod is installed
+  stat:
+    path: /usr/local/bin/meteordemod
+  register: meteor_demod_installed
+  changed_when: false
+
+- name: Clone MeteorDemod repository if not installed
+  git:
+    repo: https://github.com/Digitelektro/MeteorDemod.git
+    dest: /home/{{ target_user }}/MeteorDemod
+    version: beta
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
+  ignore_errors: yes
+
+- name: Update MeteorDemod submodules
+  command: git submodule update --init --recursive
+  args:
+    chdir: /home/{{ target_user }}/MeteorDemod
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
+
+- name: Create build directory
+  file:
+    path: /home/{{ target_user }}/MeteorDemod/build
+    state: directory
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
+
+- name: Build MeteorDemod
+  command: cmake ../
+  args:
+    chdir: /home/{{ target_user }}/MeteorDemod/build
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
+
+- name: Make MeteorDemod
+  command: make -j4
+  args:
+    chdir: /home/{{ target_user }}/MeteorDemod/build
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
+
+- name: Install MeteorDemod
+  become: yes
+  command: make install
+  args:
+    chdir: /home/{{ target_user }}/MeteorDemod/build
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
+
+- name: Set ownership of configuration directory
+  become: yes
+  file:
+    path: /home/{{ target_user }}/.config/meteordemod
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    recurse: yes
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
+
+- name: Clean up
+  file:
+    path: /home/{{ target_user }}/MeteorDemod
+    state: absent
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
 
 - name: Installing SatDump
   become: yes
