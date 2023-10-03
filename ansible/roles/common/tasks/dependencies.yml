@@ -13,6 +13,8 @@
       - gmic
       - gnuradio
       - gr-osmosdr
+      - airspy
+      - hackrf
       - imagemagick
       - wkhtmltopdf
       - jq

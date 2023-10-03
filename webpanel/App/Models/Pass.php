@@ -10,16 +10,19 @@ class Pass extends \Lib\Model {
   public function getList() {
     $today = strtotime(date('d.m.Y.', time()));
     $query = $this->db_conn->query("SELECT sat_name,
-                                           is_active,
-                                           pass_start,
-                                           pass_end,
-                                           max_elev,
-                                           pass_start_azimuth,
-                                           azimuth_at_max,
-                                           direction
+                                           predict_passes.is_active,
+                                           predict_passes.pass_start,
+                                           predict_passes.pass_end,
+                                           predict_passes.max_elev,
+                                           predict_passes.pass_start_azimuth,
+                                           predict_passes.azimuth_at_max,
+                                           predict_passes.direction,
+                                           decoded_passes.id
                                     FROM predict_passes
-                                    WHERE (pass_start > $today)
-                                    ORDER BY pass_start ASC;");
+                                    LEFT JOIN decoded_passes
+                                      ON predict_passes.pass_start = decoded_passes.pass_start
+                                    WHERE (predict_passes.pass_start > $today)
+                                    ORDER BY predict_passes.pass_start ASC;");
 
     $passes = [];
     $i = 0;
