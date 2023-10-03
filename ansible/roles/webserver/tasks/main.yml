@@ -29,11 +29,6 @@
     state: present
   when: raspbian_version.stdout == 'buster'
 
-- name: install the package, force upgrade
-  pip: 
-    name: numpy
-    extra_args: --upgrade
-
 - name: install UFW firewall
   become: yes
   apt:
@@ -127,6 +122,15 @@
   template:
     src: Config.php.j2
     dest: "{{ web_home }}/Config/Config.php"
+    owner: "{{ target_user }}"
+    group: www-data
+    mode: 0644
+
+- name: php AdminController file
+  become: yes
+  template:
+    src: AdminController.php.j2
+    dest: "/home/{{ target_user }}/raspberry-noaa-v2/webpanel/App/Controllers/AdminController.php"
     owner: "{{ target_user }}"
     group: www-data
     mode: 0644
