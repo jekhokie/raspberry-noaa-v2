@@ -28,7 +28,7 @@
                 "type": "bool",
                 "value": false,
                 "name": "DC Blocking",
-                "description": "DC Blocking allows removing a DC Spike / Offset present on some SDRs.\n A classic example would beapt the HackRF which often has this sort of issue."
+                "description": "DC Blocking allows removing a DC Spike / Offset present on some SDRs.\n A classic example would be the HackRF which often has this sort of issue."
             },
             "iq_swap": {
                 "type": "bool",
@@ -230,98 +230,101 @@
     },
     // TLE settings
     "tle_settings": {
+        "urls_to_fetch": [
+            "http://celestrak.org/NORAD/elements/active.txt" // Most sats
+        ],
         "url_template": "http://www.celestrak.org/NORAD/elements/gp.php?CATNR=%NORAD%",
         "tles_to_fetch": [
             29499, // MetOp-A
-            38771, // MetOp-B
-            43689, // MetOp-C
-            28054, // DMSP-F16
-            29522, // DMSP-F17
-            35951, // DMSP-F18
-            25338, // NOAA-15
-            28654, // NOAA-18
-            33591, // NOAA-19
-            32958, // FengYun-3A
-            37214, // FengYun-3B
-            39260, // FengYun-3C
-            43010, // FengYun-3D
-            49008, // FengYun-3E
-            57490, // FengYun-3F
-            56232, // FengYun-3G
+            // 38771, // MetOp-B
+            // 43689, // MetOp-C
+            // 28054, // DMSP-F16
+            // 29522, // DMSP-F17
+            // 35951, // DMSP-F18
+            // 25338, // NOAA-15
+            // 28654, // NOAA-18
+            // 33591, // NOAA-19
+            // 32958, // FengYun-3A
+            // 37214, // FengYun-3B
+            // 39260, // FengYun-3C
+            // 43010, // FengYun-3D
+            // 49008, // FengYun-3E
+            // 57490, // FengYun-3F
+            // 56232, // FengYun-3G
             35865, // METEOR-M1
-            40069, // METEOR-M2
-            44387, // METEOR-M2-2
-            57166, // METEOR-M2-3
-            25994, // Terra
-            27424, // Aqua
-            28376, // Aura
-            37849, // Suomi-NPP
-            43013, // JPSS-1
-            54234, // JPSS-2
-            41240, // Jason-3
-            43662, // CFOSAT-1
-            27640, // Coriolis
-            26958, // Proba-1
-            36037, // Proba-2
-            39159, // Proba-V
-            29107, // CloudSat
-            25544, // ISS (Zarya)
-            48274, // CSS (Tianhe-1)
-            38337, // GCOM-W1
-            43065, // GCOM-C1
-            29155, // GOES-13 (EWS-G1)
-            35491, // GOES-14
-            36411, // GOES-15 (EWS-G2)
-            41866, // GOES-16
-            43226, // GOES-17
-            51850, // GOES-18
-            47719, // Arktika-M 1
-            41105, // Elektro-L 2
-            44903, // Elektro-L 3
-            55506, // Elektro-L 4
-            40367, // FENGYUN-2G
-            43491, // FENGYUN-2H
-            41882, // FENGYUN-4A
-            48808, // FENGYUN-4B
-            43823, // GK-2A
+            // 40069, // METEOR-M2
+            // 44387, // METEOR-M2-2
+            // 57166, // METEOR-M2-3
+            // 25994, // Terra
+            // 27424, // Aqua
+            // 28376, // Aura
+            // 37849, // Suomi-NPP
+            // 43013, // JPSS-1
+            // 54234, // JPSS-2
+            // 41240, // Jason-3
+            // 43662, // CFOSAT-1
+            // 27640, // Coriolis
+            // 26958, // Proba-1
+            // 36037, // Proba-2
+            // 39159, // Proba-V
+            // 29107, // CloudSat
+            // 25544, // ISS (Zarya)
+            // 48274, // CSS (Tianhe-1)
+            // 38337, // GCOM-W1
+            // 43065, // GCOM-C1
+            // 29155, // GOES-13 (EWS-G1)
+            // 35491, // GOES-14
+            // 36411, // GOES-15 (EWS-G2)
+            // 41866, // GOES-16
+            // 43226, // GOES-17
+            // 51850, // GOES-18
+            // 47719, // Arktika-M 1
+            // 41105, // Elektro-L 2
+            // 44903, // Elektro-L 3
+            // 55506, // Elektro-L 4
+            // 40367, // FENGYUN-2G
+            // 43491, // FENGYUN-2H
+            // 41882, // FENGYUN-4A
+            // 48808, // FENGYUN-4B
+            // 43823, // GK-2A
             31304, // AIM
-            53807, // BlueWalker-3
-            53323, // COSMOS-2558
-            42719, // COSMOS-2518
-            29479, // HINODE
-            39197, // IRIS
-            44406, // Lucky-7
-            54227, // MATS
-            35931, // Oceansat-2
-            54361, // Oceansat-3 (EOS-6)
-            39086, // SARAL
-            44876, // ANGELS
-            54023, // OTB-3 (Gazelle)
-            29273, // Syracuse-3B
-            27858, // SciSat-1
-            37388, // YouthSat
-            46984, // Sentinel-6
-            48900, // TUBIN
-            57172, // UmKA-1 (RS40S)
-            56211, // Inspire-Sat 7
-            40376, // SMAP
-            44874, // CHEOPS
-            36036, // SMOS
-            39089, // NEOSSat
-            42920, // Formosat-5
-            44878, // OPS-SAT
-            54754, // SWOT
-            43215, // PAZ
-            29108, // Calipso
-            43476, // Grace-FO 1
-            43477, // Grace-FO 2
-            36508, // Cryosat-2
-            44072, // PRISMA
-            39084, // LandSat-8
-            49260, // LandSat-9
-            41857, // Yunhai 1
-            44547, // Yunhai 1-02
-            53877 // Yunhai 1-03
+            // 53807, // BlueWalker-3
+            // 53323, // COSMOS-2558
+            // 42719, // COSMOS-2518
+            // 29479, // HINODE
+            // 39197, // IRIS
+            // 44406, // Lucky-7
+            // 54227, // MATS
+            // 35931, // Oceansat-2
+            // 54361, // Oceansat-3 (EOS-6)
+            // 39086, // SARAL
+            // 44876, // ANGELS
+            // 54023, // OTB-3 (Gazelle)
+            // 29273, // Syracuse-3B
+            // 27858, // SciSat-1
+            // 37388, // YouthSat
+            // 46984, // Sentinel-6
+            // 48900, // TUBIN
+            // 57172, // UmKA-1 (RS40S)
+            56211 // Inspire-Sat 7
+            // 40376, // SMAP
+            // 44874, // CHEOPS
+            // 36036, // SMOS
+            // 39089, // NEOSSat
+            // 42920, // Formosat-5
+            // 44878, // OPS-SAT
+            // 54754, // SWOT
+            // 43215, // PAZ
+            // 29108, // Calipso
+            // 43476, // Grace-FO 1
+            // 43477, // Grace-FO 2
+            // 36508, // Cryosat-2
+            // 44072, // PRISMA
+            // 39084, // LandSat-8
+            // 49260, // LandSat-9
+            // 41857, // Yunhai 1
+            // 44547, // Yunhai 1-02
+            // 53877 // Yunhai 1-03
         ]
     },
     // Advanced user settings
@@ -393,7 +396,6 @@
                         "project": {
                             "width": 4096,
                             "height": 2048,
-                            "old_algo": true,
                             "draw_map": true,
                             "individual_equalize": true,
                             "config": {
@@ -436,7 +438,6 @@
                         "project": {
                             "width": 4096,
                             "height": 2048,
-                            "old_algo": true,
                             "draw_map": true,
                             "config": {
                                 "type": "equirectangular"
@@ -532,7 +533,6 @@
                     "width": 4096,
                     "height": 2048,
                     "individual_equalize": true,
-                    "old_algo": true,
                     "draw_map": true,
                     "config": {
                         "type": "equirectangular"
@@ -706,7 +706,6 @@
                         "project": {
                             "width": 4096,
                             "height": 2048,
-                            "old_algo": true,
                             "draw_map": true,
                             "individual_equalize": true,
                             "config": {
@@ -721,7 +720,6 @@
                         "project": {
                             "width": 4096,
                             "height": 2048,
-                            "old_algo": true,
                             "draw_map": true,
                             "individual_equalize": true,
                             "config": {
@@ -736,7 +734,6 @@
                         "project": {
                             "width": 4096,
                             "height": 2048,
-                            "old_algo": true,
                             "draw_map": true,
                             "config": {
                                 "type": "equirectangular"
@@ -750,7 +747,6 @@
                         "project": {
                             "width": 4096,
                             "height": 2048,
-                            "old_algo": true,
                             "draw_map": true,
                             "individual_equalize": true,
                             "config": {
@@ -774,7 +770,6 @@
                     "width": 4096,
                     "height": 2048,
                     "individual_equalize": true,
-                    "old_algo": true,
                     "draw_map": true,
                     "config": {
                         "type": "equirectangular"
@@ -797,7 +792,6 @@
                         "project": {
                             "width": 2048,
                             "height": 2048,
-                            "old_algo": false,
                             "draw_map": {{ meteor_draw_map_overlay|lower }},
                             "map_overlay_colors": [
                                 1,
@@ -825,7 +819,6 @@
                         "project": {
                             "width": 2048,
                             "height": 2048,
-                            "old_algo": false,
                             "draw_map": {{ meteor_draw_map_overlay|lower }},
                             "map_overlay_colors": [
                                 1,
@@ -864,7 +857,6 @@
                         "project": {
                             "width": 2048,
                             "height": 2048,
-                            "old_algo": false,
                             "draw_map": {{ meteor_draw_map_overlay|lower }},
                             "map_overlay_colors": [
                                 1,
@@ -898,7 +890,6 @@
                         "project": {
                             "width": 2048,
                             "height": 2048,
-                            "old_algo": false,
                             "draw_map": true,
                             "equalize": {{ meteor_draw_map_overlay|lower }},
                             "map_overlay_colors": [
@@ -928,7 +919,6 @@
                         "project": {
                             "width": 2048,
                             "height": 2048,
-                            "old_algo": false,
                             "draw_map": {{ meteor_draw_map_overlay|lower }},
                             "map_overlay_colors": [
                                 1,
@@ -1012,7 +1002,6 @@
                         "project": {
                             "width": 4096,
                             "height": 2048,
-                            "old_algo": true,
                             "draw_map": true,
                             "individual_equalize": true,
                             "config": {
@@ -1020,14 +1009,13 @@
                             }
                         }
                     },
-                    "143": {
+                    "True Color": {
                         "equation": "ch1, ch4, ch3",
                         "white_balance": true,
                         "geo_correct": true,
                         "project": {
                             "width": 4096,
                             "height": 2048,
-                            "old_algo": true,
                             "draw_map": true,
                             "individual_equalize": true,
                             "config": {
@@ -1112,7 +1100,7 @@
                 "handler": "image_handler",
                 "name": "MERSI-3",
                 "rgb_composites": {
-                    "321": {
+                    "True Color": {
                         "equation": "ch3, ch2, ch1",
                         "individual_equalize": true,
                         "geo_correct": true
@@ -1135,7 +1123,7 @@
                         "equation": "ch4, ch4, ch1",
                         "geo_correct": true
                     },
-                    "5 individual_equalized": {
+                    "Thermal Channel": {
                         "equation": "1.0 - ch5",
                         "individual_equalize": true,
                         "geo_correct": true
@@ -1209,7 +1197,7 @@
                         "individual_equalize": true
                     },
                     "Rainfall": {
-                        "equation": "((1-(cch5-cch4))-0.9)^0.25",
+                        "equation": "((1-(cch5-cch4))-0.95)^0.25",
                         "apply_lut": true
                     }
                 },
@@ -1218,7 +1206,6 @@
                     "width": 2048,
                     "height": 1024,
                     "individual_equalize": true,
-                    "old_algo": true,
                     "draw_map": true,
                     "config": {
                         "type": "equirectangular"
@@ -1243,7 +1230,6 @@
                     "width": 2048,
                     "height": 1024,
                     "individual_equalize": true,
-                    "old_algo": true,
                     "draw_map": true,
                     "config": {
                         "type": "equirectangular"
@@ -1254,8 +1240,8 @@
                 "handler": "image_handler",
                 "name": "MWHS-2",
                 "rgb_composites": {
-                    "MWHS 421": {
-                        "equation": "ch8, ch12, ch8",
+                    "MWHS False Color": {
+                        "equation": "1-ch8, ch12, ch8",
                         "individual_equalize": true
                     },
                     "ATMS False Color": {
@@ -1276,7 +1262,6 @@
                     "width": 2048,
                     "height": 1024,
                     "individual_equalize": true,
-                    "old_algo": true,
                     "draw_map": true,
                     "config": {
                         "type": "equirectangular"
@@ -1292,7 +1277,6 @@
                     "width": 2048,
                     "height": 1024,
                     "individual_equalize": true,
-                    "old_algo": true,
                     "draw_map": true,
                     "config": {
                         "type": "equirectangular"
@@ -1322,17 +1306,10 @@
                         "equation": "ch7",
                         "individual_equalize": true,
                         "apply_lut": true
-                    }
-                },
-                "project_channels": {
-                    "channels": "all",
-                    "width": 2048,
-                    "height": 1024,
-                    "individual_equalize": true,
-                    "old_algo": true,
-                    "draw_map": true,
-                    "config": {
-                        "type": "equirectangular"
+                    },
+                    "AMSU False Color": {
+                        "equation": "ch4, ch3, ch1",
+                        "individual_equalize": true
                     }
                 }
             },
@@ -1345,7 +1322,6 @@
                     "width": 2048,
                     "height": 1024,
                     "individual_equalize": true,
-                    "old_algo": true,
                     "draw_map": true,
                     "config": {
                         "type": "equirectangular"
@@ -1369,17 +1345,6 @@
                         "equation": "1-((ch4+ch3)/2)",
                         "individual_equalize": true,
                         "apply_lut": true
-                    }
-                },
-                "project_channels": {
-                    "channels": "all",
-                    "width": 2048,
-                    "height": 1024,
-                    "individual_equalize": true,
-                    "old_algo": true,
-                    "draw_map": true,
-                    "config": {
-                        "type": "equirectangular"
                     }
                 }
             },
@@ -1409,17 +1374,6 @@
                         "individual_equalize": true,
                         "apply_lut": true
                     }
-                },
-                "project_channels": {
-                    "channels": "all",
-                    "width": 2048,
-                    "height": 1024,
-                    "individual_equalize": true,
-                    "old_algo": true,
-                    "draw_map": true,
-                    "config": {
-                        "type": "equirectangular"
-                    }
                 }
             },
             "mwri2": {
@@ -1439,17 +1393,6 @@
                         "equation": "1-((ch4+ch3)/2)",
                         "individual_equalize": true,
                         "apply_lut": true
-                    }
-                },
-                "project_channels": {
-                    "channels": "all",
-                    "width": 2048,
-                    "height": 1024,
-                    "individual_equalize": true,
-                    "old_algo": true,
-                    "draw_map": true,
-                    "config": {
-                        "type": "equirectangular"
                     }
                 }
             },
@@ -1498,24 +1441,13 @@
                         "individual_equalize": true,
                         "apply_lut": true
                     }
-                },
-                "project_channels": {
-                    "channels": "all",
-                    "width": 2048,
-                    "height": 1024,
-                    "individual_equalize": true,
-                    "old_algo": true,
-                    "draw_map": true,
-                    "config": {
-                        "type": "equirectangular"
-                    }
                 }
             },
             "amsu_a": {
                 "handler": "image_handler",
                 "name": "AMSU-A",
                 "rgb_composites": {
-                    "543": {
+                    "AMSU False Color": {
                         "equation": "ch5, ch4, ch3",
                         "individual_equalize": true
                     },
@@ -1544,30 +1476,16 @@
                         "individual_equalize": true,
                         "apply_lut": true
                     }
-                },
-                "project_channels": {
-                    "channels": "all",
-                    "width": 2048,
-                    "height": 1024,
-                    "individual_equalize": true,
-                    "old_algo": true,
-                    "draw_map": true,
-                    "config": {
-                        "type": "equirectangular"
-                    }
                 }
             },
             "hirs": {
                 "handler": "image_handler",
                 "name": "HIRS",
                 "rgb_composites": {
-                    "421": {
-                        "equation": "ch4, ch2, ch1",
-                        "individual_equalize": true
-                    },
-                    "543": {
+                    "HIRS False Color": {
                         "equation": "ch5, ch4, ch3",
-                        "individual_equalize": true
+                        "individual_equalize": true,
+                        "white_balance": true
                     },
                     "Clouds Only (N2O Sounding)": {
                         "equation": "ch14, ch13, 1",
@@ -1632,8 +1550,12 @@
                         "equation": "ch8, ch4, ch3",
                         "individual_equalize": true
                     },
-                    "Soil Moisture (WIP)": {
+                    "Soil Moisture": {
                         "equation": "ch14,ch13,ch12",
+                        "individual_equalize": true
+                    },
+                    "MTVZA False Color (WIP)": {
+                        "equation": "ch17,1-ch16,1-ch15",
                         "individual_equalize": true
                     },
                     "Test1": {
@@ -1643,7 +1565,6 @@
                         "project": {
                             "width": 2048,
                             "height": 1024,
-                            "old_algo": true,
                             "draw_map": true,
                             "config": {
                                 "type": "equirectangular"
@@ -1652,11 +1573,10 @@
                     },
                     "Test2": {
                         "equation": "1-ch33,1-ch34,1-ch35",
-                        "individual_individual_equalize": true,
+                        "individual_equalize": true,
                         "project": {
                             "width": 2048,
                             "height": 1024,
-                            "old_algo": true,
                             "draw_map": true,
                             "config": {
                                 "type": "equirectangular"
@@ -1718,7 +1638,7 @@
                         "equation": "1-((ch6259+ch6260+ch6261+ch6262)/4), 1-((ch6171+ch6172+ch6173+ch6174)/4), 1",
                         "individual_equalize": true
                     },
-                    "HIRS RGB543": {
+                    "HIRS False Color": {
                         "equation": "(ch284+ch283+ch285+ch286+ch287)/5, (ch230+ch231+ch232+ch233+ch234)/5, (ch180+ch181+ch182)/3",
                         "individual_equalize": true
                     }
@@ -1728,14 +1648,13 @@
                 "handler": "image_handler",
                 "name": "IASI Imaging",
                 "rgb_composites": {
-                    "Inverted individual_equalized": {
+                    "Imaging Channel": {
                         "equation": "1 - ch1",
                         "individual_equalize": true,
                         "geo_correct": true,
                         "project": {
                             "width": 4096,
                             "height": 2048,
-                            "old_algo": true,
                             "draw_map": true,
                             "individual_equalize": true,
                             "config": {
@@ -1787,13 +1706,12 @@
                 "handler": "image_handler",
                 "name": "ERM",
                 "rgb_composites": {
-                    "1 individual_equalized": {
+                    "Outgoing shortwave IR": {
                         "equation": "ch1",
                         "individual_equalize": true,
                         "project": {
                             "width": 2048,
                             "height": 1024,
-                            "old_algo": true,
                             "draw_map": true,
                             "individual_equalize": true,
                             "config": {
@@ -1867,7 +1785,7 @@
                         "equation": "1-chir, chvis, chvis",
                         "individual_equalize": true
                     },
-                    "individual_equalized IR": {
+                    "Thermal Channel": {
                         "equation": "1-chir",
                         "individual_equalize": true
                     }
