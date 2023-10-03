@@ -30,6 +30,7 @@
   <table class="table table-bordered table-sm table-striped" id="passes">
     <thead class="thead-dark">
       <tr class="text-center">
+        <th scope="col">&nbsp;</th>
         <th scope="col">{{ lang['satellite'] }}</th>
         <th scope="col">{{ lang['pass_start'] }}</th>
         <th scope="col">{{ lang['pass_end'] }}</th>
@@ -45,7 +46,7 @@
 
       {% if pass.list|length <= 0 %}
         <tr>
-          <td colspan="6" class="no-passes">0 {{ lang['passes'] }}</td>
+          <td colspan="7" class="no-passes">0 {{ lang['passes'] }}</td>
         </tr>
       {% else %}
         {% for pass in pass.list %}
@@ -56,14 +57,37 @@
 
           {% if last_date < cur_date %}
             <tr class="date-separator">
-              <td colspan="6">{{ cur_date|date(constant('Config\\Config::PASSES_DATE_FORMAT')) }}</td>
+              <td colspan="7">{{ cur_date|date(constant('Config\\Config::PASSES_DATE_FORMAT')) }}</td>
             </tr>
             {% set last_date = cur_date %}
           {% endif %}
 
           <tr{% if pass.is_active == false or pass_end_ms < now_ms %} class="inactive"{% endif %}>
-            <td{% if prev_pass_end >= pass.pass_start %} class="conflict"{% endif %}>
-              {% if prev_pass_end >= pass.pass_start %}<i class="fa fa-exclamation-triangle conflict-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['conflicting_pass'] }}"></i>{% endif %}
+          
+            <td class=
+              {% if prev_pass_end >= pass.pass_start %} 
+                "text-center conflict"
+              {% elseif now_ms > pass.pass_start and now_ms < pass.pass_end %} 
+                "text-center running" 
+              {% elseif now_ms < pass.pass_start %}
+                "text-center next" 
+              {% else %}
+                "text-center no_capture"
+              {% endif %}
+                >
+              {% if pass.id %}
+                <i class="fa fa-check" data-toggle="tooltip" data-placement="right" title="{{ lang['completed_pass'] }}"></i>
+              {% elseif now_ms > pass.pass_start and now_ms < pass.pass_end %}
+                <i class="fa fa-spinner running-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['running_pass'] }}"></i>
+              {% elseif prev_pass_end >= pass.pass_start %}
+                <i class="fa fa-exclamation-triangle conflict-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['conflicting_pass'] }}"></i>
+              {% elseif now_ms < pass.pass_start %}
+                <i class="fa fa-hourglass-start next-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['next_pass'] }}"></i>
+              {% else %}  
+                <i class="fa fa-times no_caption-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['no_capture_pass'] }}"></i>
+              {% endif %}
+            </td>
+            <td>
               {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
                 <a href='https://satvis.space/?elements=Point,Label,SensorCone&layers=ArcGis&terrain=None&tags=Weather&sat={{ pass.sat_name }}&gs={{ constant('Config\\Config::BASE_STATION_LAT') }},{{ constant('Config\\Config::BASE_STATION_LON') }}' target='satvis'>{{ pass.sat_name }}</a>
               {% else %}
