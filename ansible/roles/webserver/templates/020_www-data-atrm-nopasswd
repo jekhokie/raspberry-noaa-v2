@@ -1,0 +1,1 @@
+%www-data ALL=({{ target_user }}) NOPASSWD: /usr/bin/atrm
