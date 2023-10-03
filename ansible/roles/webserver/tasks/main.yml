@@ -126,15 +126,6 @@
     group: www-data
     mode: 0644
 
-- name: php AdminController file
-  become: yes
-  template:
-    src: AdminController.php.j2
-    dest: "/home/{{ target_user }}/raspberry-noaa-v2/webpanel/App/Controllers/AdminController.php"
-    owner: "{{ target_user }}"
-    group: www-data
-    mode: 0644
-
 - name: nginx non-tls config file
   become: yes
   template:
