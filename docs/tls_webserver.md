@@ -20,16 +20,19 @@ To install TLS certificate on your website, first make sure you have a public IP
 Then, open `settings.yml` file and set:
 ```bash
 enable_non_tls: true
-enable_tls: false```
+enable_tls: false
+```
 
 After that, run the `./install_and_upgrade.sh` script. Then, run this command while replacing `YOUR_DOMAIN_NAME` with the domain name pointing to your IP address of your website:
 
 ```bash
-sudo certbot certonly --webroot -w /var/www/wx-new/public -d YOUR_DOMAIN_NAME```
+sudo certbot certonly --webroot -w /var/www/wx-new/public -d YOUR_DOMAIN_NAME
+```
 
 After that, open `settings.yml` file and set:
 ```bash
-enable_tls: true```
+enable_tls: true
+```
 ***NOTE***: You can optionally set `enable_non_tls: false` as the TLS website will be running.
 After that, close port 80 on your router and run the install script. TLS certificates will be updated automatically.
 That's it!
