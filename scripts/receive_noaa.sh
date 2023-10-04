@@ -70,6 +70,11 @@ AUDIO_FILE_BASE="${NOAA_AUDIO_OUTPUT}/${FILENAME_BASE}"
 IMAGE_FILE_BASE="${IMAGE_OUTPUT}/${FILENAME_BASE}"
 IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 
+# create PID file
+PID_FILE=${NOAA_HOME}/tmp/${EPOCH_START}_NOAA${SAT_NUMBER}.pid
+touch ${PID_FILE}
+log "Created PID file ${PID_FILE}" "INFO"
+
 # check if there is enough free memory to store pass on RAM
 FREE_MEMORY=$(free -m | grep Mem | awk '{print $7}')
 if [ "$FREE_MEMORY" -lt $NOAA_MEMORY_THRESHOLD ]; then
@@ -441,4 +446,6 @@ fi
 TIMER_END=$(date '+%s')
 DIFF=$(($TIMER_END - $TIMER_START))
 PROC_TIME=$(date -ud "@$DIFF" +'%H:%M.%S')
+rm ${PID_FILE}
+log "Deleted PID file ${PID_FILE}" "INFO"
 log "Total processing time: ${PROC_TIME}" "INFO"
