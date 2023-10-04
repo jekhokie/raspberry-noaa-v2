@@ -33,9 +33,9 @@ After that, open `settings.yml` file and set:
 ```bash
 enable_tls: true
 ```
-***NOTE***: You can optionally set `enable_non_tls: false` as the TLS website will be running.
 After that, close port 80 on your router and run the install script. TLS certificates will be updated automatically.
 That's it!
+***NOTE***: You can optionally set `enable_non_tls: false` as the TLS website will be running.
 
 ## Password Protecting Admin Page
 
