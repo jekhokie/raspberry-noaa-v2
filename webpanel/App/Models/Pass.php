@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use Config\Config;
 
 class Pass extends \Lib\Model {
   public $travel_direction;
@@ -17,7 +18,8 @@ class Pass extends \Lib\Model {
                                            predict_passes.pass_start_azimuth,
                                            predict_passes.azimuth_at_max,
                                            predict_passes.direction,
-                                           decoded_passes.id
+                                           decoded_passes.id,
+                                           predict_passes.is_active as has_pidfile
                                     FROM predict_passes
                                     LEFT JOIN decoded_passes
                                       ON predict_passes.pass_start = decoded_passes.pass_start
@@ -27,6 +29,11 @@ class Pass extends \Lib\Model {
     $passes = [];
     $i = 0;
     while ($row = $query->fetchArray()) {
+      # check, if image processing is in progress and we have a pid file
+      $sat_name=str_replace(" ", "", $row['sat_name'] );
+      $pid_filepath=str_replace("/db/panel.db","/tmp/",Config::DB_FILE);
+      $pid_filename=$pid_filepath.$row['pass_start']."_".$sat_name.".pid";
+      $row['has_pidfile']=file_exists($pid_filename);
       $passes[$i] = $row;
       $i++;
     }
