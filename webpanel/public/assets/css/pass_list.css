@@ -14,11 +14,15 @@ table#passes tr td.conflict i.conflict-icon {
 }
 
 table#passes tr td.running i.running-icon {
-  color: #28a745;
+  color: #f55151;
 }
 
 table#passes tr td.next i.next-icon {
   color: #ffe082;
+}
+
+table#passes tr td.in_progress i.in_progress-icon {
+  color: #28a745;
 }
 
 table#passes tr td.no_capture i.no_capture-icon {

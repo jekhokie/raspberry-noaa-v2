@@ -69,6 +69,8 @@
                 "text-center conflict"
               {% elseif now_ms > pass.pass_start and now_ms < pass.pass_end %} 
                 "text-center running" 
+              {% elseif pass.has_pidfile %}
+                "text-center in_progress"
               {% elseif now_ms < pass.pass_start %}
                 "text-center next" 
               {% else %}
@@ -78,7 +80,9 @@
               {% if pass.id %}
                 <i class="fa fa-check" data-toggle="tooltip" data-placement="right" title="{{ lang['completed_pass'] }}"></i>
               {% elseif now_ms > pass.pass_start and now_ms < pass.pass_end %}
-                <i class="fa fa-spinner running-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['running_pass'] }}"></i>
+                <i class="fa fa-circle running-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['running_pass'] }}"></i>
+              {% elseif pass.has_pidfile %}
+                <i class="fa fa-spinner in_progress-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['in_progress'] }}"></i>
               {% elseif prev_pass_end >= pass.pass_start %}
                 <i class="fa fa-exclamation-triangle conflict-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['conflicting_pass'] }}"></i>
               {% elseif now_ms < pass.pass_start %}
