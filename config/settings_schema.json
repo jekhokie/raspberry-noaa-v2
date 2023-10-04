@@ -180,6 +180,8 @@
       "type": "string",
       "required": "false"
     },
+    "pause_services":             { "type": "string" },
+    "pause_services_restart_immediately": { "type": "boolean" },
     "enable_email_schedule_push": { "type": "boolean" },
     "enable_discord_push":        { "type": "boolean" },
     "discord_noaa_webhook_url":        { "type": "string" },
@@ -285,6 +287,8 @@
     "delete_oldest_n",
     "delete_older_than_n",
     "disable_wifi_power_mgmt",
+    "pause_services",
+    "pause_services_restart_immediately",
     "enable_email_push",
     "email_push_address",
     "enable_email_schedule_push",

@@ -98,6 +98,12 @@ else
     bias_tee_option=""
 fi
 
+# if there are services we have to stop during recording, we have to stop them now
+for svc in ${PAUSE_SERVICES}; do
+  log "Stopping service $svc" "INFO"
+  sudo service $svc stop
+done
+
 # check if there is enough free memory to store pass on RAM
 FREE_MEMORY=$(free -m | grep Mem | awk '{print $7}')
 if [ "$FREE_MEMORY" -lt $METEOR_M2_MEMORY_THRESHOLD ]; then
@@ -184,6 +190,16 @@ fi
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+# if there are services we have to stop during recording, we can restart them now, if they have to start immediately after recording / capturing
+if [[ "${PAUSE_SERVICES_RESTART_IMMEDIATELY}" == "true" ]]; then
+  for svc in ${PAUSE_SERVICES}; do
+    log "Starting service (immediately after recording) $svc" "INFO"
+    sudo service $svc start
+  done
+fi
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 
 if [[ "$METEOR_RECEIVER" == "rtl_fm" || "$METEOR_RECEIVER" == "gnuradio" || "$METEOR_RECEIVER" == "satdump_record" ]]; then
   if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
     log "Producing spectrogram" "INFO"
@@ -450,6 +466,18 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
 else
   log "No images found, not pushing anything" "INFO"
 fi
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# if there are services we have to stop during recording, we can restart them now, if they have to start at the end of processing
+if [[ "${PAUSE_SERVICES_RESTART_IMMEDIATELY}" == "false" ]]; then
+  for svc in ${PAUSE_SERVICES}; do
+    log "Starting service (at the end of processing) $svc" "INFO"
+    sudo service $svc start
+  done
+fi
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # calculate and report total time for capture
 TIMER_END=$(date '+%s')
