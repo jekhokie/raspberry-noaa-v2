@@ -168,6 +168,7 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 elif [ "$METEOR_RECEIVER" == "satdump_record" ]; then
   log "Recording ${NOAA_HOME} via $receiver at ${METEOR_M2_3_FREQ} MHz using SatDump record " "INFO"
   $SATDUMP record "${RAMFS_AUDIO_BASE}" --source $receiver --baseband_format w16 --samplerate $samplerate --decimation $decimation --frequency "${METEOR_M2_3_FREQ}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+  rm satdump.logs dataset.json
 elif [ "$METEOR_RECEIVER" == "satdump_live" ]; then
   log "Starting SatDump live recording and decoding" "INFO"
 

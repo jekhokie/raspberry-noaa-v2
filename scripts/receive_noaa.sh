@@ -169,9 +169,9 @@ elif [ "$NOAA_RECEIVER" == "gnuradio" ]; then
   ffmpeg -hide_banner -loglevel error -i "$3" -c:a copy "${3%.*}_tmp.wav" && ffmpeg -i "${3%.*}_tmp.wav" -c:a copy -y "$3" && rm "${3%.*}_tmp.wav"
 elif [ "$NOAA_RECEIVER" == "satdump_record" ]; then
   log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump record " "INFO"
-  $SATDUMP record "${RAMFS_AUDIO_BASE}" --source $receiver --baseband_format w16 --samplerate $samplerate --decimation $decimation --frequency "${NOAA_FREQUENCY}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
-  #TO BE ADDED: "${RAMFS_AUDIO_BASE}.wav" is a baseband file and needs to be demodulated first to FM audio
-  rm satdump.logs product.cbor dataset.json
+  $SATDUMP record "${RAMFS_AUDIO_BASE}-baseband" --source $receiver --baseband_format w16 --samplerate $samplerate --decimation $decimation --frequency "${NOAA_FREQUENCY}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+  "$NOAA_HOME/scripts/audio_processors/FM_baseband_demodulator.py" "${RAMFS_AUDIO_BASE}-baseband.wav" "${RAMFS_AUDIO_BASE}.wav"
+  rm satdump.logs product.cbor dataset.json "${RAMFS_AUDIO_BASE}-baseband.wav"
 elif [ "$NOAA_RECEIVER" == "satdump_live" ]; then
   log "Starting SatDump recording and live decoding" "INFO"
   $SATDUMP live noaa_apt . --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
