@@ -28,7 +28,7 @@ return array(
   "prev" => "Προηγούμενο",
   "running_pass" => "Λήψη σε εξέλιξη...",
   "satellite" => "Δορυφόρος",
-  "successful_delete_capture" => "Επιτυχής διαγραφής λήψης",
+  "successful_delete_capture" => "Επιτυχής διαγραφή λήψης",
   "successful_delete_pass" => "Επιτυχής διαγραφή περάσματος",
   "travel_direction" => "Κατεύθυνση",
 );
