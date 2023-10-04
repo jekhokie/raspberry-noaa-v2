@@ -399,6 +399,21 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
                       WHERE decoded_passes.id = $pass_id \
                     );" >> $NOAA_LOG 2>&1
 
+
+  # handle Pushover pushing if enabled
+  if [ "${ENABLE_PUSHOVER_PUSH}" == "true" ]; then
+    pushover_push_annotation=""
+    #if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+    #  pushover_push_annotation="Ground Station: ${GROUND_STATION_LOCATION}<br/>"
+    #fi
+    pushover_push_annotation="${pushover_push_annotation}<b>Start: </b>${capture_start}<br/>"
+    pushover_push_annotation="${pushover_push_annotation}<b>Max Elev: </b>${SAT_MAX_ELEVATION}° ${PASS_SIDE}<br/>"
+    #pushover_push_annotation="${pushover_push_annotation}<b>Sun Elevation: </b>${SUN_ELEV}°<br/>"
+    #pushover_push_annotation="${pushover_push_annotation}<b>Gain: </b>${gain} | ${PASS_DIRECTION}<br/>"
+    pushover_push_annotation="${pushover_push_annotation} <a href=${PUSHOVER_LINK_URL}?pass_id=${pass_id}>BROWSER LINK</a>";
+    ${PUSH_PROC_DIR}/push_pushover.sh "${pushover_push_annotation}" "${SAT_NAME}" "$push_file_list"
+  fi
+
   # handle Slack pushing if enabled
   if [ "${ENABLE_SLACK_PUSH}" == "true" ]; then
     ${PUSH_PROC_DIR}/push_slack.sh "${push_annotation} <${SLACK_LINK_URL}?pass_id=${pass_id}>\n" $push_file_list
