@@ -20,7 +20,7 @@
 - name: blacklist MiriSDR modules
   become: yes
   copy:
-    src: /path/to/local/blacklist-msi.conf
+    src: blacklist-msi.conf
     dest: /etc/modprobe.d/blacklist-msi.conf
 
 - name: check if RTL-SDR software is installed
