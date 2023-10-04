@@ -168,6 +168,7 @@ elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
 elif [ "$METEOR_RECEIVER" == "satdump_record" ]; then
   log "Recording ${NOAA_HOME} via $receiver at ${METEOR_M2_3_FREQ} MHz using SatDump record " "INFO"
   $SATDUMP record "${RAMFS_AUDIO_BASE}" --source $receiver --baseband_format w16 --samplerate $samplerate --decimation $decimation --frequency "${METEOR_M2_3_FREQ}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+  rm satdump.logs dataset.json
 elif [ "$METEOR_RECEIVER" == "satdump_live" ]; then
   log "Starting SatDump live recording and decoding" "INFO"
 
@@ -284,7 +285,7 @@ elif [[ "$METEOR_RECEIVER" == "satdump_live" ]]; then
   else
     if [ "$in_mem" == "true" ]; then
       log "Moving CADU files out to the SD card" "INFO"
-      mv meteor_m2-x_lrpt${mode}.cadu "${AUDIO_FILE_BASE}-meteor_m2-x_lrpt${mode}.cadu" >> $NOAA_LOG 2>&1
+      mv meteor_m2-x_lrpt${mode}.cadu "${AUDIO_FILE_BASE}.cadu" >> $NOAA_LOG 2>&1
       log "Deleting Meteor audio files older than $FILES_OLDER_THAN_DAYS days" "INFO"
       find /srv/audio/meteor -type f \( -name "*.wav" -o -name "*.s" -o -name "*.cadu" -o -name "*.gcp" -o -name "*.bmp" \) -mtime +${FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
     fi
