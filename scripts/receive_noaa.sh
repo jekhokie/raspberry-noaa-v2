@@ -170,7 +170,7 @@ elif [ "$NOAA_RECEIVER" == "gnuradio" ]; then
 elif [ "$NOAA_RECEIVER" == "satdump_record" ]; then
   log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump record " "INFO"
   $SATDUMP record "${RAMFS_AUDIO_BASE}-baseband" --source $receiver --baseband_format w16 --samplerate $samplerate --decimation $decimation --frequency "${NOAA_FREQUENCY}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
-  "$NOAA_HOME/scripts/audio_processors/FM_baseband_demodulator.py" "${RAMFS_AUDIO_BASE}-baseband.wav" "${RAMFS_AUDIO_BASE}.wav"
+  "$NOAA_HOME/scripts/audio_processors/FM_baseband_demodulator.py" "${RAMFS_AUDIO_BASE}-baseband.wav" "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
   rm satdump.logs product.cbor dataset.json "${RAMFS_AUDIO_BASE}-baseband.wav"
 elif [ "$NOAA_RECEIVER" == "satdump_live" ]; then
   log "Starting SatDump recording and live decoding" "INFO"
