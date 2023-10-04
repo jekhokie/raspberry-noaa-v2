@@ -8,7 +8,7 @@ altitude: 0.0
 
 #Website language settings
 #   lang_setting: see the 'webpanel/App/Lang' folder for available
-#                 languages (2-letter filename - e.g. ar, bg, de, en, es, nl, sr, ru, it, hu)
+#                 languages (2-letter filename - e.g. ar, bg, de, en, es, nl, sr, ru, it, hu, gr)
 lang_setting: en
 
 # ntp configurations
