@@ -40,7 +40,7 @@ class FM_baseband_demodulator(gr.top_block):
             firdes.low_pass(
                 1,
                 110250,
-                75000,
+                50000,
                 25000,
                 firdes.WIN_HAMMING,
                 6.76))
