@@ -40,8 +40,8 @@ class FM_baseband_demodulator(gr.top_block):
             firdes.low_pass(
                 1,
                 110250,
-                75k,
-                25k,
+                75000,
+                25000,
                 firdes.WIN_HAMMING,
                 6.76))
         self.gr_wavfile_sink_0_0_0_0 = blocks.wavfile_sink(output_baseband, 1, 11025, 16)
