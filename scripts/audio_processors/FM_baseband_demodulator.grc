@@ -149,7 +149,7 @@ blocks:
     alias: ''
     beta: '6.76'
     comment: ''
-    cutoff_freq: 75k
+    cutoff_freq: '50000'
     decim: '1'
     gain: '1'
     interp: '1'
@@ -157,7 +157,7 @@ blocks:
     minoutbuf: '0'
     samp_rate: '110250'
     type: fir_filter_ccf
-    width: 25k
+    width: '25000'
     win: firdes.WIN_HAMMING
   states:
     bus_sink: false
