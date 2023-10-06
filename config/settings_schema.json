@@ -191,7 +191,12 @@
     "slack_push_url":             { "type": "string" },
     "slack_push_to":              { "type": "string" },
     "slack_link":                 { "type": "string" },
-    "enable_matrix_push":         { "type": "boolean" }
+    "enable_matrix_push":         { "type": "boolean" },
+    "enable_pushover_push":       { "type": "boolean" },
+    "pushover_link_url":          { "type": "string" },
+    "pushover_apitoken":          { "type": "string" },
+    "pushover_user":              { "type": "string" },
+    "pushover_prio":              { "type": "number" }
   },
   "required": [
     "latitude",
@@ -298,5 +303,10 @@
     "enable_slack_push",
     "slack_push_url",
     "slack_push_to",
-    "slack_link"]
+    "slack_link",
+    "enable_pushover_push",
+    "pushover_link_url",
+    "pushover_apitoken",
+    "pushover_user",
+    "pushover_prio"]
 }

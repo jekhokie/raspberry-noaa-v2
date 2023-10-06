@@ -279,6 +279,11 @@ enable_email_schedule_push: false
 enable_discord_push: true
 discord_noaa_webhook_url: 'https://discord.com/api/webhooks/1135901731918717068/ZELG3Sv1fRxQ8KgoYtMMOBYM07az0yIkzeLdad-8WxxhV-F8LhPQdZFFon044awMvLsD'
 discord_meteor_webhook_url: 'https://discord.com/api/webhooks/1135901731918717068/ZELG3Sv1fRxQ8KgoYtMMOBYM07az0yIkzeLdad-8WxxhV-F8LhPQdZFFon044awMvLsD'
+enable_pushover_push: false
+pushover_link_url: 'https://<url-to-webpanel>/captures/listImages'
+pushover_apitoken: ''
+pushover_user: ''
+pushover_prio: 0
 enable_twitter_push: false
 enable_facebook_push: false
 enable_instagram_push: false
