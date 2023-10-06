@@ -17,7 +17,7 @@ lang_setting: en
 ntp_server: ''
 
 # receiver settings
-#   receiver_type - the receiver type which program uses ('rtlsdr', 'airspy_mini', 'airspy_r2' or 'hackrf' or 'sdrplay')
+#   receiver_type - the receiver type which program uses ('rtlsdr', 'airspy_mini', 'airspy_r2' or 'hackrf' or 'sdrplay' or 'mirisdr')
 #   noaa_receiver  - which receiver method to use (either 'rtl_fm' or 'gnuradio' or 'satdump_record' or 'satdump_live')
 #   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'gnuradio' or 'satdump_record' or 'satdump_live')
 receiver_type: 'rtlsdr'
@@ -273,6 +273,14 @@ disable_at_mail: false
 #     * see docs/twitter_push.md for instructions
 #   enable_matrix_push - whether to push images to a Matrix room
 #     * see docs/matrix_push.md for instructions
+
+# Whether you want to contribute to creation of community created Meteor and NOAA composites gathered from RN2 stations from all around the world
+# We do not collect any personal data
+# Thank you very much if you choose to contribute :)
+
+contribute_to_community_composites: false
+contribute_to_community_composites_url: 'https://voxgalactica.com/upload'
+
 enable_email_push: false
 email_push_address: test@ifttt.com
 enable_email_schedule_push: false

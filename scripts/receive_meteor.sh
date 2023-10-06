@@ -79,6 +79,11 @@ case "$RECEIVER_TYPE" in
          receiver="sdrplay"
          decimation=16
          ;;
+     "mirisdr")
+         samplerate="1e6"
+         receiver="sdrplay"
+         decimation=25
+         ;;
      *)
          echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE"
          exit 1
@@ -220,6 +225,11 @@ if [[ "$METEOR_RECEIVER" == "rtl_fm" || "$METEOR_RECEIVER" == "gnuradio" || "$ME
     push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg"
   done
 
+  if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
+    log "Contributing images for creating community composites" "INFO"
+    curl -F "file=@${RAMFS_AUDIO_BASE}.wav" "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES_URL}/meteor" >> $NOAA_LOG 2>&1
+  fi
+
   if [ "$DELETE_METEOR_AUDIO" == true ]; then
     log "Deleting audio files" "INFO"
     rm "${RAMFS_AUDIO_BASE}.wav"
@@ -262,7 +272,7 @@ elif [[ "$METEOR_RECEIVER" == "satdump_live" ]]; then
     path="$(pwd)"
     image_filename=$(basename "$i")
     new_name="$image_filename"
-  
+
     # Use parameter expansion to remove the specified prefixes
     new_name="${new_name#msu_mr_rgb_}"
     new_name="${new_name#rgb_msu_mr_rgb_}"
@@ -272,7 +282,7 @@ elif [[ "$METEOR_RECEIVER" == "satdump_live" ]]; then
 
     # Rename the file with the new name
     mv "$i" "$path/MSU-MR/$new_name" >> $NOAA_LOG 2>&1
-  
+
     log "Annotating images and creating thumbnails" "INFO"
     ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$path/MSU-MR/$new_name" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
@@ -281,6 +291,10 @@ elif [[ "$METEOR_RECEIVER" == "satdump_live" ]]; then
   done
   rm -r MSU-MR >> $NOAA_LOG 2>&1
 
+  if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
+    log "Contributing images for creating community composites" "INFO"
+    curl -F "file=@${RAMFS_AUDIO_BASE}.wav" "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES_URL}/meteor" >> $NOAA_LOG 2>&1
+  fi
 
   if [ "$DELETE_METEOR_AUDIO" == true ]; then
     log "Deleting audio files" "INFO"
@@ -311,9 +325,9 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
   # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
   push_annotation=""
   if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-    push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
+    push_annotation="Ground Station: ${GROUND_STATION_LOCATION}"
   fi
-  push_annotation="${push_annotation}${SAT_NAME} ${capture_start} $(date '+%Z')"
+  push_annotation="${push_annotation} ${SAT_NAME} ${capture_start} "
   push_annotation="${push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
   push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
   push_annotation="${push_annotation} Gain: ${gain}"

@@ -109,6 +109,11 @@ case "$RECEIVER_TYPE" in
          receiver="sdrplay"
          decimation=50
          ;;
+     "mirisdr")
+         samplerate="1e6"
+         receiver="sdrplay"
+         decimation=25
+         ;;
      *)
          echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE"
          exit 1
@@ -166,7 +171,6 @@ elif [ "$NOAA_RECEIVER" == "gnuradio" ]; then
   log "Starting gnuradio record" "INFO"
   log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${NOAA_FREQUENCY} MHz via GNU Radio " "INFO"
   timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/${RECEIVER_TYPE}_noaa_apt_rx.py" "${RAMFS_AUDIO_BASE}.wav" "${GAIN}" "${NOAA_FREQUENCY}"M "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
-  ffmpeg -hide_banner -loglevel error -i "$3" -c:a copy "${3%.*}_tmp.wav" && ffmpeg -i "${3%.*}_tmp.wav" -c:a copy -y "$3" && rm "${3%.*}_tmp.wav"
 elif [ "$NOAA_RECEIVER" == "satdump_record" ]; then
   log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump record " "INFO"
   $SATDUMP record "${RAMFS_AUDIO_BASE}-baseband" --source $receiver --baseband_format w16 --samplerate $samplerate --decimation $decimation --frequency "${NOAA_FREQUENCY}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
@@ -280,6 +284,11 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
   done
 
   rm $map_overlay
+
+  if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
+    log "Contributing images for creating community composites" "INFO"
+    curl -F "file=@${RAMFS_AUDIO_BASE}.wav" "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES_URL}/noaa" >> $NOAA_LOG 2>&1
+  fi
 
   if [ "$DELETE_NOAA_AUDIO" == true ]; then
     log "Deleting audio files" "INFO"
@@ -395,14 +404,14 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
   # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
   push_annotation=""
   if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-    push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
+    push_annotation="Ground Station: ${GROUND_STATION_LOCATION}"
   fi
-  push_annotation="${push_annotation}${SAT_NAME} ${capture_start} $(date '+%Z')"
+  push_annotation="${push_annotation} ${SAT_NAME} ${capture_start} "
   push_annotation="${push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
   push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
   push_annotation="${push_annotation} Gain: ${gain}"
   push_annotation="${push_annotation} | ${PASS_DIRECTION}"
-  
+
   # If any matching images are found, push images
   # handle Slack pushing if enabled
   if [ "${ENABLE_SLACK_PUSH}" == "true" ]; then
