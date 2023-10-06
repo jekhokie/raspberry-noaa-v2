@@ -109,6 +109,11 @@ case "$RECEIVER_TYPE" in
          receiver="sdrplay"
          decimation=50
          ;;
+     "mirisdr")
+         samplerate="1e6"
+         receiver="sdrplay"
+         decimation=25
+         ;;
      *)
          echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE"
          exit 1
@@ -280,6 +285,11 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
 
   rm $map_overlay
 
+  if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
+    log "Contributing images for creating community composites" "INFO"
+    curl -F "file=@${RAMFS_AUDIO_BASE}.wav" "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES_URL}/noaa" >> $NOAA_LOG 2>&1
+  fi
+
   if [ "$DELETE_NOAA_AUDIO" == true ]; then
     log "Deleting audio files" "INFO"
     rm "${RAMFS_AUDIO_BASE}.wav"
@@ -385,7 +395,7 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
   push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
   push_annotation="${push_annotation} Gain: ${gain}"
   push_annotation="${push_annotation} | ${PASS_DIRECTION}"
-  
+
   # If any matching images are found, push images
   # handle Slack pushing if enabled
   if [ "${ENABLE_SLACK_PUSH}" == "true" ]; then

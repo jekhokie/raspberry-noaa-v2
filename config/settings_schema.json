@@ -181,6 +181,8 @@
       "required": "false"
     },
     "enable_email_schedule_push": { "type": "boolean" },
+    "contribute_to_community_composites":       { "type": "boolean" },
+    "contribute_to_community_composites_url": { "type": "string" },
     "enable_discord_push":        { "type": "boolean" },
     "discord_noaa_webhook_url":        { "type": "string" },
     "discord_meteor_webhook_url":        { "type": "string" },
@@ -288,6 +290,8 @@
     "enable_email_push",
     "email_push_address",
     "enable_email_schedule_push",
+    "contribute_to_community_composites",
+    "contribute_to_community_composites_url",
     "enable_discord_push",
     "discord_noaa_webhook_url",
     "discord_meteor_webhook_url",
