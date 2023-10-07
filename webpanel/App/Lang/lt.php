@@ -18,7 +18,7 @@ return array(
   "images" => "Nuotraukos",
   "max_elev" => "Max Aukstis",
   "next" => "Kitas",
-  "next_pass" => "Sekantis",
+  "next_pass" => "Laukiama",
   "no_capture_pass" => "Nepaviko ar vis dar vykdoma operacija",
   "of" => "is",
   "page" => "Puslapis",
