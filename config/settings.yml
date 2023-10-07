@@ -80,7 +80,7 @@ meteor_m2_3_sdr_device_id: 0
 meteor_m2_3_freq_offset: 0
 meteor_m2_3_enable_bias_tee: false
 meteor_m2_3_gain: 29.7
-meteor_m2_3_schedule_sun_min_elevation: -6
+meteor_m2_3_schedule_sun_min_elevation: -90
 meteor_m2_3_sun_min_elevation: 6
 meteor_m2_3_sat_min_elevation: 30
 meteor_m2_3_80k_interleaving: false
