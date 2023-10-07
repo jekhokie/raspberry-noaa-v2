@@ -7,6 +7,7 @@ return array(
   "cancel" => "Stornieren",
   "captures" => "Erfasst",
   "completed_pass" => "Verarbeitung beendet",
+  "reception_status" => "not translated",
   "confirm" => "Bestätigen",
   "conflicting_pass" => "Konflikt mit vorherigem Pass",
   "elev" => "Erhebung",

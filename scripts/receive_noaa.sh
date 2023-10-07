@@ -109,6 +109,11 @@ case "$RECEIVER_TYPE" in
          receiver="sdrplay"
          decimation=50
          ;;
+     "mirisdr")
+         samplerate="1e6"
+         receiver="sdrplay"
+         decimation=25
+         ;;
      *)
          echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE"
          exit 1
@@ -156,7 +161,7 @@ fi
 
 #start capture
 if [ "$NOAA_RECEIVER" == "rtl_fm" ]; then
-  log "Starting rtl_fm record at ${freq} MHz..." "INFO"
+  log "Starting rtl_fm record at ${NOAA_FREQUENCY} MHz..." "INFO"
   if [ ${GAIN} == 0 ]; then
     timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -f "${NOAA_FREQUENCY}"M -p "${FREQ_OFFSET}" -s 60k  -E wav -E deemp -F 9 - | $SOX -t raw -e signed -c 1 -b 16 -r 60000 - "${RAMFS_AUDIO_BASE}.wav" rate 11025
   else
@@ -164,18 +169,18 @@ if [ "$NOAA_RECEIVER" == "rtl_fm" ]; then
   fi
 elif [ "$NOAA_RECEIVER" == "gnuradio" ]; then
   log "Starting gnuradio record" "INFO"
-  log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via GNU Radio " "INFO"
+  log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${NOAA_FREQUENCY} MHz via GNU Radio " "INFO"
   timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/${RECEIVER_TYPE}_noaa_apt_rx.py" "${RAMFS_AUDIO_BASE}.wav" "${GAIN}" "${NOAA_FREQUENCY}"M "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
-  ffmpeg -hide_banner -loglevel error -i "$3" -c:a copy "${3%.*}_tmp.wav" && ffmpeg -i "${3%.*}_tmp.wav" -c:a copy -y "$3" && rm "${3%.*}_tmp.wav"
 elif [ "$NOAA_RECEIVER" == "satdump_record" ]; then
   log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump record " "INFO"
-  $SATDUMP record "${RAMFS_AUDIO_BASE}" --source $receiver --baseband_format w16 --samplerate $samplerate --decimation $decimation --frequency "${NOAA_FREQUENCY}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
-  #TO BE ADDED: "${RAMFS_AUDIO_BASE}.wav" is a baseband file and needs to be demodulated first to FM audio
-  rm satdump.logs product.cbor dataset.json
+  $SATDUMP record "${RAMFS_AUDIO_BASE}-baseband" --source $receiver --baseband_format w16 --samplerate $samplerate --decimation $decimation --frequency "${NOAA_FREQUENCY}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+  $SOX "${RAMFS_AUDIO_BASE}-baseband.wav" -r 110250 "${RAMFS_AUDIO_BASE}-baseband-resampled.wav"
+  "$NOAA_HOME/scripts/audio_processors/FM_baseband_demodulator.py" "${RAMFS_AUDIO_BASE}-baseband-resampled.wav" "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+  rm satdump.log product.cbor dataset.json "${RAMFS_AUDIO_BASE}-baseband.wav" "${RAMFS_AUDIO_BASE}-baseband-resampled.wav"
 elif [ "$NOAA_RECEIVER" == "satdump_live" ]; then
   log "Starting SatDump recording and live decoding" "INFO"
   $SATDUMP live noaa_apt . --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
-  rm satdump.logs product.cbor dataset.json APT-A.png APT-B.png raw.png
+  rm satdump.log product.cbor dataset.json APT-A.png APT-B.png raw.png
   spectrogram=0
   pristine=0
   histogram=0
@@ -280,6 +285,11 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
 
   rm $map_overlay
 
+  if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
+    log "Contributing images for creating community composites" "INFO"
+    curl -F "file=@${RAMFS_AUDIO_BASE}.wav" "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES_URL}/noaa" >> $NOAA_LOG 2>&1
+  fi
+
   if [ "$DELETE_NOAA_AUDIO" == true ]; then
     log "Deleting audio files" "INFO"
     rm "${RAMFS_AUDIO_BASE}.wav"
@@ -374,23 +384,39 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     gain='Automatic'
   fi
 
+  # handle Pushover pushing if enabled
+  if [ "${ENABLE_PUSHOVER_PUSH}" == "true" ]; then
+    pushover_push_annotation=""
+    #if [ "${GROUND_STATION_LOCATION}" != "" ]; then
+    #  pushover_push_annotation="Ground Station: ${GROUND_STATION_LOCATION}<br/>"
+    #fi
+    pushover_push_annotation="${pushover_push_annotation}<b>Start: </b>${capture_start}<br/>"
+    pushover_push_annotation="${pushover_push_annotation}<b>Max Elev: </b>${SAT_MAX_ELEVATION}° ${PASS_SIDE}<br/>"
+    #pushover_push_annotation="${pushover_push_annotation}<b>Sun Elevation: </b>${SUN_ELEV}°<br/>"
+    #pushover_push_annotation="${pushover_push_annotation}<b>Gain: </b>${gain} | ${PASS_DIRECTION}<br/>"
+    pushover_push_annotation="${pushover_push_annotation} <a href=${PUSHOVER_LINK_URL}?pass_id=${pass_id}>BROWSER LINK</a>";
+
+    log "Call pushover script with push_file_list: $push_file_list"
+    ${PUSH_PROC_DIR}/push_pushover.sh "${pushover_push_annotation}" "${SAT_NAME}" "${push_file_list}"
+  fi
+   
   # create push annotation string (annotation in the email subject, discord text, etc.)
   # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
   push_annotation=""
   if [ "${GROUND_STATION_LOCATION}" != "" ]; then
-    push_annotation="Ground Station: ${GROUND_STATION_LOCATION}\n"
+    push_annotation="Ground Station: ${GROUND_STATION_LOCATION}"
   fi
-  push_annotation="${push_annotation}${SAT_NAME} ${capture_start} $(date '+%Z')"
+  push_annotation="${push_annotation} ${SAT_NAME} ${capture_start} "
   push_annotation="${push_annotation} Max Elev: ${SAT_MAX_ELEVATION}° ${PASS_SIDE}"
   push_annotation="${push_annotation} Sun Elevation: ${SUN_ELEV}°"
   push_annotation="${push_annotation} Gain: ${gain}"
   push_annotation="${push_annotation} | ${PASS_DIRECTION}"
-  
+
   # If any matching images are found, push images
   # handle Slack pushing if enabled
   if [ "${ENABLE_SLACK_PUSH}" == "true" ]; then
     pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
-    ${PUSH_PROC_DIR}/push_slack.sh "${push_annotation} <${SLACK_LINK_URL}?pass_id=${pass_id}>\n" $push_file_list
+    ${PUSH_PROC_DIR}/push_slack.sh "${push_annotation} <${SLACK_LINK}?pass_id=${pass_id}>\n" $push_file_list
   fi
   # handle twitter pushing if enabled
   if [ "${ENABLE_TWITTER_PUSH}" == "true" ]; then

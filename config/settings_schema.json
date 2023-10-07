@@ -144,7 +144,7 @@
     },
     "lang_setting": {
       "type": "string",
-      "enum": [ "ar", "bg", "cn", "de", "en", "es", "fr", "lt", "nl", "pt", "sr", "ru", "it", "hu" ]
+      "enum": [ "ar", "bg", "cn", "de", "en", "es", "fr", "lt", "nl", "pt", "sr", "ru", "it", "hu", "gr" ]
     },
     "web_server_name": { "type": "string" },
     "enable_non_tls":  { "type": "boolean" },
@@ -181,6 +181,8 @@
       "required": "false"
     },
     "enable_email_schedule_push": { "type": "boolean" },
+    "contribute_to_community_composites":       { "type": "boolean" },
+    "contribute_to_community_composites_url": { "type": "string" },
     "enable_discord_push":        { "type": "boolean" },
     "discord_noaa_webhook_url":        { "type": "string" },
     "discord_meteor_webhook_url":        { "type": "string" },
@@ -191,7 +193,12 @@
     "slack_push_url":             { "type": "string" },
     "slack_push_to":              { "type": "string" },
     "slack_link":                 { "type": "string" },
-    "enable_matrix_push":         { "type": "boolean" }
+    "enable_matrix_push":         { "type": "boolean" },
+    "enable_pushover_push":       { "type": "boolean" },
+    "pushover_link_url":          { "type": "string" },
+    "pushover_apitoken":          { "type": "string" },
+    "pushover_user":              { "type": "string" },
+    "pushover_prio":              { "type": "number" }
   },
   "required": [
     "latitude",
@@ -288,6 +295,8 @@
     "enable_email_push",
     "email_push_address",
     "enable_email_schedule_push",
+    "contribute_to_community_composites",
+    "contribute_to_community_composites_url",
     "enable_discord_push",
     "discord_noaa_webhook_url",
     "discord_meteor_webhook_url",
@@ -298,5 +307,10 @@
     "enable_slack_push",
     "slack_push_url",
     "slack_push_to",
-    "slack_link"]
+    "slack_link",
+    "enable_pushover_push",
+    "pushover_link_url",
+    "pushover_apitoken",
+    "pushover_user",
+    "pushover_prio"]
 }
