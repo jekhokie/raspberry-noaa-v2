@@ -297,8 +297,8 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
     if [ "$in_mem" == "true" ]; then
       log "Moving audio files out to the SD card" "INFO"
       mv "${RAMFS_AUDIO_BASE}.wav" "${AUDIO_FILE_BASE}.wav"
-      log "Deleting NOAA audio files older than $FILES_OLDER_THAN_DAYS days" "INFO"
-      find /srv/audio/noaa -type f -name "*.wav" -mtime +${FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
+      log "Deleting NOAA audio files older than $DELETE_FILES_OLDER_THAN_DAYS days" "INFO"
+      find /srv/audio/noaa -type f -name "*.wav" -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
     fi
   fi
 else
