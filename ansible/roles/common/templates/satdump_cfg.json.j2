@@ -862,6 +862,118 @@
                             }
                         }
                     },
+                    "224": {
+                        "equation": "ch2, ch2, ch4",
+                        "geo_correct": true,
+                        "individual_equalize": true,
+                        "map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
+                    },
+                    "negative224": {
+                        "equation": "1-ch2, ch2, ch4",
+                        "geo_correct": true,
+                        "individual_equalize": true,
+                        "map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
+                    },
+                    "421": {
+                        "equation": "ch4, ch2, ch1",
+                        "geo_correct": true,
+                        "individual_equalize": true,
+                        "map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
+                    },
+                    "4": {
+                        "equation": "ch4, ch4, ch4",
+                        "geo_correct": true,
+                        "individual_equalize": true,
+                        "map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "map_overlay_colors": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
+                    },
                     "Natural Color": {
                         "equation": "((0.5*max(ch4,min(ch2,ch1)) + 0.5*ch2)+0.3*ch3)*0.85, ch2, ch1",
                         "geo_correct": true,
