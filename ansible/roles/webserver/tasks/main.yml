@@ -88,10 +88,10 @@
     state: present
     name: composer
 
-- name: add pi user to www-data group
+- name: add current user to www-data group
   become: yes
   user:
-    name: pi
+    name: "{{ target_user }}"
     groups: www-data
     append: yes
 
