@@ -237,7 +237,7 @@ if [[ "$METEOR_RECEIVER" == "rtl_fm" || "$METEOR_RECEIVER" == "gnuradio" || "$ME
     if [ "$in_mem" == "true" ]; then
       log "Moving audio files out to the SD card" "INFO"
       mv "${RAMFS_AUDIO_BASE}.wav" "${AUDIO_FILE_BASE}.wav"
-      log "Deleting Meteor audio files older than $FILES_OLDER_THAN_DAYS days" "INFO"
+      log "Deleting Meteor audio files older than $DELETE_FILES_OLDER_THAN_DAYS days" "INFO"
       find /srv/audio/meteor -type f \( -name "*.wav" -o -name "*.s" -o -name "*.cadu" -o -name "*.gcp" -o -name "*.bmp" \) -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
     fi
   fi
@@ -303,7 +303,7 @@ elif [[ "$METEOR_RECEIVER" == "satdump_live" ]]; then
     if [ "$in_mem" == "true" ]; then
       log "Moving CADU files out to the SD card" "INFO"
       mv meteor_m2-x_lrpt${mode}.cadu "${AUDIO_FILE_BASE}.cadu" >> $NOAA_LOG 2>&1
-      log "Deleting Meteor audio files older than $FILES_OLDER_THAN_DAYS days" "INFO"
+      log "Deleting Meteor audio files older than $DELETE_FILES_OLDER_THAN_DAYS days" "INFO"
       find /srv/audio/meteor -type f \( -name "*.wav" -o -name "*.s" -o -name "*.cadu" -o -name "*.gcp" -o -name "*.bmp" \) -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
     fi
   fi
