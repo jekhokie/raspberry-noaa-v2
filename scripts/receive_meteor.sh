@@ -47,12 +47,6 @@ AUDIO_FILE_BASE="${METEOR_AUDIO_OUTPUT}/${FILENAME_BASE}"
 IMAGE_FILE_BASE="${IMAGE_OUTPUT}/${FILENAME_BASE}"
 IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 
-if [ "$SAT_NAME" == "METEOR-M2 3" ]; then
-  SAT_NUMBER="M2_3"
-elif [ "$SAT_NAME" == "METEOR-M2 4" ]; then
-  SAT_NUMBER="M2_4"
-fi
-
 case "$RECEIVER_TYPE" in
      "rtlsdr")
          samplerate="1.024e6"
@@ -89,6 +83,14 @@ case "$RECEIVER_TYPE" in
          exit 1
          ;;
 esac
+
+if [ "$SAT_NAME" == "METEOR-M2 3" ]; then
+  SAT_NUMBER="M2_3"
+elif [ "$SAT_NAME" == "METEOR-M2 4" ]; then
+  SAT_NUMBER="M2_4"
+fi
+
+mode="$([[ "$METEOR_${SAT_NUMBER}_80K_INTERLEAVING" == "true" ]] && echo "_80k" || echo "")"
 
 gain_option=""
 if [[ "$receiver" == "rtlsdr" ]]; then
@@ -159,40 +161,14 @@ polar_direction=0
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if [ "$METEOR_RECEIVER" == "rtl_fm" ]; then
-  log "Recording with RTL_FM at ${METEOR_M2_3_FREQ} MHz..." "INFO"
-  if [ "${GAIN}" == 0 ]; then
-    timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -M raw -f "${METEOR_M2_3_FREQ}"M -p "${FREQ_OFFSET}" -s 288k | $SOX -t raw -r 288k -c 2 -b 16 -e s - -t wav "${RAMFS_AUDIO_BASE}.wav" rate 96k >> $NOAA_LOG 2>&1
-  else
-    timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -M raw -f "${METEOR_M2_3_FREQ}"M -p "${FREQ_OFFSET}" -s 288k -g "${GAIN}" | $SOX -t raw -r 288k -c 2 -b 16 -e s - -t wav "${RAMFS_AUDIO_BASE}.wav" rate 96k >> $NOAA_LOG 2>&1
-  fi
-  sleep 2
-elif [ "$METEOR_RECEIVER" == "gnuradio" ]; then
-  log "Recording ${NOAA_HOME} via $receiver at ${METEOR_M2_3_FREQ} MHz using GNU Radio " "INFO"
-  timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/${RECEIVER_TYPE}_m2_lrpt_rx.py" "${RAMFS_AUDIO_BASE}.wav" "${GAIN}" "${METEOR_M2_3_FREQ}" "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
-elif [ "$METEOR_RECEIVER" == "satdump_record" ]; then
+if [ "$RECEPTION_TYPE" == "record" ]; then
   log "Recording ${NOAA_HOME} via $receiver at ${METEOR_M2_3_FREQ} MHz using SatDump record " "INFO"
   $SATDUMP record "${RAMFS_AUDIO_BASE}" --source $receiver --baseband_format w16 --samplerate $samplerate --decimation $decimation --frequency "${METEOR_M2_3_FREQ}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
   rm satdump.log dataset.json
-elif [ "$METEOR_RECEIVER" == "satdump_live" ]; then
-  log "Starting SatDump live recording and decoding" "INFO"
 
-  # Set mode based on METEOR_M2_3_80K_INTERLEAVING
-  mode="$([[ "$METEOR_${SAT_NUMBER}_80K_INTERLEAVING" == "true" ]] && echo "_80k" || echo "")"
-  $SATDUMP live meteor_m2-x_lrpt${mode} . --source $receiver --samplerate $samplerate --frequency "${METEOR_M2_3_FREQ}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
-  rm satdump.log dataset.json
-
-  log "Waiting for files to close" "INFO"
-  sleep 2
-else
-  log "Receiver type '$METEOR_RECEIVER' not valid" "ERROR"
-fi
-
-#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-if [[ "$METEOR_RECEIVER" == "rtl_fm" || "$METEOR_RECEIVER" == "gnuradio" || "$METEOR_RECEIVER" == "satdump_record" ]]; then
+  if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
   log "Removing old bmp and gcp files" "INFO"
-  find /srv/audio/meteor -type f \( -name "*.gcp" -o -name "*.bmp" \) -mtime +1 -delete >> $NOAA_LOG 2>&1
+  find . -type f \( -name "*.gcp" -o -name "*.bmp" \) -mtime +1 -delete >> $NOAA_LOG 2>&1
 
   if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
     log "Producing spectrogram" "INFO"
@@ -241,7 +217,11 @@ if [[ "$METEOR_RECEIVER" == "rtl_fm" || "$METEOR_RECEIVER" == "gnuradio" || "$ME
       find /srv/audio/meteor -type f \( -name "*.wav" -o -name "*.s" -o -name "*.cadu" -o -name "*.gcp" -o -name "*.bmp" \) -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
     fi
   fi
-elif [[ "$METEOR_RECEIVER" == "satdump_live" ]]; then
+elif [[ "$METEOR_DECODER" == "satdump" ]]; then
+
+  $SATDUMP baseband meteor_m2-x_lrpt${mode} "${RAMFS_AUDIO_BASE}.wav" . --samplerate $samplerate --baseband_format w16 >> $NOAA_LOG 2>&1
+  rm satdump.log dataset.json
+
   find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
 
   log "Deleting SatDump projected composites which have been generated, but the channels aren't broadcast" "INFO"
@@ -308,7 +288,81 @@ elif [[ "$METEOR_RECEIVER" == "satdump_live" ]]; then
     fi
   fi
 else
-    echo "Unknown receiver: $METEOR_RECEIVER"
+    echo "Unknown decoder: $METEOR_DECODER"
+fi
+elif [ "$RECEPTION_TYPE" == "live" ]; then
+  log "Starting SatDump live recording and decoding" "INFO"
+  # Set mode based on METEOR_M2_3_80K_INTERLEAVING
+  $SATDUMP live meteor_m2-x_lrpt${mode} . --source $receiver --samplerate $samplerate --frequency "${METEOR_M2_3_FREQ}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+  rm satdump.log dataset.json
+
+  find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
+
+  log "Deleting SatDump projected composites which have been generated, but the channels aren't broadcast" "INFO"
+  for projected_file in MSU-MR/rgb_msu_mr_rgb_*_projected.png; do
+      # Extract the corresponding corrected.png filename
+      corrected_file="${projected_file/rgb_msu_mr_rgb_/msu_mr_rgb_}"
+      corrected_file="${corrected_file/_projected.png/_corrected.png}"
+
+      # Check if the corrected.png file does not exist
+      if [ ! -e "$corrected_file" ]; then
+          log "$corrected_file doesn't exist, hence deleting $projected_file" "INFO"
+          rm "$projected_file"
+      fi
+  done
+
+  log "Removing images without a map if they exist" "INFO"
+  for file in MSU-MR/*map.png; do
+    mv "$file" "${file/_map.png/.png}"
+  done
+
+  for i in MSU-MR/*_corrected.png
+  do
+    $CONVERT "$i" $FLIP "$i" >> $NOAA_LOG 2>&1
+  done
+
+    # Renaming files, annotating images, and creating thumbnails
+  for i in MSU-MR/*.png; do
+    path="$(pwd)"
+    image_filename=$(basename "$i")
+    new_name="$image_filename"
+
+    # Use parameter expansion to remove the specified prefixes
+    new_name="${new_name#msu_mr_rgb_}"
+    new_name="${new_name#rgb_msu_mr_rgb_}"
+    new_name="${new_name#rgb_msu_mr_rgb_}"
+    new_name="${new_name#rgb_msu_mr_}"
+    new_name="${new_name#msu_mr_}"
+
+    # Rename the file with the new name
+    mv "$i" "$path/MSU-MR/$new_name" >> $NOAA_LOG 2>&1
+
+    log "Annotating images and creating thumbnails" "INFO"
+    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$path/MSU-MR/$new_name" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
+    rm "$path/MSU-MR/$new_name" >> $NOAA_LOG 2>&1
+    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
+  done
+  rm -r MSU-MR >> $NOAA_LOG 2>&1
+
+  if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
+    log "Contributing images for creating community composites" "INFO"
+    curl -F "file=@${RAMFS_AUDIO_BASE}.wav" "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES_URL}/meteor" >> $NOAA_LOG 2>&1
+  fi
+
+  if [ "$DELETE_METEOR_AUDIO" == true ]; then
+    log "Deleting audio files" "INFO"
+    rm meteor_m2-x_lrpt${mode}.cadu
+  else
+    if [ "$in_mem" == "true" ]; then
+      log "Moving CADU files out to the SD card" "INFO"
+      mv meteor_m2-x_lrpt${mode}.cadu "${AUDIO_FILE_BASE}.cadu" >> $NOAA_LOG 2>&1
+      log "Deleting Meteor audio files older than $DELETE_FILES_OLDER_THAN_DAYS days" "INFO"
+      find /srv/audio/meteor -type f \( -name "*.wav" -o -name "*.s" -o -name "*.cadu" -o -name "*.gcp" -o -name "*.bmp" \) -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
+    fi
+  fi
+else
+  log "Receiver type '$RECEPTION_TYPE' not valid" "ERROR"
 fi
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------
