@@ -160,148 +160,156 @@ elif pgrep -f ${RECEIVER_TYPE}_m2_lrpt_rx.py > /dev/null; then
 fi
 
 #start capture
-if [ "$NOAA_RECEIVER" == "rtl_fm" ]; then
-  log "Starting rtl_fm record at ${NOAA_FREQUENCY} MHz..." "INFO"
-  if [ ${GAIN} == 0 ]; then
-    timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -f "${NOAA_FREQUENCY}"M -p "${FREQ_OFFSET}" -s 60k  -E wav -E deemp -F 9 - | $SOX -t raw -e signed -c 1 -b 16 -r 60000 - "${RAMFS_AUDIO_BASE}.wav" rate 11025
-  else
-    timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -f "${NOAA_FREQUENCY}"M -p "${FREQ_OFFSET}" -s 60k -g "${GAIN}" -E wav -E deemp -F 9 - | $SOX -t raw -e signed -c 1 -b 16 -r 60000 - "${RAMFS_AUDIO_BASE}.wav" rate 11025
-  fi
-elif [ "$NOAA_RECEIVER" == "gnuradio" ]; then
-  log "Starting gnuradio record" "INFO"
-  log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${NOAA_FREQUENCY} MHz via GNU Radio " "INFO"
-  timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/${RECEIVER_TYPE}_noaa_apt_rx.py" "${RAMFS_AUDIO_BASE}.wav" "${GAIN}" "${NOAA_FREQUENCY}"M "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
-elif [ "$NOAA_RECEIVER" == "satdump_record" ]; then
+if [ "$RECEPTION_TYPE" == "record" ]; then
   log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump record " "INFO"
   $SATDUMP record "${RAMFS_AUDIO_BASE}-baseband" --source $receiver --baseband_format w16 --samplerate $samplerate --decimation $decimation --frequency "${NOAA_FREQUENCY}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
   $SOX "${RAMFS_AUDIO_BASE}-baseband.wav" -r 110250 "${RAMFS_AUDIO_BASE}-baseband-resampled.wav"
   "$NOAA_HOME/scripts/audio_processors/FM_baseband_demodulator.py" "${RAMFS_AUDIO_BASE}-baseband-resampled.wav" "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
   rm satdump.log product.cbor dataset.json "${RAMFS_AUDIO_BASE}-baseband.wav" "${RAMFS_AUDIO_BASE}-baseband-resampled.wav"
-elif [ "$NOAA_RECEIVER" == "satdump_live" ]; then
-  log "Starting SatDump recording and live decoding" "INFO"
-  $SATDUMP live noaa_apt . --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
-  rm satdump.log product.cbor dataset.json APT-A.png APT-B.png raw.png
-  spectrogram=0
-  pristine=0
-  histogram=0
-fi
-
-# wait for files to close
-sleep 2
-
-#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
-
-  push_file_list=""
-  #generate outputs
-  spectrogram=0
-  if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
-    log "Producing spectrogram" "INFO"
-    spectrogram=1
-    spectro_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
-    ${IMAGE_PROC_DIR}/spectrogram.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" "${spectro_text}" >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png" >> $NOAA_LOG 2>&1
-  fi
-
-  pristine=0
-  if [[ "${PRODUCE_NOAA_PRISTINE}" == "true" ]]; then
-    log "Producing pristine image" "INFO"
-    pristine=1
-    ${IMAGE_PROC_DIR}/noaa_pristine.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_THUMB_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
-    push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-pristine.jpg"
-  fi
-
-  histogram=0
-  if [ "${PRODUCE_NOAA_PRISTINE_HISTOGRAM}" == "true" ]; then
-    tmp_dir="${NOAA_HOME}/tmp"
-    histogram=1
-    histogram_text="${capture_start} @ ${SAT_MAX_ELEVATION}° Gain: ${GAIN}"
-
-    log "Generating Data for Histogram" "INFO"
-    ${IMAGE_PROC_DIR}/noaa_histogram_data.sh "${RAMFS_AUDIO_BASE}.wav" "${tmp_dir}/${FILENAME_BASE}-a.png" "${tmp_dir}/${FILENAME_BASE}-b.png" >> $NOAA_LOG 2>&1
-
-    # Define channel names
-    channels=("a" "b")
-
-    # Loop through channels
-    for channel in "${channels[@]}"; do
-        log "Producing histogram of NOAA pristine image channel $channel" "INFO"
-        ${IMAGE_PROC_DIR}/histogram.sh "${tmp_dir}/${FILENAME_BASE}-${channel}.png" "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${SAT_NAME} - Channel $channel" "${histogram_text}" >> $NOAA_LOG 2>&1
-        ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${IMAGE_THUMB_BASE}-histogram-${channel}.jpg" >> $NOAA_LOG 2>&1
-    done
-
-    log "Horizontally Merge two Histogram Channels to a single image for output"
-    $CONVERT +append "${IMAGE_FILE_BASE}-histogram-a.jpg" "${IMAGE_FILE_BASE}-histogram-b.jpg" -resize x500 "${IMAGE_FILE_BASE}-histogram.jpg" >>$NOAA_LOG 2>&1
-    $CONVERT +append "${IMAGE_THUMB_BASE}-histogram-a.jpg" "${IMAGE_THUMB_BASE}-histogram-b.jpg" -resize x300 "${IMAGE_THUMB_BASE}-histogram.jpg" >>$NOAA_LOG 2>&1
-
-    # Remove temporary files
-    for channel in "${channels[@]}"; do
-        rm "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${IMAGE_THUMB_BASE}-histogram-${channel}.jpg" "${tmp_dir}/${FILENAME_BASE}-${channel}.png"
-    done
-  fi
-
-  log "Bulding pass map" "INFO"
-  # add 10 seconds to ensure we account for small deviations in timing - being even a second too soon
-  # can cause an error of "wxmap: warning: could not find matching pass to build overlay map.", while
-  # going over the start time by a few seconds while still being within the pass timing causes wxmap
-  # to track *back* to the start of the pass
-  epoch_adjusted=$(($PASS_START + 10))
-
-  extra_map_opts=""
-  [[ "${NOAA_MAP_CROSSHAIR_ENABLE}" == "true" ]] && extra_map_opts+=" -l 1 -c l:${NOAA_MAP_CROSSHAIR_COLOR}" || extra_map_opts+=" -l 0"
-  [[ "${NOAA_MAP_GRID_DEGREES}" != "0.0" ]] && extra_map_opts+=" -g ${NOAA_MAP_GRID_DEGREES} -c g:${NOAA_MAP_GRID_COLOR}" || extra_map_opts+=" -g 0.0"
-  [[ "${NOAA_MAP_COUNTRY_BORDER_ENABLE}" == "true" ]] && extra_map_opts+=" -C 1 -c C:${NOAA_MAP_COUNTRY_BORDER_COLOR}" || extra_map_opts+=" -C 0"
-  [[ "${NOAA_MAP_STATE_BORDER_ENABLE}" == "true" ]] && extra_map_opts+=" -S 1 -c S:${NOAA_MAP_STATE_BORDER_COLOR}" || extra_map_opts+=" -S 0"
-
-  map_overlay="${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
-  $WXMAP -T "${SAT_NAME}" -H "${TLE_FILE}" -p 0 ${extra_map_opts} -o "${epoch_adjusted}" "$map_overlay" >> "$NOAA_LOG" 2>&1
-
-  if [ "$daylight" -eq 1 ]; then
-    ENHANCEMENTS="${NOAA_DAY_ENHANCEMENTS}"
-  else
-    ENHANCEMENTS="${NOAA_NIGHT_ENHANCEMENTS}"
-  fi
-
-  # build images based on enhancements defined
-  log "Normalizing and annotating NOAA images" "INFO"
-  for enhancement in $ENHANCEMENTS; do
-    export ENHANCEMENT=$enhancement
-    log "Decoding image" "INFO"
-
-    if [$enhancement == "avi"]; then
-      ${IMAGE_PROC_DIR}/noaa_avi.sh $map_overlay "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
-    else
-      ${IMAGE_PROC_DIR}/noaa_enhancements.sh $map_overlay "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" $enhancement >> $NOAA_LOG 2>&1
-    fi
-
-    if [ -f "${IMAGE_FILE_BASE}-$enhancement.jpg" ]; then
-      ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_FILE_BASE}-$enhancement.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_THUMB_BASE}-$enhancement.jpg" >> $NOAA_LOG 2>&1
-      push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-$enhancement.jpg"
-    fi
-  done
-
-  rm $map_overlay
 
   if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
     log "Contributing images for creating community composites" "INFO"
     curl -F "file=@${RAMFS_AUDIO_BASE}.wav" "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES_URL}/noaa" >> $NOAA_LOG 2>&1
   fi
 
-  if [ "$DELETE_NOAA_AUDIO" == true ]; then
-    log "Deleting audio files" "INFO"
-    rm "${RAMFS_AUDIO_BASE}.wav"
-  else
-    if [ "$in_mem" == "true" ]; then
-      log "Moving audio files out to the SD card" "INFO"
-      mv "${RAMFS_AUDIO_BASE}.wav" "${AUDIO_FILE_BASE}.wav"
-      log "Deleting NOAA audio files older than $DELETE_FILES_OLDER_THAN_DAYS days" "INFO"
-      find /srv/audio/noaa -type f -name "*.wav" -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
+  if [ "$NOAA_DECODER" == "wxtoimg" ]; then
+    push_file_list=""
+    #generate outputs
+    spectrogram=0
+    if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
+      log "Producing spectrogram" "INFO"
+      spectrogram=1
+      spectro_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
+      ${IMAGE_PROC_DIR}/spectrogram.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" "${spectro_text}" >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png" >> $NOAA_LOG 2>&1
     fi
+
+    pristine=0
+    if [[ "${PRODUCE_NOAA_PRISTINE}" == "true" ]]; then
+      log "Producing pristine image" "INFO"
+      pristine=1
+      ${IMAGE_PROC_DIR}/noaa_pristine.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_THUMB_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
+      push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-pristine.jpg"
+    fi
+
+    histogram=0
+    if [ "${PRODUCE_NOAA_PRISTINE_HISTOGRAM}" == "true" ]; then
+      tmp_dir="${NOAA_HOME}/tmp"
+      histogram=1
+      histogram_text="${capture_start} @ ${SAT_MAX_ELEVATION}° Gain: ${GAIN}"
+
+      log "Generating Data for Histogram" "INFO"
+      ${IMAGE_PROC_DIR}/noaa_histogram_data.sh "${RAMFS_AUDIO_BASE}.wav" "${tmp_dir}/${FILENAME_BASE}-a.png" "${tmp_dir}/${FILENAME_BASE}-b.png" >> $NOAA_LOG 2>&1
+
+      # Define channel names
+      channels=("a" "b")
+
+      # Loop through channels
+      for channel in "${channels[@]}"; do
+          log "Producing histogram of NOAA pristine image channel $channel" "INFO"
+          ${IMAGE_PROC_DIR}/histogram.sh "${tmp_dir}/${FILENAME_BASE}-${channel}.png" "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${SAT_NAME} - Channel $channel" "${histogram_text}" >> $NOAA_LOG 2>&1
+          ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${IMAGE_THUMB_BASE}-histogram-${channel}.jpg" >> $NOAA_LOG 2>&1
+      done
+
+      log "Horizontally Merge two Histogram Channels to a single image for output"
+      $CONVERT +append "${IMAGE_FILE_BASE}-histogram-a.jpg" "${IMAGE_FILE_BASE}-histogram-b.jpg" -resize x500 "${IMAGE_FILE_BASE}-histogram.jpg" >>$NOAA_LOG 2>&1
+      $CONVERT +append "${IMAGE_THUMB_BASE}-histogram-a.jpg" "${IMAGE_THUMB_BASE}-histogram-b.jpg" -resize x300 "${IMAGE_THUMB_BASE}-histogram.jpg" >>$NOAA_LOG 2>&1
+
+      # Remove temporary files
+      for channel in "${channels[@]}"; do
+          rm "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${IMAGE_THUMB_BASE}-histogram-${channel}.jpg" "${tmp_dir}/${FILENAME_BASE}-${channel}.png"
+      done
+    fi
+
+    log "Bulding pass map" "INFO"
+    # add 10 seconds to ensure we account for small deviations in timing - being even a second too soon
+    # can cause an error of "wxmap: warning: could not find matching pass to build overlay map.", while
+    # going over the start time by a few seconds while still being within the pass timing causes wxmap
+    # to track *back* to the start of the pass
+    epoch_adjusted=$(($PASS_START + 10))
+
+    extra_map_opts=""
+    [[ "${NOAA_MAP_CROSSHAIR_ENABLE}" == "true" ]] && extra_map_opts+=" -l 1 -c l:${NOAA_MAP_CROSSHAIR_COLOR}" || extra_map_opts+=" -l 0"
+    [[ "${NOAA_MAP_GRID_DEGREES}" != "0.0" ]] && extra_map_opts+=" -g ${NOAA_MAP_GRID_DEGREES} -c g:${NOAA_MAP_GRID_COLOR}" || extra_map_opts+=" -g 0.0"
+    [[ "${NOAA_MAP_COUNTRY_BORDER_ENABLE}" == "true" ]] && extra_map_opts+=" -C 1 -c C:${NOAA_MAP_COUNTRY_BORDER_COLOR}" || extra_map_opts+=" -C 0"
+    [[ "${NOAA_MAP_STATE_BORDER_ENABLE}" == "true" ]] && extra_map_opts+=" -S 1 -c S:${NOAA_MAP_STATE_BORDER_COLOR}" || extra_map_opts+=" -S 0"
+
+    map_overlay="${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
+    $WXMAP -T "${SAT_NAME}" -H "${TLE_FILE}" -p 0 ${extra_map_opts} -o "${epoch_adjusted}" "$map_overlay" >> "$NOAA_LOG" 2>&1
+
+    if [ "$daylight" -eq 1 ]; then
+      ENHANCEMENTS="${NOAA_DAY_ENHANCEMENTS}"
+    else
+      ENHANCEMENTS="${NOAA_NIGHT_ENHANCEMENTS}"
+    fi
+
+    # build images based on enhancements defined
+    log "Normalizing and annotating NOAA images" "INFO"
+    for enhancement in $ENHANCEMENTS; do
+      export ENHANCEMENT=$enhancement
+      log "Decoding image" "INFO"
+
+      if [$enhancement == "avi"]; then
+        ${IMAGE_PROC_DIR}/noaa_avi.sh $map_overlay "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+      else
+        ${IMAGE_PROC_DIR}/noaa_enhancements.sh $map_overlay "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" $enhancement >> $NOAA_LOG 2>&1
+      fi
+
+      if [ -f "${IMAGE_FILE_BASE}-$enhancement.jpg" ]; then
+        ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_FILE_BASE}-$enhancement.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+        ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_THUMB_BASE}-$enhancement.jpg" >> $NOAA_LOG 2>&1
+        push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-$enhancement.jpg"
+      fi
+    done
+
+    rm $map_overlay >> $NOAA_LOG 2>&1
+
+    if [ "$DELETE_NOAA_AUDIO" == true ]; then
+      log "Deleting audio files" "INFO"
+      rm "${RAMFS_AUDIO_BASE}.wav"
+    else
+      if [ "$in_mem" == "true" ]; then
+        log "Moving audio files out to the SD card" "INFO"
+        mv "${RAMFS_AUDIO_BASE}.wav" "${AUDIO_FILE_BASE}.wav"
+        log "Deleting NOAA audio files older than $DELETE_FILES_OLDER_THAN_DAYS days" "INFO"
+        find /srv/audio/noaa -type f -name "*.wav" -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
+      fi
+    fi
+  elif [ "$RECEPTION_TYPE" == "live" ]; then
+    $SATDUMP wav noaa_apt "${RAMFS_AUDIO_BASE}.wav" . --samplerate $samplerate --baseband_format w16 --satellite_number ${SAT_NUMBER} --start_timestamp $PASS_START >> $NOAA_LOG 2>&1
+    rm satdump.log product.cbor dataset.json APT-A.png APT-B.png raw.png
+    spectrogram=0
+    pristine=0
+    histogram=0
+
+    log "Removing images without a map if they exist" "INFO"
+    for file in *map.png; do
+      mv "$file" "${file/_map.png/.png}"
+    done
+
+    log "Normalizing and annotating NOAA images" "INFO"
+    for i in *.png; do
+      $CONVERT "$i" $FLIP "$i"
+      new_name="${i#avhrr_apt_rgb_}"
+      new_name="${new_name#avhrr_apt_}"
+      ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$i" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
+      push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
+      rm $i >> $NOAA_LOG 2>&1
+    done
+  else
+    log "Invalid RECEPTION_TYPE value: $RECEPTION_TYPE" "INFO"
+    exit 1
   fi
-else
+elif [ "$RECEPTION_TYPE" == "live" ]; then
+  log "Starting SatDump recording and live decoding" "INFO"
+  $SATDUMP live noaa_apt . --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
+  rm satdump.log product.cbor dataset.json APT-A.png APT-B.png raw.png
+  spectrogram=0
+  pristine=0
+  histogram=0
+
   log "Removing images without a map if they exist" "INFO"
   for file in *map.png; do
     mv "$file" "${file/_map.png/.png}"
@@ -317,6 +325,9 @@ else
     push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
     rm $i >> $NOAA_LOG 2>&1
   done
+else
+  log "Invalid RECEPTION_TYPE value: $RECEPTION_TYPE" "INFO"
+  exit 1
 fi
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------
