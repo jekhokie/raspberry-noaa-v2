@@ -18,14 +18,12 @@ ntp_server: ''
 
 # receiver settings
 #   receiver_type - the receiver type which program uses ('rtlsdr', 'airspy_mini', 'airspy_r2' or 'hackrf' or 'sdrplay' or 'mirisdr')
-#   reception_type - whether to use 'record' or 'live' reception
-#   noaa_decoder - which receiver method to use (either 'wxtoimg' or 'satdump')
-#   meteor_decoder - which receiver method to use (either 'meteordemod' or 'satdump')
+#   noaa_receiver  - which receiver method to use (either 'rtl_fm' or 'gnuradio' or 'satdump_record' or 'satdump_live')
+#   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'gnuradio' or 'satdump_record' or 'satdump_live')
 receiver_type: 'rtlsdr'
-reception_type: 'record'
 
-noaa_decoder: 'wxtoimg'
-meteor_decoder: 'meteordemod'
+noaa_receiver: 'gnuradio'
+meteor_receiver: 'gnuradio'
 
 # test settings when running test scripts
 #   test_gain - gain to use for scanner test scripts
