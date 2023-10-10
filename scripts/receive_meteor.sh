@@ -167,129 +167,129 @@ if [ "$RECEPTION_TYPE" == "record" ]; then
   rm satdump.log dataset.json
 
   if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
-  log "Removing old bmp and gcp files" "INFO"
-  find . -type f \( -name "*.gcp" -o -name "*.bmp" \) -mtime +1 -delete >> $NOAA_LOG 2>&1
+    log "Removing old bmp and gcp files" "INFO"
+    find . -type f \( -name "*.gcp" -o -name "*.bmp" \) -mtime +1 -delete >> $NOAA_LOG 2>&1
 
-  if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
-    log "Producing spectrogram" "INFO"
-    spectrogram=1
-    spectro_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
-    ${IMAGE_PROC_DIR}/spectrogram.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" "${spectro_text}" >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png" >> $NOAA_LOG 2>&1
-  fi
-
-  log "Running MeteorDemod to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
-  if [[ "$METEOR_${SAT_NUMBER}_80K_INTERLEAVING" == "true" ]]; then
-    $METEORDEMOD -m oqpsk -diff 1 -int 1 -s 80000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
-  else
-    $METEORDEMOD -m oqpsk -diff 1 -s 72000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
-  fi
-
-  rm "${RAMFS_AUDIO_BASE}.s"
-
-  for i in spread_*.jpg; do
-    $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
-  done
-
-  for file in *.jpg; do
-    new_filename=$(echo "$file" | sed -E 's/_([0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+)//')        #This part removes unecessary numbers from the MeteorDemod image names using RegEx
-    mv "$file" "$new_filename"
-
-    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$new_filename" "${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg" "${IMAGE_THUMB_BASE}-${new_filename%.jpg}.jpg" >> $NOAA_LOG 2>&1
-    rm "$new_filename"
-    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg"
-  done
-
-  if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
-    log "Contributing images for creating community composites" "INFO"
-    curl -F "file=@${RAMFS_AUDIO_BASE}.wav" "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES_URL}/meteor" >> $NOAA_LOG 2>&1
-  fi
-
-  if [ "$DELETE_METEOR_AUDIO" == true ]; then
-    log "Deleting audio files" "INFO"
-    rm "${RAMFS_AUDIO_BASE}.wav"
-  else
-    if [ "$in_mem" == "true" ]; then
-      log "Moving audio files out to the SD card" "INFO"
-      mv "${RAMFS_AUDIO_BASE}.wav" "${AUDIO_FILE_BASE}.wav"
-      log "Deleting Meteor audio files older than $DELETE_FILES_OLDER_THAN_DAYS days" "INFO"
-      find /srv/audio/meteor -type f \( -name "*.wav" -o -name "*.s" -o -name "*.cadu" -o -name "*.gcp" -o -name "*.bmp" \) -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
+    if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
+      log "Producing spectrogram" "INFO"
+      spectrogram=1
+      spectro_text="${capture_start} @ ${SAT_MAX_ELEVATION}°"
+      ${IMAGE_PROC_DIR}/spectrogram.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" "${spectro_text}" >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png" >> $NOAA_LOG 2>&1
     fi
-  fi
-elif [[ "$METEOR_DECODER" == "satdump" ]]; then
 
-  $SATDUMP baseband meteor_m2-x_lrpt${mode} "${RAMFS_AUDIO_BASE}.wav" . --samplerate $samplerate --baseband_format w16 >> $NOAA_LOG 2>&1
-  rm satdump.log dataset.json
+    log "Running MeteorDemod to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
+    if [[ "$METEOR_${SAT_NUMBER}_80K_INTERLEAVING" == "true" ]]; then
+      $METEORDEMOD -m oqpsk -diff 1 -int 1 -s 80000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+    else
+      $METEORDEMOD -m oqpsk -diff 1 -s 72000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+    fi
 
-  find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
+    rm "${RAMFS_AUDIO_BASE}.s"
 
-  log "Deleting SatDump projected composites which have been generated, but the channels aren't broadcast" "INFO"
-  for projected_file in MSU-MR/rgb_msu_mr_rgb_*_projected.png; do
-      # Extract the corresponding corrected.png filename
-      corrected_file="${projected_file/rgb_msu_mr_rgb_/msu_mr_rgb_}"
-      corrected_file="${corrected_file/_projected.png/_corrected.png}"
+    for i in spread_*.jpg; do
+      $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
+    done
 
-      # Check if the corrected.png file does not exist
-      if [ ! -e "$corrected_file" ]; then
-          log "$corrected_file doesn't exist, hence deleting $projected_file" "INFO"
-          rm "$projected_file"
+    for file in *.jpg; do
+      new_filename=$(echo "$file" | sed -E 's/_([0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+)//')        #This part removes unecessary numbers from the MeteorDemod image names using RegEx
+      mv "$file" "$new_filename"
+
+      ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$new_filename" "${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg" "${IMAGE_THUMB_BASE}-${new_filename%.jpg}.jpg" >> $NOAA_LOG 2>&1
+      rm "$new_filename"
+      push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg"
+    done
+
+    if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
+      log "Contributing images for creating community composites" "INFO"
+      curl -F "file=@${RAMFS_AUDIO_BASE}.wav" "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES_URL}/meteor" >> $NOAA_LOG 2>&1
+    fi
+
+    if [ "$DELETE_METEOR_AUDIO" == true ]; then
+      log "Deleting audio files" "INFO"
+      rm "${RAMFS_AUDIO_BASE}.wav"
+    else
+      if [ "$in_mem" == "true" ]; then
+        log "Moving audio files out to the SD card" "INFO"
+        mv "${RAMFS_AUDIO_BASE}.wav" "${AUDIO_FILE_BASE}.wav"
+        log "Deleting Meteor audio files older than $DELETE_FILES_OLDER_THAN_DAYS days" "INFO"
+        find /srv/audio/meteor -type f \( -name "*.wav" -o -name "*.s" -o -name "*.cadu" -o -name "*.gcp" -o -name "*.bmp" \) -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
       fi
-  done
-
-  log "Removing images without a map if they exist" "INFO"
-  for file in MSU-MR/*map.png; do
-    mv "$file" "${file/_map.png/.png}"
-  done
-
-  for i in MSU-MR/*_corrected.png
-  do
-    $CONVERT "$i" $FLIP "$i" >> $NOAA_LOG 2>&1
-  done
-
-    # Renaming files, annotating images, and creating thumbnails
-  for i in MSU-MR/*.png; do
-    path="$(pwd)"
-    image_filename=$(basename "$i")
-    new_name="$image_filename"
-
-    # Use parameter expansion to remove the specified prefixes
-    new_name="${new_name#msu_mr_rgb_}"
-    new_name="${new_name#rgb_msu_mr_rgb_}"
-    new_name="${new_name#rgb_msu_mr_rgb_}"
-    new_name="${new_name#rgb_msu_mr_}"
-    new_name="${new_name#msu_mr_}"
-
-    # Rename the file with the new name
-    mv "$i" "$path/MSU-MR/$new_name" >> $NOAA_LOG 2>&1
-
-    log "Annotating images and creating thumbnails" "INFO"
-    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$path/MSU-MR/$new_name" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
-    rm "$path/MSU-MR/$new_name" >> $NOAA_LOG 2>&1
-    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
-  done
-  rm -r MSU-MR >> $NOAA_LOG 2>&1
-
-  if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
-    log "Contributing images for creating community composites" "INFO"
-    curl -F "file=@${RAMFS_AUDIO_BASE}.wav" "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES_URL}/meteor" >> $NOAA_LOG 2>&1
-  fi
-
-  if [ "$DELETE_METEOR_AUDIO" == true ]; then
-    log "Deleting audio files" "INFO"
-    rm meteor_m2-x_lrpt${mode}.cadu
-  else
-    if [ "$in_mem" == "true" ]; then
-      log "Moving CADU files out to the SD card" "INFO"
-      mv meteor_m2-x_lrpt${mode}.cadu "${AUDIO_FILE_BASE}.cadu" >> $NOAA_LOG 2>&1
-      log "Deleting Meteor audio files older than $DELETE_FILES_OLDER_THAN_DAYS days" "INFO"
-      find /srv/audio/meteor -type f \( -name "*.wav" -o -name "*.s" -o -name "*.cadu" -o -name "*.gcp" -o -name "*.bmp" \) -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
     fi
+  elif [[ "$METEOR_DECODER" == "satdump" ]]; then
+
+    $SATDUMP baseband meteor_m2-x_lrpt${mode} "${RAMFS_AUDIO_BASE}.wav" . --samplerate $samplerate --baseband_format w16 >> $NOAA_LOG 2>&1
+    rm satdump.log dataset.json
+
+    find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
+
+    log "Deleting SatDump projected composites which have been generated, but the channels aren't broadcast" "INFO"
+    for projected_file in MSU-MR/rgb_msu_mr_rgb_*_projected.png; do
+        # Extract the corresponding corrected.png filename
+        corrected_file="${projected_file/rgb_msu_mr_rgb_/msu_mr_rgb_}"
+        corrected_file="${corrected_file/_projected.png/_corrected.png}"
+
+        # Check if the corrected.png file does not exist
+        if [ ! -e "$corrected_file" ]; then
+            log "$corrected_file doesn't exist, hence deleting $projected_file" "INFO"
+            rm "$projected_file"
+        fi
+    done
+
+    log "Removing images without a map if they exist" "INFO"
+    for file in MSU-MR/*map.png; do
+      mv "$file" "${file/_map.png/.png}"
+    done
+
+    for i in MSU-MR/*_corrected.png
+    do
+      $CONVERT "$i" $FLIP "$i" >> $NOAA_LOG 2>&1
+    done
+
+      # Renaming files, annotating images, and creating thumbnails
+    for i in MSU-MR/*.png; do
+      path="$(pwd)"
+      image_filename=$(basename "$i")
+      new_name="$image_filename"
+
+      # Use parameter expansion to remove the specified prefixes
+      new_name="${new_name#msu_mr_rgb_}"
+      new_name="${new_name#rgb_msu_mr_rgb_}"
+      new_name="${new_name#rgb_msu_mr_rgb_}"
+      new_name="${new_name#rgb_msu_mr_}"
+      new_name="${new_name#msu_mr_}"
+
+      # Rename the file with the new name
+      mv "$i" "$path/MSU-MR/$new_name" >> $NOAA_LOG 2>&1
+
+      log "Annotating images and creating thumbnails" "INFO"
+      ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$path/MSU-MR/$new_name" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
+      rm "$path/MSU-MR/$new_name" >> $NOAA_LOG 2>&1
+      push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
+    done
+    rm -r MSU-MR >> $NOAA_LOG 2>&1
+
+    if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
+      log "Contributing images for creating community composites" "INFO"
+      curl -F "file=@${RAMFS_AUDIO_BASE}.wav" "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES_URL}/meteor" >> $NOAA_LOG 2>&1
+    fi
+
+    if [ "$DELETE_METEOR_AUDIO" == true ]; then
+      log "Deleting audio files" "INFO"
+      rm meteor_m2-x_lrpt${mode}.cadu
+    else
+      if [ "$in_mem" == "true" ]; then
+        log "Moving CADU files out to the SD card" "INFO"
+        mv meteor_m2-x_lrpt${mode}.cadu "${AUDIO_FILE_BASE}.cadu" >> $NOAA_LOG 2>&1
+        log "Deleting Meteor audio files older than $DELETE_FILES_OLDER_THAN_DAYS days" "INFO"
+        find /srv/audio/meteor -type f \( -name "*.wav" -o -name "*.s" -o -name "*.cadu" -o -name "*.gcp" -o -name "*.bmp" \) -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
+      fi
+    fi
+  else
+      echo "Unknown decoder: $METEOR_DECODER"
   fi
-else
-    echo "Unknown decoder: $METEOR_DECODER"
-fi
 elif [ "$RECEPTION_TYPE" == "live" ]; then
   log "Starting SatDump live recording and decoding" "INFO"
   # Set mode based on METEOR_M2_3_80K_INTERLEAVING
