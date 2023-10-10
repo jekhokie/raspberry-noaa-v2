@@ -192,7 +192,7 @@ fi
 
 if [[ "$METEOR_RECEIVER" == "rtl_fm" || "$METEOR_RECEIVER" == "gnuradio" || "$METEOR_RECEIVER" == "satdump_record" ]]; then
   log "Removing old bmp and gcp files" "INFO"
-  find /srv/audio/meteor -type f \( -name "*.gcp" -o -name "*.bmp" \) -mtime +1 -delete >> $NOAA_LOG 2>&1
+  find . -type f \( -name "*.gcp" -o -name "*.bmp" \) -mtime +1 -delete >> $NOAA_LOG 2>&1
 
   if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
     log "Producing spectrogram" "INFO"
