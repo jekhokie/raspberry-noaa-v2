@@ -276,8 +276,7 @@ if [ "$RECEPTION_TYPE" == "record" ]; then
         find /srv/audio/noaa -type f -name "*.wav" -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
       fi
     fi
-  fi
-  elif [ "$RECEPTION_TYPE" == "satdump" ]; then
+  elif [ "$RECEPTION_TYPE" == "live" ]; then
     $SATDUMP wav noaa_apt "${RAMFS_AUDIO_BASE}.wav" . --samplerate $samplerate --baseband_format w16 --satellite_number ${SAT_NUMBER} --start_timestamp $PASS_START >> $NOAA_LOG 2>&1
     rm satdump.log product.cbor dataset.json APT-A.png APT-B.png raw.png
     spectrogram=0
