@@ -299,7 +299,6 @@ if [ "$RECEPTION_TYPE" == "record" ]; then
       push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
       rm $i >> $NOAA_LOG 2>&1
     done
-  fi
   else
     log "Invalid RECEPTION_TYPE value: $RECEPTION_TYPE" "INFO"
     exit 1
