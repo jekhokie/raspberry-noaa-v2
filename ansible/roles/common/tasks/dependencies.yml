@@ -44,7 +44,6 @@
       - build-essential
       - pkg-config
       - git
-      - libatlas-base-dev
       - liblapacke-dev
       - gfortran
       - libopencv-dev
