@@ -65,6 +65,9 @@ if [ "${update_tle}" == "1" ]; then
   wget -r "http://${tle_addr}/NORAD/elements/amateur.txt" --no-check-certificate -O "${AMATEUR_TXT}" >> $NOAA_LOG 2>&1
   wget -r "http://${tle_addr}/NORAD/elements/active.txt" --no-check-certificate -O "${ACTIVE_TXT}" >> $NOAA_LOG 2>&1
 
+  log "Copying TLEs for SatDump" "INFO"
+  cp "${ACTIVE_TXT}" "/home/$USER/.config/satdump/satdump_tles.txt" >> $NOAA_LOG 2>&1
+
   # create tle files for scheduling
   #   note: it's really unfortunate but a directory structure any deeper than 'tmp' in the
   #   below results in a buffer overflow reported by the predict application, presumably
