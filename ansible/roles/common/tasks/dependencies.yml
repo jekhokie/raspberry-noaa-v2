@@ -31,8 +31,16 @@
       - libusb-1.0-0-dev
       - libxft-dev
       - libxft2
-      - python3-pip
-      - python-setuptools
+      - python3-setuptools
+      - python3-idna
+      - python3-jsonschema
+      - python3-matplotlib
+      - python3-numpy
+      - python3-pil # this is really pillow
+      - python3-yaml
+      - python3-requests
+      - python3-urllib3
+      - python3-ephem
       - socat
       - sox
       - sqlite3
@@ -53,15 +61,6 @@
   pip:
     name:
       - envbash==1.2.0
-      - ephem==3.7.7.1
-      - idna==2.8
-      - jsonschema==3.2.0
-      - matplotlib==3.3.4
-      - numpy
-      - Pillow==7.1.2
-      - pyyaml==5.4.1
-      - requests==2.27.0
-      - urllib3==1.26.3
       - facebook-sdk==3.1.0
       - pysqlite3==0.5.1
     state: present
