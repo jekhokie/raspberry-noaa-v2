@@ -148,17 +148,6 @@ export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 # simply be left out/not included, so there is no harm in running all of them
 daylight=$((SUN_ELEV > SUN_MIN_ELEV ? 1 : 0))
 
-if pgrep "rtl_fm" > /dev/null; then
-  log "There is an existing RTL_FM instance running, I quit" "ERROR"
-  exit 1
-elif pgrep -f ${RECEIVER_TYPE}_noaa_apt_rx.py > /dev/null; then
-  log "There is an existing gnuradio noaa capture instance running, I quit" "ERROR"
-  exit 1
-elif pgrep -f ${RECEIVER_TYPE}_m2_lrpt_rx.py > /dev/null; then
-  log "There is an existing gnuradio M2 capture instance running, I quit" "ERROR"
-  exit 1
-fi
-
 #start capture
 if [ "$RECEPTION_TYPE" == "record" ]; then
   log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump record " "INFO"
