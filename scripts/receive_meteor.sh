@@ -211,6 +211,9 @@ if [[ "$METEOR_RECEIVER" == "rtl_fm" || "$METEOR_RECEIVER" == "gnuradio" || "$ME
 
   rm "${RAMFS_AUDIO_BASE}.s"
 
+  log "Sleeping for 2 seconds to allow files to close" "INFO"
+  sleep 2
+
   for i in spread_*.jpg; do
     $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
   done
