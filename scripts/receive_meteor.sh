@@ -222,7 +222,7 @@ if [ "$RECEPTION_TYPE" == "record" ]; then
     fi
   elif [[ "$METEOR_DECODER" == "satdump" ]]; then
 
-    $SATDUMP baseband meteor_m2-x_lrpt${mode} "${RAMFS_AUDIO_BASE}.wav" . --samplerate $samplerate --baseband_format w16 >> $NOAA_LOG 2>&1
+    $SATDUMP meteor_m2-x_lrpt${mode} baseband "${RAMFS_AUDIO_BASE}.wav" . --samplerate $samplerate --baseband_format w16 >> $NOAA_LOG 2>&1
     rm satdump.log dataset.json
 
     find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
