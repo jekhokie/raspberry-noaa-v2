@@ -133,24 +133,6 @@ export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 daylight=0
 if [ "${SUN_ELEV}" -gt "${SUN_MIN_ELEV}" ]; then daylight=1; fi
 
-# always kill running captures for NOAA in favor of capture
-# for Meteor, no matter which receive method is being used, in order
-# to avoid resource contention and/or signal interference
-# First check for rtl_fm mode active instances
-if pgrep "rtl_fm" > /dev/null; then
-  log "There is an already running rtl_fm noaa capture instance but I dont care for now, I prefer this pass" "INFO"
-  pkill -9 -f rtl_fm
-fi
-# then for gnuradio mode active instances
-if pgrep -f ${RECEIVER_TYPE}_noaa_apt_rx.py > /dev/null; then
-  log "There is an already running gnuradio noaa capture instance but I dont care for now, I prefer this pass" "INFO"
-  kill $(pgrep -f ${RECEIVER_TYPE}_noaa_apt_rx.py)
-fi
-if pgrep "$SATDUMP" > /dev/null; then
-  log "There is an already running satdump noaa capture instance but I dont care for now, I prefer this pass" "INFO"
-  pkill -9 -f satdump
-fi
-
 # TODO: Fix this up - this conditional selection is a massive bit of complexity that
 #       needs to be handled, but in the interest of not breaking everything (at least in
 #       the first round), keeping it simple.
