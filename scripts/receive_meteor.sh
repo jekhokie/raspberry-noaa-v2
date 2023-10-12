@@ -187,6 +187,9 @@ if [ "$RECEPTION_TYPE" == "record" ]; then
 
     rm "${RAMFS_AUDIO_BASE}.s"
 
+    log "Waiting for files to close" "INFO"
+    sleep 2
+
     for i in spread_*.jpg; do
       $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
     done
