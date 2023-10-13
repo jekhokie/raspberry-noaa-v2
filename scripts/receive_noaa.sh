@@ -150,12 +150,15 @@ daylight=$((SUN_ELEV > SUN_MIN_ELEV ? 1 : 0))
 
 #start capture
 if [ "$RECEPTION_TYPE" == "record" ]; then
-  log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump record " "INFO"
+  log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump live pipeline" "INFO"
+  audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
   #$SATDUMP record "${RAMFS_AUDIO_BASE}-baseband" --source $receiver --baseband_format w16 --samplerate $samplerate --decimation $decimation --frequency "${NOAA_FREQUENCY}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
-  $SATDUMP live noaa_apt /var/ramfs --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
-  $SOX "/var/ramfs/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+  $SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+  log "Waiting for noaa_apt.wav to close" "INFO"
+  sleep 1
+  $SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
   #"$NOAA_HOME/scripts/audio_processors/FM_baseband_demodulator.py" "${RAMFS_AUDIO_BASE}-baseband-resampled.wav" "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
-  rm /var/ramfs/satdump.log /var/ramfs/dataset.json /var/ramfs/noaa_apt.wav >> $NOAA_LOG 2>&1
+  rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/dataset.json" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
 
   if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
     log "Contributing images for creating community composites" "INFO"
