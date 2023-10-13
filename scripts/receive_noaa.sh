@@ -153,9 +153,9 @@ if [ "$RECEPTION_TYPE" == "record" ]; then
   log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump record " "INFO"
   #$SATDUMP record "${RAMFS_AUDIO_BASE}-baseband" --source $receiver --baseband_format w16 --samplerate $samplerate --decimation $decimation --frequency "${NOAA_FREQUENCY}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
   $SATDUMP live noaa_apt /var/ramfs --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
-  $SOX "/var/ramfs/noaa_apt.wav" -r 110250 "${RAMFS_AUDIO_BASE}-baseband-resampled.wav" >> $NOAA_LOG 2>&1
+  $SOX "/var/ramfs/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
   #"$NOAA_HOME/scripts/audio_processors/FM_baseband_demodulator.py" "${RAMFS_AUDIO_BASE}-baseband-resampled.wav" "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
-  rm /var/ramfs/satdump.log /var/ramfs/dataset.json "${RAMFS_AUDIO_BASE}-baseband.wav" "${RAMFS_AUDIO_BASE}-baseband-resampled.wav" >> $NOAA_LOG 2>&1
+  rm /var/ramfs/satdump.log /var/ramfs/dataset.json /var/ramfs/noaa_apt.wav >> $NOAA_LOG 2>&1
 
   if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
     log "Contributing images for creating community composites" "INFO"
@@ -268,7 +268,7 @@ if [ "$RECEPTION_TYPE" == "record" ]; then
     fi
   elif [ "$NOAA_DECODER" == "satdump" ]; then
     $SATDUMP noaa_apt wav "${RAMFS_AUDIO_BASE}.wav" . --samplerate $samplerate --baseband_format w16 --satellite_number ${SAT_NUMBER} --start_timestamp $PASS_START >> $NOAA_LOG 2>&1
-    rm satdump.log product.cbor dataset.json APT-A.png APT-B.png raw.png
+    rm satdump.log noaa_apt.wav product.cbor dataset.json APT-A.png APT-B.png raw.png
     spectrogram=0
     pristine=0
     histogram=0
