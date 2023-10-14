@@ -47,8 +47,8 @@ test_freq_offset: 0
 #   <satellite_name>_sat_min_elevation - threshold for sat elevation for specific satellite captures
 #   <satellite_name>_memory_threshold - for METEOR satellite, minimum free memory (MB) required to store pass in RAM
 
-noaa_memory_threshold: 600
-meteor_m2_memory_threshold: 600
+noaa_memory_threshold: 400
+meteor_m2_memory_threshold: 100
 
 select_best_overlapping_passes: true
 select_meteor_pass_over_noaa: true
