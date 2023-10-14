@@ -240,7 +240,7 @@
     name: nginx
     state: started
 
-- name: www-data sudoers atrm as pi user
+- name: www-data sudoers atrm as the current user
   become: yes
   template:
     src: 020_www-data-atrm-nopasswd
