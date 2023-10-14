@@ -176,6 +176,10 @@ if [ "$RECEPTION_TYPE" == "record" ]; then
       $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
     done
 
+    for i in *IR*; do
+      $CONVERT "$i" -equalize "${i%.jpg}_equalized.jpg" >> $NOAA_LOG 2>&1
+    done
+
     for file in *.jpg; do
       new_filename=$(echo "$file" | sed -E 's/_([0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+)//')        #This part removes unecessary numbers from the MeteorDemod image names using RegEx
       mv "$file" "$new_filename"
