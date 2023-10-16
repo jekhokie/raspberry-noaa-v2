@@ -54,7 +54,7 @@ elif [ "$SAT_NAME" == "METEOR-M2 4" ]; then
 fi
 
 # create PID file
-PID_FILE=${NOAA_HOME}/tmp/${EPOCH_START}_METEOR_M23.pid
+PID_FILE=${NOAA_HOME}/tmp/${EPOCH_START}_METEOR-M23.pid
 touch ${PID_FILE}
 log "Created PID file ${PID_FILE}" "INFO"
 
