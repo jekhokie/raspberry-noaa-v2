@@ -106,7 +106,7 @@
   git:
     repo: https://github.com/Digitelektro/MeteorDemod.git
     dest: /home/{{ target_user }}/MeteorDemod
-    version: beta
+    version: feature/composite
   when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
   ignore_errors: yes
 
