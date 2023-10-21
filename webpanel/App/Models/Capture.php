@@ -100,7 +100,6 @@ class Capture extends \Lib\Model {
               '-equidistant_rain_IR.jpg',
               '-equidistant_rain_221.jpg',
               '-equidistant_rain_224.jpg',
-              '-spread_rain_IR.jpg',
               '-mercator_321.jpg',
               '-mercator_221.jpg',
               '-mercator_654.jpg',
@@ -159,7 +158,10 @@ class Capture extends \Lib\Model {
               '-mercator_654.jpg',
               '-mercator_IR.jpg',
               '-mercator_thermal.jpg',
-              '-mercator_rain_IR.jpg'
+              '-mercator_rain_IR.jpg',
+              '-spread_654.jpg',
+              '-spread_IR.jpg',
+              '-spread_rain_IR.jpg'
           ];
         }
         break;
