@@ -161,7 +161,6 @@ class Capture extends \Lib\Model {
               '-mercator_rain_IR.jpg',
               '-spread_654.jpg',
               '-spread_IR.jpg',
-              '-spread_rain_IR.jpg'
           ];
         }
         break;
