@@ -4,7 +4,7 @@ MercatorProjection={{ meteor_create_mercator_projection|lower|bool }}
 SpreadImage={{ meteor_create_spreaded_images_without_overlay|lower|bool }}
 AddRainOverlay={{ meteor_create_rain_probability_overlay|lower|bool }}
 JpgQuality=100
-NightPassTreshold=30.0
+NightPassTreshold=40.0
 #Scale output image, it helps to reduce memory usage and generates smaller images
 ProjectionScale=1
 CompositeProjectionScale=1
@@ -13,6 +13,7 @@ CompositeMercatorProjection=false
 GenerateComposite321=true
 GenerateComposite125=true
 GenerateComposite221=true
+GenerateComposite224=true
 GenerateComposite68=true
 GenerateCompositeThermal=true
 GenerateComposite68Rain=true
@@ -31,9 +32,9 @@ SatNameInTLE=METEOR-M2 3
 ScanAngle=110.3
 Roll=0
 Pitch=0
-Yaw=0
+Yaw=-0.4
 # Onboard time offset in seconds
-TimeOffset=1.6
+TimeOffset=0.6
 
 [Demodulator]
 #Increasing bandwidth allow the pll to lock faster on signal, while decreasing it makes the pll lock more stable
