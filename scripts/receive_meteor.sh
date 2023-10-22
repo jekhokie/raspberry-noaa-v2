@@ -178,11 +178,12 @@ if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
   for file in $NOAA_HOME/tmp/*.jpg; do
     new_filename=$(echo "$file" | sed -E 's/_([0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+)//')        #This part removes unecessary numbers from the MeteorDemod image names using RegEx
     mv "$file" "$new_filename"
+    image_filename=$(basename "$new_filename")
 
-    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$new_filename" "${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg" "${IMAGE_THUMB_BASE}-${new_filename%.jpg}.jpg" >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$new_filename" "${IMAGE_FILE_BASE}-${image_filename%.jpg}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${image_filename%.jpg}.jpg" "${IMAGE_THUMB_BASE}-${image_filename%.jpg}.jpg" >> $NOAA_LOG 2>&1
     rm "$new_filename"
-    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_filename%.jpg}.jpg"
+    push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${image_filename%.jpg}.jpg"
   done
 
   if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
