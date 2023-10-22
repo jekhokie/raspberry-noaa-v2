@@ -313,7 +313,8 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
       '-mercator_654.jpg'
       '-spread_654.jpg'
       '-Thermal_Channel_corrected.jpg'
-      '-spread_rain.jpg'
+      '-equidistant_IR.jpg'
+      '-mercator_IR.jpg'
       '-spread_IR.jpg'
   )
 
