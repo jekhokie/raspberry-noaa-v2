@@ -214,8 +214,6 @@ meteor_create_spreaded_images_without_overlay: true
 #   web_port - port to run the web server clear-text (non-encrypted) endpoint on
 #   enable_tls - whether to enable the TLS-encrypted web listener (default port 443)
 #   web_tls_port - port to run the TLS listener on
-#   cert_valid_days - number of days the TLS certificates should be valid for - note that
-#                     you will need to re-install the certificates once this timeline expires
 #   lock_admin_page - whether to require username/password when attempting to access the admin page
 #                     of the webpanel - WARNING: DO NOT SET THIS TO TRUE UNLESS YOU ONLY HAVE A TLS
 #                     ENABLED SITE - SETTING TO TRUE AND RUNNING A CLEARTEXT SITE IS ALMOST CERTAINLY
@@ -232,7 +230,6 @@ enable_non_tls: true
 web_port: 80
 enable_tls: false
 web_tls_port: 443
-cert_valid_days: 365
 lock_admin_page: true
 admin_username: 'admin'
 admin_password: 'admin'
