@@ -42,7 +42,7 @@ if [ -f /etc/modprobe.d/rtlsdr.conf ]; then
 fi
 
 log_running "Installing yaml and jsonschema Python modules..."
-sudo apt install python3-yaml python3-jsonschema
+sudo apt install python3-yaml python3-jsonschema -y
 
 log_running "Checking configuration files..."
 python3 scripts/tools/validate_yaml.py config/settings.yml config/settings_schema.json
@@ -104,7 +104,7 @@ fi
 
 log_running "Installing certbot for SSL certificates signed by the Let's Encrypt..."
 if [ $? -eq 0 ]; then
-  sudo apt install certbot
+  sudo apt install certbot -y
 else
   die "  Something failed with the install - please inspect the logs above"
 fi

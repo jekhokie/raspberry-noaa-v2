@@ -147,7 +147,7 @@
         },
         "update_tles_startup": {
             "type": "bool",
-            "value": true,
+            "value": false,
             "name": "Update TLEs on Startup",
             "description": "If this is enabled, TLEs will be updated each time SatDump is started"
         },
@@ -891,7 +891,7 @@
                         }
                     },
                     "negative224": {
-                        "equation": "1-ch2, ch2, ch4",
+                        "equation": "ch2, ch2, 1-ch4",
                         "geo_correct": true,
                         "individual_equalize": true,
                         "map_overlay": {{ meteor_draw_map_overlay|lower }},
