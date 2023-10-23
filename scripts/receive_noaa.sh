@@ -288,6 +288,18 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
     push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
     rm $i >> $NOAA_LOG 2>&1
   done
+
+  if [ "$DELETE_NOAA_AUDIO" == true ]; then
+    log "Deleting audio files" "INFO"
+    rm "${RAMFS_AUDIO_BASE}.wav"
+  else
+    if [ "$in_mem" == "true" ]; then
+      log "Moving audio files out to the SD card" "INFO"
+      mv "${RAMFS_AUDIO_BASE}.wav" "${AUDIO_FILE_BASE}.wav"
+      log "Deleting NOAA audio files older than $DELETE_FILES_OLDER_THAN_DAYS days" "INFO"
+      find /srv/audio/noaa -type f -name "*.wav" -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
+    fi
+  fi
 else
   log "Invalid NOAA_DECODER value: $NOAA_DECODER" "INFO"
   exit 1

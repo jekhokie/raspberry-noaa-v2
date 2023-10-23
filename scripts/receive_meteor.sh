@@ -205,7 +205,7 @@ if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
 elif [[ "$METEOR_DECODER" == "satdump" ]]; then
 
   $SATDUMP meteor_m2-x_lrpt${mode} soft "${RAMFS_AUDIO_BASE}.s" . >> $NOAA_LOG 2>&1
-  rm satdump.log
+  rm satdump.log "${RAMFS_AUDIO_BASE}.s"
 
   find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
 

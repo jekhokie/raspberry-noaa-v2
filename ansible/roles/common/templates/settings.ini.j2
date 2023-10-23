@@ -59,7 +59,7 @@ Width=3
 Text=
 
 [ReceiverLocation]
-Draw={{ meteor_map_crosshair_enable|lower|bool }}
+Draw={{ meteor_map_crosshair_enable|lower }}
 Latitude={{ latitude }}
 Longitude={{ longitude }}
 #It was Color=#FFFF00
@@ -80,13 +80,13 @@ Color=#AAE0C6
 Thickness=2
 
 [ShapeFileBoundaryLines]
-FileName={% if meteor_draw_map_overlay|lower|bool %}ShapeFiles/ne_50m_admin_0_boundary_lines_land.shp{% else %}''{% endif %}
+FileName={% if meteor_draw_map_overlay|lower %}ShapeFiles/ne_50m_admin_0_boundary_lines_land.shp{% else %}''{% endif %}
 
 Color={{ meteor_map_country_border_color }}
 Thickness=2
 
 [ShapeFilePopulatedPlaces] 
-FileName={% if meteor_draw_cities|lower|bool %}ShapeFiles/ne_50m_populated_places.shp{% else %}''{% endif %}
+FileName={% if meteor_draw_cities|lower %}ShapeFiles/ne_50m_populated_places.shp{% else %}''{% endif %}
 
 Color=#5A42F5
 #Font height in pixels
