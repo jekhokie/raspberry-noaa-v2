@@ -151,7 +151,7 @@ mv "$audio_temporary_storage_directory/meteor_m2-x_lrpt${mode}.soft" "${RAMFS_AU
 
 if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
   log "Removing old bmp and gcp files" "INFO"
-  find "$NOAA_HOME/tmp/" -type f \( -name "*.gcp" -o -name "*.bmp" \) -mtime +1 -delete >> $NOAA_LOG 2>&1
+  find "$NOAA_HOME/tmp/meteor" -type f \( -name "*.gcp" -o -name "*.bmp" \) -mtime +1 -delete >> $NOAA_LOG 2>&1
 
   # if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
   #   log "Producing spectrogram" "INFO"
@@ -163,19 +163,19 @@ if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
 
   log "Running MeteorDemod to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
   if [[ "$METEOR_${SAT_NUMBER}_80K_INTERLEAVING" == "true" ]]; then
-    $METEORDEMOD -m oqpsk -diff 1 -int 1 -s 80000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.s" -o "$NOAA_HOME/tmp"  >> $NOAA_LOG 2>&1
+    $METEORDEMOD -m oqpsk -diff 1 -int 1 -s 80000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.s" -o "$NOAA_HOME/tmp/meteor"  >> $NOAA_LOG 2>&1
   else
-    $METEORDEMOD -m oqpsk -diff 1 -s 72000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.s" -o "$NOAA_HOME/tmp" >> $NOAA_LOG 2>&1
+    $METEORDEMOD -m oqpsk -diff 1 -s 72000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.s" -o "$NOAA_HOME/tmp/meteor" >> $NOAA_LOG 2>&1
   fi
 
   log "Waiting for files to close" "INFO"
   sleep 2
 
-  for i in -o $NOAA_HOME/tmp/spread_*.jpg; do
+  for i in -o $NOAA_HOME/tmp/meteor/spread_*.jpg; do
     $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
   done
 
-  for file in $NOAA_HOME/tmp/*.jpg; do
+  for file in $NOAA_HOME/tmp/meteor/*.jpg; do
     new_filename=$(echo "$file" | sed -E 's/_([0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+)//')        #This part removes unecessary numbers from the MeteorDemod image names using RegEx
     mv "$file" "$new_filename"
     image_filename=$(basename "$new_filename")
