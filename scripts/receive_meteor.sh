@@ -146,8 +146,8 @@ polar_direction=0
 log "Recording ${NOAA_HOME} via $receiver at ${METEOR_M2_3_FREQ} MHz using SatDump record " "INFO"
 audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
 $SATDUMP live meteor_m2-x_lrpt${mode} "$audio_temporary_storage_directory" --source $receiver --samplerate $samplerate --frequency "${METEOR_M2_3_FREQ}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
-rm satdump.log "$audio_temporary_storage_directory/meteor_m2-x_lrpt${mode}.cadu"
-mv "$audio_temporary_storage_directory/meteor_m2-x_lrpt${mode}.soft" "${RAMFS_AUDIO_BASE}.s"
+rm satdump.log
+mv "$audio_temporary_storage_directory/meteor_m2-x_lrpt${mode}.cadu" "${RAMFS_AUDIO_BASE}.cadu"
 
 if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
   log "Removing old bmp and gcp files" "INFO"
@@ -163,9 +163,9 @@ if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
 
   log "Running MeteorDemod to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
   if [[ "$METEOR_${SAT_NUMBER}_80K_INTERLEAVING" == "true" ]]; then
-    $METEORDEMOD -m oqpsk -diff 1 -int 1 -s 80000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.s" -o "$NOAA_HOME/tmp/meteor"  >> $NOAA_LOG 2>&1
+    $METEORDEMOD -m oqpsk -diff 1 -int 1 -s 80000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.cadu" -o "$NOAA_HOME/tmp/meteor"  >> $NOAA_LOG 2>&1
   else
-    $METEORDEMOD -m oqpsk -diff 1 -s 72000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.s" -o "$NOAA_HOME/tmp/meteor" >> $NOAA_LOG 2>&1
+    $METEORDEMOD -m oqpsk -diff 1 -s 72000 -sat METEOR-M-2-3 -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.cadu" -o "$NOAA_HOME/tmp/meteor" >> $NOAA_LOG 2>&1
   fi
 
   log "Waiting for files to close" "INFO"
@@ -188,24 +188,24 @@ if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
 
   if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
     log "Contributing images for creating community composites" "INFO"
-    curl -F "file=@${RAMFS_AUDIO_BASE}.s" "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES_URL}/meteor" >> $NOAA_LOG 2>&1
+    curl -F "file=@${RAMFS_AUDIO_BASE}.cadu" "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES_URL}/meteor" >> $NOAA_LOG 2>&1
   fi
 
   if [ "$DELETE_METEOR_AUDIO" == true ]; then
     log "Deleting audio files" "INFO"
-    rm "${RAMFS_AUDIO_BASE}.s"
+    rm "${RAMFS_AUDIO_BASE}.cadu"
   else
     if [ "$in_mem" == "true" ]; then
       log "Moving audio files out to the SD card" "INFO"
-      mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
+      mv "${RAMFS_AUDIO_BASE}.cadu" "${AUDIO_FILE_BASE}.cadu"
       log "Deleting Meteor audio files older than $DELETE_FILES_OLDER_THAN_DAYS days" "INFO"
       find /srv/audio/meteor -type f \( -name "*.wav" -o -name "*.s" -o -name "*.cadu" -o -name "*.gcp" -o -name "*.bmp" \) -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
     fi
   fi
 elif [[ "$METEOR_DECODER" == "satdump" ]]; then
 
-  $SATDUMP meteor_m2-x_lrpt${mode} soft "${RAMFS_AUDIO_BASE}.s" . >> $NOAA_LOG 2>&1
-  rm satdump.log "${RAMFS_AUDIO_BASE}.s"
+  $SATDUMP meteor_m2-x_lrpt${mode} cadu "${RAMFS_AUDIO_BASE}.cadu" . >> $NOAA_LOG 2>&1
+  rm satdump.log
 
   find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
 
@@ -258,7 +258,7 @@ elif [[ "$METEOR_DECODER" == "satdump" ]]; then
 
   if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
     log "Contributing images for creating community composites" "INFO"
-    curl -F "file=@${RAMFS_AUDIO_BASE}.wav" "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES_URL}/meteor" >> $NOAA_LOG 2>&1
+    curl -F "file=@${RAMFS_AUDIO_BASE}.cadu" "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES_URL}/meteor" >> $NOAA_LOG 2>&1
   fi
 
   if [ "$DELETE_METEOR_AUDIO" == true ]; then
