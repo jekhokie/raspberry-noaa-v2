@@ -81,7 +81,7 @@ case "$RECEIVER_TYPE" in
          ;;
      "mirisdr")
          samplerate="1e6"
-         receiver="sdrplay"
+         receiver="mirisdr"
          decimation=25
          ;;
      *)
