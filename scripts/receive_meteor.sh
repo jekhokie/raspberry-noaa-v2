@@ -75,8 +75,8 @@ case "$RECEIVER_TYPE" in
          ;;
      "mirisdr")
          samplerate="1e6"
-         receiver="sdrplay"
-         decimation=25
+         receiver="mirisdr"
+         decimation=8
          ;;
      *)
          echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE"
