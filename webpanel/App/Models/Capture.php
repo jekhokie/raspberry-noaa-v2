@@ -207,7 +207,7 @@ class Capture extends \Lib\Model {
     }
     # capture pristine if one exists
     if ($pass['has_pristine'] == '1') {
-      array_push($enhancements, '-pristine.jpg');
+      array_push($enhancements, '-pristine.png');
     }
     if ($pass['has_histogram'] == '1') {
       array_push($enhancements, '-histogram.jpg');
