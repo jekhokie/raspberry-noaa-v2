@@ -195,7 +195,7 @@ if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
 
   if [ "$DELETE_METEOR_AUDIO" == true ]; then
     log "Deleting audio files" "INFO"
-    rm "${RAMFS_AUDIO_BASE}.s"
+    rm "${RAMFS_AUDIO_BASE}.s" "${RAMFS_AUDIO_BASE}.cadu"
   else
     if [ "$in_mem" == "true" ]; then
       log "Moving audio files out to the SD card" "INFO"
@@ -317,9 +317,12 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
       '-mercator_654.jpg'
       '-spread_654.jpg'
       '-Thermal_Channel_corrected.jpg'
-      '-equidistant_IR.jpg'
-      '-mercator_IR.jpg'
-      '-spread_IR.jpg'
+      '-equidistant_67.jpg'
+      '-equidistant_68.jpg'
+      '-mercator_67.jpg'
+      '-mercator_68.jpg'
+      '-spread_67.jpg'
+      '-spread_68.jpg'
   )
 
   # Iterate through the meteor_suffixes array
