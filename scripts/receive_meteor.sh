@@ -173,9 +173,9 @@ if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
   log "Waiting for files to close" "INFO"
   sleep 2
 
-  for i in -o $NOAA_HOME/tmp/meteor/spread_*.jpg; do
-    $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
-  done
+  # for i in -o $NOAA_HOME/tmp/meteor/spread_*.jpg; do
+  #   $CONVERT -quality 100 $FLIP "$i" "$i" >> $NOAA_LOG 2>&1
+  # done
 
   for file in $NOAA_HOME/tmp/meteor/*.jpg; do
     new_filename=$(echo "$file" | sed -E 's/_([0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+-[0-9]+)//')        #This part removes unecessary numbers from the MeteorDemod image names using RegEx
