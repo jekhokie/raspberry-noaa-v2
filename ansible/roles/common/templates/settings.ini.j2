@@ -29,8 +29,8 @@ TimeOffset=0
 
 [METEOR-M-2-3]
 SatNameInTLE=METEOR-M2 3
-ScanAngle=110.3
-Roll=0
+ScanAngle=109.9
+Roll=0.2
 Pitch=0
 Yaw=-0.4
 # Onboard time offset in seconds
@@ -75,12 +75,12 @@ Color=#C8C8C8
 Thickness=1
 
 [ShapeFileCoastLines]
-FileName=ShapeFiles/ne_50m_coastline.shp
+FileName=ShapeFiles/ne_10m_coastline.shp
 Color=#AAE0C6
 Thickness=2
 
 [ShapeFileBoundaryLines]
-FileName={% if meteor_draw_map_overlay|lower %}ShapeFiles/ne_50m_admin_0_boundary_lines_land.shp{% else %}''{% endif %}
+FileName={% if meteor_draw_map_overlay|lower %}ShapeFiles/ne_10m_admin_0_countries.shp{% else %}''{% endif %}
 
 Color={{ meteor_map_country_border_color }}
 Thickness=2
