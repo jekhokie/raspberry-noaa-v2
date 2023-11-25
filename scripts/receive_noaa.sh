@@ -133,13 +133,13 @@ else
     bias_tee_option=""
 fi
 
-FLIP="" 
-log "Direction $PASS_DIRECTION" "INFO" 
-if [ "$PASS_DIRECTION" == "Northbound" ]; then 
-  log "I'll flip this image pass because PASS_DIRECTION is Northbound" "INFO" 
-  FLIP="-rotate 180" 
+FLIP=""
+log "Direction $PASS_DIRECTION" "INFO"
+if [ "$PASS_DIRECTION" == "Northbound" ]; then
+  log "I'll flip this image pass because PASS_DIRECTION is Northbound" "INFO"
+  FLIP="-rotate 180"
 fi
- 
+
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
 export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
