@@ -32,12 +32,11 @@ fi
 # binary helpers
 CONVERT="/usr/bin/convert"
 FFMPEG="/usr/bin/ffmpeg"
+SOX="/usr/bin/sox"
 GMIC="/usr/bin/gmic"
 IDENTIFY="/usr/bin/identify"
-METEOR_DEMOD="/usr/local/bin/meteor_demod"
 PREDICT="/usr/bin/predict"
 RTL_FM="/usr/local/bin/rtl_fm"
-SOX="/usr/bin/sox"
 SQLITE3="/usr/bin/sqlite3"
 WXMAP="/usr/local/bin/wxmap"
 WXTOIMG="/usr/local/bin/wxtoimg"
