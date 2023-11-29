@@ -272,7 +272,7 @@ if [ "$NOAA_DECODER" == "wxtoimg" ]; then
     fi
   fi
 elif [ "$NOAA_DECODER" == "satdump" ]; then
-  $SATDUMP noaa_apt wav "${RAMFS_AUDIO_BASE}.wav" . --samplerate $samplerate --baseband_format w16 --satellite_number ${SAT_NUMBER} --start_timestamp $PASS_START >> $NOAA_LOG 2>&1
+  $SATDUMP noaa_apt wav "${RAMFS_AUDIO_BASE}.wav" . --satellite_number ${SAT_NUMBER} --start_timestamp $PASS_START >> $NOAA_LOG 2>&1
   rm satdump.log noaa_apt.wav product.cbor
   spectrogram=0
   pristine=0
