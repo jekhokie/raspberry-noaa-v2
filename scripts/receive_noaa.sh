@@ -148,19 +148,14 @@ export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 # simply be left out/not included, so there is no harm in running all of them
 daylight=$((SUN_ELEV > SUN_MIN_ELEV ? 1 : 0))
 
-if [ "$RECEIVER_TYPE" == "rtlsdr" ]; then
-  log "Recording using RTL-FM because RTL-SDR is used as the receiver type" "INFO"
-  timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -f "${NOAA_FREQUENCY}"M -p "${FREQ_OFFSET}" -s 50k  -E wav -E deemp -F 9 - | $SOX -t raw -e signed -c 1 -b 16 -r 50000 - "${RAMFS_AUDIO_BASE}.wav" rate 11025
-else
-  #start capture
-  log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump live pipeline" "INFO"
-  audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
-  $SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
-  log "Waiting for noaa_apt.wav to close" "INFO"
-  sleep 1
-  $SOX -c 1 -b 16 -r 50000 "$audio_temporary_storage_directory/noaa_apt.wav" "${RAMFS_AUDIO_BASE}.wav" rate 11025 >> $NOAA_LOG 2>&1
-  rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
-fi
+#start capture
+log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump live pipeline" "INFO"
+audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
+$SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+log "Waiting for noaa_apt.wav to close" "INFO"
+sleep 1
+$SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" pad 0 10.5 >> $NOAA_LOG 2>&1
+rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
 
 if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
   log "Contributing images for creating community composites" "INFO"
@@ -272,7 +267,7 @@ if [ "$NOAA_DECODER" == "wxtoimg" ]; then
     fi
   fi
 elif [ "$NOAA_DECODER" == "satdump" ]; then
-  $SATDUMP noaa_apt wav "${RAMFS_AUDIO_BASE}.wav" . --satellite_number ${SAT_NUMBER} --start_timestamp $PASS_START >> $NOAA_LOG 2>&1
+  $SATDUMP noaa_apt audio_wav "${RAMFS_AUDIO_BASE}.wav" . --satellite_number ${SAT_NUMBER} --start_timestamp $PASS_START >> $NOAA_LOG 2>&1
   rm satdump.log noaa_apt.wav product.cbor
   spectrogram=0
   pristine=0
