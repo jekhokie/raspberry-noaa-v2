@@ -192,19 +192,26 @@ class Capture extends \Lib\Model {
           $enhancements = array_map(function($x) { return "-" . $x . ".jpg"; }, explode(' ', Config::NOAA_NIGHT_ENHANCEMENTS));
         }
         $satdump_enhancements = [
-            "-APT-A.jpg",
-            "-APT-B.jpg",
-            "-raw.jpg",
-            "-A_individual_equalized.jpg",
-            "-B_individual_equalized.jpg",
             "Clouds_Underlay.jpg",
             "-224.jpg",
             "-MSA_Rain.jpg",
+            "-MSA_Rain_(Uncalibrated).jpg",
             "-MCIR_Rain.jpg",
+            "-MCIR_Rain_(Uncalibrated).jpg",
+            "-Thermal_Channel.jpg",
             "-WXtoImg_HVC_N15.jpg",
             "-WXtoImg_HVC_N18.jpg",
             "-WXtoImg_HVC_N19.jpg",
-            "-WXtoImg_NO.jpg"
+            "-WXtoImg_NO.jpg",
+            "-APT-A.jpg",
+            "-APT-B.jpg",
+            "-APT_channel_A.jpg",
+            "-APT_channel_B.jpg",
+            "-raw.jpg",
+            "-A_individual_equalized.jpg",
+            "-B_individual_equalized.jpg",
+            "-AVHRR-1.jpg",
+            "-AVHRR-4.jpg"
         ];
         $enhancements = array_merge($enhancements, $satdump_enhancements);
         break;
