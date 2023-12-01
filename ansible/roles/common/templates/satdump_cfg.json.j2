@@ -533,7 +533,8 @@
                         "equation": "cch4",
                         "apply_lut": true,
                         "description": "descriptions/ThermalCal.md",
-                        "geo_correct": true
+                        "geo_correct": true,
+                        "autogen": {{ "true" if "therm" in noaa_nighttime_enhancements.split(' ') else "false" }},
                     },
                     "Night Microphysics": {
                         "equation": "cch5-cch4,cch4-cch3b,cch4",
@@ -574,42 +575,42 @@
                         },
                         "autogen": false
                     },
-                    "MCIR": {
-                        "channels": "cch4",
-                        "lua": "scripted_compos/underlay_with_clouds.lua",
-                        "description": "descriptions/MCIR.md",
-                        "lua_vars": {
-                            "minoffset": 0.05,
-                            "scalar": 1.1,
-                            "thresold": 0,
-                            "blend": 1,
-                            "invert": 1
-                        },
-                        "draw_map_overlay": true,
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ]
-                    },
-                    "MSA": {
-                        "channels": "cch2",
-                        "lua": "scripted_compos/underlay_with_clouds.lua",
-                        "description": "descriptions/MSA.md",
-                        "lua_vars": {
-                            "minoffset": -0.15,
-                            "scalar": 2.0,
-                            "thresold": 0,
-                            "blend": 1,
-                            "invert": 0
-                        },
-                        "draw_map_overlay": true,
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ]
-                    },
+//                    "MCIR": {
+//                        "channels": "cch4",
+//                        "lua": "scripted_compos/underlay_with_clouds.lua",
+//                        "description": "descriptions/MCIR.md",
+//                        "lua_vars": {
+//                            "minoffset": 0.05,
+//                            "scalar": 1.1,
+//                            "thresold": 0,
+//                            "blend": 1,
+//                            "invert": 1
+//                        },
+//                        "draw_map_overlay": true,
+//                        "borders_color": [
+//                            1,
+//                            1,
+//                            0
+//                        ]
+//                    },
+//                    "MSA": {
+//                        "channels": "cch2",
+//                        "lua": "scripted_compos/underlay_with_clouds.lua",
+//                        "description": "descriptions/MSA.md",
+//                        "lua_vars": {
+//                            "minoffset": -0.15,
+//                            "scalar": 2.0,
+//                            "thresold": 0,
+//                            "blend": 1,
+//                            "invert": 0
+//                        },
+//                        "draw_map_overlay": true,
+//                        "borders_color": [
+//                            1,
+//                            1,
+//                            0
+//                        ]
+//                    },
                     "Snow enhancement": {
                         "equation": "((3*ch1-ch4)/2)^1.7, ((3*ch1+ch4)/4)^1.7, (ch1-ch3a)^1.7",
                         "description": "descriptions/Snow.md",
