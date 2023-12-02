@@ -197,7 +197,6 @@ class Capture extends \Lib\Model {
             "-MSA_(Uncalibrated).jpg",
             "-MSA_Rain.jpg",
             "-MSA_Rain_(Uncalibrated).jpg",
-
             "-MCIR_(Uncalibrated).jpg",
             "-MCIR_Rain.jpg",
             "-MCIR_Rain_(Uncalibrated).jpg",
