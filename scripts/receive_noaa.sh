@@ -154,7 +154,7 @@ audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
 $SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
 log "Waiting for noaa_apt.wav to close" "INFO"
 sleep 1
-$SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" pad 0 10.0 >> $NOAA_LOG 2>&1
+$SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" pad 0 10.5 >> $NOAA_LOG 2>&1
 rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
 
 if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
@@ -283,6 +283,7 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
     $CONVERT "$i" $FLIP "$i"
     new_name="${i#avhrr_apt_rgb_}"
     new_name="${new_name#avhrr_apt_}"
+    new_name="${new_name#avhrr_3_rgb_}"
     ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$i" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
     push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"

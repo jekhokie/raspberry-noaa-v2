@@ -194,8 +194,10 @@ class Capture extends \Lib\Model {
         $satdump_enhancements = [
             "Clouds_Underlay.jpg",
             "-224.jpg",
+            "-MSA_(Uncalibrated).jpg",
             "-MSA_Rain.jpg",
             "-MSA_Rain_(Uncalibrated).jpg",
+            "-MCIR_(Uncalibrated).jpg",
             "-MCIR_Rain.jpg",
             "-MCIR_Rain_(Uncalibrated).jpg",
             "-Thermal_Channel.jpg",
