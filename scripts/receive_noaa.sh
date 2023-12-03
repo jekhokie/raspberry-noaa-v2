@@ -284,6 +284,7 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
     new_name="${i#avhrr_apt_rgb_}"
     new_name="${new_name#avhrr_apt_}"
     new_name="${new_name#avhrr_3_rgb_}"
+    new_name="${new_name#_(Uncalibrated)}"
     ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$i" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
     push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
