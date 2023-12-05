@@ -152,10 +152,7 @@ daylight=$((SUN_ELEV > SUN_MIN_ELEV ? 1 : 0))
 log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump live pipeline" "INFO"
 audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
 $SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
-log "Waiting for noaa_apt.wav to close" "INFO"
-sleep 1
-$SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" pad 0 10.5 >> $NOAA_LOG 2>&1
-rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
+log "Files recorded" "INFO"
 
 if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
   log "Contributing images for creating community composites" "INFO"
@@ -163,6 +160,10 @@ if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
 fi
 
 if [ "$NOAA_DECODER" == "wxtoimg" ]; then
+  log "Resampling down audio" "INFO"
+  $SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" pad 0 $WXTOIMG_MAP_OFFSET >> $NOAA_LOG 2>&1
+  rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
+
   push_file_list=""
   #generate outputs
   spectrogram=0
@@ -267,6 +268,10 @@ if [ "$NOAA_DECODER" == "wxtoimg" ]; then
     fi
   fi
 elif [ "$NOAA_DECODER" == "satdump" ]; then
+  log "Resampling down audio" "INFO"
+  $SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+  rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
+
   $SATDUMP noaa_apt audio_wav "${RAMFS_AUDIO_BASE}.wav" . --satellite_number ${SAT_NUMBER} --start_timestamp $PASS_START >> $NOAA_LOG 2>&1
   rm satdump.log noaa_apt.wav product.cbor
   spectrogram=0
