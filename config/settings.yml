@@ -192,6 +192,7 @@ noaa_map_country_border_enable: true
 noaa_map_country_border_color: "0xffff00"
 noaa_map_state_border_enable: true
 noaa_map_state_border_color: "0xffff00"
+wxtoimg_map_offset: 10.5                                        #Change this value only if you see map offsets from the ground on WXtoImg NOAA images
 
 flip_meteor_image: true
 meteor_jpg_image_quality: 90
