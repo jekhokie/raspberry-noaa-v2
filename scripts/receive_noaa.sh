@@ -269,7 +269,7 @@ if [ "$NOAA_DECODER" == "wxtoimg" ]; then
   fi
 elif [ "$NOAA_DECODER" == "satdump" ]; then
   log "Resampling down audio" "INFO"
-  $SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+  $SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" pad 0 $WXTOIMG_MAP_OFFSET >> $NOAA_LOG 2>&1
   rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
 
   $SATDUMP noaa_apt audio_wav "${RAMFS_AUDIO_BASE}.wav" . --satellite_number ${SAT_NUMBER} --start_timestamp $PASS_START >> $NOAA_LOG 2>&1

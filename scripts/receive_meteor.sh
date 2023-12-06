@@ -266,10 +266,11 @@ elif [[ "$METEOR_DECODER" == "satdump" ]]; then
 
   if [ "$DELETE_METEOR_AUDIO" == true ]; then
     log "Deleting audio files" "INFO"
-    rm "${RAMFS_AUDIO_BASE}.cadu"
+    rm "${RAMFS_AUDIO_BASE}.s" "${RAMFS_AUDIO_BASE}.cadu"
   else
     if [ "$in_mem" == "true" ]; then
       log "Moving CADU files out to the SD card" "INFO"
+      mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s" >> $NOAA_LOG 2>&1
       mv "${RAMFS_AUDIO_BASE}.cadu" "${AUDIO_FILE_BASE}.cadu" >> $NOAA_LOG 2>&1
       log "Deleting Meteor audio files older than $DELETE_FILES_OLDER_THAN_DAYS days" "INFO"
       find /srv/audio/meteor -type f \( -name "*.wav" -o -name "*.s" -o -name "*.cadu" -o -name "*.gcp" -o -name "*.bmp" \) -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
