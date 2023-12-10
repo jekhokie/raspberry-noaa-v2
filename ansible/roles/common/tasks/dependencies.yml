@@ -128,6 +128,11 @@
     chdir: /home/{{ target_user }}/MeteorDemod/build
   when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
 
+- name: Configure the OpenCV library path
+  become: yes
+  command: ldconfig
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
+
 - name: Make MeteorDemod
   command: make -j4
   args:
