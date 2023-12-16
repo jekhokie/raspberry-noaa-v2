@@ -1,5 +1,5 @@
 ---
-- name: install dependencies
+- name: Installing general dependencies
   become: yes
   apt:
     update_cache: yes
@@ -56,6 +56,80 @@
       - gfortran
       - libopencv-dev
       - python3-opencv
+
+- name: Installing SatDump dependencies part 1
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - git
+      - build-essential
+      - cmake
+      - g++
+      - pkgconf
+      - libfftw3-dev
+      - libvolk2-dev
+      - libpng-dev 
+
+- name: Installing SatDump dependencies part 2
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - libnng-dev
+
+- name: Installing SatDump dependencies part 3
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - librtlsdr-dev
+      - libhackrf-dev
+      - libairspy-dev
+      - libairspyhf-dev
+
+- name: Installing SatDump dependencies part 4
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - libglfw3-dev
+
+- name: Installing SatDump dependencies part 5
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - libzstd-dev
+
+- name: Installing SatDump dependencies part 6
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - libomp-dev
+
+- name: Installing SatDump dependencies part 7
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - ocl-icd-opencl-dev
+
+- name: Installing SatDump dependencies part 8
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - intel-opencl-icd
 
 - name: Install required Python packages using pip3
   pip:
