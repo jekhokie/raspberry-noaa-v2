@@ -107,29 +107,32 @@
     name:
       - libzstd-dev
 
-- name: Installing SatDump dependencies part 6
+- name: Installing SatDump dependencies part 6 (ignore if error, this dependency is optional)
   become: yes
   apt:
     update_cache: yes
     state: present
     name:
       - libomp-dev
+    ignore_errors: yes
 
-- name: Installing SatDump dependencies part 7
+- name: Installing SatDump dependencies part 7 (ignore if error, this dependency is optional)
   become: yes
   apt:
     update_cache: yes
     state: present
     name:
       - ocl-icd-opencl-dev
+    ignore_errors: yes
 
-- name: Installing SatDump dependencies part 8
+- name: Installing SatDump dependencies part 8 (ignore if error, this dependency is optional)
   become: yes
   apt:
     update_cache: yes
     state: present
     name:
       - intel-opencl-icd
+    ignore_errors: yes
 
 - name: Install required Python packages using pip3
   pip:
