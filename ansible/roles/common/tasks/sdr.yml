@@ -70,7 +70,7 @@
   command: ldconfig
   when: rtlsdr.changed
 
-- name: Unload kernel modules
+- name: Unload kernel modules (ignore if error, that means the stock driver wasn't present which is good)
   become: yes
   command: modprobe -r msi2500 msi001
   ignore_errors: yes  # Ignore errors if the modules are not loaded
