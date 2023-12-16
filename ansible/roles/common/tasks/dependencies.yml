@@ -114,7 +114,7 @@
     state: present
     name:
       - libomp-dev
-    ignore_errors: yes
+    failed_when: false
 
 - name: Installing SatDump dependencies part 7 (ignore if error, this dependency is optional)
   become: yes
@@ -123,7 +123,7 @@
     state: present
     name:
       - ocl-icd-opencl-dev
-    ignore_errors: yes
+    failed_when: false
 
 - name: Installing SatDump dependencies part 8 (ignore if error, this dependency is optional)
   become: yes
@@ -132,7 +132,7 @@
     state: present
     name:
       - intel-opencl-icd
-    ignore_errors: yes
+    failed_when: false
 
 - name: Install required Python packages using pip3
   pip:
