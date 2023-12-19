@@ -148,13 +148,13 @@ polar_direction=0
 log "Recording ${NOAA_HOME} via $receiver at ${METEOR_M2_3_FREQ} MHz using SatDump record " "INFO"
 audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
 $SATDUMP live meteor_m2-x_lrpt${mode} "$audio_temporary_storage_directory" --source $receiver --samplerate $samplerate --frequency "${METEOR_M2_3_FREQ}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
-rm satdump.log "$audio_temporary_storage_directory/meteor_m2-x_lrpt${mode}.cadu"
+rm "$audio_temporary_storage_directory/meteor_m2-x_lrpt${mode}.cadu"
 mv "$audio_temporary_storage_directory/meteor_m2-x_lrpt${mode}.soft" "${RAMFS_AUDIO_BASE}.s"
 
-if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
-  log "Removing old bmp and gcp files" "INFO"
-  find "$NOAA_HOME/tmp/meteor" -type f \( -name "*.gcp" -o -name "*.bmp" \) -mtime +1 -delete >> $NOAA_LOG 2>&1
+log "Removing old bmp, gcp, and dat files" "INFO"
+find "$NOAA_HOME/tmp/meteor" -type f \( -name "*.gcp" -o -name "*.bmp" -o -name "*.dat" \) -mtime +1 -delete >> $NOAA_LOG 2>&1
 
+if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
   # if [[ "${PRODUCE_SPECTROGRAM}" == "true" ]]; then
   #   log "Producing spectrogram" "INFO"
   #   spectrogram=1
@@ -206,9 +206,8 @@ if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
     fi
   fi
 elif [[ "$METEOR_DECODER" == "satdump" ]]; then
-
+  log "Running SatDump to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
   $SATDUMP meteor_m2-x_lrpt${mode} soft "${RAMFS_AUDIO_BASE}.s" . >> $NOAA_LOG 2>&1
-  rm satdump.log
 
   find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
 
