@@ -229,6 +229,7 @@ elif [[ "$METEOR_DECODER" == "satdump" ]]; then
     mv "$file" "${file/_map.png/.png}"
   done
 
+  log "Flipping Meteor night passes decoded with SatDump" "INFO"
   for i in MSU-MR/*_corrected.png
   do
     $CONVERT "$i" $FLIP "$i" >> $NOAA_LOG 2>&1
