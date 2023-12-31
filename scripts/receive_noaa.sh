@@ -273,8 +273,9 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
   rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
 
   echo "Before calculating START_TIMESTAMP" >> $NOAA_LOG 2>&1
-  log "Convert PASS_START to an integer" "INFO"
+  log "Convert PASS_START to an integer from string: $PASS_START" "INFO"
   PASS_START=$((PASS_START))
+  log "Converted PASS_START to an integer: $PASS_START" "INFO"
   START_TIMESTAMP=$((PASS_START + SATDUMP_MAP_OFFSET))
   echo "After calculating START_TIMESTAMP = $START_TIMESTAMP" >> $NOAA_LOG 2>&1
   $SATDUMP noaa_apt audio_wav "${RAMFS_AUDIO_BASE}.wav" . --satellite_number ${SAT_NUMBER} --start_timestamp $START_TIMESTAMP >> $NOAA_LOG 2>&1
