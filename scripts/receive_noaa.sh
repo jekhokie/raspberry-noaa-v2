@@ -278,14 +278,14 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
   log "Converting SATDUMP_MAP_OFFSET to an integer from string: $SATDUMP_MAP_OFFSET" "INFO"
   SATDUMP_MAP_OFFSET=$(($SATDUMP_MAP_OFFSET)) >> $NOAA_LOG 2>&1
   log "Converted SATDUMP_MAP_OFFSET to an integer: $SATDUMP_MAP_OFFSET" "INFO"
-  echo "Before calculating START_TIMESTAMP" >> $NOAA_LOG 2>&1
+  log "Before calculating START_TIMESTAMP"
   START_TIMESTAMP=$(($PASS_START + $SATDUMP_MAP_OFFSET)) >> $NOAA_LOG 2>&1
   #START_TIMESTAMP=$(expr "$PASS_START" + "$SATDUMP_MAP_OFFSET") >> $NOAA_LOG 2>&1
-  echo "After calculating START_TIMESTAMP = $START_TIMESTAMP" >> $NOAA_LOG 2>&1
+  log "After calculating START_TIMESTAMP = $START_TIMESTAMP"
   $SATDUMP noaa_apt audio_wav "${RAMFS_AUDIO_BASE}.wav" . --satellite_number ${SAT_NUMBER} --start_timestamp $START_TIMESTAMP >> $NOAA_LOG 2>&1
-  echo "After running SatDump for decoding NOAA passes with calculated START_TIMESTAMP" >> $NOAA_LOG 2>&1
-
+  log "After running SatDump for decoding NOAA passes with calculated START_TIMESTAMP"
   rm satdump.log noaa_apt.wav product.cbor
+
   spectrogram=0
   pristine=0
   histogram=0
