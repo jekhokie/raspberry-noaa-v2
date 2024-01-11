@@ -607,7 +607,7 @@
                         "channels": "cch4",
                         "lua": "scripted_compos/underlay_with_clouds.lua",
                         "description": "descriptions/MCIR.md",
-                        "autogen": {{ "true" if "MCIR" in noaa_nighttime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "MCIR" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "lua_vars": {
                             "minoffset": 0.05,
                             "scalar": 1.1,
@@ -642,7 +642,7 @@
                         "channels": "cch1",
                         "lua": "scripted_compos/underlay_with_clouds.lua",
                         "description": "descriptions/MSA.md",
-                        "autogen": {{ "true" if "MSA" in noaa_daytime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "MSA" in noaa_daytime_enhancements.split(' ') else "false" }},
                         "equalize": true,
                         "geo_correct": true,
                         "lua_vars": {
@@ -679,7 +679,7 @@
                         "channels": "cch2",
                         "lua": "scripted_compos/underlay_with_clouds.lua",
                         "description": "descriptions/MSA.md",
-                        "autogen": {{ "true" if "MSA" in noaa_nighttime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "MSA" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "equalize": true,
                         "geo_correct": true,
                         "lua_vars": {
@@ -745,7 +745,7 @@
                     "Sea Surface Temperature": {
                         "channels": "cch4",
                         "description": "descriptions/SST.md",
-                        "autogen": {{ "true" if "sea" in noaa_nighttime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "sea" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "lua": "scripted_compos/sst_landmask.lua",
                         "lua_vars": {
                             "minval": 0,
@@ -802,7 +802,7 @@
                     "NO enhancement": {
                         "lut": "lut/cal/WXtoImg-NO.png",
                         "description": "descriptions/NO.md",
-                        "autogen": {{ "true" if "NO" in noaa_nighttime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "NO" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "channels": "cch4",
                         "calib_cfg": {
                             "cch4": {
@@ -836,7 +836,7 @@
                     },
                     "ZA enhancement": {
                         "channels": "cch4",
-                        "autogen": {{ "true" if "NO" in noaa_nighttime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "NO" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -873,7 +873,7 @@
                     "MB enhancement": {
                         "lut": "lut/cal/WXtoImg-MB.png",
                         "description": "descriptions/MB.md",
-                        "autogen": {{ "true" if "NO" in noaa_nighttime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "NO" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "channels": "cch4",
                         "calib_cfg": {
                             "cch4": {
@@ -909,7 +909,7 @@
                     "MD enhancement": {
                         "lut": "lut/cal/WXtoImg-MD.png",
                         "description": "descriptions/MD.md",
-                        "autogen": {{ "true" if "MD" in noaa_nighttime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "MD" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "channels": "cch4",
                         "calib_cfg": {
                             "cch4": {
@@ -944,7 +944,7 @@
                     },
                     "BD enhancement": {
                         "channels": "cch4",
-                        "autogen": {{ "true" if "BD" in noaa_nighttime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "BD" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -980,7 +980,7 @@
                     },
                     "CC enhancement": {
                         "channels": "cch4",
-                        "autogen": {{ "true" if "CC" in noaa_nighttime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "CC" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -1016,7 +1016,7 @@
                     },
                     "EC enhancement": {
                         "channels": "cch4",
-                        "autogen": {{ "true" if "EC" in noaa_nighttime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "EC" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -1052,7 +1052,7 @@
                     },
                     "HE enhancement": {
                         "channels": "cch4",
-                        "autogen": {{ "true" if "HE" in noaa_nighttime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "HE" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -1088,7 +1088,7 @@
                     },
                     "HF enhancement": {
                         "channels": "cch4",
-                        "autogen": {{ "true" if "HF" in noaa_nighttime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "HF" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -1124,7 +1124,7 @@
                     },
                     "JF enhancement": {
                         "channels": "cch4",
-                        "autogen": {{ "true" if "JF" in noaa_nighttime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "JF" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -1160,7 +1160,7 @@
                     },
                     "JJ enhancement": {
                         "channels": "cch4",
-                        "autogen": {{ "true" if "JJ" in noaa_nighttime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "JJ" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -1196,7 +1196,7 @@
                     },
                     "TA enhancement": {
                         "channels": "cch4",
-                        "autogen": {{ "true" if "TA" in noaa_nighttime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "TA" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -1233,7 +1233,7 @@
                     "Enhanced IR": {
                         "channels": "cch4",
                         "description": "descriptions/EnhancedIR.md",
-                        "autogen": {{ "true" if "enhanced-IR" in noaa_nighttime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "enhanced-IR" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "lut": "lut/cal/EnhancedIR.png",
                         "geo_correct": true,
                         "calib_cfg": {
