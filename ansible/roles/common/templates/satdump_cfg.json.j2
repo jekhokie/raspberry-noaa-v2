@@ -540,7 +540,29 @@
                         "apply_lut": true,
                         "description": "descriptions/ThermalCal.md",
                         "geo_correct": true,
-                        "autogen": {{ "true" if "therm" in noaa_nighttime_enhancements.split(' ') else "false" }}
+                        "autogen": {{ "true" if "therm" in noaa_nighttime_enhancements.split(' ') else "false" }},
+                        "borders_color": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
                     },
                     "Night Microphysics": {
                         "equation": "cch5-cch4,cch4-cch3b,cch4",
@@ -585,6 +607,7 @@
                         "channels": "cch4",
                         "lua": "scripted_compos/underlay_with_clouds.lua",
                         "description": "descriptions/MCIR.md",
+                        "autogen": {{ "true" if "MCIR" in noaa_nighttime_enhancements.split(' ') else "false" }}
                         "lua_vars": {
                             "minoffset": 0.05,
                             "scalar": 1.1,
@@ -592,17 +615,34 @@
                             "blend": 1,
                             "invert": 1
                         },
-                        "draw_map_overlay": true,
                         "borders_color": [
                             1,
                             1,
                             0
-                        ]
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
                     },
                     "MSA (channel 1)": {
                         "channels": "cch1",
                         "lua": "scripted_compos/underlay_with_clouds.lua",
                         "description": "descriptions/MSA.md",
+                        "autogen": {{ "true" if "MSA" in noaa_daytime_enhancements.split(' ') else "false" }}
                         "equalize": true,
                         "geo_correct": true,
                         "lua_vars": {
@@ -612,17 +652,34 @@
                             "blend": 1,
                             "invert": 0
                         },
-                        "draw_map_overlay": true,
                         "borders_color": [
                             1,
                             1,
                             0
-                        ]
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
                     },
                     "MSA (channel 2)": {
                         "channels": "cch2",
                         "lua": "scripted_compos/underlay_with_clouds.lua",
                         "description": "descriptions/MSA.md",
+                        "autogen": {{ "true" if "MSA" in noaa_nighttime_enhancements.split(' ') else "false" }}
                         "equalize": true,
                         "geo_correct": true,
                         "lua_vars": {
@@ -688,6 +745,7 @@
                     "Sea Surface Temperature": {
                         "channels": "cch4",
                         "description": "descriptions/SST.md",
+                        "autogen": {{ "true" if "sea" in noaa_nighttime_enhancements.split(' ') else "false" }}
                         "lua": "scripted_compos/sst_landmask.lua",
                         "lua_vars": {
                             "minval": 0,
@@ -700,7 +758,28 @@
                                 "max": 307.15
                             }
                         },
-                        "autogen": false
+                        "borders_color": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
                     },
                     "Night Time Fire Detection (transparent)": {
                         "channels": "cch3b, cch4",
@@ -723,6 +802,7 @@
                     "NO enhancement": {
                         "lut": "lut/cal/WXtoImg-NO.png",
                         "description": "descriptions/NO.md",
+                        "autogen": {{ "true" if "NO" in noaa_nighttime_enhancements.split(' ') else "false" }}
                         "channels": "cch4",
                         "calib_cfg": {
                             "cch4": {
@@ -730,10 +810,33 @@
                                 "min": 4.261272967687783,
                                 "max": 155.2782819316993
                             }
+                        },
+                        "borders_color": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
                         }
                     },
                     "ZA enhancement": {
                         "channels": "cch4",
+                        "autogen": {{ "true" if "NO" in noaa_nighttime_enhancements.split(' ') else "false" }}
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -743,12 +846,34 @@
                         },
                         "lut": "lut/cal/WXtoImg-ZA.png",
                         "description": "descriptions/ZA.md",
-                        "autogen": false,
-                        "geo_correct": true
+                        "geo_correct": true,
+                        "borders_color": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
                     },
                     "MB enhancement": {
                         "lut": "lut/cal/WXtoImg-MB.png",
                         "description": "descriptions/MB.md",
+                        "autogen": {{ "true" if "NO" in noaa_nighttime_enhancements.split(' ') else "false" }}
                         "channels": "cch4",
                         "calib_cfg": {
                             "cch4": {
@@ -757,12 +882,34 @@
                                 "max": 155.2782819316993
                             }
                         },
-                        "autogen": false,
-                        "geo_correct": true
+                        "geo_correct": true,
+                        "borders_color": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
                     },
                     "MD enhancement": {
                         "lut": "lut/cal/WXtoImg-MD.png",
                         "description": "descriptions/MD.md",
+                        "autogen": {{ "true" if "MD" in noaa_nighttime_enhancements.split(' ') else "false" }}
                         "channels": "cch4",
                         "calib_cfg": {
                             "cch4": {
@@ -771,11 +918,33 @@
                                 "max": 155.2782819316993
                             }
                         },
-                        "autogen": false,
-                        "geo_correct": true
+                        "geo_correct": true,
+                        "borders_color": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
                     },
                     "BD enhancement": {
                         "channels": "cch4",
+                        "autogen": {{ "true" if "BD" in noaa_nighttime_enhancements.split(' ') else "false" }}
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -785,11 +954,33 @@
                         },
                         "description": "descriptions/BD.md",
                         "lut": "lut/cal/WXtoImg-BD.png",
-                        "autogen": false,
-                        "geo_correct": true
+                        "geo_correct": true,
+                        "borders_color": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
                     },
                     "CC enhancement": {
                         "channels": "cch4",
+                        "autogen": {{ "true" if "CC" in noaa_nighttime_enhancements.split(' ') else "false" }}
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -799,11 +990,33 @@
                         },
                         "description": "descriptions/CC.md",
                         "lut": "lut/cal/WXtoImg-CC.png",
-                        "autogen": false,
-                        "geo_correct": true
+                        "geo_correct": true,
+                        "borders_color": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
                     },
                     "EC enhancement": {
                         "channels": "cch4",
+                        "autogen": {{ "true" if "EC" in noaa_nighttime_enhancements.split(' ') else "false" }}
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -813,11 +1026,33 @@
                         },
                         "description": "descriptions/EC.md",
                         "lut": "lut/cal/WXtoImg-EC.png",
-                        "autogen": false,
-                        "geo_correct": true
+                        "geo_correct": true,
+                        "borders_color": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
                     },
                     "HE enhancement": {
                         "channels": "cch4",
+                        "autogen": {{ "true" if "HE" in noaa_nighttime_enhancements.split(' ') else "false" }}
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -827,11 +1062,33 @@
                         },
                         "description": "descriptions/HE.md",
                         "lut": "lut/cal/WXtoImg-HE.png",
-                        "autogen": false,
-                        "geo_correct": true
+                        "geo_correct": true,
+                        "borders_color": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
                     },
                     "HF enhancement": {
                         "channels": "cch4",
+                        "autogen": {{ "true" if "HF" in noaa_nighttime_enhancements.split(' ') else "false" }}
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -841,11 +1098,33 @@
                         },
                         "description": "descriptions/HF.md",
                         "lut": "lut/cal/WXtoImg-HF.png",
-                        "autogen": false,
-                        "geo_correct": true
+                        "geo_correct": true,
+                        "borders_color": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
                     },
                     "JF enhancement": {
                         "channels": "cch4",
+                        "autogen": {{ "true" if "JF" in noaa_nighttime_enhancements.split(' ') else "false" }}
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -855,11 +1134,33 @@
                         },
                         "description": "descriptions/JF.md",
                         "lut": "lut/cal/WXtoImg-JF.png",
-                        "autogen": false,
-                        "geo_correct": true
+                        "geo_correct": true,
+                        "borders_color": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
                     },
                     "JJ enhancement": {
                         "channels": "cch4",
+                        "autogen": {{ "true" if "JJ" in noaa_nighttime_enhancements.split(' ') else "false" }}
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -869,11 +1170,33 @@
                         },
                         "description": "descriptions/JJ.md",
                         "lut": "lut/cal/WXtoImg-JJ.png",
-                        "autogen": false,
-                        "geo_correct": true
+                        "geo_correct": true,
+                        "borders_color": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
                     },
                     "TA enhancement": {
                         "channels": "cch4",
+                        "autogen": {{ "true" if "TA" in noaa_nighttime_enhancements.split(' ') else "false" }}
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
@@ -883,20 +1206,63 @@
                         },
                         "description": "descriptions/TA.md",
                         "lut": "lut/cal/WXtoImg-TA.png",
-                        "autogen": false,
-                        "geo_correct": true
+                        "geo_correct": true,
+                        "borders_color": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                            }
+                        }
                     },
                     "Enhanced IR": {
                         "channels": "cch4",
                         "description": "descriptions/EnhancedIR.md",
+                        "autogen": {{ "true" if "enhanced-IR" in noaa_nighttime_enhancements.split(' ') else "false" }}
                         "lut": "lut/cal/EnhancedIR.png",
-                        "autogen": false,
                         "geo_correct": true,
                         "calib_cfg": {
                             "cch4": {
                                 "type": "temperature",
                                 "min": 200,
                                 "max": 300
+                            }
+                        },
+                        "borders_color": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
                             }
                         }
                     },
@@ -944,7 +1310,7 @@
                         "channels": "chb",
                         "lua": "scripted_compos/underlay_with_clouds.lua",
                         "description": "descriptions/MCIR.md",
-                        "autogen": {{ "true" if "MCIR" in noaa_nighttime_enhancements.split(' ') else "false" }},
+                        "autogen": false,
                         "lua_vars": {
                             "minoffset": 0.35,
                             "scalar": 2.5,
@@ -980,7 +1346,7 @@
                         "channels": "cha",
                         "lua": "scripted_compos/underlay_with_clouds.lua",
                         "description": "descriptions/MSA.md",
-                        "autogen": {{ "true" if "MSA" in noaa_daytime_enhancements.split(' ') else "false" }},
+                        "autogen": false,
                         "lua_vars": {
                             "minoffset": 0.02,
                             "scalar": 2.0,
