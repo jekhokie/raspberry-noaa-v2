@@ -140,6 +140,12 @@ if [ "$PASS_DIRECTION" == "Northbound" ]; then
   FLIP="-rotate 180"
 fi
 
+$crop_topbottom=""
+if [ "$NOAA_CROP_TOPTOBOTTOM" == "true" ]; then
+  log "Cropping SatDump NOAA images enabled" "INFO"
+  $crop_topbottom="--autocrop_wedges"
+fi
+
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
 export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
@@ -282,7 +288,7 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
   START_TIMESTAMP=$(($PASS_START + $SATDUMP_MAP_OFFSET)) >> $NOAA_LOG 2>&1
   #START_TIMESTAMP=$(expr "$PASS_START" + "$SATDUMP_MAP_OFFSET") >> $NOAA_LOG 2>&1
   log "After calculating START_TIMESTAMP = $START_TIMESTAMP"
-  $SATDUMP noaa_apt audio_wav "${RAMFS_AUDIO_BASE}.wav" . --satellite_number ${SAT_NUMBER} --start_timestamp $START_TIMESTAMP >> $NOAA_LOG 2>&1
+  $SATDUMP noaa_apt audio_wav "${RAMFS_AUDIO_BASE}.wav" . --satellite_number ${SAT_NUMBER} $crop_topbottom --start_timestamp $START_TIMESTAMP >> $NOAA_LOG 2>&1
   log "After running SatDump for decoding NOAA passes with calculated START_TIMESTAMP"
   rm satdump.log noaa_apt.wav product.cbor
 
