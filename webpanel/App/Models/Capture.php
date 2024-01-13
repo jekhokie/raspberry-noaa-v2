@@ -197,6 +197,7 @@ class Capture extends \Lib\Model {
             "-MSA_Rain.jpg",
             "-MCIR_Rain.jpg",
             "-Thermal_Channel.jpg",
+            "-Sea_Surface_Temperature.jpg",
             "-WXtoImg_HVC_N15.jpg",
             "-WXtoImg_HVC_N18.jpg",
             "-WXtoImg_HVC_N19.jpg",

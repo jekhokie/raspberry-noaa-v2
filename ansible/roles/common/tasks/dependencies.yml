@@ -241,7 +241,7 @@
 - name: Installing SatDump
   become: yes
   apt:
-    deb: "{{ noaa_home }}/software/satdump_1.1.3-f0031e7b_{{ system_architecture }}.deb"
+    deb: "{{ noaa_home }}/software/satdump_1.1.4-1ccc628f_{{ system_architecture }}.deb"
     state: present
     update_cache: no
 

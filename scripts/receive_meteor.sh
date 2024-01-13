@@ -148,8 +148,8 @@ polar_direction=0
 log "Recording ${NOAA_HOME} via $receiver at ${METEOR_M2_3_FREQ} MHz using SatDump record " "INFO"
 audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
 $SATDUMP live meteor_m2-x_lrpt${mode} "$audio_temporary_storage_directory" --source $receiver --samplerate $samplerate --frequency "${METEOR_M2_3_FREQ}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
-rm "$audio_temporary_storage_directory/meteor_m2-x_lrpt${mode}.cadu"
-mv "$audio_temporary_storage_directory/meteor_m2-x_lrpt${mode}.soft" "${RAMFS_AUDIO_BASE}.s"
+#rm "$audio_temporary_storage_directory/meteor_m2-x_lrpt${mode}.cadu"
+mv "$audio_temporary_storage_directory/meteor_m2-x_lrpt${mode}.cadu" "${RAMFS_AUDIO_BASE}.cadu"
 
 log "Removing old bmp, gcp, and dat files" "INFO"
 find "$NOAA_HOME/tmp/meteor" -type f \( -name "*.gcp" -o -name "*.bmp" -o -name "*.dat" \) -mtime +1 -delete >> $NOAA_LOG 2>&1
@@ -165,9 +165,9 @@ if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
 
   log "Running MeteorDemod to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
   if [[ "$METEOR_${SAT_NUMBER}_80K_INTERLEAVING" == "true" ]]; then
-    $METEORDEMOD -m oqpsk -diff 1 -int 1 -s 80000 -sat $SAT_NAME_METEORDEMOD -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.s" -o "$NOAA_HOME/tmp/meteor"  >> $NOAA_LOG 2>&1
+    $METEORDEMOD -m oqpsk -diff 1 -int 1 -s 80000 -sat $SAT_NAME_METEORDEMOD -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.cadu" -o "$NOAA_HOME/tmp/meteor"  >> $NOAA_LOG 2>&1
   else
-    $METEORDEMOD -m oqpsk -diff 1 -s 72000 -sat $SAT_NAME_METEORDEMOD -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.s" -o "$NOAA_HOME/tmp/meteor" >> $NOAA_LOG 2>&1
+    $METEORDEMOD -m oqpsk -diff 1 -s 72000 -sat $SAT_NAME_METEORDEMOD -t "$TLE_FILE" -f jpg -i "${RAMFS_AUDIO_BASE}.cadu" -o "$NOAA_HOME/tmp/meteor" >> $NOAA_LOG 2>&1
   fi
 
   log "Waiting for files to close" "INFO"
@@ -195,19 +195,18 @@ if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
 
   if [ "$DELETE_METEOR_AUDIO" == true ]; then
     log "Deleting audio files" "INFO"
-    rm "${RAMFS_AUDIO_BASE}.s" "${RAMFS_AUDIO_BASE}.cadu"
+    rm "${RAMFS_AUDIO_BASE}.cadu" >> $NOAA_LOG 2>&1
   else
     if [ "$in_mem" == "true" ]; then
       log "Moving audio files out to the SD card" "INFO"
-      mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s"
-      mv "${RAMFS_AUDIO_BASE}.cadu" "${AUDIO_FILE_BASE}.cadu"
+      mv "${RAMFS_AUDIO_BASE}.cadu" "${AUDIO_FILE_BASE}.cadu" >> $NOAA_LOG 2>&1
       log "Deleting Meteor audio files older than $DELETE_FILES_OLDER_THAN_DAYS days" "INFO"
       find /srv/audio/meteor -type f \( -name "*.wav" -o -name "*.s" -o -name "*.cadu" -o -name "*.gcp" -o -name "*.dat" -o -name "*.bmp" \) -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
     fi
   fi
 elif [[ "$METEOR_DECODER" == "satdump" ]]; then
   log "Running SatDump to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
-  $SATDUMP meteor_m2-x_lrpt${mode} soft "${RAMFS_AUDIO_BASE}.s" . >> $NOAA_LOG 2>&1
+  $SATDUMP meteor_m2-x_lrpt${mode} cadu "${RAMFS_AUDIO_BASE}.cadu" . >> $NOAA_LOG 2>&1
 
   find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
 
@@ -229,6 +228,7 @@ elif [[ "$METEOR_DECODER" == "satdump" ]]; then
     mv "$file" "${file/_map.png/.png}"
   done
 
+  log "Flipping Meteor night passes decoded with SatDump" "INFO"
   for i in MSU-MR/*_corrected.png
   do
     $CONVERT "$i" $FLIP "$i" >> $NOAA_LOG 2>&1
@@ -265,11 +265,10 @@ elif [[ "$METEOR_DECODER" == "satdump" ]]; then
 
   if [ "$DELETE_METEOR_AUDIO" == true ]; then
     log "Deleting audio files" "INFO"
-    rm "${RAMFS_AUDIO_BASE}.s" "${RAMFS_AUDIO_BASE}.cadu"
+    rm "${RAMFS_AUDIO_BASE}.cadu" >> $NOAA_LOG 2>&1
   else
     if [ "$in_mem" == "true" ]; then
       log "Moving CADU files out to the SD card" "INFO"
-      mv "${RAMFS_AUDIO_BASE}.s" "${AUDIO_FILE_BASE}.s" >> $NOAA_LOG 2>&1
       mv "${RAMFS_AUDIO_BASE}.cadu" "${AUDIO_FILE_BASE}.cadu" >> $NOAA_LOG 2>&1
       log "Deleting Meteor audio files older than $DELETE_FILES_OLDER_THAN_DAYS days" "INFO"
       find /srv/audio/meteor -type f \( -name "*.wav" -o -name "*.s" -o -name "*.cadu" -o -name "*.gcp" -o -name "*.dat" -o -name "*.bmp" \) -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
