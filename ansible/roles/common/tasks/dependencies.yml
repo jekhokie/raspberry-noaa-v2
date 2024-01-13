@@ -1,5 +1,5 @@
 ---
-- name: install dependencies
+- name: Installing general dependencies
   become: yes
   apt:
     update_cache: yes
@@ -57,6 +57,83 @@
       - libopencv-dev
       - python3-opencv
 
+- name: Installing SatDump dependencies part 1
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - git
+      - build-essential
+      - cmake
+      - g++
+      - pkgconf
+      - libfftw3-dev
+      - libvolk2-dev
+      - libpng-dev 
+
+- name: Installing SatDump dependencies part 2
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - libnng-dev
+
+- name: Installing SatDump dependencies part 3
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - librtlsdr-dev
+      - libhackrf-dev
+      - libairspy-dev
+      - libairspyhf-dev
+
+- name: Installing SatDump dependencies part 4
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - libglfw3-dev
+
+- name: Installing SatDump dependencies part 5
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - libzstd-dev
+
+- name: Installing SatDump dependencies part 6 (ignore if error, this dependency is optional)
+  become: yes
+  ignore_errors: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - libomp-dev
+
+- name: Installing SatDump dependencies part 7 (ignore if error, this dependency is optional)
+  become: yes
+  ignore_errors: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - ocl-icd-opencl-dev
+
+- name: Installing SatDump dependencies part 8 (ignore if error, this dependency is optional)
+  become: yes
+  ignore_errors: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - intel-opencl-icd
+
 - name: Install required Python packages using pip3
   pip:
     name:
@@ -106,7 +183,7 @@
   git:
     repo: https://github.com/Digitelektro/MeteorDemod.git
     dest: /home/{{ target_user }}/MeteorDemod
-    version: feature/composite
+    version: origin/beta
   when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
   ignore_errors: yes
 
@@ -126,6 +203,11 @@
   command: cmake ../
   args:
     chdir: /home/{{ target_user }}/MeteorDemod/build
+  when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
+
+- name: Configure the OpenCV library path
+  become: yes
+  command: ldconfig
   when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
 
 - name: Make MeteorDemod
@@ -159,7 +241,7 @@
 - name: Installing SatDump
   become: yes
   apt:
-    deb: "{{ noaa_home }}/software/satdump_1.1.1-d649918b_{{ system_architecture }}.deb"
+    deb: "{{ noaa_home }}/software/satdump_1.1.4-1ccc628f_{{ system_architecture }}.deb"
     state: present
     update_cache: no
 

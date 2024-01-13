@@ -18,8 +18,8 @@ ntp_server: ''
 
 # receiver settings
 #   receiver_type - the receiver type which program uses ('rtlsdr', 'airspy_mini', 'airspy_r2' or 'hackrf' or 'sdrplay' or 'mirisdr')
-#   noaa_receiver  - which receiver method to use (either 'rtl_fm' or 'gnuradio' or 'satdump_record' or 'satdump_live')
-#   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'gnuradio' or 'satdump_record' or 'satdump_live')
+#   noaa_decoder - which receiver method to use (either 'wxtoimg' or 'satdump')
+#   meteor_decoder - which receiver method to use (either 'meteordemod' or 'satdump')
 receiver_type: 'rtlsdr'
 
 noaa_receiver: 'gnuradio'
@@ -45,8 +45,8 @@ test_freq_offset: 0
 #   <satellite_name>_sat_min_elevation - threshold for sat elevation for specific satellite captures
 #   <satellite_name>_memory_threshold - for METEOR satellite, minimum free memory (MB) required to store pass in RAM
 
-noaa_memory_threshold: 600
-meteor_m2_memory_threshold: 1000
+noaa_memory_threshold: 100
+meteor_m2_memory_threshold: 200
 
 select_best_overlapping_passes: true
 select_meteor_pass_over_noaa: true
@@ -192,6 +192,7 @@ noaa_map_country_border_enable: true
 noaa_map_country_border_color: "0xffff00"
 noaa_map_state_border_enable: true
 noaa_map_state_border_color: "0xffff00"
+wxtoimg_map_offset: 10.5                    #Change this value only if you see map offsets from the ground on WXtoImg NOAA images
 
 flip_meteor_image: true
 meteor_jpg_image_quality: 90
@@ -214,8 +215,6 @@ meteor_create_spreaded_images_without_overlay: true
 #   web_port - port to run the web server clear-text (non-encrypted) endpoint on
 #   enable_tls - whether to enable the TLS-encrypted web listener (default port 443)
 #   web_tls_port - port to run the TLS listener on
-#   cert_valid_days - number of days the TLS certificates should be valid for - note that
-#                     you will need to re-install the certificates once this timeline expires
 #   lock_admin_page - whether to require username/password when attempting to access the admin page
 #                     of the webpanel - WARNING: DO NOT SET THIS TO TRUE UNLESS YOU ONLY HAVE A TLS
 #                     ENABLED SITE - SETTING TO TRUE AND RUNNING A CLEARTEXT SITE IS ALMOST CERTAINLY
@@ -232,7 +231,6 @@ enable_non_tls: true
 web_port: 80
 enable_tls: false
 web_tls_port: 443
-cert_valid_days: 365
 lock_admin_page: true
 admin_username: 'admin'
 admin_password: 'admin'
