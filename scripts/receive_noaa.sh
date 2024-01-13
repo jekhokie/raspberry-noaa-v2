@@ -180,28 +180,6 @@ if [ "$NOAA_DECODER" == "wxtoimg" ]; then
     ${IMAGE_PROC_DIR}/spectrogram.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-spectrogram.png" "${SAT_NAME}" "${spectro_text}" >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-spectrogram.png" "${IMAGE_THUMB_BASE}-spectrogram.png" >> $NOAA_LOG 2>&1
   fi
-elif [ "$NOAA_RECEIVER" == "gnuradio" ]; then
-  log "Starting gnuradio record" "INFO"
-  log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${NOAA_FREQUENCY} MHz via GNU Radio " "INFO"
-  timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/${RECEIVER_TYPE}_noaa_apt_rx.py" "${RAMFS_AUDIO_BASE}.wav" "${GAIN}" "${NOAA_FREQUENCY}"M "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
-elif [ "$NOAA_RECEIVER" == "satdump_record" ]; then
-  log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump live pipeline" "INFO"
-  audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
-  #$SATDUMP record "${RAMFS_AUDIO_BASE}-baseband" --source $receiver --baseband_format w16 --samplerate $samplerate --decimation $decimation --frequency "${NOAA_FREQUENCY}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
-  $SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
-  log "Waiting for noaa_apt.wav to close" "INFO"
-  sleep 1
-  $SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
-  #"$NOAA_HOME/scripts/audio_processors/FM_baseband_demodulator.py" "${RAMFS_AUDIO_BASE}-baseband-resampled.wav" "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
-  rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/dataset.json" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
-elif [ "$NOAA_RECEIVER" == "satdump_live" ]; then
-  log "Starting SatDump recording and live decoding" "INFO"
-  $SATDUMP live noaa_apt . --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
-  rm satdump.log product.cbor dataset.json APT-A.png APT-B.png raw.png
-  spectrogram=0
-  pristine=0
-  histogram=0
-fi
 
   pristine=0
   if [[ "${PRODUCE_NOAA_PRISTINE}" == "true" ]]; then
@@ -307,18 +285,6 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
   pristine=0
   histogram=0
 
-  if [ "$DELETE_NOAA_AUDIO" == true ]; then
-    log "Deleting audio files" "INFO"
-    rm "${RAMFS_AUDIO_BASE}.wav"
-  else
-    if [ "$in_mem" == "true" ]; then
-      log "Moving audio files out to the SD card" "INFO"
-      mv "${RAMFS_AUDIO_BASE}.wav" "${AUDIO_FILE_BASE}.wav"
-      log "Deleting NOAA audio files older than $DELETE_FILES_OLDER_THAN_DAYS days" "INFO"
-      find /srv/audio/noaa -type f -name "*.wav" -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
-    fi
-  fi
-else
   log "Removing images without a map if they exist" "INFO"
   for file in *map.png; do
     mv "$file" "${file/_map.png/.png}"
