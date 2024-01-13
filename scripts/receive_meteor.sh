@@ -47,6 +47,12 @@ AUDIO_FILE_BASE="${METEOR_AUDIO_OUTPUT}/${FILENAME_BASE}"
 IMAGE_FILE_BASE="${IMAGE_OUTPUT}/${FILENAME_BASE}"
 IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 
+if [ "$SAT_NAME" == "METEOR-M2 3" ]; then
+  SAT_NUMBER="M2_3"
+elif [ "$SAT_NAME" == "METEOR-M2 4" ]; then
+  SAT_NUMBER="M2_4"
+fi
+
 case "$RECEIVER_TYPE" in
      "rtlsdr")
          samplerate="1.024e6"
@@ -275,7 +281,7 @@ elif [[ "$METEOR_DECODER" == "satdump" ]]; then
     fi
   fi
 else
-    echo "Unknown decoder: $METEOR_DECODER"
+  echo "Unknown decoder: $METEOR_DECODER"
 fi
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------

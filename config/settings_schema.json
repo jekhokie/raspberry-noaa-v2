@@ -205,6 +205,7 @@
     "test_sdr_device_id",
     "test_enable_bias_tee",
     "test_freq_offset",
+    "meteor_receiver",
     "noaa_15_schedule",
     "noaa_15_sdr_device_id",
     "noaa_15_freq_offset",
