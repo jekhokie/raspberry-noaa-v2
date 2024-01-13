@@ -290,6 +290,10 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
     mv "$file" "${file/_map.png/.png}"
   done
 
+  for projected_file in *_projected.png; do
+    mv "$projected_file" "${projected_file/_projected.png/.png}"
+  done
+
   log "Normalizing and annotating NOAA images" "INFO"
   for i in *.png; do
     $CONVERT "$i" $FLIP "$i"
