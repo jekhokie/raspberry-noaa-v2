@@ -290,9 +290,9 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
     mv "$file" "${file/_map.png/.png}"
   done
 
-  for projected_file in *_projected.png; do
-    mv "$projected_file" "${projected_file/_projected.png/.png}"
-  done
+#  for projected_file in *_projected.png; do
+#    mv "$projected_file" "${projected_file/_projected.png/.png}"
+#  done
 
   log "Normalizing and annotating NOAA images" "INFO"
   for i in *.png; do
@@ -303,6 +303,7 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
     new_name="${new_name#rgb_avhrr_3_rgb_}"
     new_name="${new_name//_(Uncalibrated)}"
     new_name="${new_name//_(channel_1)}"
+    new_name="${new_name//_enhancement}"
     ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$i" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
     push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
