@@ -133,7 +133,7 @@ else
 fi
 
 if [ "$NOAA_DECODER" == "satdump" ]; then
-  $finish_processing="--finish_processing"
+  finish_processing="--finish_processing"
 else
   finish_processing=""
 fi
