@@ -120,7 +120,6 @@ case "$RECEIVER_TYPE" in
          ;;
 esac
 
-gain_option=""
 if [[ "$receiver" == "rtlsdr" ]]; then
   gain_option="--source_id $SDR_DEVICE_ID --gain"
 else
@@ -128,9 +127,15 @@ else
 fi
 
 if [ "$BIAS_TEE" == "-T" ]; then
-    bias_tee_option="--bias"
+  bias_tee_option="--bias"
 else
-    bias_tee_option=""
+  bias_tee_option=""
+fi
+
+if [ "$NOAA_DECODER" == "satdump" ]; then
+  $finish_processing="--finish_processing"
+else
+  finish_processing=""
 fi
 
 FLIP=""
@@ -157,7 +162,7 @@ daylight=$((SUN_ELEV > SUN_MIN_ELEV ? 1 : 0))
 #start capture
 log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump live pipeline" "INFO"
 audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
-$SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+$SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START $finish_processing --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
 log "Files recorded" "INFO"
 
 if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
@@ -204,9 +209,9 @@ if [ "$NOAA_DECODER" == "wxtoimg" ]; then
 
     # Loop through channels
     for channel in "${channels[@]}"; do
-        log "Producing histogram of NOAA pristine image channel $channel" "INFO"
-        ${IMAGE_PROC_DIR}/histogram.sh "${tmp_dir}/${FILENAME_BASE}-${channel}.png" "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${SAT_NAME} - Channel $channel" "${histogram_text}" >> $NOAA_LOG 2>&1
-        ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${IMAGE_THUMB_BASE}-histogram-${channel}.jpg" >> $NOAA_LOG 2>&1
+      log "Producing histogram of NOAA pristine image channel $channel" "INFO"
+      ${IMAGE_PROC_DIR}/histogram.sh "${tmp_dir}/${FILENAME_BASE}-${channel}.png" "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${SAT_NAME} - Channel $channel" "${histogram_text}" >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${IMAGE_THUMB_BASE}-histogram-${channel}.jpg" >> $NOAA_LOG 2>&1
     done
 
     log "Horizontally Merge two Histogram Channels to a single image for output"
@@ -215,7 +220,7 @@ if [ "$NOAA_DECODER" == "wxtoimg" ]; then
 
     # Remove temporary files
     for channel in "${channels[@]}"; do
-        rm "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${IMAGE_THUMB_BASE}-histogram-${channel}.jpg" "${tmp_dir}/${FILENAME_BASE}-${channel}.png"
+      rm "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${IMAGE_THUMB_BASE}-histogram-${channel}.jpg" "${tmp_dir}/${FILENAME_BASE}-${channel}.png"
     done
   fi
 
@@ -278,8 +283,8 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
   $SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
   rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
 
-  $SATDUMP noaa_apt audio_wav "${RAMFS_AUDIO_BASE}.wav" . --satellite_number ${SAT_NUMBER} $crop_topbottom >> $NOAA_LOG 2>&1
-  rm satdump.log noaa_apt.wav product.cbor >> $NOAA_LOG 2>&1
+  #$SATDUMP noaa_apt audio_wav "${RAMFS_AUDIO_BASE}.wav" . --satellite_number ${SAT_NUMBER} $crop_topbottom >> $NOAA_LOG 2>&1
+  #rm satdump.log noaa_apt.wav product.cbor >> $NOAA_LOG 2>&1
 
   spectrogram=0
   pristine=0
@@ -290,20 +295,21 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
     mv "$file" "${file/_map.png/.png}"
   done
 
-#  for projected_file in *_projected.png; do
-#    mv "$projected_file" "${projected_file/_projected.png/.png}"
-#  done
+  log "Flipping projected images once here and renaming them so they will be flipped again later in the for loop restoring their original orientation" "INFO"
+  for projected_file in *_projected.png; do
+    $CONVERT "$projected_file" $FLIP "$projected_file"
+    mv "$projected_file" "${projected_file/_projected.png/.png}"
+  done
 
   log "Normalizing and annotating NOAA images" "INFO"
   for i in *.png; do
     $CONVERT "$i" $FLIP "$i"
-    new_name="${i#avhrr_apt_rgb_}"
-    new_name="${new_name#avhrr_apt_}"
-    new_name="${new_name#avhrr_3_rgb_}"
-    new_name="${new_name#rgb_avhrr_3_rgb_}"
+    new_name="${i//avhrr_apt_rgb_}"
+    new_name="${new_name//avhrr_apt_}"
+    new_name="${new_name//avhrr_3_rgb_}"
+    new_name="${new_name//rgb_avhrr_3_rgb_}"
     new_name="${new_name//_(Uncalibrated)}"
     new_name="${new_name//_(channel_1)}"
-    new_name="${new_name//_enhancement}"
     ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$i" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
     push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
