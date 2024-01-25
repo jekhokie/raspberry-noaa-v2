@@ -1,1 +1,1 @@
-%www-data ALL=(root) NOPASSWD: /usr/bin/atrm
+www-data ALL=(ALL) NOPASSWD: /usr/bin/atrm
