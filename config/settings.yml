@@ -85,6 +85,16 @@ meteor_m2_3_sun_min_elevation: 6
 meteor_m2_3_sat_min_elevation: 30
 meteor_m2_3_80k_interleaving: false
 
+meteor_m2_4_schedule: false
+meteor_m2_4_sdr_device_id: 0
+meteor_m2_4_freq_offset: 0
+meteor_m2_4_enable_bias_tee: false
+meteor_m2_4_gain: 29.7
+meteor_m2_4_schedule_sun_min_elevation: -90
+meteor_m2_4_sun_min_elevation: 6
+meteor_m2_4_sat_min_elevation: 30
+meteor_m2_4_80k_interleaving: false
+
 # how many days to schedule passes - note this MUST be an even integer,
 # and the current day counts as "1" - passes will be scheduled until midnight
 # of the `days_to_schedule_passes` final day

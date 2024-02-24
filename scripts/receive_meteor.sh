@@ -32,15 +32,6 @@ export SAT_MAX_ELEVATION=$6
 export PASS_DIRECTION=$7
 export PASS_SIDE=$8
 
-# export some variables for use in the annotation - note that we do not
-# want to export all of .noaa-v2.conf because it contains sensitive info
-export GAIN=$METEOR_M2_3_GAIN
-export SUN_MIN_ELEV=$METEOR_M2_3_SUN_MIN_ELEV
-export SDR_DEVICE_ID=$METEOR_M2_3_SDR_DEVICE_ID
-export BIAS_TEE=$METEOR_M2_3_ENABLE_BIAS_TEE
-export FREQ_OFFSET=$METEOR_M2_3_FREQ_OFFSET
-export SAT_MIN_ELEV=$METEOR_M2_3_SAT_MIN_ELEV
-
 # base directory plus filename_base for re-use
 RAMFS_AUDIO_BASE="${RAMFS_AUDIO}/${FILENAME_BASE}"
 AUDIO_FILE_BASE="${METEOR_AUDIO_OUTPUT}/${FILENAME_BASE}"
@@ -87,9 +78,27 @@ esac
 if [ "$SAT_NAME" == "METEOR-M2 3" ]; then
   SAT_NUMBER="M2_3"
   SAT_NAME_METEORDEMOD="METEOR-M-2-3"
+
+  # export some variables for use in the annotation - note that we do not
+  # want to export all of .noaa-v2.conf because it contains sensitive info
+  export GAIN=$METEOR_M2_3_GAIN
+  export SUN_MIN_ELEV=$METEOR_M2_3_SUN_MIN_ELEV
+  export SDR_DEVICE_ID=$METEOR_M2_3_SDR_DEVICE_ID
+  export BIAS_TEE=$METEOR_M2_3_ENABLE_BIAS_TEE
+  export FREQ_OFFSET=$METEOR_M2_3_FREQ_OFFSET
+  export SAT_MIN_ELEV=$METEOR_M2_3_SAT_MIN_ELEV
 elif [ "$SAT_NAME" == "METEOR-M2 4" ]; then
   SAT_NUMBER="M2_4"
   SAT_NAME_METEORDEMOD="METEOR-M-2-4"
+
+  # export some variables for use in the annotation - note that we do not
+  # want to export all of .noaa-v2.conf because it contains sensitive info
+  export GAIN=$METEOR_M2_4_GAIN
+  export SUN_MIN_ELEV=$METEOR_M2_4_SUN_MIN_ELEV
+  export SDR_DEVICE_ID=$METEOR_M2_4_SDR_DEVICE_ID
+  export BIAS_TEE=$METEOR_M2_4_ENABLE_BIAS_TEE
+  export FREQ_OFFSET=$METEOR_M2_4_FREQ_OFFSET
+  export SAT_MIN_ELEV=$METEOR_M2_4_SAT_MIN_ELEV
 fi
 
 mode="$([[ "$METEOR_${SAT_NUMBER}_80K_INTERLEAVING" == "true" ]] && echo "_80k" || echo "")"

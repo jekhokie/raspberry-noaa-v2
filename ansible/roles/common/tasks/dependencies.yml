@@ -21,7 +21,7 @@
       - libgles-dev
       - libegl-dev
       - libatlas-base-dev
-      - libopenblas-base
+      - libopenblas-dev
       - libgfortran5
       - libjpeg-dev
       - libncurses5-dev
