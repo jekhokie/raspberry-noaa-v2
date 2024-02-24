@@ -37,6 +37,9 @@ fi
 if [ "$OBJ_NAME" == "METEOR-M2 3" ]; then
   SAT_MIN_ELEV=$METEOR_M2_3_SAT_MIN_ELEV
 fi
+if [ "$OBJ_NAME" == "METEOR-M2 4" ]; then
+  SAT_MIN_ELEV=$METEOR_M2_4_SAT_MIN_ELEV
+fi
 
 # come up with prediction start/end timings for pass
 predict_start=$($PREDICT -t $TLE_FILE -p "${OBJ_NAME}" "${START_TIME_MS}" | head -1)
@@ -60,6 +63,13 @@ while [ "$(date --date="@${end_epoch_time}" +"%s")" -le "${END_TIME_MS}" ]; do
       START_SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$start_epoch_time")
       if [ "${START_SUN_ELEV}" -lt "${METEOR_M2_3_SCHEDULE_SUN_MIN_ELEV}" ]; then
         log "Not scheduling Meteor-M2 3 with START TIME $start_epoch_time because $START_SUN_ELEV is below configured minimum sun elevation $METEOR_M2_3_SCHEDULE_SUN_MIN_ELEV" "INFO"
+        schedule_enabled_by_sun_elev=0
+      fi
+  fi
+  if [ "$OBJ_NAME" == "METEOR-M2 4" ]; then
+      START_SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$start_epoch_time")
+      if [ "${START_SUN_ELEV}" -lt "${METEOR_M2_4_SCHEDULE_SUN_MIN_ELEV}" ]; then
+        log "Not scheduling Meteor-M2 4 with START TIME $start_epoch_time because $START_SUN_ELEV is below configured minimum sun elevation $METEOR_M2_4_SCHEDULE_SUN_MIN_ELEV" "INFO"
         schedule_enabled_by_sun_elev=0
       fi
   fi
