@@ -1567,7 +1567,7 @@
                         "geo_correct": true,
                         "description": "descriptions/221.md",
                         "equalize": false,
-                        "map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
                         "map_overlay_colors": [
                             1,
                             1,
@@ -1596,7 +1596,7 @@
                         "description": "descriptions/321.md",
                         "geo_correct": true,
                         "equalize": false,
-                        "map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
                         "map_overlay_colors": [
                             1,
                             1,
@@ -1624,7 +1624,7 @@
                         "equation": "ch2, ch2, 1-ch4",
                         "geo_correct": true,
                         "individual_equalize": true,
-                        "map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
                         "map_overlay_colors": [
                             1,
                             1,
@@ -1652,7 +1652,7 @@
                         "equation": "ch4, ch4, ch4",
                         "geo_correct": true,
                         "individual_equalize": true,
-                        "map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
                         "map_overlay_colors": [
                             1,
                             1,
@@ -1694,7 +1694,7 @@
                         "description": "descriptions/ThermalUncal.md",
                         "individual_equalize": true,
                         "geo_correct": true,
-                        "map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
                         "map_overlay_colors": [
                             1,
                             1,
@@ -1723,7 +1723,7 @@
                         "description": "descriptions/DayMicro.md",
                         "individual_equalize": true,
                         "geo_correct": true,
-                        "map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
                         "map_overlay_colors": [
                             1,
                             1,
@@ -1752,7 +1752,7 @@
                         "description": "descriptions/NightMicro.md",
                         "individual_equalize": true,
                         "geo_correct": true,
-                        "map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
                         "map_overlay_colors": [
                             1,
                             1,
@@ -1782,7 +1782,7 @@
                         "individual_equalize": true,
                         "geo_correct": true,
                         "autogen": true,
-                        "map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
                         "map_overlay_colors": [
                             1,
                             1,
@@ -1825,7 +1825,24 @@
                             1,
                             1,
                             0
-                        ]
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": true,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                           }
+                        }
                     },
                     "MCIR": {
                         "channels": "ch4",
@@ -1843,12 +1860,24 @@
                             1,
                             1,
                             0
-                        ]
-                    },
-                    "Channel 4 Equalized": {
-                        "equation": "1 - ch4",
-                        "individual_equalize": true,
-                        "geo_correct": true
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ meteor_draw_map_overlay|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": true,
+                            "config": {
+                                "type": "stereo",
+                                "center_lat": {{ latitude }},
+                                "center_lon": {{ longitude }},
+                                "scale": {{ satdump_image_scaling_factor }}
+                           }
+                        }
                     }
                 }
             },
