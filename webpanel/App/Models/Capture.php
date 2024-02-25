@@ -146,6 +146,8 @@ class Capture extends \Lib\Model {
               '-Night_Microphysics_projected.jpg',
               '-Thermal_Channel_corrected.jpg',
               '-Thermal_Channel_projected.jpg',
+              '-MCIR_corrected.jpg',
+              '-MCIR_projected.jpg',
               '-124_corrected.jpg',
               '-124_projected.jpg',
               '-negative224_corrected.jpg',
