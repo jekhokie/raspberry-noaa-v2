@@ -307,8 +307,8 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
 
     new_name="${i//_(Uncalibrated)}"
     if [ ! -f "$new_file" ]; then
-      log "Rename uncalibrated MCIR and MSA images to remove the _(Uncalibrated) suffix" "INFO"
-      mv "$i" "$new_file"
+      log "Keep using calibrated versions of MCIR and MSA images" "INFO"
+      #mv "$i" "$new_file"
     else
       log "Delete uncalibrated MCIR and MSA images if calibrated versions exist" "INFO"
       rm "$i"
