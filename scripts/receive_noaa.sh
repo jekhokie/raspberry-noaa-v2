@@ -110,9 +110,9 @@ case "$RECEIVER_TYPE" in
          decimation=50
          ;;
      "mirisdr")
-         samplerate="1e6"
-         receiver="sdrplay"
-         decimation=25
+         samplerate="2e6"
+         receiver="mirisdr"
+         decimation=50
          ;;
      *)
          echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE"
@@ -120,7 +120,6 @@ case "$RECEIVER_TYPE" in
          ;;
 esac
 
-gain_option=""
 if [[ "$receiver" == "rtlsdr" ]]; then
   gain_option="--source_id $SDR_DEVICE_ID --gain"
 else
@@ -128,18 +127,30 @@ else
 fi
 
 if [ "$BIAS_TEE" == "-T" ]; then
-    bias_tee_option="--bias"
+  bias_tee_option="--bias"
 else
-    bias_tee_option=""
+  bias_tee_option=""
 fi
 
-FLIP="" 
-log "Direction $PASS_DIRECTION" "INFO" 
-if [ "$PASS_DIRECTION" == "Northbound" ]; then 
-  log "I'll flip this image pass because PASS_DIRECTION is Northbound" "INFO" 
-  FLIP="-rotate 180" 
+if [ "$NOAA_DECODER" == "satdump" ]; then
+  finish_processing="--finish_processing"
+else
+  finish_processing=""
 fi
- 
+
+FLIP=""
+log "Direction $PASS_DIRECTION" "INFO"
+if [ "$PASS_DIRECTION" == "Northbound" ]; then
+  log "I'll flip this image pass because PASS_DIRECTION is Northbound" "INFO"
+  FLIP="-rotate 180"
+fi
+
+$crop_topbottom=""
+if [ "$NOAA_CROP_TOPTOBOTTOM" == "true" ]; then
+  log "Cropping SatDump NOAA images enabled" "INFO"
+  $crop_topbottom="--autocrop_wedges"
+fi
+
 # pass start timestamp and sun elevation
 PASS_START=$(expr "$EPOCH_START" + 90)
 export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
@@ -148,54 +159,21 @@ export SUN_ELEV=$(python3 "$SCRIPTS_DIR"/tools/sun.py "$PASS_START")
 # simply be left out/not included, so there is no harm in running all of them
 daylight=$((SUN_ELEV > SUN_MIN_ELEV ? 1 : 0))
 
-if pgrep "rtl_fm" > /dev/null; then
-  log "There is an existing RTL_FM instance running, I quit" "ERROR"
-  exit 1
-elif pgrep -f ${RECEIVER_TYPE}_noaa_apt_rx.py > /dev/null; then
-  log "There is an existing gnuradio noaa capture instance running, I quit" "ERROR"
-  exit 1
-elif pgrep -f ${RECEIVER_TYPE}_m2_lrpt_rx.py > /dev/null; then
-  log "There is an existing gnuradio M2 capture instance running, I quit" "ERROR"
-  exit 1
-fi
-
 #start capture
-if [ "$NOAA_RECEIVER" == "rtl_fm" ]; then
-  log "Starting rtl_fm record at ${NOAA_FREQUENCY} MHz..." "INFO"
-  if [ ${GAIN} == 0 ]; then
-    timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -f "${NOAA_FREQUENCY}"M -p "${FREQ_OFFSET}" -s 60k  -E wav -E deemp -F 9 - | $SOX -t raw -e signed -c 1 -b 16 -r 60000 - "${RAMFS_AUDIO_BASE}.wav" rate 11025
-  else
-    timeout "${CAPTURE_TIME}" $RTL_FM -d ${SDR_DEVICE_ID} ${BIAS_TEE} -f "${NOAA_FREQUENCY}"M -p "${FREQ_OFFSET}" -s 60k -g "${GAIN}" -E wav -E deemp -F 9 - | $SOX -t raw -e signed -c 1 -b 16 -r 60000 - "${RAMFS_AUDIO_BASE}.wav" rate 11025
-  fi
-elif [ "$NOAA_RECEIVER" == "gnuradio" ]; then
-  log "Starting gnuradio record" "INFO"
-  log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${NOAA_FREQUENCY} MHz via GNU Radio " "INFO"
-  timeout "${CAPTURE_TIME}" "$NOAA_HOME/scripts/audio_processors/${RECEIVER_TYPE}_noaa_apt_rx.py" "${RAMFS_AUDIO_BASE}.wav" "${GAIN}" "${NOAA_FREQUENCY}"M "${FREQ_OFFSET}" "${SDR_DEVICE_ID}" "${BIAS_TEE}" >> $NOAA_LOG 2>&1
-elif [ "$NOAA_RECEIVER" == "satdump_record" ]; then
-  log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump live pipeline" "INFO"
-  audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
-  #$SATDUMP record "${RAMFS_AUDIO_BASE}-baseband" --source $receiver --baseband_format w16 --samplerate $samplerate --decimation $decimation --frequency "${NOAA_FREQUENCY}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
-  $SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
-  log "Waiting for noaa_apt.wav to close" "INFO"
-  sleep 1
-  $SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
-  #"$NOAA_HOME/scripts/audio_processors/FM_baseband_demodulator.py" "${RAMFS_AUDIO_BASE}-baseband-resampled.wav" "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
-  rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/dataset.json" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
-elif [ "$NOAA_RECEIVER" == "satdump_live" ]; then
-  log "Starting SatDump recording and live decoding" "INFO"
-  $SATDUMP live noaa_apt . --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START --timeout $CAPTURE_TIME --finish_processing >> $NOAA_LOG 2>&1
-  rm satdump.log product.cbor dataset.json APT-A.png APT-B.png raw.png
-  spectrogram=0
-  pristine=0
-  histogram=0
+log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump live pipeline" "INFO"
+audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
+$SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START $finish_processing --sdrpp_noise_reduction --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+log "Files recorded" "INFO"
+
+if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
+  log "Contributing images for creating community composites" "INFO"
+  curl -F "file=@${RAMFS_AUDIO_BASE}.wav" "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES_URL}/noaa" >> $NOAA_LOG 2>&1
 fi
 
-# wait for files to close
-sleep 2
-
-#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
+if [ "$NOAA_DECODER" == "wxtoimg" ]; then
+  log "Resampling down audio" "INFO"
+  $SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" pad 0 $WXTOIMG_MAP_OFFSET >> $NOAA_LOG 2>&1
+  rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
 
   push_file_list=""
   #generate outputs
@@ -212,9 +190,9 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
   if [[ "${PRODUCE_NOAA_PRISTINE}" == "true" ]]; then
     log "Producing pristine image" "INFO"
     pristine=1
-    ${IMAGE_PROC_DIR}/noaa_pristine.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.jpg" "${IMAGE_THUMB_BASE}-pristine.jpg" >> $NOAA_LOG 2>&1
-    push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-pristine.jpg"
+    ${IMAGE_PROC_DIR}/noaa_pristine.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.png" >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.png" "${IMAGE_THUMB_BASE}-pristine.png" >> $NOAA_LOG 2>&1
+    push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-pristine.png"
   fi
 
   histogram=0
@@ -231,9 +209,9 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
 
     # Loop through channels
     for channel in "${channels[@]}"; do
-        log "Producing histogram of NOAA pristine image channel $channel" "INFO"
-        ${IMAGE_PROC_DIR}/histogram.sh "${tmp_dir}/${FILENAME_BASE}-${channel}.png" "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${SAT_NAME} - Channel $channel" "${histogram_text}" >> $NOAA_LOG 2>&1
-        ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${IMAGE_THUMB_BASE}-histogram-${channel}.jpg" >> $NOAA_LOG 2>&1
+      log "Producing histogram of NOAA pristine image channel $channel" "INFO"
+      ${IMAGE_PROC_DIR}/histogram.sh "${tmp_dir}/${FILENAME_BASE}-${channel}.png" "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${SAT_NAME} - Channel $channel" "${histogram_text}" >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${IMAGE_THUMB_BASE}-histogram-${channel}.jpg" >> $NOAA_LOG 2>&1
     done
 
     log "Horizontally Merge two Histogram Channels to a single image for output"
@@ -242,7 +220,7 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
 
     # Remove temporary files
     for channel in "${channels[@]}"; do
-        rm "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${IMAGE_THUMB_BASE}-histogram-${channel}.jpg" "${tmp_dir}/${FILENAME_BASE}-${channel}.png"
+      rm "${IMAGE_FILE_BASE}-histogram-${channel}.jpg" "${IMAGE_THUMB_BASE}-histogram-${channel}.jpg" "${tmp_dir}/${FILENAME_BASE}-${channel}.png"
     done
   fi
 
@@ -287,12 +265,56 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
     fi
   done
 
-  rm $map_overlay
+  rm $map_overlay >> $NOAA_LOG 2>&1
 
-  if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
-    log "Contributing images for creating community composites" "INFO"
-    curl -F "file=@${RAMFS_AUDIO_BASE}.wav" "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES_URL}/noaa" >> $NOAA_LOG 2>&1
+  if [ "$DELETE_NOAA_AUDIO" == true ]; then
+    log "Deleting audio files" "INFO"
+    rm "${RAMFS_AUDIO_BASE}.wav"
+  else
+    if [ "$in_mem" == "true" ]; then
+      log "Moving audio files out to the SD card" "INFO"
+      mv "${RAMFS_AUDIO_BASE}.wav" "${AUDIO_FILE_BASE}.wav"
+      log "Deleting NOAA audio files older than $DELETE_FILES_OLDER_THAN_DAYS days" "INFO"
+      find /srv/audio/noaa -type f -name "*.wav" -mtime +${DELETE_FILES_OLDER_THAN_DAYS} -delete >> $NOAA_LOG 2>&1
+    fi
   fi
+elif [ "$NOAA_DECODER" == "satdump" ]; then
+  log "Resampling down audio" "INFO"
+  $SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+  rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
+
+  #$SATDUMP noaa_apt audio_wav "${RAMFS_AUDIO_BASE}.wav" . --satellite_number ${SAT_NUMBER} $crop_topbottom >> $NOAA_LOG 2>&1
+  #rm satdump.log noaa_apt.wav product.cbor >> $NOAA_LOG 2>&1
+
+  spectrogram=0
+  pristine=0
+  histogram=0
+
+  log "Removing images without a map if they exist" "INFO"
+  for file in *map.png; do
+    mv "$file" "${file/_map.png/.png}"
+  done
+
+  log "Flipping projected images once here and renaming them so they will be flipped again later in the for loop restoring their original orientation" "INFO"
+  for projected_file in *_projected.png; do
+    $CONVERT "$projected_file" $FLIP "$projected_file"
+    mv "$projected_file" "${projected_file/_projected.png/.png}"
+  done
+
+  log "Normalizing and annotating NOAA images" "INFO"
+  for i in *.png; do
+    $CONVERT "$i" $FLIP "$i"
+    new_name="${i//avhrr_apt_rgb_}"
+    new_name="${new_name//avhrr_apt_}"
+    new_name="${new_name//avhrr_3_rgb_}"
+    new_name="${new_name//rgb_avhrr_3_rgb_}"
+    new_name="${new_name//_(Uncalibrated)}"
+    new_name="${new_name//_(channel_1)}"
+    ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$i" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
+    push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
+    rm $i >> $NOAA_LOG 2>&1
+  done
 
   if [ "$DELETE_NOAA_AUDIO" == true ]; then
     log "Deleting audio files" "INFO"
@@ -306,21 +328,8 @@ if [ -f "${RAMFS_AUDIO_BASE}.wav" ]; then
     fi
   fi
 else
-  log "Removing images without a map if they exist" "INFO"
-  for file in *map.png; do
-    mv "$file" "${file/_map.png/.png}"
-  done
-
-  log "Normalizing and annotating NOAA images" "INFO"
-  for i in *.png; do
-    $CONVERT "$i" $FLIP "$i"
-    new_name="${i#avhrr_apt_rgb_}"
-    new_name="${new_name#avhrr_apt_}"
-    ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$i" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
-    push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
-    rm $i >> $NOAA_LOG 2>&1
-  done
+  log "Invalid NOAA_DECODER value: $NOAA_DECODER" "INFO"
+  exit 1
 fi
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -400,10 +409,10 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     #pushover_push_annotation="${pushover_push_annotation}<b>Gain: </b>${gain} | ${PASS_DIRECTION}<br/>"
     pushover_push_annotation="${pushover_push_annotation} <a href=${PUSHOVER_LINK_URL}?pass_id=${pass_id}>BROWSER LINK</a>";
 
-    log "Call pushover script with push_file_list: $push_file_list"
+    log "Call pushover script with push_file_list: $push_file_list" "INFO"
     ${PUSH_PROC_DIR}/push_pushover.sh "${pushover_push_annotation}" "${SAT_NAME}" "${push_file_list}"
   fi
-   
+
   # create push annotation string (annotation in the email subject, discord text, etc.)
   # note this is NOT the annotation on the image, which is driven by the config/annotation/annotation.html.j2 file
   push_annotation=""

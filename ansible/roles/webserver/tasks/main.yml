@@ -190,20 +190,6 @@
     group: www-data
     mode: 0770
 
-#- name: check if self-signed certificate is expired
-#  command: openssl x509 -checkend 86400 -noout -in /etc/ssl/certs/local_server.crt
-#  register: cert_valid
-#  failed_when: no
-#  changed_when: no
-#  when: enable_tls|bool
-
-#- name: create self-signed certificate
-#  become: yes
-#  command: >
-#    openssl req -x509 -nodes -subj '/CN={{ web_server_name }}' -days {{ cert_valid_days }}
-#    -newkey rsa:4096 -sha256 -keyout {{ tls_cert_key }} -out {{ tls_cert }}
-#  when: enable_tls|bool and cert_valid.rc != 0
-
 - name: nginx tls config file
   become: yes
   template:
@@ -240,9 +226,9 @@
     name: nginx
     state: started
 
-- name: www-data sudoers atrm as the current user
+- name: www-data sudoers atrm as superuser
   become: yes
-  template:
+  copy:
     src: 020_www-data-atrm-nopasswd
     dest: /etc/sudoers.d/020_www-data-atrm-nopasswd
     owner: root

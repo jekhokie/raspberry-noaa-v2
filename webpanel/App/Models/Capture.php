@@ -70,9 +70,121 @@ class Capture extends \Lib\Model {
     switch($pass['sat_type']) {
       case 0: // Meteor
         if ($pass['daylight_pass'] == 1) {
-          $enhancements = ['-321_corrected.jpg','-321_projected.jpg','-221_corrected.jpg','-221_projected.jpg','-654_corrected.jpg','-654_projected.jpg','-Night_Microphysics_corrected.jpg','-Night_Microphysics_projected.jpg','-Thermal_Channel_corrected.jpg','-Thermal_Channel_projected.jpg','-124_corrected.jpg','-124_projected.jpg','-224_corrected.jpg','-224_projected.jpg','-negative224_corrected.jpg','-negative224_projected.jpg','-421_corrected.jpg','-421_projected.jpg','-4_corrected.jpg','-4_projected.jpg','-equidistant_321.jpg','-equidistant_221.jpg','-equidistant_654.jpg','-equidistant_IR.jpg','-equidistant_rain_IR.jpg','-mercator_321.jpg','-mercator_221.jpg','-mercator_654.jpg','-mercator_IR.jpg','-mercator_rain_IR.jpg','-spread_321.jpg','-spread_221.jpg','-spread_654.jpg','-spread_IR.jpg','-spread_rain_IR.jpg', '-equidistant_321_composite.jpg', '-equidistant_221_composite.jpg','-mercator_321_composite.jpg', '-mercator_221_composite.jpg'];
+          $enhancements = [
+              '-321_corrected.jpg',
+              '-321_projected.jpg',
+              '-221_corrected.jpg',
+              '-221_projected.jpg',
+              '-654_corrected.jpg',
+              '-654_projected.jpg',
+              '-Night_Microphysics_corrected.jpg',
+              '-Night_Microphysics_projected.jpg',
+              '-Thermal_Channel_corrected.jpg',
+              '-Thermal_Channel_projected.jpg',
+              '-negative224_corrected.jpg',
+              '-negative224_projected.jpg',
+              '-4_corrected.jpg',
+              '-4_projected.jpg',
+              '-equidistant_321.jpg',
+              '-equidistant_221.jpg',
+              '-equidistant_224.jpg',
+              '-equidistant_654.jpg',
+              '-equidistant_67.jpg',
+              '-equidistant_68.jpg',
+              '-equidistant_thermal.jpg',
+              '-equidistant_rain_221.jpg',
+              '-equidistant_rain_224.jpg',
+              '-equidistant_rain_67.jpg',
+              '-mercator_321.jpg',
+              '-mercator_221.jpg',
+              '-mercator_224.jpg',
+              '-mercator_654.jpg',
+              '-mercator_67.jpg',
+              '-mercator_68.jpg',
+              '-mercator_thermal.jpg',
+              '-mercator_rain_67.jpg',
+              '-mercator_rain_68.jpg',
+              '-mercator_rain_221.jpg',
+              '-mercator_rain_224.jpg',
+              '-spread_321.jpg',
+              '-spread_221.jpg',
+              '-spread_224.jpg',
+              '-spread_654.jpg',
+              '-spread_67.jpg',
+              '-spread_68.jpg',
+              '-spread_thermal.jpg',
+              '-spread_rain_221.jpg',
+              '-spread_rain_224.jpg',
+              '-spread_rain_67.jpg',
+              '-spread_rain_68.jpg',
+              '-equidistant_321_composite.jpg',
+              '-equidistant_221_composite.jpg',
+              '-equidistant_224_composite.jpg',
+              '-equidistant_67_composite.jpg',
+              '-equidistant_68_composite.jpg',
+              '-equidistant_thermal_composite.jpg',
+              '-equidistant_rain_221_composite.jpg',
+              '-equidistant_rain_224_composite.jpg',
+              '-equidistant_rain_67_composite.jpg',
+              '-equidistant_rain_68_composite.jpg',
+              '-mercator_321_composite.jpg',
+              '-mercator_221_composite.jpg',
+              '-mercator_224_composite.jpg',
+              '-mercator_67_composite.jpg',
+              '-mercator_68_composite.jpg',
+              '-mercator_thermal_composite.jpg',
+              '-mercator_rain_221_composite.jpg',
+              '-mercator_rain_224_composite.jpg',
+              '-mercator_rain_67_composite.jpg',
+              '-mercator_rain_68_composite.jpg'
+          ];
         } else {
-          $enhancements = ['-321_corrected.jpg','-321_projected.jpg','-221_corrected.jpg','-221_projected.jpg','-654_corrected.jpg','-654_projected.jpg','-Night_Microphysics_corrected.jpg','-Night_Microphysics_projected.jpg','-Thermal_Channel_corrected.jpg','-Thermal_Channel_projected.jpg','-124_corrected.jpg','-124_projected.jpg','-224_corrected.jpg','-224_projected.jpg','-negative224_corrected.jpg','-negative224_projected.jpg','-421_corrected.jpg','-421_projected.jpg','-4_corrected.jpg','-4_projected.jpg','-equidistant_321.jpg','-equidistant_221.jpg','-equidistant_654.jpg','-equidistant_IR.jpg','-equidistant_rain_IR.jpg','-mercator_321.jpg','-mercator_221.jpg','-mercator_654.jpg','-mercator_IR.jpg','-mercator_rain_IR.jpg','-spread_321.jpg','-spread_221.jpg','-spread_654.jpg','-spread_IR.jpg','-spread_rain_IR.jpg', '-equidistant_321_composite.jpg', '-equidistant_221_composite.jpg','-mercator_321_composite.jpg', '-mercator_221_composite.jpg'];
+          $enhancements = [
+              '-654_corrected.jpg',
+              '-654_projected.jpg',
+              '-Night_Microphysics_corrected.jpg',
+              '-Night_Microphysics_projected.jpg',
+              '-Thermal_Channel_corrected.jpg',
+              '-Thermal_Channel_projected.jpg',
+              '-MCIR_corrected.jpg',
+              '-MCIR_projected.jpg',
+              '-124_corrected.jpg',
+              '-124_projected.jpg',
+              '-negative224_corrected.jpg',
+              '-negative224_projected.jpg',
+              '-421_corrected.jpg',
+              '-421_projected.jpg',
+              '-4_corrected.jpg',
+              '-4_projected.jpg',
+              '-equidistant_654.jpg',
+              '-equidistant_67.jpg',
+              '-equidistant_68.jpg',
+              '-equidistant_thermal.jpg',
+              '-equidistant_rain_67.jpg',
+              '-equidistant_rain_68.jpg',
+              '-mercator_654.jpg',
+              '-mercator_67.jpg',
+              '-mercator_68.jpg',
+              '-mercator_thermal.jpg',
+              '-mercator_rain_67.jpg',
+              '-mercator_rain_68.jpg',
+              '-spread_rain_67.jpg',
+              '-spread_rain_68.jpg',
+              '-spread_654.jpg',
+              '-spread_67.jpg',
+              '-spread_68.jpg',
+              '-spread_thermal.jpg',
+              '-equidistant_67_composite.jpg',
+              '-equidistant_68_composite.jpg',
+              '-equidistant_thermal_composite.jpg',
+              '-equidistant_rain_67_composite.jpg',
+              '-equidistant_rain_68_composite.jpg',
+              '-mercator_67_composite.jpg',
+              '-mercator_68_composite.jpg',
+              '-mercator_thermal_composite.jpg',
+              '-mercator_rain_67_composite.jpg',
+              '-mercator_rain_68_composite.jpg'
+          ];
         }
         break;
       case 1: // NOAA
@@ -81,7 +193,27 @@ class Capture extends \Lib\Model {
         } else {
           $enhancements = array_map(function($x) { return "-" . $x . ".jpg"; }, explode(' ', Config::NOAA_NIGHT_ENHANCEMENTS));
         }
-        $satdump_enhancements = ["-APT-A.jpg", "-APT-B.jpg", "-raw.jpg", "-A_individual_equalized.jpg", "-B_individual_equalized.jpg", "Clouds_Underlay.jpg", "-224.jpg", "-MSA_Rain.jpg", "-MCIR_Rain.jpg", "-WXtoImg_HVC_N15.jpg", "-WXtoImg_HVC_N18.jpg", "-WXtoImg_HVC_N19.jpg", "-WXtoImg_NO.jpg"];
+        $satdump_enhancements = [
+            "Clouds_Underlay.jpg",
+            "-224.jpg",
+            "-MSA_Rain.jpg",
+            "-MCIR_Rain.jpg",
+            "-Thermal_Channel.jpg",
+            "-Sea_Surface_Temperature.jpg",
+            "-WXtoImg_HVC_N15.jpg",
+            "-WXtoImg_HVC_N18.jpg",
+            "-WXtoImg_HVC_N19.jpg",
+            "-WXtoImg_NO.jpg",
+            "-APT-A.jpg",
+            "-APT-B.jpg",
+            "-APT_channel_A.jpg",
+            "-APT_channel_B.jpg",
+            "-raw.jpg",
+            "-A_individual_equalized.jpg",
+            "-B_individual_equalized.jpg",
+            "-AVHRR-1.jpg",
+            "-AVHRR-4.jpg"
+        ];
         $enhancements = array_merge($enhancements, $satdump_enhancements);
         break;
     }
@@ -109,7 +241,7 @@ class Capture extends \Lib\Model {
     }
     # capture pristine if one exists
     if ($pass['has_pristine'] == '1') {
-      array_push($enhancements, '-pristine.jpg');
+      array_push($enhancements, '-pristine.png');
     }
     if ($pass['has_histogram'] == '1') {
       array_push($enhancements, '-histogram.jpg');
