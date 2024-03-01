@@ -78,6 +78,7 @@ esac
 if [ "$SAT_NAME" == "METEOR-M2 3" ]; then
   SAT_NUMBER="M2_3"
   SAT_NAME_METEORDEMOD="METEOR-M-2-3"
+  METEOR_FREQUENCY=$METEOR_M2_3_FREQ
 
   # export some variables for use in the annotation - note that we do not
   # want to export all of .noaa-v2.conf because it contains sensitive info
@@ -90,6 +91,7 @@ if [ "$SAT_NAME" == "METEOR-M2 3" ]; then
 elif [ "$SAT_NAME" == "METEOR-M2 4" ]; then
   SAT_NUMBER="M2_4"
   SAT_NAME_METEORDEMOD="METEOR-M-2-4"
+  METEOR_FREQUENCY=$METEOR_M2_4_FREQ
 
   # export some variables for use in the annotation - note that we do not
   # want to export all of .noaa-v2.conf because it contains sensitive info
@@ -154,10 +156,9 @@ polar_direction=0
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-log "Recording ${NOAA_HOME} via $receiver at ${METEOR_M2_3_FREQ} MHz using SatDump record " "INFO"
+log "Recording ${NOAA_HOME} via $receiver at ${METEOR_FREQUENCY} MHz using SatDump record " "INFO"
 audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
-$SATDUMP live meteor_m2-x_lrpt${mode} "$audio_temporary_storage_directory" --source $receiver --samplerate $samplerate --frequency "${METEOR_M2_3_FREQ}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
-#rm "$audio_temporary_storage_directory/meteor_m2-x_lrpt${mode}.cadu"
+$SATDUMP live meteor_m2-x_lrpt${mode} "$audio_temporary_storage_directory" --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQUENCY}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
 mv "$audio_temporary_storage_directory/meteor_m2-x_lrpt${mode}.cadu" "${RAMFS_AUDIO_BASE}.cadu"
 
 log "Removing old bmp, gcp, and dat files" "INFO"
