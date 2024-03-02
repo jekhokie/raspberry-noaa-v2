@@ -174,7 +174,6 @@
   become: yes
   command: ufw enable
 
-
 - name: nginx non-tls config file
   become: yes
   template:
