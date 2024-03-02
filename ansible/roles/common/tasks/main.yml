@@ -17,15 +17,6 @@
 # ramfs setup
 - include: ramfs.yml
 
-# email setup
-- include: email.yml
-
-# Twitter push setup
-- include: twitter.yml
-
-# Facebook push setup
-- include: facebook.yml
-
-# Instagram push setup
-- include: instagram.yml
+#social media and email
+- include: social_media.yml
 ...
