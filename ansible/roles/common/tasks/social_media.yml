@@ -1,0 +1,117 @@
+---
+#Email
+
+- name: install mpack and msmtp if emailing is enabled
+  become: yes
+  apt:
+    update_cache: no
+    state: present
+    name:
+      - mpack
+      - msmtp
+      - msmtp-mta
+  when: enable_email_push | bool
+
+- name: drop template email msmtp config file
+  copy:
+    src: msmtprc
+    dest: /home/{{ target_user }}/.msmtprc
+    force: no
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0600
+  when: enable_email_push | bool
+
+- name: create an msmtp log directory
+  become: yes
+  file:
+    path: /var/log/msmtp
+    state: directory
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0750
+  when: enable_email_push | bool
+
+- name: create an msmtp starter log with permissions
+  become: yes
+  file:
+    path: /var/log/msmtp/output.log
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0644
+    state: touch
+  when: enable_email_push | bool
+
+- name: logrotate settings for msmtp
+  become: yes
+  template:
+    src: email-logrotate-settings.j2
+    dest: /etc/logrotate.d/msmtp
+    owner: root
+    group: root
+    mode: 0644
+
+
+
+########################################################################################################
+
+#Twitter
+
+- name: install tweepy if twitter push is enabled
+  become: yes
+  pip:
+    name: tweepy
+    executable: pip3
+    state: present
+  when: enable_twitter_push | bool
+
+- name: drop template twitter tweepy config file
+  copy:
+    src: tweepy.conf
+    dest: /home/{{ target_user }}/.tweepy.conf
+    force: no
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0600
+  when: enable_twitter_push | bool
+
+
+
+########################################################################################################
+
+#Facebook
+
+- name: install facebook-sdk if facebook push is enabled
+  become: yes
+  pip:
+    name: facebook-sdk
+    executable: pip3
+    state: present
+  when: enable_facebook_push | bool
+
+- name: drop template facebook facebook-sdk config file
+  copy:
+    src: facebook.conf
+    dest: /home/{{ target_user }}/.facebook.conf
+    force: no
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0600
+  when: enable_facebook_push | bool
+
+
+
+########################################################################################################
+
+#Instagram
+
+- name: drop template instagram config file
+  copy:
+    src: instagram.conf
+    dest: /home/{{ target_user }}/.instagram.conf
+    force: no
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0600
+  when: enable_instagram_push | bool
+...
