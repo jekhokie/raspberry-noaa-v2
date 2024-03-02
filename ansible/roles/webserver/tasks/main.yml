@@ -126,35 +126,6 @@
     group: www-data
     mode: 0644
 
-- name: nginx non-tls config file
-  become: yes
-  template:
-    src: nginx_default.j2
-    dest: /etc/nginx/sites-available/default
-    owner: root
-    group: root
-    mode: 0644
-  notify: restart nginx
-
-- name: nginx non-tls config symlink
-  become: yes
-  file:
-    src: /etc/nginx/sites-available/default
-    dest: /etc/nginx/sites-enabled/default
-    state: link
-    owner: root
-    group: root
-  when: enable_non_tls|bool
-  notify: restart nginx
-
-- name: remove non-tls site enable if disabled
-  become: yes
-  file:
-    path: /etc/nginx/sites-enabled/default
-    state: absent
-  when: not enable_non_tls|bool
-  notify: restart nginx
-
 - name: update images directory group
   become: yes
   file:
@@ -190,6 +161,48 @@
     group: www-data
     mode: 0770
 
+- name: www-data sudoers atrm as superuser
+  become: yes
+  copy:
+    src: 020_www-data-atrm-nopasswd
+    dest: /etc/sudoers.d/020_www-data-atrm-nopasswd
+    owner: root
+    group: root
+    mode: 0440
+
+- name: Enable the UFW firewall
+  become: yes
+  command: ufw enable
+
+- name: nginx non-tls config file
+  become: yes
+  template:
+    src: nginx_default.j2
+    dest: /etc/nginx/sites-available/default
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart nginx
+
+- name: nginx non-tls config symlink
+  become: yes
+  file:
+    src: /etc/nginx/sites-available/default
+    dest: /etc/nginx/sites-enabled/default
+    state: link
+    owner: root
+    group: root
+  when: enable_non_tls|bool
+  notify: restart nginx
+
+- name: remove non-tls site enable if disabled
+  become: yes
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  when: not enable_non_tls|bool
+  notify: restart nginx
+  
 - name: nginx tls config file
   become: yes
   template:
@@ -225,17 +238,4 @@
   service:
     name: nginx
     state: started
-
-- name: www-data sudoers atrm as superuser
-  become: yes
-  copy:
-    src: 020_www-data-atrm-nopasswd
-    dest: /etc/sudoers.d/020_www-data-atrm-nopasswd
-    owner: root
-    group: root
-    mode: 0440
-
-- name: Enable the UFW firewall
-  become: yes
-  command: ufw enable
 ...
