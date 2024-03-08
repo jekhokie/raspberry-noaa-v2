@@ -276,4 +276,7 @@
     deb: "{{ noaa_home }}/software/anydesk_6.3.0-1_{{ system_architecture }}.deb"
     state: present
     update_cache: no
+- name: Create symbolic link for wkhtmltoimg
+  command: ln -s /usr/local/bin/wkhtmltoimage /usr/bin/wkhtmltoimage          
+  become: yes
 ...
