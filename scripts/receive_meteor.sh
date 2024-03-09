@@ -216,7 +216,7 @@ if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
   fi
 elif [[ "$METEOR_DECODER" == "satdump" ]]; then
   log "Running SatDump to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
-  $SATDUMP meteor_m2-x_lrpt${mode} cadu "${RAMFS_AUDIO_BASE}.cadu" . >> $NOAA_LOG 2>&1
+  $SATDUMP meteor_m2-x_lrpt${mode} cadu "${RAMFS_AUDIO_BASE}.cadu" . -fill_missing >> $NOAA_LOG 2>&1
 
   find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
 
