@@ -33,6 +33,10 @@ class Config {
   # whether to enable satvis visualization
   const ENABLE_SATVIS = '{{ enable_satvis|lower }}';
 
+  # whether to enable coronal mass ejetion GIFs from nasa
+  # warning: high data usage!
+  const ENABLE_CORONAL_GIF = '{{ enable_coronal|lower }}';
+
   # whether to enable image video
   const ENABLE_ANIMATION = '{{ enable_animation|lower }}';
   const ANIMATION_VIDEO_FILE = '{{ noaa_animation_output }}';
