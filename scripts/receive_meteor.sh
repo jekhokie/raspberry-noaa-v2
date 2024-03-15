@@ -118,6 +118,12 @@ else
     bias_tee_option=""
 fi
 
+if [ "$METEOR_DECODER" == "satdump" ]; then
+  finish_processing="--finish_processing"
+else
+  finish_processing=""
+fi
+
 # check if there is enough free memory to store pass on RAM
 FREE_MEMORY=$(free -m | grep Mem | awk '{print $7}')
 if [ "$FREE_MEMORY" -lt $METEOR_M2_MEMORY_THRESHOLD ]; then
@@ -158,7 +164,7 @@ polar_direction=0
 
 log "Recording ${NOAA_HOME} via $receiver at ${METEOR_FREQUENCY} MHz using SatDump record " "INFO"
 audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
-$SATDUMP live meteor_m2-x_lrpt${mode} "$audio_temporary_storage_directory" --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQUENCY}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+$SATDUMP live meteor_m2-x_lrpt${mode} "$audio_temporary_storage_directory" --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQUENCY}e6" $gain_option $GAIN $bias_tee_option $finish_processing --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
 mv "$audio_temporary_storage_directory/meteor_m2-x_lrpt${mode}.cadu" "${RAMFS_AUDIO_BASE}.cadu"
 
 log "Removing old bmp, gcp, and dat files" "INFO"
@@ -215,8 +221,8 @@ if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
     fi
   fi
 elif [[ "$METEOR_DECODER" == "satdump" ]]; then
-  log "Running SatDump to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
-  $SATDUMP meteor_m2-x_lrpt${mode} cadu "${RAMFS_AUDIO_BASE}.cadu" . -fill_missing >> $NOAA_LOG 2>&1
+  #log "Running SatDump to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
+  #$SATDUMP meteor_m2-x_lrpt${mode} cadu "${RAMFS_AUDIO_BASE}.cadu" . -fill_missing >> $NOAA_LOG 2>&1
 
   find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
 
