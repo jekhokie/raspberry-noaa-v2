@@ -1,6 +1,6 @@
 ---
 # available languages for webpanel (see "Lang" directory files)
-available_langs: [ ar, bg, cn, de, en, es, fr, lt, nl, pt, sr, ru, it, hu ]
+available_langs: [ ar, bg, cn, de, en, es, fr, lt, nl, pt, sr, ru, it, hu, kr ]
 
 # root git clone directory (where functionality exists)
 noaa_home: "/home/{{ target_user }}/raspberry-noaa-v2"
