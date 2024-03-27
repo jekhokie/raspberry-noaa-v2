@@ -248,32 +248,32 @@
     state: present
     update_cache: no
 
-- name: Check if libbrcmGLESV2.50 link exists
-  stat:
-    path: /usr/lib/libbrcmGLESV2.50
-  register: libGLESV2_link
-  ignore_errors: yes
+# - name: Check if libbrcmGLESV2.50 link exists
+#   stat:
+#     path: /usr/lib/libbrcmGLESV2.50
+#   register: libGLESV2_link
+#   ignore_errors: yes
 
-- name: Create symbolic link for libGLESV2.so
-  command: ln -s /usr/lib/arm-linux-gnueabihf/libGLESV2.so /usr/lib/libbrcmGLESV2.50
-  become: yes
-  when: not libGLESV2_link.stat.exists and system_architecture == 'armhf'
+# - name: Create symbolic link for libGLESV2.so
+#   command: ln -s /usr/lib/arm-linux-gnueabihf/libGLESV2.so /usr/lib/libbrcmGLESV2.50
+#   become: yes
+#   when: not libGLESV2_link.stat.exists and system_architecture == 'armhf'
 
-- name: Check if libbrcmEGL.so link exists
-  stat:
-    path: /usr/lib/libbrcmEGL.so
-  register: libEGL_link
-  ignore_errors: yes
+# - name: Check if libbrcmEGL.so link exists
+#   stat:
+#     path: /usr/lib/libbrcmEGL.so
+#   register: libEGL_link
+#   ignore_errors: yes
 
-- name: Create symbolic link for libEGL.so
-  command: ln -s /usr/lib/arm-linux-gnueabihf/libEGL.so /usr/lib/libbrcmEGL.so
-  become: yes
-  when: not libEGL_link.stat.exists and system_architecture == 'armhf'
+# - name: Create symbolic link for libEGL.so
+#   command: ln -s /usr/lib/arm-linux-gnueabihf/libEGL.so /usr/lib/libbrcmEGL.so
+#   become: yes
+#   when: not libEGL_link.stat.exists and system_architecture == 'armhf'
 
-- name: Installing AnyDesk remote desktop
-  become: yes
-  apt:
-    deb: "{{ noaa_home }}/software/anydesk_6.3.0-1_{{ system_architecture }}.deb"
-    state: present
-    update_cache: no
+# - name: Installing AnyDesk remote desktop
+#   become: yes
+#   apt:
+#     deb: "{{ noaa_home }}/software/anydesk_6.3.0-1_{{ system_architecture }}.deb"
+#     state: present
+#     update_cache: no
 ...
