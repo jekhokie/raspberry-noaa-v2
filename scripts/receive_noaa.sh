@@ -304,6 +304,17 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
   log "Normalizing and annotating NOAA images" "INFO"
   for i in *.png; do
     $CONVERT "$i" $FLIP "$i"
+
+    new_name="${i//_(Uncalibrated)}"
+    if [ ! -f "$new_file" ]; then
+      log "Keep using calibrated versions of MCIR and MSA images" "INFO"
+      mv "$i" "$new_file"
+    else
+      log "Delete uncalibrated MCIR and MSA images if calibrated versions exist" "INFO"
+      rm "$i"
+    fi
+
+    new_name="${new_name//avhrr_apt_rgb_}"
     new_name="${i//avhrr_apt_rgb_}"
     new_name="${new_name//avhrr_apt_}"
     new_name="${new_name//avhrr_3_rgb_}"
