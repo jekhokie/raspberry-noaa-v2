@@ -162,7 +162,8 @@ daylight=$((SUN_ELEV > SUN_MIN_ELEV ? 1 : 0))
 #start capture
 log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump live pipeline" "INFO"
 audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
-$SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START $finish_processing --sdrpp_noise_reduction --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+$SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} --sdrpp_noise_reduction $gain_option $GAIN $bias_tee_option $crop_topbottom --start_timestamp $PASS_START $finish_processing --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+rm "$audio_temporary_storage_directory/dataset.json" rm "$audio_temporary_storage_directory/product.cbor" >> $NOAA_LOG 2>&1 
 log "Files recorded" "INFO"
 
 if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
@@ -173,7 +174,7 @@ fi
 if [ "$NOAA_DECODER" == "wxtoimg" ]; then
   log "Resampling down audio" "INFO"
   $SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" pad 0 $WXTOIMG_MAP_OFFSET >> $NOAA_LOG 2>&1
-  rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
+  rm "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
 
   push_file_list=""
   #generate outputs
@@ -281,10 +282,7 @@ if [ "$NOAA_DECODER" == "wxtoimg" ]; then
 elif [ "$NOAA_DECODER" == "satdump" ]; then
   log "Resampling down audio" "INFO"
   $SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
-  rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
-
-  #$SATDUMP noaa_apt audio_wav "${RAMFS_AUDIO_BASE}.wav" . --satellite_number ${SAT_NUMBER} $crop_topbottom >> $NOAA_LOG 2>&1
-  #rm satdump.log noaa_apt.wav product.cbor >> $NOAA_LOG 2>&1
+  rm "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
 
   spectrogram=0
   pristine=0
@@ -321,6 +319,7 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
     new_name="${new_name//rgb_avhrr_3_rgb_}"
     new_name="${new_name//_(Uncalibrated)}"
     new_name="${new_name//_(channel_1)}"
+    new_name="${new_name//_(channel_4)}"
     ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$i" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
     push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
