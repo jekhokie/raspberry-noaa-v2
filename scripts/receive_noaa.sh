@@ -310,6 +310,7 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
     else
       log "Delete uncalibrated MCIR and MSA images if calibrated versions exist" "INFO"
       rm "$i"
+      continue
     fi
 
     new_name="${new_name//avhrr_apt_rgb_}"
