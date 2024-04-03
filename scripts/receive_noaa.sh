@@ -313,11 +313,10 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
       continue
     fi
 
-    new_name="${new_file//avhrr_apt_rgb_}"
+    new_name="${new_file//rgb_avhrr_3_rgb_}"
     new_name="${new_name//avhrr_apt_rgb_}"
-    new_name="${new_name//avhrr_apt_}"
     new_name="${new_name//avhrr_3_rgb_}"
-    new_name="${new_name//rgb_avhrr_3_rgb_}"
+    new_name="${new_name//avhrr_apt_}"
     new_name="${new_name//_(channel_1)}"
     new_name="${new_name//_(channel_4)}"
     ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$new_file" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
