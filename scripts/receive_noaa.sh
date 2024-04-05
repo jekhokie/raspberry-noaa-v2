@@ -307,6 +307,8 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
     $CONVERT "$i" $FLIP "$i"
 
     new_file="${i//_\(Uncalibrated\)}"
+
+    #This if statement should execute only if the $i variable contains the substring _(Uncalibrated), otherwise it doesn't have any point
     if [[ "$i" =~ _\(Uncalibrated\) ]]; then
       if [ ! -f "$new_file" ]; then
         log "Keep using calibrated versions of MCIR and MSA images" "INFO"
