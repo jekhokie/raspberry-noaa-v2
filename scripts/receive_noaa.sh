@@ -307,13 +307,15 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
     $CONVERT "$i" $FLIP "$i"
 
     new_file="${i//_\(Uncalibrated\)}"
-    if [ ! -f "$new_file" ]; then
-      log "Keep using calibrated versions of MCIR and MSA images" "INFO"
-      mv "$i" "$new_file"
-    else
-      log "Delete uncalibrated MCIR and MSA images if calibrated versions exist" "INFO"
-      rm "$i"
-      continue
+    if [[ "$i" =~ _\(Uncalibrated\) ]]; then
+      if [ ! -f "$new_file" ]; then
+        log "Keep using calibrated versions of MCIR and MSA images" "INFO"
+        mv "$i" "$new_file"
+      else
+        log "Delete uncalibrated MCIR and MSA images if calibrated versions exist" "INFO"
+        rm "$i"
+        continue
+      fi
     fi
 
     new_name="${new_file//rgb_avhrr_3_rgb_}"
