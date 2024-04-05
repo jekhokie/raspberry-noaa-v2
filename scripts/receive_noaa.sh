@@ -325,7 +325,7 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
     ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$new_file" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
     push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
-    rm $i >> $NOAA_LOG 2>&1
+    rm $new_file >> $NOAA_LOG 2>&1
   done
 
   if [ "$DELETE_NOAA_AUDIO" == true ]; then
