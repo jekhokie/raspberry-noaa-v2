@@ -288,50 +288,52 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
   pristine=0
   histogram=0
 
-  log "Removing images without a map if they exist" "INFO"
-  for file in *map.png; do
-    mv "$file" "${file/_map.png/.png}"
-  done
+  if [ -n "$(find . -maxdepth 1 -type f -name '*.png')" ]; then
+    log "Removing images without a map if they exist" "INFO"
+    for file in *map.png; do
+      mv "$file" "${file/_map.png/.png}"
+    done
 
-  log "Flipping projected images once here and renaming them so they will be flipped again later in the for loop restoring their original orientation" "INFO"
-  for projected_file in *_projected.png; do
-    $CONVERT "$projected_file" $FLIP "$projected_file"
-    mv "$projected_file" "${projected_file/_projected.png/.png}"
-  done
+    log "Flipping projected images once here and renaming them so they will be flipped again later in the for loop restoring their original orientation" "INFO"
+    for projected_file in *_projected.png; do
+      $CONVERT "$projected_file" $FLIP "$projected_file"
+      mv "$projected_file" "${projected_file/_projected.png/.png}"
+    done
 
-  log "Removing black and empty NOAA images" "INFO"
-  rm rgb_*.png
+    log "Removing black and empty NOAA images" "INFO"
+    rm rgb_*.png
 
-  log "Normalizing and annotating NOAA images" "INFO"
-  for i in *.png; do
-    $CONVERT "$i" $FLIP "$i"
+    log "Normalizing and annotating NOAA images" "INFO"
+    for i in *.png; do
+      $CONVERT "$i" $FLIP "$i"
 
-    new_file="${i//_\(Uncalibrated\)}"
+      new_file="${i//_\(Uncalibrated\)}"
 
-    #This if statement should execute only if the $i variable contains the substring _(Uncalibrated), otherwise it doesn't have any point
-    if [[ "$i" =~ _\(Uncalibrated\) ]]; then
-      if [ ! -f "$new_file" ]; then
-        log "Keep using calibrated versions of MCIR and MSA images" "INFO"
-        mv "$i" "$new_file"
-      else
-        log "Delete uncalibrated MCIR and MSA images if calibrated versions exist" "INFO"
-        rm "$i"
-        continue
+      #This if statement should execute only if the $i variable contains the substring _(Uncalibrated), otherwise it doesn't have any point
+      if [[ "$i" =~ _\(Uncalibrated\) ]]; then
+        if [ ! -f "$new_file" ]; then
+          log "Keep using calibrated versions of MCIR and MSA images" "INFO"
+          mv "$i" "$new_file"
+        else
+          log "Delete uncalibrated MCIR and MSA images if calibrated versions exist" "INFO"
+          rm "$i"
+          continue
+        fi
       fi
-    fi
 
-    new_name="${new_file//rgb_avhrr_3_rgb_}"
-    new_name="${new_name//avhrr_apt_rgb_}"
-    new_name="${new_name//avhrr_3_rgb_}"
-    new_name="${new_name//avhrr_apt_}"
-    new_name="${new_name//_enhancement}"
-    new_name="${new_name//_\(channel_1\)}"
-    new_name="${new_name//_\(channel_4\)}"
-    ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$new_file" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
-    push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
-    rm $new_file >> $NOAA_LOG 2>&1
-  done
+      new_name="${new_file//rgb_avhrr_3_rgb_}"
+      new_name="${new_name//avhrr_apt_rgb_}"
+      new_name="${new_name//avhrr_3_rgb_}"
+      new_name="${new_name//avhrr_apt_}"
+      new_name="${new_name//_enhancement}"
+      new_name="${new_name//_\(channel_1\)}"
+      new_name="${new_name//_\(channel_4\)}"
+      ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$new_file" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
+      push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
+      rm $new_file >> $NOAA_LOG 2>&1
+    done
+  fi
 
   if [ "$DELETE_NOAA_AUDIO" == true ]; then
     log "Deleting audio files" "INFO"
