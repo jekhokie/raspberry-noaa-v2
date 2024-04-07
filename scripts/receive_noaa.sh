@@ -300,8 +300,8 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
       mv "$projected_file" "${projected_file/_projected.png/.png}"
     done
 
-    log "Removing black and empty NOAA images" "INFO"
-    rm rgb_*.png
+    #log "Removing black and empty NOAA images" "INFO"
+    #rm rgb_*.png
 
     log "Normalizing and annotating NOAA images" "INFO"
     for i in *.png; do

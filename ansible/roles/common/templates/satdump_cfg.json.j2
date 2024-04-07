@@ -54,7 +54,7 @@
             "type": "float",
             "value": 1.0,
             "name": "UI Scaling",
-            "description": "Defines the overall UI scale. This can be used to make UI elements bigger or smaller\n\n1.0 = normal\n0.5 = half size\n2.0 = double size"
+            "description": "Defines the overall UI scalar_x. This can be used to make UI elements bigger or smaller\n\n1.0 = normal\n0.5 = half size\n2.0 = double size"
         },
         "play_audio": {
             "type": "bool",
@@ -559,9 +559,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -635,9 +638,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -673,9 +679,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -780,9 +789,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -834,9 +846,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -871,9 +886,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -908,9 +926,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -945,9 +966,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -982,9 +1006,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1019,9 +1046,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1056,9 +1086,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1093,9 +1126,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1130,9 +1166,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1167,9 +1206,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1204,9 +1246,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1241,9 +1286,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1278,9 +1326,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1354,9 +1405,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1390,9 +1444,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1425,9 +1482,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1455,9 +1515,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1485,9 +1548,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     }
@@ -1629,9 +1695,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1658,9 +1727,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1686,9 +1758,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1714,9 +1789,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1756,9 +1834,12 @@
                             "individual_equalize": false,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1785,9 +1866,12 @@
                             ],
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1814,9 +1898,12 @@
                             ],
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                             }
                         }
                     },
@@ -1844,9 +1931,12 @@
                             "individual_equalize": true,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                            }
                         }
                     },
@@ -1882,9 +1972,12 @@
                             "individual_equalize": true,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                            }
                         }
                     },
@@ -1919,9 +2012,12 @@
                             "individual_equalize": true,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                            }
                         }
                     },
@@ -1955,9 +2051,12 @@
                             "individual_equalize": true,
                             "config": {
                                 "type": "stereo",
-                                "center_lat": {{ latitude }},
-                                "center_lon": {{ longitude }},
-                                "scale": {{ satdump_image_scaling_factor }}
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": {{ satdump_image_scaling_factor }},
+                                "scalar_y": -{{ satdump_image_scaling_factor }},
+                                "offset_x": 1024000,
+                                "offset_y": -1024000
                            }
                         }
                     },
