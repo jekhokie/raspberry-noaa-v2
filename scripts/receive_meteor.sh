@@ -317,6 +317,10 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
   push_annotation="${push_annotation} | ${PASS_DIRECTION}"
 
   meteor_suffixes=(
+      '-MSA_corrected.jpg'
+      '-MSA_projected.jpg'
+      '-MCIR_corrected.jpg'
+      '-MCIR_projected.jpg'
       '-321_corrected.jpg'
       '-321_projected.jpg'
       '-equidistant_321.jpg'
