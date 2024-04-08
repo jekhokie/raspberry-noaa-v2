@@ -206,7 +206,6 @@ wxtoimg_map_offset: 10.5                    #Change this value only if you see m
 
 flip_meteor_image: true
 meteor_jpg_image_quality: 90
-satdump_image_scaling_factor: 1
 meteor_draw_map_overlay: true
 meteor_draw_cities: true
 meteor_map_crosshair_enable: true

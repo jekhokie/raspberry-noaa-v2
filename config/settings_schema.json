@@ -136,11 +136,6 @@
     "meteor_create_mercator_projection":             { "type": "boolean" },
     "meteor_create_spreaded_images_without_overlay": { "type": "boolean" },
     "meteor_create_rain_probability_overlay":        { "type": "boolean" },
-    "satdump_image_scaling_factor": {
-      "type": "number",
-      "minimum": 0,
-      "maximum": 10
-    },
     "noaa_map_crosshair_enable":                     { "type": "boolean" },
     "meteor_map_crosshair_enable":                   { "type": "boolean" },
     "noaa_map_crosshair_color":                      { "type": "string" },
