@@ -294,14 +294,22 @@ elif [ "$NOAA_DECODER" == "satdump" ]; then
       mv "$file" "${file/_map.png/.png}"
     done
 
-    log "Flipping projected images once here and renaming them so they will be flipped again later in the for loop restoring their original orientation" "INFO"
-    for projected_file in *_projected.png; do
-      $CONVERT "$projected_file" $FLIP "$projected_file"
-      mv "$projected_file" "${projected_file/_projected.png/.png}"
-    done
+    #log "Flipping projected images once here and renaming them so they will be flipped again later in the for loop restoring their original orientation" "INFO"
+    #for projected_file in *_projected.png; do
+    #  $CONVERT "$projected_file" $FLIP "$projected_file"
+    #  mv "$projected_file" "${projected_file/_projected.png/.png}"
+    #done
 
     #log "Removing black and empty NOAA images" "INFO"
     #rm rgb_*.png
+
+    log "Flipping projected images once here and renaming them so they will be flipped again later in the for loop restoring their original orientation" "INFO"
+    for projected_file in rgb_*.png; do
+      #$CONVERT "$projected_file" $FLIP "$projected_file"
+      #mv "$projected_file" "${projected_file/_projected.png/.png}"
+      mv $projected_file "${projected_file%.png}_projected.png"
+    done
+
 
     log "Normalizing and annotating NOAA images" "INFO"
     for i in *.png; do
