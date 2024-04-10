@@ -430,19 +430,25 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     ${PUSH_PROC_DIR}/push_slack.sh "${push_annotation} <${SLACK_LINK}?pass_id=${pass_id}>\n" $push_file_list
   fi
 
-  # handle twitter pushing if enabled
+  # handle Twitter pushing if enabled
   if [ "${ENABLE_TWITTER_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Twitter" "INFO"
     ${PUSH_PROC_DIR}/push_twitter.sh "${push_annotation}" $push_file_list
   fi
 
-  # handle facebook pushing if enabled
+  # handle Facebook pushing if enabled
   if [ "${ENABLE_FACEBOOK_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Facebook" "INFO"
     ${PUSH_PROC_DIR}/push_facebook.py "${push_annotation}" "${push_file_list}"
   fi
 
-  # handle instagram pushing if enabled
+  # handle Mastodon pushing if enabled
+  if [ "${ENABLE_MASTODON_PUSH}" == "true" ]; then
+    log "Pushing image enhancements to Mastodon" "INFO"
+    ${PUSH_PROC_DIR}/push_mastodon.py "${push_annotation}" "${push_file_list}"
+  fi
+
+  # handle Instagram pushing if enabled
   if [ "${ENABLE_INSTAGRAM_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Instagram" "INFO"
     $CONVERT "${IMAGE_FILE_BASE}${suffix}" -resize "1080x1350>" -gravity center -background black -extent 1080x1350 "${IMAGE_FILE_BASE}-instagram.jpg"
@@ -450,12 +456,13 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     rm "${IMAGE_FILE_BASE}-instagram.jpg"
   fi
 
-  # handle matrix pushing if enabled
+  # handle Matrix pushing if enabled
   if [ "${ENABLE_MATRIX_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Matrix" "INFO"
     ${PUSH_PROC_DIR}/push_matrix.sh "${push_annotation}" $push_file_list
   fi
 
+  # handle email pushing if enabled
   if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
     log "Emailing images" "INFO"
     for i in $push_file_list
@@ -464,6 +471,7 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     done
   fi
 
+  # handle Discord pushing if enabled
   if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
     log "Pushing images to Discord" "INFO"
     for i in $push_file_list
