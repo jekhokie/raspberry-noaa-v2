@@ -38,7 +38,7 @@ def parse_mastodon_config(file_path):
 
 config_path = os.path.expanduser("~/.mastodon.conf")
 
-MASTODON_SERVER, ACCESS_TOKEN = parse_mastodon_config(config_path)
+ACCESS_TOKEN, MASTODON_SERVER = parse_mastodon_config(config_path)
 
 annotation = sys.argv[1]
 images = []
