@@ -223,11 +223,11 @@ note: Older versions of Raspberry-noaa-V2 use php7.2
 
 * Access log: `/var/log/nginx/access.log`
 * Error log: `/var/log/nginx/error.log`
-* FPM log: `/var/log/php7.4-fpm.log`
+* FPM log: `/var/log/php8.1-fpm.log`
 * Check for PHP-FPM: `sudo ps aux | grep 'php'`
 * Check if the FPM service is installed: `sudo systemctl list-unit-files | grep -E 'php[^fpm]*fpm'`
-* Check if the FPM service is running: `sudo systemctl is-active php7.4-fpm.service`
-* Restart FPM service: `systemctl restart php7.4-fpm.service`
+* Check if the FPM service is running: `sudo systemctl is-active php8.1-fpm.service`
+* Restart FPM service: `systemctl restart php8.1-fpm.service`
 * Detailed check on the service: `systemctl status nginx`
 * Start service: `systemctl start nginx`
 * Check syntax `sudo nginx -t`
