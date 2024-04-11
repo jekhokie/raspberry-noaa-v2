@@ -270,10 +270,10 @@
   become: yes
   when: not libEGL_link.stat.exists and system_architecture == 'armhf'
 
-- name: Installing AnyDesk remote desktop
-  become: yes
-  apt:
-    deb: "{{ noaa_home }}/software/anydesk_6.3.0-1_{{ system_architecture }}.deb"
-    state: present
-    update_cache: no
+# - name: Installing AnyDesk remote desktop
+#   become: yes
+#   apt:
+#     deb: "{{ noaa_home }}/software/anydesk_6.3.0-1_{{ system_architecture }}.deb"
+#     state: present
+#     update_cache: no
 ...
