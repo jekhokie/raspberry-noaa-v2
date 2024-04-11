@@ -111,7 +111,7 @@
       {% endif %}
     </tbody>
   </table>
-
+  {% if constant('Config\\Config::ENABLE_CORONAL_GIF') == 'true' %}
   <br>
   <center>
   <h1>Coronal Mass Ejection Activity</h1>
@@ -120,7 +120,7 @@
   <img src="https://sohowww.nascom.nasa.gov/data/LATEST/current_c3.gif" height=300 style="margin-right=2em; margin-bottom:2em;">
   <img src="https://stereo.gsfc.nasa.gov/beacon/latest_512/ahead_cor2_latest.jpg" height=300 style="margin-right=2em; margin-bottom:2em;">
   </center>
-
+  {% endif %}
 {% endblock %}
 
 {% block js_includes %}
