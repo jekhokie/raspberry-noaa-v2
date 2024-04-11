@@ -74,22 +74,12 @@
 - name: install php
   become: yes
   apt:
-    update_cache: yes  # Changed to yes to ensure the cache is always updated before install
-    state: latest      # Changed from 'present' to 'latest'
+    update_cache: no
+    state: present
     name:
-      - php7.4-fpm
-      - php7.4-mbstring
-      - php7.4-sqlite3
-
-# - name: install php
-#   become: yes
-#   apt:
-#     update_cache: no
-#     state: present
-#     name:
-#       - php7.4-fpm
-#       - php7.4-mbstring
-#       - php7.4-sqlite3
+      - php8.1-fpm
+      - php8.1-mbstring
+      - php8.1-sqlite3
 
 - name: install composer
   become: yes
