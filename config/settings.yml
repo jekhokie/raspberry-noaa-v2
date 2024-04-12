@@ -80,7 +80,7 @@ meteor_m2_3_sdr_device_id: 0
 meteor_m2_3_freq_offset: 0
 meteor_m2_3_enable_bias_tee: false
 meteor_m2_3_gain: 29.7
-meteor_m2_3_schedule_sun_min_elevation: -90
+meteor_m2_3_schedule_sun_min_elevation: -6
 meteor_m2_3_sun_min_elevation: 6
 meteor_m2_3_sat_min_elevation: 30
 meteor_m2_3_80k_interleaving: false
@@ -90,7 +90,7 @@ meteor_m2_4_sdr_device_id: 0
 meteor_m2_4_freq_offset: 0
 meteor_m2_4_enable_bias_tee: false
 meteor_m2_4_gain: 29.7
-meteor_m2_4_schedule_sun_min_elevation: -90
+meteor_m2_4_schedule_sun_min_elevation: -6
 meteor_m2_4_sun_min_elevation: 6
 meteor_m2_4_sat_min_elevation: 30
 meteor_m2_4_80k_interleaving: false
@@ -206,7 +206,6 @@ wxtoimg_map_offset: 10.5                    #Change this value only if you see m
 
 flip_meteor_image: true
 meteor_jpg_image_quality: 90
-satdump_image_scaling_factor: 1
 meteor_draw_map_overlay: true
 meteor_draw_cities: true
 meteor_map_crosshair_enable: true
@@ -301,6 +300,7 @@ pushover_apitoken: ''
 pushover_user: ''
 pushover_prio: 0
 enable_twitter_push: false
+enable_mastodon_push: false
 enable_facebook_push: false
 enable_instagram_push: false
 enable_slack_push: false

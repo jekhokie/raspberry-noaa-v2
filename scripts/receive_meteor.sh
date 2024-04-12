@@ -103,7 +103,8 @@ elif [ "$SAT_NAME" == "METEOR-M2 4" ]; then
   export SAT_MIN_ELEV=$METEOR_M2_4_SAT_MIN_ELEV
 fi
 
-mode="$([[ "$METEOR_${SAT_NUMBER}_80K_INTERLEAVING" == "true" ]] && echo "_80k" || echo "")"
+interleaving="METEOR_${SAT_NUMBER}_80K_INTERLEAVING"
+mode="$([[ "${!interleaving}" == "true" ]] && echo "_80k" || echo "")"
 
 gain_option=""
 if [[ "$receiver" == "rtlsdr" ]]; then
@@ -116,6 +117,12 @@ if [ "$BIAS_TEE" == "-T" ]; then
     bias_tee_option="--bias"
 else
     bias_tee_option=""
+fi
+
+if [ "$METEOR_DECODER" == "satdump" ]; then
+  finish_processing="--finish_processing"
+else
+  finish_processing=""
 fi
 
 # check if there is enough free memory to store pass on RAM
@@ -158,7 +165,7 @@ polar_direction=0
 
 log "Recording ${NOAA_HOME} via $receiver at ${METEOR_FREQUENCY} MHz using SatDump record " "INFO"
 audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
-$SATDUMP live meteor_m2-x_lrpt${mode} "$audio_temporary_storage_directory" --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQUENCY}e6" $gain_option $GAIN $bias_tee_option --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+$SATDUMP live meteor_m2-x_lrpt${mode} "$audio_temporary_storage_directory" --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQUENCY}e6" $gain_option $GAIN $bias_tee_option $finish_processing --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
 mv "$audio_temporary_storage_directory/meteor_m2-x_lrpt${mode}.cadu" "${RAMFS_AUDIO_BASE}.cadu"
 
 log "Removing old bmp, gcp, and dat files" "INFO"
@@ -215,8 +222,8 @@ if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
     fi
   fi
 elif [[ "$METEOR_DECODER" == "satdump" ]]; then
-  log "Running SatDump to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
-  $SATDUMP meteor_m2-x_lrpt${mode} cadu "${RAMFS_AUDIO_BASE}.cadu" . -fill_missing >> $NOAA_LOG 2>&1
+  #log "Running SatDump to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
+  #$SATDUMP meteor_m2-x_lrpt${mode} cadu "${RAMFS_AUDIO_BASE}.cadu" . -fill_missing >> $NOAA_LOG 2>&1
 
   find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
 
@@ -311,6 +318,10 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
   push_annotation="${push_annotation} | ${PASS_DIRECTION}"
 
   meteor_suffixes=(
+      '-MSA_corrected.jpg'
+      '-MSA_projected.jpg'
+      '-MCIR_corrected.jpg'
+      '-MCIR_projected.jpg'
       '-321_corrected.jpg'
       '-321_projected.jpg'
       '-equidistant_321.jpg'
@@ -412,40 +423,48 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     pushover_push_annotation="${pushover_push_annotation} <a href=${PUSHOVER_LINK_URL}?pass_id=${pass_id}>BROWSER LINK</a>";
 
     log "Call pushover script with push_file_list: $push_file_list" "INFO"
-    ${PUSH_PROC_DIR}/push_pushover.sh "${pushover_push_annotation}" "${SAT_NAME}" "$push_file_list"
+    ${PUSH_PROC_DIR}/push_pushover.sh "${pushover_push_annotation}" "${SAT_NAME}" "$push_file_list" >> $NOAA_LOG 2>&1
   fi
 
   # handle Slack pushing if enabled
   if [ "${ENABLE_SLACK_PUSH}" == "true" ]; then
-    ${PUSH_PROC_DIR}/push_slack.sh "${push_annotation} <${SLACK_LINK}?pass_id=${pass_id}>\n" $push_file_list
+    ${PUSH_PROC_DIR}/push_slack.sh "${push_annotation} <${SLACK_LINK}?pass_id=${pass_id}>\n" $push_file_list >> $NOAA_LOG 2>&1
   fi
 
-  # handle twitter pushing if enabled
+  # handle Twitter pushing if enabled
   if [ "${ENABLE_TWITTER_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Twitter" "INFO"
-    ${PUSH_PROC_DIR}/push_twitter.sh "${push_annotation}" $push_file_list
+    ${PUSH_PROC_DIR}/push_twitter.sh "${push_annotation}" $push_file_list >> $NOAA_LOG 2>&1
   fi
 
-  # handle facebook pushing if enabled
+  # handle Facebook pushing if enabled
   if [ "${ENABLE_FACEBOOK_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Facebook" "INFO"
-    ${PUSH_PROC_DIR}/push_facebook.py "${push_annotation}" "${push_file_list}"
+    ${PUSH_PROC_DIR}/push_facebook.py "${push_annotation}" "${push_file_list}" >> $NOAA_LOG 2>&1
   fi
 
-  # handle instagram pushing if enabled
+  # handle Mastodon pushing if enabled
+  if [ "${ENABLE_MASTODON_PUSH}" == "true" ]; then
+    log "Pushing image enhancements to Mastodon" "INFO"
+    echo -e "${PUSH_PROC_DIR}/push_mastodon.py \"${push_annotation}\" ${push_file_list}"
+    $PUSH_PROC_DIR}/push_mastodon.py "${push_annotation}" ${push_file_list} >> $NOAA_LOG 2>&1
+  fi
+
+  # handle Instagram pushing if enabled
   if [ "${ENABLE_INSTAGRAM_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Instagram" "INFO"
     $CONVERT "${IMAGE_FILE_BASE}${suffix}" -resize "1080x1350>" -gravity center -background black -extent 1080x1350 "${IMAGE_FILE_BASE}-instagram.jpg"
-    ${PUSH_PROC_DIR}/push_instagram.py "${push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME}
+    ${PUSH_PROC_DIR}/push_instagram.py "${push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME} >> $NOAA_LOG 2>&1
     rm "${IMAGE_FILE_BASE}-instagram.jpg"
   fi
 
-  # handle matrix pushing if enabled
+  # handle Matrix pushing if enabled
   if [ "${ENABLE_MATRIX_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Matrix" "INFO"
-    ${PUSH_PROC_DIR}/push_matrix.sh "${push_annotation}" $push_file_list
+    ${PUSH_PROC_DIR}/push_matrix.sh "${push_annotation}" $push_file_list >> $NOAA_LOG 2>&1
   fi
 
+  # handle email pushing if enabled
   if [ "$ENABLE_EMAIL_PUSH" == "true" ]; then
     log "Emailing images" "INFO"
     for i in $push_file_list
@@ -454,6 +473,7 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     done
   fi
 
+  # handle Discord pushing if enabled
   if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
     log "Pushing images to Discord" "INFO"
     for i in $push_file_list

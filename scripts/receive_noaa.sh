@@ -162,7 +162,8 @@ daylight=$((SUN_ELEV > SUN_MIN_ELEV ? 1 : 0))
 #start capture
 log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump live pipeline" "INFO"
 audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
-$SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} $gain_option $GAIN $bias_tee_option --start_timestamp $PASS_START $finish_processing --sdrpp_noise_reduction --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+$SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} --sdrpp_noise_reduction $gain_option $GAIN $bias_tee_option $crop_topbottom --start_timestamp $PASS_START $finish_processing --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+rm "$audio_temporary_storage_directory/dataset.json" "$audio_temporary_storage_directory/product.cbor" >> $NOAA_LOG 2>&1
 log "Files recorded" "INFO"
 
 if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
@@ -173,7 +174,7 @@ fi
 if [ "$NOAA_DECODER" == "wxtoimg" ]; then
   log "Resampling down audio" "INFO"
   $SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" pad 0 $WXTOIMG_MAP_OFFSET >> $NOAA_LOG 2>&1
-  rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
+  rm "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
 
   push_file_list=""
   #generate outputs
@@ -281,40 +282,54 @@ if [ "$NOAA_DECODER" == "wxtoimg" ]; then
 elif [ "$NOAA_DECODER" == "satdump" ]; then
   log "Resampling down audio" "INFO"
   $SOX "$audio_temporary_storage_directory/noaa_apt.wav" -r 11025 "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
-  rm "$audio_temporary_storage_directory/satdump.log" "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
-
-  #$SATDUMP noaa_apt audio_wav "${RAMFS_AUDIO_BASE}.wav" . --satellite_number ${SAT_NUMBER} $crop_topbottom >> $NOAA_LOG 2>&1
-  #rm satdump.log noaa_apt.wav product.cbor >> $NOAA_LOG 2>&1
+  rm "$audio_temporary_storage_directory/noaa_apt.wav" >> $NOAA_LOG 2>&1
 
   spectrogram=0
   pristine=0
   histogram=0
 
-  log "Removing images without a map if they exist" "INFO"
-  for file in *map.png; do
-    mv "$file" "${file/_map.png/.png}"
-  done
+  if [ -n "$(find . -maxdepth 1 -type f -name '*.png')" ]; then
+    log "Removing images without a map if they exist" "INFO"
+    for file in *map.png; do
+      mv "$file" "${file/_map.png/.png}"
+    done
 
-  log "Flipping projected images once here and renaming them so they will be flipped again later in the for loop restoring their original orientation" "INFO"
-  for projected_file in *_projected.png; do
-    $CONVERT "$projected_file" $FLIP "$projected_file"
-    mv "$projected_file" "${projected_file/_projected.png/.png}"
-  done
+    log "Flipping projected images once here and renaming them so they will be flipped again later in the for loop restoring their original orientation" "INFO"
+    for projected_file in rgb_*.png; do
+      $CONVERT $projected_file $FLIP $projected_file
+    done
 
-  log "Normalizing and annotating NOAA images" "INFO"
-  for i in *.png; do
-    $CONVERT "$i" $FLIP "$i"
-    new_name="${i//avhrr_apt_rgb_}"
-    new_name="${new_name//avhrr_apt_}"
-    new_name="${new_name//avhrr_3_rgb_}"
-    new_name="${new_name//rgb_avhrr_3_rgb_}"
-    new_name="${new_name//_(Uncalibrated)}"
-    new_name="${new_name//_(channel_1)}"
-    ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$i" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
-    ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
-    push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
-    rm $i >> $NOAA_LOG 2>&1
-  done
+    log "Normalizing and annotating NOAA images" "INFO"
+    for i in *.png; do
+      $CONVERT "$i" $FLIP "$i"
+
+      new_file="${i//_\(Uncalibrated\)}"
+
+      #This if statement should execute only if the $i variable contains the substring _(Uncalibrated), otherwise it doesn't have any point
+      if [[ "$i" =~ _\(Uncalibrated\) ]]; then
+        if [ ! -f "$new_file" ]; then
+          log "Keep using calibrated versions of MCIR and MSA images" "INFO"
+          mv "$i" "$new_file"
+        else
+          log "Delete uncalibrated MCIR and MSA images if calibrated versions exist" "INFO"
+          rm "$i"
+          continue
+        fi
+      fi
+
+      new_name="${new_file//rgb_avhrr_3_rgb_}"
+      new_name="${new_name//avhrr_apt_rgb_}"
+      new_name="${new_name//avhrr_3_rgb_}"
+      new_name="${new_name//avhrr_apt_}"
+      new_name="${new_name//_enhancement}"
+      new_name="${new_name//_\(channel_1\)}"
+      new_name="${new_name//_\(channel_4\)}"
+      ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "$new_file" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
+      push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
+      rm $new_file >> $NOAA_LOG 2>&1
+    done
+  fi
 
   if [ "$DELETE_NOAA_AUDIO" == true ]; then
     log "Deleting audio files" "INFO"
@@ -429,19 +444,25 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
   # handle Slack pushing if enabled
   if [ "${ENABLE_SLACK_PUSH}" == "true" ]; then
     pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
-    ${PUSH_PROC_DIR}/push_slack.sh "${push_annotation} <${SLACK_LINK}?pass_id=${pass_id}>\n" $push_file_list
+    ${PUSH_PROC_DIR}/push_slack.sh "${push_annotation} <${SLACK_LINK}?pass_id=${pass_id}>\n" $push_file_list >> $NOAA_LOG 2>&1
   fi
-  # handle twitter pushing if enabled
+  # handle Twitter pushing if enabled
   if [ "${ENABLE_TWITTER_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Twitter" "INFO"
-    ${PUSH_PROC_DIR}/push_twitter.sh "${push_annotation}" $push_file_list
+    ${PUSH_PROC_DIR}/push_twitter.sh "${push_annotation}" $push_file_list >> $NOAA_LOG 2>&1
   fi
-  # handle facebook pushing if enabled
+  # handle Mastodon pushing if enabled
+  if [ "${ENABLE_MASTODON_PUSH}" == "true" ]; then
+    log "Pushing image enhancements to Mastodon" "INFO"
+    echo -e "${PUSH_PROC_DIR}/push_mastodon.py \"${push_annotation}\" ${push_file_list}"
+    ${PUSH_PROC_DIR}/push_mastodon.py "${push_annotation}" ${push_file_list} >> $NOAA_LOG 2>&1
+  fi
+  # handle Facebook pushing if enabled
   if [ "${ENABLE_FACEBOOK_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Facebook" "INFO"
-    ${PUSH_PROC_DIR}/push_facebook.py "${push_annotation}" "${push_file_list}"
+    ${PUSH_PROC_DIR}/push_facebook.py "${push_annotation}" "${push_file_list}" >> $NOAA_LOG 2>&1
   fi
-  # handle instagram pushing if enabled
+  # handle Instagram pushing if enabled
   if [ "${ENABLE_INSTAGRAM_PUSH}" == "true" ]; then
     if [[ "$daylight" -eq 1 ]]; then
       $CONVERT +append "${IMAGE_FILE_BASE}-MSA.jpg" "${IMAGE_FILE_BASE}-MSA-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
@@ -449,13 +470,13 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
       $CONVERT +append "${IMAGE_FILE_BASE}-MCIR.jpg" "${IMAGE_FILE_BASE}-MCIR-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
     fi
     log "Pushing image enhancements to Instagram" "INFO"
-    ${PUSH_PROC_DIR}/push_instagram.py "${push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME}
+    ${PUSH_PROC_DIR}/push_instagram.py "${push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME} >> $NOAA_LOG 2>&1
     rm "${IMAGE_FILE_BASE}-instagram.jpg"
   fi
-  # handle matrix pushing if enabled
+  # handle Matrix pushing if enabled
   if [ "${ENABLE_MATRIX_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Matrix" "INFO"
-    ${PUSH_PROC_DIR}/push_matrix.sh "${push_annotation}" $push_file_list
+    ${PUSH_PROC_DIR}/push_matrix.sh "${push_annotation}" $push_file_list >> $NOAA_LOG 2>&1
   fi
   if [ "${ENABLE_EMAIL_PUSH}" == "true" ]; then
     IFS=' ' read -ra image_file_array <<< "$push_file_list"

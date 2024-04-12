@@ -71,6 +71,10 @@ class Capture extends \Lib\Model {
       case 0: // Meteor
         if ($pass['daylight_pass'] == 1) {
           $enhancements = [
+              '-MSA_corrected.jpg',
+              '-MSA_projected.jpg',
+              '-MCIR_corrected.jpg',
+              '-MCIR_projected.jpg',
               '-321_corrected.jpg',
               '-321_projected.jpg',
               '-221_corrected.jpg',
@@ -140,14 +144,14 @@ class Capture extends \Lib\Model {
           ];
         } else {
           $enhancements = [
+              '-MCIR_corrected.jpg',
+              '-MCIR_projected.jpg',
               '-654_corrected.jpg',
               '-654_projected.jpg',
               '-Night_Microphysics_corrected.jpg',
               '-Night_Microphysics_projected.jpg',
               '-Thermal_Channel_corrected.jpg',
               '-Thermal_Channel_projected.jpg',
-              '-MCIR_corrected.jpg',
-              '-MCIR_projected.jpg',
               '-124_corrected.jpg',
               '-124_projected.jpg',
               '-negative224_corrected.jpg',

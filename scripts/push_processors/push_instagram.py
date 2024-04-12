@@ -53,7 +53,7 @@ def publish_image():
 
   payload = {
              'image_url': image_url,
-             'caption': annotation + '\n\n#NOAA #NOAA15 #NOAA18 #NOAA19 #MeteorM2_3 #weather #weathersats #APT #LRPT #wxtoimg #MeteorDemod #rtlsdr #gpredict #raspberrypi #RN2 #ISS',
+             'caption': annotation + '\n\n#NOAA #NOAA15 #NOAA18 #NOAA19 #MeteorM2_3 #MeteorM2_4 #weather #weathersats #APT #LRPT #wxtoimg #MeteorDemod #rtlsdr #gpredict #raspberrypi #RN2 #ISS',
              'access_token': ACCESS_TOKEN,
             }
   r = requests.post(post_url, data = payload)
