@@ -55,8 +55,8 @@ while [ "$(date --date="@${end_epoch_time}" +"%s")" -le "${END_TIME_MS}" ]; do
   start_epoch_time=$(echo "$predict_start" | cut -d " " -f 1)
   start_time_seconds=$(echo "$start_datetime" | cut -d " " -f 2 | cut -d ":" -f 3)
   timer=$(expr "${end_epoch_time}" - "${start_epoch_time}" + "${start_time_seconds}")
-  file_date_ext=$(date --date="TZ=\"UTC\" ${start_datetime}" +%Y%m%d-%H%M%S)
-  #file_date_ext=$(date --utc --date="${start_datetime}" +%Y%m%d-%H%M%S)
+  #file_date_ext=$(date --date="TZ=\"UTC\" ${start_datetime}" +%Y%m%d-%H%M%S)
+  file_date_ext=$(date --utc --date="${start_datetime}" +%Y%m%d-%H%M%S)
 
   schedule_enabled_by_sun_elev=1
   if [ "$OBJ_NAME" == "METEOR-M2 3" ]; then

@@ -51,7 +51,7 @@ for img in img_list:
   photo.close()
 
 args = dict()
-args["message"] = annotation + '\n\n#NOAA #NOAA15 #NOAA18 #NOAA19 #MeteorM2_3 #weather #weathersats #APT #LRPT #wxtoimg #MeteorDemod #rtlsdr #gpredict #raspberrypi #RN2 #ISS'
+args["message"] = annotation + '\n\n#NOAA #NOAA15 #NOAA18 #NOAA19 #MeteorM2_3 #MeteorM2_4 #weather #weathersats #APT #LRPT #wxtoimg #MeteorDemod #rtlsdr #gpredict #raspberrypi #RN2 #ISS'
 for img_id in imgs_id:
   key = "attached_media["+str(imgs_id.index(img_id))+"]"
   args[key] = "{'media_fbid': '"+img_id+"'}"
