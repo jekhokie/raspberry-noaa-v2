@@ -73,6 +73,31 @@ else
   die "  No settings file detected - please copy config/settings.yml.sample to config/settings.yml and edit for your environment"
 fi
 
+log_running "Checking pip packages..."
+v_envbash=`pip list | grep envbash | wc -l`
+if [ $v_envbash -eq 0 ]; then
+  pip install envbash==1.2.0 --break-system-packages
+  if [ $? -gt 0 ]; then
+    die "  Something failed with the install - please inspect the logs above"
+  fi
+fi
+
+v_facebooksdk=`pip list | grep facebook-sdk | wc -l`
+if [ $v_facebooksdk -eq 0 ]; then
+  pip install facebook-sdk==3.1.0 --break-system-packages
+  if [ $? -gt 0 ]; then
+    die "  Something failed with the install - please inspect the logs above"
+  fi
+fi
+
+v_pysqlite3=`pip list | grep pysqlite3 | wc -l`
+if [ $v_pysqlite3 -eq 0 ]; then
+  pip install pysqlite3==0.5.2 --break-system-packages
+  if [ $? -gt 0 ]; then
+    die "  Something failed with the install - please inspect the logs above"
+  fi
+fi
+
 log_running "Running Ansible to install and/or update your raspberry-noaa-v2..."
 ansible-playbook -i ansible/hosts --extra-vars "@config/settings.yml" ansible/site.yml -e "target_user=$USER system_architecture=$(dpkg --print-architecture)"
 if [ $? -eq 0 ]; then
@@ -105,6 +130,12 @@ fi
 log_running "Installing certbot for SSL certificates signed by the Let's Encrypt..."
 if [ $? -eq 0 ]; then
   sudo apt install certbot -y
+else
+  die "  Something failed with the install - please inspect the logs above"
+fi
+log_running "Configure PHP local time zone..."
+if [ $? -eq 0 ]; then
+   $HOME/raspberry-noaa-v2/scripts/tools/configure_php_local_timezone.sh
 else
   die "  Something failed with the install - please inspect the logs above"
 fi
