@@ -98,6 +98,13 @@ if [ $v_pysqlite3 -eq 0 ]; then
   fi
 fi
 
+log_running "Configure ATRM rule and PHP Controller based on scheduling user..."
+if [ $? -eq 0 ]; then
+   $HOME/raspberry-noaa-v2/scripts/tools/atrm_rule_and_removal.sh
+else
+  die "  Something failed with the install - please inspect the logs above"
+fi
+
 log_running "Running Ansible to install and/or update your raspberry-noaa-v2..."
 ansible-playbook -i ansible/hosts --extra-vars "@config/settings.yml" ansible/site.yml -e "target_user=$USER system_architecture=$(dpkg --print-architecture)"
 if [ $? -eq 0 ]; then
