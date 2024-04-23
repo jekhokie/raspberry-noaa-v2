@@ -16,7 +16,7 @@ log_running() {
 }
 
 log_done() {
-  echo " ${GREEN}✓ $1${RESET}"
+  echo " ${GREEN}âœ“ $1${RESET}"
 }
 
 log_finished() {
@@ -143,7 +143,7 @@ else
 fi
 log_running "Configure PHP local time zone..."
 if [ $? -eq 0 ]; then
-   chmod +X $HOME/raspberry-noaa-v2/scripts/tools/configure_php_local_timezone.sh
+   chmod +x $HOME/raspberry-noaa-v2/scripts/tools/configure_php_local_timezone.sh
    $HOME/raspberry-noaa-v2/scripts/tools/configure_php_local_timezone.sh
 else
   die "  Something failed with the install - please inspect the logs above"
