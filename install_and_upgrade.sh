@@ -100,6 +100,7 @@ fi
 
 log_running "Configure ATRM rule and PHP Controller based on scheduling user..."
 if [ $? -eq 0 ]; then
+   chmod +x $HOME/raspberry-noaa-v2/scripts/tools/atrm_rule_and_removal.sh
    $HOME/raspberry-noaa-v2/scripts/tools/atrm_rule_and_removal.sh
 else
   die "  Something failed with the install - please inspect the logs above"
@@ -142,6 +143,7 @@ else
 fi
 log_running "Configure PHP local time zone..."
 if [ $? -eq 0 ]; then
+   chmod +X $HOME/raspberry-noaa-v2/scripts/tools/configure_php_local_timezone.sh
    $HOME/raspberry-noaa-v2/scripts/tools/configure_php_local_timezone.sh
 else
   die "  Something failed with the install - please inspect the logs above"
