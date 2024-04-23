@@ -10,7 +10,7 @@ v_atrm_file="$HOME/raspberry-noaa-v2/ansible/roles/webserver/files/020_www-data-
 v_atrm_cmd="www-data ALL=(ALL) NOPASSWD: /usr/bin/sudo -u $USER /usr/bin/atrm"
 
 v_ctl_app="$HOME/raspberry-noaa-v2/webpanel/App/Controllers/AdminController.php"
-v_ctl_cmd="echo shell_exec(\"sudo -u $USER /usr/bin/atrm \" . $pass->at_job_id . \" 2>&1\");"
+v_ctl_cmd="echo shell_exec(\"sudo -u $USER /usr/bin/atrm \" . \$pass->at_job_id . \" 2>&1\");"
 
 # Check if the correct rule file is configured
 v_atrmrule_set=`cat ${v_atrm_file} | grep -i "${v_atrm_cmd}" | wc -l`
