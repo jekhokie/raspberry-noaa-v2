@@ -16,7 +16,7 @@ v_ctl_cmd="echo shell_exec(\"sudo -u $USER /usr/bin/atrm \" . $pass->at_job_id .
 v_atrmrule_set=`cat ${v_atrm_file} | grep -i "${v_atrm_cmd}" | wc -l`
 
 if [ ${v_atrmrule_set} -eq 0 ]; then
-  echo "   Setting ATRM Rule..."
+  echo "   Modifying sudo ATRM Rule..."
   timestamp=$(date '+%Y-%m-%d_%H:%M:%s')
   cp -p ${v_atrm_file} ${v_atrm_file}.${timestamp}
   echo "${v_atrm_cmd}" > ${v_atrm_file}
@@ -28,7 +28,7 @@ fi
 v_atrmctlcmd_set=`cat ${v_ctl_app} | grep 'USER atrm \" . $pass->at_job_id' | wc -l`
 
 if [ ${v_atrmctlcmd_set} -eq 1 ]; then
-  echo "   Setting ATRM Rule..."
+  echo "   Modifying ATRM command in AdminController..."
   timestamp=$(date '+%Y-%m-%d_%H:%M:%s')
   cp -p ${v_ctl_app} ${v_ctl_app}.${timestamp}
   v_omit_line=$(cat ${v_ctl_app} | grep -n -m 1 'USER atrm \" . $pass->at_job_id' | awk -F":" '{print $1}')
