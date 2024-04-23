@@ -135,6 +135,22 @@
     group: www-data
     mode: 0644
 
+- name: update USER folder permissions
+  become: yes
+  file:
+    path: "/home/{{ target_user }}"
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0755
+
+- name: update srv directory ownership
+  become: yes
+  file:
+    path: "/srv"
+    owner: "{{ target_user }}"
+    group: www-data
+    mode: 0755
+
 - name: update images directory group
   become: yes
   file:
