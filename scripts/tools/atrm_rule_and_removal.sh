@@ -7,7 +7,8 @@
 # configure sudo rule and AdminController.php to remove scheduled job from user used to schedule it
 
 v_atrm_file="$HOME/raspberry-noaa-v2/ansible/roles/webserver/files/020_www-data-atrm-nopasswd"
-v_atrm_cmd="www-data ALL=(ALL) NOPASSWD: /usr/bin/sudo -u $USER /usr/bin/atrm"
+#v_atrm_cmd="www-data ALL=(ALL) NOPASSWD: /usr/bin/sudo -u $USER /usr/bin/atrm"
+v_atrm_cmd="www-data ALL=(ALL) NOPASSWD: /usr/bin/atrm"
 
 v_ctl_app="$HOME/raspberry-noaa-v2/webpanel/App/Controllers/AdminController.php"
 v_ctl_cmd="echo shell_exec(\"sudo -u $USER /usr/bin/atrm \" . \$pass->at_job_id . \" 2>&1\");"
