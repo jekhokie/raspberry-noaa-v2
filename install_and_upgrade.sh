@@ -73,7 +73,7 @@ else
   die "  No settings file detected - please copy config/settings.yml.sample to config/settings.yml and edit for your environment"
 fi
 
-log_running "Checking pip packages..."
+log_running "OS Release..."
 v_os_release=$(lsb_release -c | awk -F" " '{print $NF}') 
 if [[ "${v_os_release}" == "bookworm" ]]; then
   chmod +x $HOME/raspberry-noaa-v2/software/bookworm-support/drop_in_bookworm_support_files.sh
@@ -90,27 +90,30 @@ else
  die "  Operating system must be bullseye or bookworm"
 fi
 
-v_envbash=`pip list | grep envbash | wc -l`
-if [ $v_envbash -eq 0 ]; then
-  pip install envbash==1.2.0 ${pip_options}
-  if [ $? -gt 0 ]; then
-    die "  Something failed with the install - please inspect the logs above"
+if [[ "${v_os_release}" == "bookworm" ]]; then
+  log_running "Checking pip packages..."
+  v_envbash=`pip list | grep envbash | wc -l`
+  if [ $v_envbash -eq 0 ]; then
+    pip install envbash==1.2.0 ${pip_options}
+    if [ $? -gt 0 ]; then
+      die "  Something failed with the install - please inspect the logs above"
+    fi
   fi
-fi
 
-v_facebooksdk=`pip list | grep facebook-sdk | wc -l`
-if [ $v_facebooksdk -eq 0 ]; then
-  pip install facebook-sdk==3.1.0 ${pip_options}
-  if [ $? -gt 0 ]; then
-    die "  Something failed with the install - please inspect the logs above"
+  v_facebooksdk=`pip list | grep facebook-sdk | wc -l`
+  if [ $v_facebooksdk -eq 0 ]; then
+    pip install facebook-sdk==3.1.0 ${pip_options}
+    if [ $? -gt 0 ]; then
+      die "  Something failed with the install - please inspect the logs above"
+    fi
   fi
-fi
 
-v_pysqlite3=`pip list | grep pysqlite3 | wc -l`
-if [ $v_pysqlite3 -eq 0 ]; then
-  pip install pysqlite3==0.5.2 ${pip_options}
-  if [ $? -gt 0 ]; then
-    die "  Something failed with the install - please inspect the logs above"
+  v_pysqlite3=`pip list | grep pysqlite3 | wc -l`
+  if [ $v_pysqlite3 -eq 0 ]; then
+    pip install pysqlite3==0.5.2 ${pip_options}
+    if [ $? -gt 0 ]; then
+      die "  Something failed with the install - please inspect the logs above"
+    fi
   fi
 fi
 
