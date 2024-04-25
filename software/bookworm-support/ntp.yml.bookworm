@@ -1,0 +1,26 @@
+---
+- name: install ntp
+  become: yes
+  apt:
+    update_cache: no
+    state: present
+    name: ntp
+
+# systemd-timesyncd service does not exist in bookworm
+#- name: disable systemd-timesyncd
+#  become: yes
+#  service:
+#    name: systemd-timesyncd
+#    state: stopped
+#    enabled: no
+
+- name: ntp config file
+  become: yes
+  template:
+    src: ntp.conf.j2
+    dest: /etc/ntp.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart ntp
+...
