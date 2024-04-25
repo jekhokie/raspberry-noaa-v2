@@ -1,0 +1,14 @@
+{
+  "require": {
+      "twig/twig": "~3.9",
+      "ext-mbstring": "*",
+      "devknown/twig-import-function": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Config\\": "Config/",
+      "Lib\\": "Lib/",
+      "App\\": "App/"
+    }
+  }
+}
