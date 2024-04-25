@@ -137,17 +137,14 @@
 #    name:
 #      - intel-opencl-icd
 
-# Bookworm does not all these externally managed package to be installed unless you pass --break-system-packages 
-# and an ansible is not happy when passed so it is handled in the install_and_upgrade.sh
-#
-#- name: Install required Python packages using pip3
-#  pip:
-#    name:
-#      - envbash==1.2.0 
-#      - facebook-sdk==3.1.0 
-#      - pysqlite3==0.5.2
-#    state: present
-#    executable: pip3
+- name: Install required Python packages using pip3
+  pip:
+    name:
+      - envbash==1.2.0
+      - facebook-sdk==3.1.0
+      - pysqlite3==0.5.1
+    state: present
+    executable: pip3
 
 - name: Installing predict on computers
   become: yes
