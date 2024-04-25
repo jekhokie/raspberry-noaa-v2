@@ -1,33 +1,33 @@
 ---
-- name: php repository gpg key (bookworm only)
+- name: php repository gpg key (buster only)
   become: yes
   apt_key:
     url: "https://packages.sury.org/php/apt.gpg"
     state: present
-  when: raspbian_version.stdout == 'bookworm'
+  when: raspbian_version.stdout == 'buster'
 
-- name: php repository (bookworm only)
+- name: php repository (buster only)
   become: yes
   apt_repository:
-    repo: deb https://packages.sury.org/php/ bookworm main
-    filename: php8.list
+    repo: deb https://packages.sury.org/php/ buster main
+    filename: php7.list
     state: present
-  when: raspbian_version.stdout == 'bookworm'
+  when: raspbian_version.stdout == 'buster'
 
-- name: php repository gpg key (bookworm only)
+- name: php repository gpg key (buster only)
   become: yes
   apt_key:
     url: "https://packages.sury.org/php/apt.gpg"
     state: present
-  when: raspbian_version.stdout == 'bookworm'
+  when: raspbian_version.stdout == 'buster'
 
-- name: php repository (bookworm only)
+- name: php repository (buster only)
   become: yes
   apt_repository:
-    repo: deb https://packages.sury.org/php/ bookworm main
-    filename: php8.list
+    repo: deb https://packages.sury.org/php/ buster main
+    filename: php7.list
     state: present
-  when: raspbian_version.stdout == 'bookworm'
+  when: raspbian_version.stdout == 'buster'
 
 - name: install UFW firewall
   become: yes
@@ -77,9 +77,9 @@
     update_cache: no
     state: present
     name:
-      - php8.2-fpm
-      - php8.2-mbstring
-      - php8.2-sqlite3
+      - php7.4-fpm
+      - php7.4-mbstring
+      - php7.4-sqlite3
 
 - name: install composer
   become: yes
@@ -113,15 +113,6 @@
     group: www-data
     mode: 0775
 
-- name: public directory
-  become: yes
-  file:
-    path: "{{ web_home }}/public"
-    state: directory
-    owner: "{{ target_user }}"
-    group: www-data
-    mode: 0775
-
 - name: Fetch system timezone
   command: timedatectl show --property=Timezone --value
   register: system_timezone
@@ -134,22 +125,6 @@
     owner: "{{ target_user }}"
     group: www-data
     mode: 0644
-
-- name: update USER folder permissions
-  become: yes
-  file:
-    path: "/home/{{ target_user }}"
-    owner: "{{ target_user }}"
-    group: "{{ target_user }}"
-    mode: 0755
-
-- name: update srv directory ownership
-  become: yes
-  file:
-    path: "/srv"
-    owner: "{{ target_user }}"
-    group: www-data
-    mode: 0755
 
 - name: update images directory group
   become: yes
