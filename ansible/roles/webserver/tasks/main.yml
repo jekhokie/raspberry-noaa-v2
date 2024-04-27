@@ -71,7 +71,7 @@
     state: present
     name: nginx
 
-- name: install php
+- name: install php (bullseye)
   become: yes
   apt:
     update_cache: no
@@ -80,6 +80,18 @@
       - php8.0-fpm
       - php8.0-mbstring
       - php8.0-sqlite3
+  when: raspbian_version.stdout != 'bookworm'
+
+- name: install php (bookworm)
+  become: yes
+  apt:
+    update_cache: no
+    state: present
+    name:
+      - php8.2-fpm
+      - php8.2-mbstring
+      - php8.2-sqlite3
+  when: raspbian_version.stdout == 'bookworm'
 
 - name: install composer
   become: yes
