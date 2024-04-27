@@ -145,10 +145,10 @@ if [ "$PASS_DIRECTION" == "Northbound" ]; then
   FLIP="-rotate 180"
 fi
 
-$crop_topbottom=""
+crop_topbottom=""
 if [ "$NOAA_CROP_TOPTOBOTTOM" == "true" ]; then
   log "Cropping SatDump NOAA images enabled" "INFO"
-  $crop_topbottom="--autocrop_wedges"
+  crop_topbottom="--autocrop_wedges"
 fi
 
 # pass start timestamp and sun elevation
