@@ -6,6 +6,7 @@ use Config\Config;
 
 abstract class Controller {
   protected $db_conn;
+  public $name;
 
   public function __construct($name) {
     $this->name = $name;
