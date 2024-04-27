@@ -18,7 +18,7 @@
     name: systemd-timesyncd
     state: stopped
     enabled: no
-  when: timesyncd_status.rc != 5      #Return code 5 means service not found
+  when: timesyncd_status.rc == 4 or timesyncd_status.rc == 5      #Return code 4 means service unknown, 5 means service not found
 
 - name: ntp config file
   become: yes
