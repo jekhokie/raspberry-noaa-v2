@@ -56,7 +56,7 @@ sudo apt install git -y
 
 # clone repository
 cd $HOME
-git clone https://github.com/jekhokie/raspberry-noaa-v2.git
+git clone --depth 1 https://github.com/jekhokie/raspberry-noaa-v2.git
 cd raspberry-noaa-v2/
 
 # Edit settings to match your stations location, gain and other things
