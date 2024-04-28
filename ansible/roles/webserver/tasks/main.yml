@@ -220,7 +220,7 @@
     group: root
     mode: 0644
   notify: restart nginx
-  when: raspbian_version.stdout != 'bookworm'
+  when: enable_non_tls|bool and raspbian_version.stdout != 'bookworm'
 
 - name: nginx non-tls config file (bookworm)
   become: yes
@@ -231,7 +231,7 @@
     group: root
     mode: 0644
   notify: restart nginx
-  when: raspbian_version.stdout == 'bookworm'
+  when: enable_non_tls|bool and raspbian_version.stdout == 'bookworm'
 
 - name: nginx non-tls config symlink
   become: yes
@@ -260,9 +260,8 @@
     owner: root
     group: root
     mode: 0644
-  when: enable_tls|bool
+  when: enable_tls|bool and raspbian_version.stdout != 'bookworm'
   notify: restart nginx
-  when: raspbian_version.stdout != 'bookworm'
 
 - name: nginx tls config file (bookworm)
   become: yes
@@ -272,9 +271,8 @@
     owner: root
     group: root
     mode: 0644
-  when: enable_tls|bool
+  when: enable_tls|bool and raspbian_version.stdout == 'bookworm'
   notify: restart nginx
-  when: raspbian_version.stdout == 'bookworm'
 
 - name: nginx tls config symlink
   become: yes
