@@ -52,7 +52,7 @@ case "$RECEIVER_TYPE" in
          receiver="airspy"
          ;;
      "airspy_hf_plus_discovery")
-         samplerate="2.5e6"
+         samplerate="192e3"
          receiver="airspy"
          ;;
      "hackrf")
