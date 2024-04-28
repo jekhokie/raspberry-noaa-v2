@@ -143,22 +143,12 @@ fi
 
 # update all web content and permissions
 log_running "Updating web content..."
-if [[ "${v_os_release}" == "bullseye" ]]; then
 (
   find $WEB_HOME/ -mindepth 1 -type d -name "Config" -prune -o -print | xargs rm -rf &&
   cp -r $NOAA_HOME/webpanel/* $WEB_HOME/ &&
   sudo chown -R $USER:www-data $WEB_HOME/ &&
   composer install -d $WEB_HOME/
 ) || die "  Something went wrong updating web content - please inspect the logs above"
-else
-(
-  find $WEB_HOME/ -mindepth 1 -type d -name "Config" -prune -o -print | xargs rm -rf &&
-  cp -r $NOAA_HOME/webpanel/* $WEB_HOME/ &&
-  sudo chown -R $USER:www-data $WEB_HOME/ &&
-  sudo apt install php8.2-intl &&
-  composer install -d $WEB_HOME/
-) || die "  Something went wrong updating web content - please inspect the logs above"
-fi
 
 # run a schedule of passes (as opposed to waiting until cron kicks in the evening)
 log_running "Scheduling passes for imagery..."
