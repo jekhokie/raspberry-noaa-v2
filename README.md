@@ -155,7 +155,7 @@ sudo apt install git -y
 
 # clone repository
 cd $HOME
-git clone https://github.com/jekhokie/raspberry-noaa-v2.git
+git clone --depth 1 https://github.com/jekhokie/raspberry-noaa-v2.git
 cd raspberry-noaa-v2/
 
 # update your settings file to match your location, gain and other setup-specific settings
@@ -253,6 +253,7 @@ or form to the success of this repository/framework. Below are some direct contr
 * **[Gary Day](https://www.facebook.com/profile.php?id=100068381156913&mibextid=ZbWKwL)**: Helped by lending his Raspberry Pis virtually over SSH, VNC and TeamViewer to MihajloPi for testing and creating image.
 * **[Jérôme jp112sdl](https://github.com/jp112sdl)**: Implemented automatic discarding of Meteor M2-3 night passes since they give no visible image when it's in RGB123 mode.
 * **[patrice7560](https://meteo-schaltin.duckdns.org)**: Beta tester, helped in detecting and reporting errors ASAP for debugging.
+* **[Richard AI4Y](https://www.qrz.com/db/AI4Y)**: Provided Debian 12 (Bookworm) support for Raspberry Pi, solved `atrm` errors on the website, and several NTP and timezone issues in PHP, general alpha and beta testing.
 ## Contributing
 
 Pull requests are welcome! Simply follow the below pattern:
