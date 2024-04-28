@@ -66,57 +66,6 @@ if [ $? -ne 0 ]; then
   fi
 fi
 
-log_running "Checking for configuration settings..."
-if [ -f config/settings.yml ]; then
-  log_done "  Settings file ready!"
-else
-  die "  No settings file detected - please copy config/settings.yml.sample to config/settings.yml and edit for your environment"
-fi
-
-log_running "OS Release..."
-v_os_release=$(lsb_release -c | awk -F" " '{print $NF}') 
-if [[ "${v_os_release}" == "bookworm" ]]; then
-  chmod +x $HOME/raspberry-noaa-v2/software/bookworm-support/drop_in_bookworm_support_files.sh
-  $HOME/raspberry-noaa-v2/software/bookworm-support/drop_in_bookworm_support_files.sh 
-fi
-
-if [[ "${v_os_release}" == "bullseye" ]]; then
-  pip_options=" "
-elif [[ "${v_os_release}" == "bookworm" ]]; then
-  pip_options="--break-system-packages"
-  chmod +x $HOME/raspberry-noaa-v2/software/bookworm-support/drop_in_bookworm_support_files.sh
-  $HOME/raspberry-noaa-v2/software/bookworm-support/drop_in_bookworm_support_files.sh 
-else
- die "  Operating system must be bullseye or bookworm"
-fi
-
-if [[ "${v_os_release}" == "bookworm" ]]; then
-  log_running "Checking pip packages..."
-  v_envbash=`pip list | grep envbash | wc -l`
-  if [ $v_envbash -eq 0 ]; then
-    pip install envbash==1.2.0 ${pip_options}
-    if [ $? -gt 0 ]; then
-      die "  Something failed with the install - please inspect the logs above"
-    fi
-  fi
-
-  v_facebooksdk=`pip list | grep facebook-sdk | wc -l`
-  if [ $v_facebooksdk -eq 0 ]; then
-    pip install facebook-sdk==3.1.0 ${pip_options}
-    if [ $? -gt 0 ]; then
-      die "  Something failed with the install - please inspect the logs above"
-    fi
-  fi
-
-  v_pysqlite3=`pip list | grep pysqlite3 | wc -l`
-  if [ $v_pysqlite3 -eq 0 ]; then
-    pip install pysqlite3==0.5.2 ${pip_options}
-    if [ $? -gt 0 ]; then
-      die "  Something failed with the install - please inspect the logs above"
-    fi
-  fi
-fi
-
 log_running "Configure ATRM rule and PHP Controller based on scheduling user..."
 if [ $? -eq 0 ]; then
    chmod +x $HOME/raspberry-noaa-v2/scripts/tools/atrm_rule_and_removal.sh
@@ -194,22 +143,12 @@ fi
 
 # update all web content and permissions
 log_running "Updating web content..."
-if [[ "${v_os_release}" == "bullseye" ]]; then
 (
   find $WEB_HOME/ -mindepth 1 -type d -name "Config" -prune -o -print | xargs rm -rf &&
   cp -r $NOAA_HOME/webpanel/* $WEB_HOME/ &&
   sudo chown -R $USER:www-data $WEB_HOME/ &&
   composer install -d $WEB_HOME/
 ) || die "  Something went wrong updating web content - please inspect the logs above"
-else
-(
-  find $WEB_HOME/ -mindepth 1 -type d -name "Config" -prune -o -print | xargs rm -rf &&
-  cp -r $NOAA_HOME/webpanel/* $WEB_HOME/ &&
-  sudo chown -R $USER:www-data $WEB_HOME/ &&
-  sudo apt install php8.2-intl &&
-  composer install -d $WEB_HOME/
-) || die "  Something went wrong updating web content - please inspect the logs above"
-fi
 
 # run a schedule of passes (as opposed to waiting until cron kicks in the evening)
 log_running "Scheduling passes for imagery..."
