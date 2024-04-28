@@ -42,32 +42,30 @@ case "$RECEIVER_TYPE" in
      "rtlsdr")
          samplerate="1.024e6"
          receiver="rtlsdr"
-         decimation=8
          ;;
      "airspy_mini")
          samplerate="3e6"
          receiver="airspy"
-         decimation=25
          ;;
      "airspy_r2")
          samplerate="2.5e6"
          receiver="airspy"
-         decimation=20
+         ;;
+     "airspy_hf_plus_discovery")
+         samplerate="192e3"
+         receiver="airspy"
          ;;
      "hackrf")
          samplerate="4e6"
          receiver="hackrf"
-         decimation=32
          ;;
      "sdrplay")
          samplerate="2e6"
          receiver="sdrplay"
-         decimation=16
          ;;
      "mirisdr")
          samplerate="2e6"
          receiver="mirisdr"
-         decimation=16
          ;;
      *)
          echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE"

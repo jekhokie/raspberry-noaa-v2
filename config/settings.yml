@@ -17,7 +17,7 @@ lang_setting: en
 ntp_server: ''
 
 # receiver settings
-#   receiver_type - the receiver type which program uses ('rtlsdr', 'airspy_mini', 'airspy_r2' or 'hackrf' or 'sdrplay' or 'mirisdr')
+#   receiver_type - the receiver type which program uses ('rtlsdr', 'airspy_mini', 'airspy_r2', 'airspy_hf_plus_discovery', 'hackrf', 'sdrplay' or 'mirisdr')
 #   noaa_decoder - which receiver method to use (either 'wxtoimg' or 'satdump')
 #   meteor_decoder - which receiver method to use (either 'meteordemod' or 'satdump')
 receiver_type: 'rtlsdr'
