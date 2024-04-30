@@ -144,8 +144,8 @@
       - facebook-sdk==3.1.0
       - pysqlite3==0.5.1
     state: present
+    virtualenv: "{{ noaa_home }}/scripts/python-virtualenv/"
     executable: pip3
-  ignore_errors: yes  # Ignore errors if the some pip packages cannot be found
 
 - name: Installing predict on computers
   become: yes

@@ -23,6 +23,9 @@ TIMER_START=$(date '+%s')
 . "$NOAA_HOME/scripts/common.sh"
 capture_start="$START_DATE $(date '+%Z')"
 
+log "Activating Python virtual environment" "INFO"
+source "$NOAA_HOME/scripts/python-virtualenv/bin/activate"
+
 # input params
 export SAT_NAME=$1
 export FILENAME_BASE=$2
@@ -354,16 +357,16 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     log "Producing polar graph of azimuth and elevation for pass" "INFO"
     polar_az_el=1
     epoch_end=$((EPOCH_START + CAPTURE_TIME))
-    ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
-                                    "${TLE_FILE}" \
-                                    $EPOCH_START \
-                                    $epoch_end \
-                                    $LAT \
-                                    $LON \
-                                    $SAT_MIN_ELEV \
-                                    $PASS_DIRECTION \
-                                    "${IMAGE_FILE_BASE}-polar-azel.jpg" \
-                                    "azel" >> $NOAA_LOG 2>&1
+    python3 ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
+                                            "${TLE_FILE}" \
+                                            $EPOCH_START \
+                                            $epoch_end \
+                                            $LAT \
+                                            $LON \
+                                            $SAT_MIN_ELEV \
+                                            $PASS_DIRECTION \
+                                            "${IMAGE_FILE_BASE}-polar-azel.jpg" \
+                                            "azel" >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-azel.jpg" "${IMAGE_THUMB_BASE}-polar-azel.jpg" >> $NOAA_LOG 2>&1
   fi
 
@@ -372,16 +375,16 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     log "Producing polar graph of direction for pass" "INFO"
     polar_direction=1
     epoch_end=$((EPOCH_START + CAPTURE_TIME))
-    ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
-                                    "${TLE_FILE}" \
-                                    $EPOCH_START \
-                                    $epoch_end \
-                                    $LAT \
-                                    $LON \
-                                    $SAT_MIN_ELEV \
-                                    $PASS_DIRECTION \
-                                    "${IMAGE_FILE_BASE}-polar-direction.png" \
-                                    "direction" >> $NOAA_LOG 2>&1
+    python3 ${IMAGE_PROC_DIR}/polar_plot.py "${SAT_NAME}" \
+                                            "${TLE_FILE}" \
+                                            $EPOCH_START \
+                                            $epoch_end \
+                                            $LAT \
+                                            $LON \
+                                            $SAT_MIN_ELEV \
+                                            $PASS_DIRECTION \
+                                            "${IMAGE_FILE_BASE}-polar-direction.png" \
+                                            "direction" >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-polar-direction.png" "${IMAGE_THUMB_BASE}-polar-direction.png" >> $NOAA_LOG 2>&1
   fi
 
@@ -452,13 +455,12 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
   # handle Mastodon pushing if enabled
   if [ "${ENABLE_MASTODON_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Mastodon" "INFO"
-    echo -e "${PUSH_PROC_DIR}/push_mastodon.py \"${push_annotation}\" ${push_file_list}"
-    ${PUSH_PROC_DIR}/push_mastodon.py "${push_annotation}" ${push_file_list} >> $NOAA_LOG 2>&1
+    python3 ${PUSH_PROC_DIR}/push_mastodon.py "${push_annotation}" ${push_file_list} >> $NOAA_LOG 2>&1
   fi
   # handle Facebook pushing if enabled
   if [ "${ENABLE_FACEBOOK_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Facebook" "INFO"
-    ${PUSH_PROC_DIR}/push_facebook.py "${push_annotation}" "${push_file_list}" >> $NOAA_LOG 2>&1
+    python3 ${PUSH_PROC_DIR}/push_facebook.py "${push_annotation}" "${push_file_list}" >> $NOAA_LOG 2>&1
   fi
   # handle Instagram pushing if enabled
   if [ "${ENABLE_INSTAGRAM_PUSH}" == "true" ]; then
@@ -468,7 +470,7 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
       $CONVERT +append "${IMAGE_FILE_BASE}-MCIR.jpg" "${IMAGE_FILE_BASE}-MCIR-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
     fi
     log "Pushing image enhancements to Instagram" "INFO"
-    ${PUSH_PROC_DIR}/push_instagram.py "${push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME} >> $NOAA_LOG 2>&1
+    python3 ${PUSH_PROC_DIR}/push_instagram.py "${push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME} >> $NOAA_LOG 2>&1
     rm "${IMAGE_FILE_BASE}-instagram.jpg"
   fi
   # handle Matrix pushing if enabled
