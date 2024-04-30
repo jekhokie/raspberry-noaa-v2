@@ -31,6 +31,7 @@
       - libusb-1.0-0-dev
       - libxft-dev
       - libxft2
+      - libvolk2-dev
       - python3-setuptools
       - python3-idna
       - python3-jsonschema
