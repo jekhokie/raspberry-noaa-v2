@@ -24,6 +24,7 @@
       - libopenblas-dev
       - libgfortran5
       - libjpeg-dev
+      - libtiff-dev
       - libncurses5-dev
       - libncursesw5-dev
       - libsox-fmt-mp3
