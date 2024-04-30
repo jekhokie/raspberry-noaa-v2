@@ -19,7 +19,7 @@ command_exists() {
 command_exists "sox"
 command_exists "socat"
 
-IP=$(ip route | grep "link src" | awk {'print $NF'})
+IP=$(ip route | grep "link src" | awk {'print $9'})
 
 if pgrep "rtl_fm" > /dev/null
 then
