@@ -139,14 +139,18 @@
 #    name:
 #      - intel-opencl-icd
 
-- name: Install required Python packages using pip3
+#- name: Install required Python packages using pip3
+#  pip:
+#    name:
+#      - envbash==1.2.0
+#      - facebook-sdk==3.1.0
+#      - pysqlite3==0.5.1
+#    state: present
+#    executable: pip3
+
+- name: Install required Python packages using pip3 since they aren't available among the apt packages
   pip:
-    name:
-      - envbash==1.2.0
-      - facebook-sdk==3.1.0
-      - pysqlite3==0.5.1
-    state: present
-    executable: pip3
+  command: pip3 install envbash==1.2.0 facebook-sdk==3.1.0 pysqlite3==0.5.1 --break-system-packages
 
 - name: Installing predict on computers
   become: yes
