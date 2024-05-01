@@ -23,9 +23,6 @@ TIMER_START=$(date '+%s')
 . "$NOAA_HOME/scripts/common.sh"
 capture_start="$START_DATE $(date '+%Z')"
 
-log "Activating Python virtual environment" "INFO"
-source "$NOAA_HOME/scripts/python-virtualenv/bin/activate"
-
 # input params
 export SAT_NAME=$1
 export FILENAME_BASE=$2

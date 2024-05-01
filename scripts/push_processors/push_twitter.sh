@@ -16,9 +16,6 @@
 . "$NOAA_HOME/scripts/common.sh"
 . "$HOME/.tweepy.conf"
 
-log "Activating Python virtual environment" "INFO"
-source "$NOAA_HOME/scripts/python-virtualenv/bin/activate"
-
 # input params
 MESSAGE=$1
 shift

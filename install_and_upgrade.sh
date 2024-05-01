@@ -41,12 +41,6 @@ if [ -f /etc/modprobe.d/rtlsdr.conf ]; then
   install_type='upgrade'
 fi
 
-log_running "Installing Python virtual environment if it doesn't already exist..."
-python -m venv "$HOME/raspberry-noaa-v2/scripts/python-virtualenv"
-
-log_running "Activating Python virtual environment..."
-source "$HOME/raspberry-noaa-v2/scripts/python-virtualenv/bin/activate"
-
 log_running "Installing yaml and jsonschema Python modules..."
 sudo apt install python3-yaml python3-jsonschema -y
 

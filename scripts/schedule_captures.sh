@@ -15,9 +15,6 @@
 . "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
 
-log "Activating Python virtual environment" "INFO"
-source "$NOAA_HOME/scripts/python-virtualenv/bin/activate"
-
 # map inputs to sane var names
 OBJ_NAME=$1
 RECEIVE_SCRIPT=$2
