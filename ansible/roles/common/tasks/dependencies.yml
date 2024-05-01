@@ -152,7 +152,7 @@
   pip:
   command: pip3 install envbash==1.2.0 facebook-sdk==3.1.0 pysqlite3==0.5.1 --break-system-packages
 
-- name: Installing predict on computers
+- name: Installing predict on PCs
   become: yes
   apt:
     deb: "{{ noaa_home }}/software/predict_2.2.3-4-b2_amd64.deb"
