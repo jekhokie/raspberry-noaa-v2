@@ -58,14 +58,10 @@
 #Twitter
 
 - name: install tweepy if Twitter push is enabled
-  become: yes
-  pip:
-    name: tweepy
-    executable: pip3
-    state: present
+  command: pip3 install tweepy --break-system-packages
   when: enable_twitter_push | bool
 
-- name: drop template twitter tweepy config file
+- name: drop template Twitter config file
   copy:
     src: tweepy.conf
     dest: /home/{{ target_user }}/.tweepy.conf
@@ -82,14 +78,10 @@
 #Facebook
 
 - name: install facebook-sdk if Facebook push is enabled
-  become: yes
-  pip:
-    name: facebook-sdk
-    executable: pip3
-    state: present
+  command: pip3 install facebook-sdk --break-system-packages
   when: enable_facebook_push | bool
 
-- name: drop template facebook facebook-sdk config file
+- name: drop template Facebook config file
   copy:
     src: facebook.conf
     dest: /home/{{ target_user }}/.facebook.conf
@@ -106,11 +98,7 @@
 #Instagram
 
 - name: install facebook-sdk if Instagram push is enabled
-  become: yes
-  pip:
-    name: facebook-sdk
-    executable: pip3
-    state: present
+  command: pip3 install facebook-sdk --break-system-packages
   when: enable_instagram_push | bool
 
 - name: drop template Instagram config file
@@ -128,14 +116,10 @@
 #Mastodon
 
 - name: install Mastodon.py if Mastodon push is enabled
-  become: yes
-  pip:
-    name: Mastodon.py
-    executable: pip3
-    state: present
+  command: pip3 install Mastodon.py --break-system-packages
   when: enable_mastodon_push | bool
 
-- name: drop template facebook facebook-sdk config file
+- name: drop template Mastodon config file
   copy:
     src: mastodon.conf
     dest: /home/{{ target_user }}/.mastodon.conf
