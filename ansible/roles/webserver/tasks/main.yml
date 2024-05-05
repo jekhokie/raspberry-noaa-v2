@@ -198,27 +198,16 @@
   become: yes
   command: ufw enable
 
-- name: nginx non-tls config file (bullseye)
+- name: nginx non-tls config file
   become: yes
   template:
-    src: nginx_default-bullseye.j2
+    src: nginx_default-{{ raspbian_version.stdout }}.j2
     dest: /etc/nginx/sites-available/default
     owner: root
     group: root
     mode: 0644
   notify: restart nginx
-  when: enable_non_tls|bool and raspbian_version.stdout != 'bookworm'
-
-- name: nginx non-tls config file (bookworm)
-  become: yes
-  template:
-    src: nginx_default-bookworm.j2
-    dest: /etc/nginx/sites-available/default
-    owner: root
-    group: root
-    mode: 0644
-  notify: restart nginx
-  when: enable_non_tls|bool and raspbian_version.stdout == 'bookworm'
+  when: enable_non_tls|bool
 
 - name: nginx non-tls config symlink
   become: yes
@@ -239,26 +228,15 @@
   when: not enable_non_tls|bool
   notify: restart nginx
   
-- name: nginx tls config file (bullseye)
+- name: nginx tls config file
   become: yes
   template:
-    src: nginx_tls_default-bullseye.j2
+    src: "nginx_tls_default-{{ raspbian_version.stdout }}.j2"
     dest: /etc/nginx/sites-available/default-tls
     owner: root
     group: root
     mode: 0644
-  when: enable_tls|bool and raspbian_version.stdout != 'bookworm'
-  notify: restart nginx
-
-- name: nginx tls config file (bookworm)
-  become: yes
-  template:
-    src: nginx_tls_default-bookworm.j2
-    dest: /etc/nginx/sites-available/default-tls
-    owner: root
-    group: root
-    mode: 0644
-  when: enable_tls|bool and raspbian_version.stdout == 'bookworm'
+  when: enable_tls|bool 
   notify: restart nginx
 
 - name: nginx tls config symlink
