@@ -178,6 +178,13 @@
     update_cache: no
   when: system_architecture == 'armhf'
   
+- name: Installing SatDump
+  become: yes
+  apt:
+    deb: "{{ noaa_home }}/software/satdump_1.2.0-e4803c68_{{ raspbian_version.stdout }}_{{ system_architecture }}.deb"
+    state: present
+    update_cache: no
+
 - name: Installing WXtoImg
   become: yes
   apt:
@@ -203,6 +210,7 @@
     repo: https://github.com/Digitelektro/MeteorDemod.git
     dest: /home/{{ target_user }}/MeteorDemod
     version: origin/master
+    depth: 1
   when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
   ignore_errors: yes
 
@@ -256,13 +264,6 @@
     path: /home/{{ target_user }}/MeteorDemod
     state: absent
   when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
-
-- name: Installing SatDump
-  become: yes
-  apt:
-    deb: "{{ noaa_home }}/software/satdump_1.2.0-b04dc69e_{{ system_architecture }}.deb"
-    state: present
-    update_cache: no
 
 # - name: Check if libbrcmGLESV2.50 link exists
 #   stat:
