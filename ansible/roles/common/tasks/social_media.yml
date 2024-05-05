@@ -1,4 +1,5 @@
 ---
+########################################################################################################
 #Email
 
 - name: install mpack and msmtp if emailing is enabled
@@ -51,15 +52,21 @@
     group: root
     mode: 0644
 
-
-
 ########################################################################################################
 
 #Twitter
 
-- name: install tweepy if Twitter push is enabled
+- name: install tweepy if Twitter push is enabled (bookworm)
   command: pip3 install tweepy --break-system-packages
-  when: enable_twitter_push | bool
+  when: enable_twitter_push | bool and raspbian_version.stdout == 'bookworm'
+
+- name: install tweepy if Twitter push is enabled (bullseye)
+  pip:
+    name:
+      - tweepy
+    state: present
+    executable: pip3
+  when: enable_twitter_push | bool and raspbian_version.stdout == 'bullseye'
 
 - name: drop template Twitter config file
   copy:
@@ -71,15 +78,21 @@
     mode: 0600
   when: enable_twitter_push | bool
 
-
-
 ########################################################################################################
 
 #Facebook
 
-- name: install facebook-sdk if Facebook push is enabled
+- name: install facebook-sdk if Facebook push is enabled (bookworm)
   command: pip3 install facebook-sdk --break-system-packages
-  when: enable_facebook_push | bool
+  when: enable_facebook_push | bool and raspbian_version.stdout == 'bookworm'
+
+- name: install facebook-sdk if Facebook push is enabled (bullseye)
+  pip:
+    name:
+      - facebook-sdk
+    state: present
+    executable: pip3
+  when: enable_twitter_push | bool and raspbian_version.stdout == 'bullseye'
 
 - name: drop template Facebook config file
   copy:
@@ -91,15 +104,21 @@
     mode: 0600
   when: enable_facebook_push | bool
 
-
-
 ########################################################################################################
 
 #Instagram
 
-- name: install facebook-sdk if Instagram push is enabled
+- name: install facebook-sdk if Instagram push is enabled (bookworm)
   command: pip3 install facebook-sdk --break-system-packages
-  when: enable_instagram_push | bool
+  when: enable_instagram_push | bool and raspbian_version.stdout == 'bookworm'
+
+- name: install facebook-sdk if Instagram push is enabled (bullseye)
+  pip:
+    name:
+      - facebook-sdk
+    state: present
+    executable: pip3
+  when: enable_twitter_push | bool and raspbian_version.stdout == 'bullseye'
 
 - name: drop template Instagram config file
   copy:
@@ -115,9 +134,17 @@
 
 #Mastodon
 
-- name: install Mastodon.py if Mastodon push is enabled
+- name: install Mastodon.py if Mastodon push is enabled (bookworm)
   command: pip3 install Mastodon.py --break-system-packages
-  when: enable_mastodon_push | bool
+  when: enable_mastodon_push | bool and raspbian_version.stdout == 'bookworm'
+
+- name: install Mastodon.py if Mastodon push is enabled (bullseye)
+  pip:
+    name:
+      - Mastodon.py
+    state: present
+    executable: pip3
+  when: enable_twitter_push | bool and raspbian_version.stdout == 'bullseye'
 
 - name: drop template Mastodon config file
   copy:
@@ -128,4 +155,6 @@
     group: "{{ target_user }}"
     mode: 0600
   when: enable_mastodon_push | bool
+
+########################################################################################################
 ...
