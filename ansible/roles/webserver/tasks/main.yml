@@ -201,7 +201,7 @@
 - name: nginx non-tls config file
   become: yes
   template:
-    src: nginx_default-{{ raspbian_version.stdout }}.j2
+    src: "nginx_default-{{ raspbian_version.stdout }}.j2"
     dest: /etc/nginx/sites-available/default
     owner: root
     group: root
