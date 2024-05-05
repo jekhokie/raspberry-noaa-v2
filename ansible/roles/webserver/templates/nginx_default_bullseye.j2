@@ -1,0 +1,38 @@
+server {
+  listen {{ web_port }};
+  # Enabling IPv6 support making the server accessible from the internet
+  listen [::]:{{ web_port }};
+  
+  root {{ web_home }}/public/;
+  index index.php index.html index.htm index.nginx-debian.html;
+  autoindex on;
+
+  server_name {{ web_server_name }};
+
+  gzip on;
+  gzip_vary on;
+  gzip_min_length 1024;
+  gzip_proxied expired no-cache no-store private auth;
+  gzip_types text/plain text/css text/xml text/javascript application/x-javascript application/xml;
+  gzip_disable "MSIE [1-6]\.";
+
+  location ~ /images/(.*) {
+    alias /srv/images/$1;
+  }
+
+  location ~ /videos/(.*) {
+    alias /srv/videos/$1;
+  }
+
+  location / {
+    try_files $uri $uri/ /index.php;
+  }
+
+  location ~ \.php$ {
+    include snippets/fastcgi-php.conf;
+    fastcgi_pass unix:/var/run/php/php8.0-fpm.sock;
+  }
+
+  # Rewrite the old path yyyy/mm/dd/ to /images/
+  rewrite "^/image/\d{4}/\d{2}/\d{2}/(.+)$" /images/$1 permanent;
+}

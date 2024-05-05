@@ -74,30 +74,6 @@
     group: root
     mode: 0644
 
-- name: gnuradio home directory
-  file:
-    path: /home/{{ target_user }}/.gnuradio
-    state: directory
-    owner: "{{ target_user }}"
-    group: "{{ target_user }}"
-    mode: 0755
-
-- name: gnuradio prefs directory
-  file:
-    path: /home/{{ target_user }}/.gnuradio/prefs
-    state: directory
-    owner: "{{ target_user }}"
-    group: "{{ target_user }}"
-    mode: 0755
-
-- name: gnuradio prefs file
-  copy:
-    src: vmcircbuf_default_factory
-    dest: /home/{{ target_user }}/.gnuradio/prefs/vmcircbuf_default_factory
-    owner: "{{ target_user }}"
-    group: "{{ target_user }}"
-    mode: 0644
-
 - name: disable wifi power mgmt script
   become: yes
   copy:
