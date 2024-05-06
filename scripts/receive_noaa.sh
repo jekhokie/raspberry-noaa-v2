@@ -119,7 +119,7 @@ case "$RECEIVER_TYPE" in
 esac
 
 if [[ "$receiver" == "rtlsdr" ]]; then
-  gain_option="--source_id $SDR_DEVICE_ID --gain"
+  gain_option="--source_id \"$SDR_DEVICE_ID\" --gain"
 else
   gain_option="--general_gain"
 fi
