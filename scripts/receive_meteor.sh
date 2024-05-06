@@ -106,7 +106,7 @@ mode="$([[ "${!interleaving}" == "true" ]] && echo "_80k" || echo "")"
 
 gain_option=""
 if [[ "$receiver" == "rtlsdr" ]]; then
-  gain_option="--source_id $SDR_DEVICE_ID --gain"
+  gain_option="--source_id \"$SDR_DEVICE_ID\" --gain"
 else
   gain_option="--general_gain"
 fi
