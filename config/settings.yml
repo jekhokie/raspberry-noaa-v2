@@ -31,7 +31,7 @@ meteor_decoder: 'meteordemod'
 #   test_enable_bias_tee - whether to enable bias tee when running scanner test scripts
 #   test_freq_offset - receiver frequency offset (PPM)
 test_gain: 29.7
-test_sdr_device_id: 0
+test_sdr_device_id: "00000001"
 test_enable_bias_tee: false
 test_freq_offset: 0
 
