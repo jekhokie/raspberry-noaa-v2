@@ -6,7 +6,7 @@
     "altitude":              { "type": "number" },
     "ntp_server":            { "type": "string" },
     "test_gain":             { "type": "number" },
-    "test_sdr_device_id":    { "type": "number" },
+    "test_sdr_device_id":    { "type": "string" },
     "test_enable_bias_tee":  { "type": "boolean" },
     "test_freq_offset":      { "type": "number" },
     "receiver_type":         { "type": "string" },
@@ -15,7 +15,7 @@
     "select_best_overlapping_passes": { "type": "boolean" },
     "select_meteor_pass_over_noaa":   { "type": "boolean" },
     "noaa_15_schedule":        { "type": "boolean" },
-    "noaa_15_sdr_device_id":   { "type": "number" },
+    "noaa_15_sdr_device_id":   { "type": "string" },
     "noaa_15_freq_offset":     { "type": "number" },
     "noaa_15_enable_bias_tee": { "type": "boolean" },
     "noaa_15_gain":            { "type": "number" },
@@ -30,7 +30,7 @@
       "maximum": 90
     },
     "noaa_18_schedule":        { "type": "boolean" },
-    "noaa_18_sdr_device_id":   { "type": "number" },
+    "noaa_18_sdr_device_id":   { "type": "string" },
     "noaa_18_freq_offset":     { "type": "number" },
     "noaa_18_enable_bias_tee": { "type": "boolean" },
     "noaa_18_gain":            { "type": "number" },
@@ -45,7 +45,7 @@
       "maximum": 90
     },
     "noaa_19_schedule":        { "type": "boolean" },
-    "noaa_19_sdr_device_id":   { "type": "number" },
+    "noaa_19_sdr_device_id":   { "type": "string" },
     "noaa_19_freq_offset":     { "type": "number" },
     "noaa_19_enable_bias_tee": { "type": "boolean" },
     "noaa_19_gain":            { "type": "number" },
@@ -60,7 +60,7 @@
       "maximum": 90
     },
     "meteor_m2_3_schedule":        { "type": "boolean" },
-    "meteor_m2_3_sdr_device_id":   { "type": "number" },
+    "meteor_m2_3_sdr_device_id":   { "type": "string" },
     "meteor_m2_3_freq_offset":     { "type": "number" },
     "meteor_m2_3_enable_bias_tee": { "type": "boolean" },
     "meteor_m2_3_gain":            { "type": "number" },
@@ -80,7 +80,7 @@
       "maximum": 90
     },
     "meteor_m2_4_schedule":        { "type": "boolean" },
-    "meteor_m2_4_sdr_device_id":   { "type": "number" },
+    "meteor_m2_4_sdr_device_id":   { "type": "string" },
     "meteor_m2_4_freq_offset":     { "type": "number" },
     "meteor_m2_4_enable_bias_tee": { "type": "boolean" },
     "meteor_m2_4_gain":            { "type": "number" },
