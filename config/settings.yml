@@ -52,7 +52,7 @@ select_best_overlapping_passes: true
 select_meteor_pass_over_noaa: true
 
 noaa_15_schedule: true
-noaa_15_sdr_device_id: 00000001
+noaa_15_sdr_device_id: "00000001"
 noaa_15_freq_offset: 0
 noaa_15_enable_bias_tee: false
 noaa_15_gain: 29.7
@@ -60,7 +60,7 @@ noaa_15_sun_min_elevation: 6
 noaa_15_sat_min_elevation: 30
 
 noaa_18_schedule: true
-noaa_18_sdr_device_id: 00000001
+noaa_18_sdr_device_id: "00000001"
 noaa_18_freq_offset: 0
 noaa_18_enable_bias_tee: false
 noaa_18_gain: 29.7
@@ -68,7 +68,7 @@ noaa_18_sun_min_elevation: 6
 noaa_18_sat_min_elevation: 30
 
 noaa_19_schedule: true
-noaa_19_sdr_device_id: 00000001
+noaa_19_sdr_device_id: "00000001"
 noaa_19_freq_offset: 0
 noaa_19_enable_bias_tee: false
 noaa_19_gain: 29.7
@@ -76,7 +76,7 @@ noaa_19_sun_min_elevation: 6
 noaa_19_sat_min_elevation: 30
 
 meteor_m2_3_schedule: true
-meteor_m2_3_sdr_device_id: 00000001
+meteor_m2_3_sdr_device_id: "00000001"
 meteor_m2_3_freq_offset: 0
 meteor_m2_3_enable_bias_tee: false
 meteor_m2_3_gain: 29.7
@@ -86,7 +86,7 @@ meteor_m2_3_sat_min_elevation: 30
 meteor_m2_3_80k_interleaving: false
 
 meteor_m2_4_schedule: true
-meteor_m2_4_sdr_device_id: 00000001
+meteor_m2_4_sdr_device_id: "00000001"
 meteor_m2_4_freq_offset: 0
 meteor_m2_4_enable_bias_tee: false
 meteor_m2_4_gain: 29.7
