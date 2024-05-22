@@ -1,33 +1,18 @@
 ---
-- name: php repository gpg key (buster only)
+- name: php repository gpg key (bookworm only)
   become: yes
   apt_key:
     url: "https://packages.sury.org/php/apt.gpg"
     state: present
-  when: raspbian_version.stdout == 'buster'
+  when: raspbian_version.stdout == 'bookworm'
 
-- name: php repository (buster only)
+- name: php repository (bookworm only)
   become: yes
   apt_repository:
-    repo: deb https://packages.sury.org/php/ buster main
-    filename: php7.list
+    repo: deb https://packages.sury.org/php/ bookworm main
+    filename: php8.list
     state: present
-  when: raspbian_version.stdout == 'buster'
-
-- name: php repository gpg key (buster only)
-  become: yes
-  apt_key:
-    url: "https://packages.sury.org/php/apt.gpg"
-    state: present
-  when: raspbian_version.stdout == 'buster'
-
-- name: php repository (buster only)
-  become: yes
-  apt_repository:
-    repo: deb https://packages.sury.org/php/ buster main
-    filename: php7.list
-    state: present
-  when: raspbian_version.stdout == 'buster'
+  when: raspbian_version.stdout == 'bookworm'
 
 - name: install UFW firewall
   become: yes
@@ -71,15 +56,29 @@
     state: present
     name: nginx
 
-- name: install php
+- name: install php (bullseye)
   become: yes
   apt:
     update_cache: no
     state: present
     name:
-      - php7.4-fpm
-      - php7.4-mbstring
-      - php7.4-sqlite3
+      - php8.0-fpm
+      - php8.0-mbstring
+      - php8.0-sqlite3
+      - php7.4-intl
+  when: raspbian_version.stdout != 'bookworm'
+
+- name: install php (bookworm)
+  become: yes
+  apt:
+    update_cache: no
+    state: present
+    name:
+      - php8.2-fpm
+      - php8.2-mbstring
+      - php8.2-sqlite3
+      - php8.2-intl
+  when: raspbian_version.stdout == 'bookworm'
 
 - name: install composer
   become: yes
@@ -113,6 +112,15 @@
     group: www-data
     mode: 0775
 
+- name: public directory
+  become: yes
+  file:
+    path: "{{ web_home }}/public"
+    state: directory
+    owner: "{{ target_user }}"
+    group: www-data
+    mode: 0775
+
 - name: Fetch system timezone
   command: timedatectl show --property=Timezone --value
   register: system_timezone
@@ -125,6 +133,22 @@
     owner: "{{ target_user }}"
     group: www-data
     mode: 0644
+
+- name: update user's home folder permissions
+  become: yes
+  file:
+    path: "/home/{{ target_user }}"
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0755
+
+- name: update srv directory ownership
+  become: yes
+  file:
+    path: "/srv"
+    owner: "{{ target_user }}"
+    group: www-data
+    mode: 0755
 
 - name: update images directory group
   become: yes
@@ -177,12 +201,13 @@
 - name: nginx non-tls config file
   become: yes
   template:
-    src: nginx_default.j2
+    src: "nginx_default_{{ raspbian_version.stdout }}.j2"
     dest: /etc/nginx/sites-available/default
     owner: root
     group: root
     mode: 0644
   notify: restart nginx
+  when: enable_non_tls|bool
 
 - name: nginx non-tls config symlink
   become: yes
@@ -206,12 +231,12 @@
 - name: nginx tls config file
   become: yes
   template:
-    src: nginx_tls_default.j2
+    src: "nginx_tls_default_{{ raspbian_version.stdout }}.j2"
     dest: /etc/nginx/sites-available/default-tls
     owner: root
     group: root
     mode: 0644
-  when: enable_tls|bool
+  when: enable_tls|bool 
   notify: restart nginx
 
 - name: nginx tls config symlink
