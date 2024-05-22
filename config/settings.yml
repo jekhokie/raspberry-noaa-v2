@@ -182,7 +182,7 @@ ground_station_location: ''
 antenna_information: ''
 show_sun_elevation: true
 show_pass_direction: true
-produce_spectrogram: true
+produce_spectrogram: false    #NOTE: the spectrogram option here is available for NOAA only, and the spectrogrma produced is from demodulated audio, not IQ baseband file
 
 noaa_crop_telemetry: false
 produce_noaa_pristine_image: false
