@@ -18,9 +18,9 @@ how to use a cheap rabbit ears antenna as a dipole for capturing NOAA and Meteor
 
 # Raspberry NOAA (...and Meteor) V2
 
-NOAA and Meteor-M 2 satellite imagery capture setup for the regular 64 bit Debian Bullseye computers and Raspberry Pi!
+NOAA and Meteor-M 2 satellite imagery capture setup for the regular 64 bit Debian Bookworm & Bullseye computers and 32 bit Raspberry Pi!
 
-As of the September 2023 raspberry-noaa-v2 officially works on any Debian Bullseye based distro! This project has been developed and tested on LMDE 5 "Elsie" which is similar to the original Linux Mint, although the regular Mint is based on Ubuntu, while LMDE is based directly on Debian (It's short for Linux Mint Debian Edition). It can be downloaded from here: [https://mirrors.layeronline.com/linuxmint/debian/lmde-5-cinnamon-64bit.iso](https://mirrors.layeronline.com/linuxmint/debian/lmde-5-cinnamon-64bit.iso)
+As of the September 2023 raspberry-noaa-v2 officially works on any Debian based distro! This project has been developed and tested on LMDE 6 "Faye" which is similar to the original Linux Mint, although the regular Mint is based on Ubuntu, while LMDE is based directly on Debian (Linux Mint Debian Edition). It can be downloaded from here: [https://mirrors.layeronline.com/linuxmint/debian/lmde-6-cinnamon-64bit.iso](https://mirrors.layeronline.com/linuxmint/debian/lmde-6-cinnamon-64bit.iso)
 
 See "Credits" for the awesome way this version of the framework came to be.
 
@@ -88,7 +88,7 @@ Also, check out [THIS LINK](docs/webpanel_screenshots.md) for some screen shots 
 
 ## Compatibility
 
-**NOTE: ONLY 32bit OS is supported : Recommended is 'Bullseye' Release.**
+**NOTE: ONLY 32bit OS is supported : Recommended is 'Bookworm' Release.**
 
 The original raspberry-noaa was tested on Raspberry Pi 2 and up. However, while it's possible this compatibility has been maintained
 with raspberry-noaa-v2, this version was developed and tested on a Raspberry Pi 4 - it has not been exhaustively tested on other variants
@@ -97,7 +97,7 @@ of Raspberry Pi (but if you get it working on a version, please do submit a PR a
 In addition, it's recommended that the Official Release of [Raspberry Pi OS](https://www.raspberrypi.org/software/) operating system is used 
 **(not the very latest build)** - this is the OS that has been tested and proven working. 
 
-As of September 2023, raspberry-noaa-v2 can also be installed on regular 64 bit computers running any Debian Bullseye-based distro. Itmhas been developed and tested on LMDE 5 "Elsie" which I also recommend for users coming from Windows, as it has many similarities. It can be downloaded here: [https://mirrors.layeronline.com/linuxmint/debian/lmde-5-cinnamon-64bit.iso](https://mirrors.layeronline.com/linuxmint/debian/lmde-5-cinnamon-64bit.iso)
+As of September 2023, raspberry-noaa-v2 can also be installed on regular 64 bit computers running any Debian Bookworm-based distro. Itmhas been developed and tested on LMDE 6 "Faye" which I also recommend for users coming from Windows, as it has many similarities. It can be downloaded here: [https://mirrors.layeronline.com/linuxmint/debian/lmde-6-cinnamon-64bit.iso](https://mirrors.layeronline.com/linuxmint/debian/lmde-6-cinnamon-64bit.iso)
 
 If you do test with another OS - again, please submit a PR and let us know how it works out!
 
@@ -127,7 +127,7 @@ patching, and even then it would still be questionable), updating your Pi user p
 
 ## Install
 
-To install the product, and get going if you're using 64 bit Debian Bullseye based computer, you first need to do stop sudo from asking to enter password. It will ensure all commands are handled well, and that our project can access superuser priviliges for certain things like moving files around in the audio and image directory etc.
+To install the product, and get going if you're using 64 bit Debian Bookworm based computer, you first need to do stop sudo from asking to enter password. It will ensure all commands are handled well, and that our project can access superuser priviliges for certain things like moving files around in the audio and image directory etc.
 
 To achieve this, run:
 
@@ -247,13 +247,13 @@ or form to the success of this repository/framework. Below are some direct contr
 * **[Pascal P.](https://github.com/Cirromulus)**: Frequency/spectrum analysis test scripts for visualizing frequency spectrum of environment.
 * **[Socowi's Time Functionality](https://stackoverflow.com/a/50434292)**: Time parser to calculate end date for scanner scripts.
 * **[Vince VE3ELB](https://github.com/ve3elb)**: Took on the invaluable task to create fully working images of RN2 for the PI and maintains [https://qsl.net/ve3elb/RaspiNOAA/](https://qsl.net/ve3elb/RaspiNOAA/).
-*  **[mihajlo2003petkovic/MihajloPi](https://github.com/mihajlo2003petkovic)**: Integrated MeteorDemod for Meteor decoding and building it via Ansible, and also the awesome SatDump (option satdump_live) for both NOAA and Meteor live decoding. Shrunk and optimised both NOAA and Meteor receive scripts by quite much! Implemented Facebook and Instagram posting scripts and fixed Twitter posting script due to the API 2.0 error. Made localisation option reduntant (automatically is handled by the computer itself). Provided support for Airspy, HackRF and SDRPlay devices. Implemented website compression, edited the website landing page and improved the perceived image loading speed by using progressive JPEGs. Created [image](https://drive.google.com/drive/folders/1acaZ78VEROc7BWVtJ82C6qVrccA9CkR6) with Gary Day's help. Removed RTL-FM and GNU Radio and simplified workflow by quite a lot using exclusively SatDump for recording and demodulating signals live to wav/S files, then processing them later with WXtoImg or SatDump for NOAA, and MeteorDemod or SatDump for Meteor.
+* **[mihajlo2003petkovic/MihajloPi](https://github.com/mihajlo2003petkovic)**: Integrated MeteorDemod for Meteor decoding and building it via Ansible, and also the awesome SatDump (option satdump_live) for both NOAA and Meteor live decoding. Shrunk and optimised both NOAA and Meteor receive scripts by quite much! Implemented Facebook and Instagram posting scripts and fixed Twitter posting script due to the API 2.0 error. Made localisation option reduntant (automatically is handled by the computer itself). Provided support for Airspy, HackRF and SDRPlay devices. Implemented website compression, edited the website landing page and improved the perceived image loading speed by using progressive JPEGs. Created [image](https://drive.google.com/drive/folders/1acaZ78VEROc7BWVtJ82C6qVrccA9CkR6) with Gary Day's help. Removed RTL-FM and GNU Radio and simplified workflow by quite a lot using exclusively SatDump for recording and demodulating signals live to wav/S files, then processing them later with WXtoImg or SatDump for NOAA, and MeteorDemod or SatDump for Meteor.
 * **[Silvio I6CBI](https://www.qrz.com/db/I6CBI)**: General testing on Pi and PC running LMDE 5, helped debug WKHTMLTOPDF and integrate SDR Play devices for GNU Radio. Tested MiriSDR.
 * **[Nicolas Delestre](https://twitter.com/DELESTRENicola2?t=NHkKPKWMsVQaeNv9vutYMA&s=09)**: General testing on Pi and PC running LMDE 5, lending his Pi and PC to MihajloPi virtually over SSH, VMC and TeamViewer for testing.
 * **[Gary Day](https://www.facebook.com/profile.php?id=100068381156913&mibextid=ZbWKwL)**: Helped by lending his Raspberry Pis virtually over SSH, VNC and TeamViewer to MihajloPi for testing and creating image.
 * **[Jérôme jp112sdl](https://github.com/jp112sdl)**: Implemented automatic discarding of Meteor M2-3 night passes since they give no visible image when it's in RGB123 mode.
 * **[patrice7560](https://meteo-schaltin.duckdns.org)**: Beta tester, helped in detecting and reporting errors ASAP for debugging.
-* **[Richard AI4Y](https://www.qrz.com/db/AI4Y)**: Provided Debian 12 (Bookworm) support for Raspberry Pi, solved `atrm` errors on the website, and several NTP and timezone issues in PHP, general alpha and beta testing.
+* **[Richard AI4Y](https://www.qrz.com/db/AI4Y)**: Provided Debian 12 (Bookworm) support for Raspberry Pi, discovered the FFMPEG bud when creating spectrograms, solved `atrm` errors on the website, and several NTP and timezone issues in PHP, general alpha and beta testing.
 ## Contributing
 
 Pull requests are welcome! Simply follow the below pattern:
