@@ -6,6 +6,9 @@
     state: present
     name:
       - python3-pip
+      - wget
+      - curl
+      - build-essential
       - at
       - bc
       - cmake
