@@ -6,6 +6,9 @@
     state: present
     name:
       - python3-pip
+      - wget
+      - curl
+      - build-essential
       - at
       - bc
       - cmake
@@ -24,6 +27,7 @@
       - libopenblas-dev
       - libgfortran5
       - libjpeg-dev
+      - libtiff-dev
       - libncurses5-dev
       - libncursesw5-dev
       - libsox-fmt-mp3
@@ -31,6 +35,7 @@
       - libusb-1.0-0-dev
       - libxft-dev
       - libxft2
+      - libvolk2-dev
       - python3-setuptools
       - python3-idna
       - python3-jsonschema
@@ -137,6 +142,19 @@
 #    name:
 #      - intel-opencl-icd
 
+#- name: Install required Python packages using pip3
+#  pip:
+#    name:
+#      - envbash==1.2.0
+#      - facebook-sdk==3.1.0
+#      - pysqlite3==0.5.1
+#    state: present
+#    executable: pip3
+
+- name: Install required Python packages using pip3 since they aren't available among the apt packages
+  command: pip3 install envbash==1.2.0 facebook-sdk==3.1.0 pysqlite3==0.5.1 --break-system-packages
+  when: raspbian_version.stdout == 'bookworm'
+
 - name: Install required Python packages using pip3
   pip:
     name:
@@ -145,8 +163,9 @@
       - pysqlite3==0.5.1
     state: present
     executable: pip3
+  when: raspbian_version.stdout == 'bullseye'
 
-- name: Installing predict on computers
+- name: Installing predict on PCs
   become: yes
   apt:
     deb: "{{ noaa_home }}/software/predict_2.2.3-4-b2_amd64.deb"
@@ -162,6 +181,13 @@
     update_cache: no
   when: system_architecture == 'armhf'
   
+- name: Installing SatDump
+  become: yes
+  apt:
+    deb: "{{ noaa_home }}/software/satdump_1.2.0-e4803c68_{{ raspbian_version.stdout }}_{{ system_architecture }}.deb"
+    state: present
+    update_cache: no
+
 - name: Installing WXtoImg
   become: yes
   apt:
@@ -187,6 +213,7 @@
     repo: https://github.com/Digitelektro/MeteorDemod.git
     dest: /home/{{ target_user }}/MeteorDemod
     version: origin/master
+    depth: 1
   when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
   ignore_errors: yes
 
@@ -240,13 +267,6 @@
     path: /home/{{ target_user }}/MeteorDemod
     state: absent
   when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
-
-- name: Installing SatDump
-  become: yes
-  apt:
-    deb: "{{ noaa_home }}/software/satdump_1.2.0-b04dc69e_{{ system_architecture }}.deb"
-    state: present
-    update_cache: no
 
 # - name: Check if libbrcmGLESV2.50 link exists
 #   stat:

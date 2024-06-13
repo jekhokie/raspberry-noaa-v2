@@ -16,7 +16,7 @@ log_running() {
 }
 
 log_done() {
-  echo " ${GREEN}✓ $1${RESET}"
+  echo " ${GREEN}âœ“ $1${RESET}"
 }
 
 log_finished() {
@@ -66,11 +66,12 @@ if [ $? -ne 0 ]; then
   fi
 fi
 
-log_running "Checking for configuration settings..."
-if [ -f config/settings.yml ]; then
-  log_done "  Settings file ready!"
+log_running "Configure ATRM rule and PHP Controller based on scheduling user..."
+if [ $? -eq 0 ]; then
+   chmod +x $HOME/raspberry-noaa-v2/scripts/tools/atrm_rule_and_removal.sh
+   $HOME/raspberry-noaa-v2/scripts/tools/atrm_rule_and_removal.sh
 else
-  die "  No settings file detected - please copy config/settings.yml.sample to config/settings.yml and edit for your environment"
+  die "  Something failed with the install - please inspect the logs above"
 fi
 
 log_running "Running Ansible to install and/or update your raspberry-noaa-v2..."
@@ -105,6 +106,13 @@ fi
 log_running "Installing certbot for SSL certificates signed by the Let's Encrypt..."
 if [ $? -eq 0 ]; then
   sudo apt install certbot -y
+else
+  die "  Something failed with the install - please inspect the logs above"
+fi
+log_running "Configure PHP local time zone..."
+if [ $? -eq 0 ]; then
+   chmod +x $HOME/raspberry-noaa-v2/scripts/tools/configure_php_local_timezone.sh
+   $HOME/raspberry-noaa-v2/scripts/tools/configure_php_local_timezone.sh
 else
   die "  Something failed with the install - please inspect the logs above"
 fi

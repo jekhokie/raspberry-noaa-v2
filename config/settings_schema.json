@@ -156,7 +156,7 @@
     },
     "lang_setting": {
       "type": "string",
-      "enum": [ "ar", "bg", "cn", "de", "en", "es", "fr", "lt", "nl", "pt", "sr", "ru", "it", "hu", "gr" ]
+      "enum": [ "ar", "bg", "cn", "de", "en", "es", "fr", "lt", "nl", "pt", "sr", "ru", "it", "hu", "gr", "kr", "ro" ]
     },
     "web_server_name": { "type": "string" },
     "enable_non_tls":  { "type": "boolean" },
