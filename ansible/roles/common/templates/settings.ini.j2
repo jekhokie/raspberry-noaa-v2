@@ -89,14 +89,12 @@ Color=#AAE0C6
 Thickness=2
 
 [ShapeFileBoundaryLines]
-FileName={% if meteor_draw_map_overlay|lower %}ShapeFiles/ne_10m_admin_0_countries.shp{% else %}''{% endif %}
-
+FileName={{ 'ShapeFiles/ne_10m_admin_0_countries.shp' if meteor_draw_map_overlay else '' }}
 Color={{ meteor_map_country_border_color }}
 Thickness=2
 
 [ShapeFilePopulatedPlaces]
-FileName={% if meteor_draw_cities|lower %}ShapeFiles/ne_50m_populated_places.shp{% else %}''{% endif %}
-
+FileName={{ 'ShapeFiles/ne_50m_populated_places.shp' if meteor_draw_cities else '' }}
 Color=#5A42F5
 #Font height in pixels
 Size=40
