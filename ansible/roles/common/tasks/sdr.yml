@@ -30,7 +30,7 @@
 
 - name: git clone RTL-SDR software
   git:
-    repo: https://github.com/rtlsdrblog/rtl-sdr-blog.git
+    repo: https://github.com/osmocom/rtl-sdr.git
     dest: /tmp/rtl-sdr
     update: no
   register: rtlsdr
