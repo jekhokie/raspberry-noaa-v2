@@ -790,7 +790,6 @@
                                 "offset_y": 2048000
                             }
                         }
-                        ]
                     },
                     "Snow enhancement": {
                         "equation": "((3*ch1-ch4)/2)^1.7, ((3*ch1+ch4)/4)^1.7, (ch1-ch3a)^1.7",
@@ -921,7 +920,44 @@
                                 "max": 1000
                             }
                         },
-                        "autogen": false
+                        "autogen": {{ "true" if "fire" in noaa_nighttime_enhancements.split(' ') else "false" }},
+                        "vars": {
+                            "minval": 0,
+                            "maxval": 1
+                        },
+                        "calib_cfg": {
+                            "cch4": {
+                                "type": "temperature",
+                                "min": 270.65,
+                                "max": 307.15
+                            }
+                        },
+                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
+                        "borders_color": [
+                            1,
+                            1,
+                            0
+                        ],
+                        "project": {
+                            "width": 2048,
+                            "height": 2048,
+                            "draw_map": {{ noaa_map_country_border_enable|lower }},
+                            "map_overlay_colors": [
+                                1,
+                                1,
+                                0
+                            ],
+                            "individual_equalize": false,
+                            "config": {
+                                "type": "stereo",
+                                "lat0": {{ latitude }},
+                                "lon0": {{ longitude }},
+                                "scalar_x": 2000,
+                                "scalar_y": -2000,
+                                "offset_x": -2048000,
+                                "offset_y": 2048000
+                            }
+                        }
                     },
                     "NO enhancement": {
                         "lut": "lut/cal/WXtoImg-NO.png",
@@ -2747,7 +2783,7 @@
                                 "offset_x": -2048000,
                                 "offset_y": 2048000
                             }
-                        }
+                        },
                         "calib_cfg": {
                             "cch5": {
                                 "type": "temperature",
@@ -2787,7 +2823,7 @@
                                 "offset_x": -2048000,
                                 "offset_y": 2048000
                             }
-                        }
+                        },
                         "calib_cfg": {
                             "cch5": {
                                 "type": "temperature",
@@ -2827,7 +2863,7 @@
                                 "offset_x": -2048000,
                                 "offset_y": 2048000
                             }
-                        }
+                        },
                         "calib_cfg": {
                             "cch5": {
                                 "type": "temperature",
