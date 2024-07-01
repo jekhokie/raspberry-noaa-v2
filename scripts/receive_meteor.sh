@@ -110,8 +110,11 @@ else
   gain_option="--general_gain"
 fi
 
-if [[ "$receiver" == "rtlsdr" ]]; then
-  sdr_id="--source_id $SDR_DEVICE_ID"
+if [[ "$use_device_string" == "true" ]]; then
+  sdr_id_option="--source_id"
+else
+  sdr_id_option=""
+  SDR_DEVICE_ID=""
 fi
 
 if [ "$BIAS_TEE" == "-T" ]; then
@@ -166,7 +169,7 @@ polar_direction=0
 
 log "Recording ${NOAA_HOME} via $receiver at ${METEOR_FREQUENCY} MHz using SatDump record " "INFO"
 audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
-$SATDUMP live meteor_m2-x_lrpt${mode} "$audio_temporary_storage_directory" --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQUENCY}e6" $sdr_id $gain_option $GAIN $bias_tee_option $finish_processing --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+$SATDUMP live meteor_m2-x_lrpt${mode} "$audio_temporary_storage_directory" --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQUENCY}e6" $sdr_id_option $SDR_DEVICE_ID $gain_option $GAIN $bias_tee_option $finish_processing --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
 mv "$audio_temporary_storage_directory/meteor_m2-x_lrpt${mode}.cadu" "${RAMFS_AUDIO_BASE}.cadu"
 
 log "Removing old bmp, gcp, and dat files" "INFO"
