@@ -44,12 +44,16 @@ test_freq_offset: 0
 #   <satellite_name>_sun_min_elevation - threshold for sun elevation for specific satellite captures
 #   <satellite_name>_sat_min_elevation - threshold for sat elevation for specific satellite captures
 #   <satellite_name>_memory_threshold - for METEOR satellite, minimum free memory (MB) required to store pass in RAM
+#   select_best_overlapping_passes - whether to select the best overlapping pass when multiple passes are available, or let user manually delete the passes
+#   select_meteor_pass_over_noaa - whether to select Meteor passes over NOAA when both are occuring at the same time
+#   use_device_string - whether to use the device string scheduling passes when you have multiple SDR devices connected of the same type (most users should leave it to "false")
 
 noaa_memory_threshold: 50
 meteor_m2_memory_threshold: 10
 
 select_best_overlapping_passes: true
 select_meteor_pass_over_noaa: true
+use_device_string: false
 
 noaa_15_schedule: true
 noaa_15_sdr_device_id: 0
