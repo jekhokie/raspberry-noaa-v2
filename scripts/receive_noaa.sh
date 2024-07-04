@@ -119,9 +119,16 @@ case "$RECEIVER_TYPE" in
 esac
 
 if [[ "$receiver" == "rtlsdr" ]]; then
-  gain_option="--source_id $SDR_DEVICE_ID --gain"
+  gain_option="--gain"
 else
   gain_option="--general_gain"
+fi
+
+if [[ "$use_device_string" == "true" ]]; then
+  sdr_id_option="--source_id"
+else
+  sdr_id_option=""
+  SDR_DEVICE_ID=""
 fi
 
 if [ "$BIAS_TEE" == "-T" ]; then
@@ -146,7 +153,7 @@ fi
 crop_topbottom=""
 if [ "$NOAA_CROP_TOPTOBOTTOM" == "true" ]; then
   log "Cropping SatDump NOAA images enabled" "INFO"
-  $crop_topbottom="--autocrop_wedges"
+  crop_topbottom="--autocrop_wedges"
 fi
 
 # pass start timestamp and sun elevation
@@ -160,7 +167,7 @@ daylight=$((SUN_ELEV > SUN_MIN_ELEV ? 1 : 0))
 #start capture
 log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump live pipeline" "INFO"
 audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
-$SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} --sdrpp_noise_reduction "$gain_option" $GAIN $bias_tee_option $crop_topbottom --start_timestamp $PASS_START --save_wav $finish_processing --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+$SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} --sdrpp_noise_reduction $sdr_id_option $SDR_DEVICE_ID $gain_option $GAIN $bias_tee_option $crop_topbottom --start_timestamp $PASS_START --save_wav $finish_processing --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
 rm "$audio_temporary_storage_directory/dataset.json" "$audio_temporary_storage_directory/product.cbor" >> $NOAA_LOG 2>&1
 log "Files recorded" "INFO"
 
