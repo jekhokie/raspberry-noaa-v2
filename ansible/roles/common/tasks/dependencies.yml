@@ -179,10 +179,18 @@
     update_cache: no
   when: system_architecture == 'armhf'
   
+- name: Installing predict on Raspberry Pi
+  become: yes
+  apt:
+    deb: "{{ noaa_home }}/software/predict_2.2.5+dfsg.1-1_arm64.deb"
+    state: present
+    update_cache: no
+  when: system_architecture == 'arm64'
+  
 - name: Installing SatDump
   become: yes
   apt:
-    deb: "{{ noaa_home }}/software/satdump_1.2.1-1021e84b_{{ raspbian_version.stdout }}_{{ system_architecture }}.deb"
+    deb: "{{ noaa_home }}/software/satdump_1.2.1-d5fd2f41_{{ raspbian_version.stdout }}_{{ system_architecture }}.deb"
     state: present
     update_cache: no
 
