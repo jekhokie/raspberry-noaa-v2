@@ -59,6 +59,12 @@
       - gfortran
       - libopencv-dev
       - python3-opencv
+      - libc6:armhf
+      - libstdc++6:armhf
+      - libasound2:armhf
+      - libx11-6:armhf
+      - libxft-dev:armhf
+      - libxft2:armhf
 
 
 #This was included because, for a period of time, SatDump didn't have dependencies included in the .deb file
@@ -163,7 +169,7 @@
     executable: pip3
   when: raspbian_version.stdout == 'bullseye'
 
-- name: Installing predict on PCs
+- name: Installing predict on PCs (amd64)
   become: yes
   apt:
     deb: "{{ noaa_home }}/software/predict_2.2.3-4-b2_amd64.deb"
@@ -171,7 +177,7 @@
     update_cache: no
   when: system_architecture == 'amd64'
 
-- name: Installing predict on Raspberry Pi
+- name: Installing predict on Raspberry Pi (armhf)
   become: yes
   apt:
     deb: "{{ noaa_home }}/software/predict_2.2.5+dfsg.1-1_armhf.deb"
@@ -179,7 +185,7 @@
     update_cache: no
   when: system_architecture == 'armhf'
   
-- name: Installing predict on Raspberry Pi
+- name: Installing predict on Raspberry Pi (arm64)
   become: yes
   apt:
     deb: "{{ noaa_home }}/software/predict_2.2.5+dfsg.1-1_arm64.deb"
@@ -193,6 +199,13 @@
     deb: "{{ noaa_home }}/software/satdump_1.2.1-d5fd2f41_{{ raspbian_version.stdout }}_{{ system_architecture }}.deb"
     state: present
     update_cache: no
+
+- name: Create WXtoImg symbolic link for ARM64 architecture
+  file:
+    src: "/home/{{ target_user }}/raspberry-noaa-v2/software/wxtoimg-armhf-2.11.2-beta.deb"
+    dest: "/home/{{ target_user }}/raspberry-noaa-v2/software/wxtoimg-arm64-2.11.2-beta.deb"
+    state: link
+  when: system_architecture == 'arm64'
 
 - name: Installing WXtoImg
   become: yes
