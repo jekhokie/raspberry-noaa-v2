@@ -20,6 +20,33 @@
     special_time: reboot
     job: "{{ noaa_home }}/scripts/schedule.sh"
 
+- name: Set permissions on set_os_config_kernel8.sh
+  file:
+    path: "/home/{{ target_user }}/raspberry-noaa-v2/scripts/tools/set_os_config_kernel8.sh"
+    state: file
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0755
+
+- name: Set permissions on scratch_perms.sh
+  file:
+    path: "/home/{{ target_user }}/raspberry-noaa-v2/scripts/tools/scratch_perms.sh"
+    state: file
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0755
+
+- name: Set kernel to kernel8.img
+  become: yes
+  command: "/home/{{ target_user }}/raspberry-noaa-v2/scripts/tools/set_os_config_kernel8.sh"
+  when: system_architecture == 'arm64'
+
+- name: create Scratch Perm fix cron job @ reboot
+  cron:
+    name: Correct /run/user/uid perms after reboot
+    special_time: reboot
+    job: "{{ noaa_home }}/scripts/tools/scratch_perms.sh"
+
 - name: create database
   shell: "/usr/bin/sqlite3 {{ noaa_home }}/db/panel.db < {{ noaa_home }}/db_migrations/00_seed_schema.sql"
   args:

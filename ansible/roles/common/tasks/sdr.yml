@@ -44,7 +44,7 @@
   when: rtlsdr.changed
 
 - name: generate build system for RTL-SDR software
-  command: cmake ../ -DINSTALL_UDEV_RULES=ON -DDETACH_KERNEL_DRIVER=ON
+  command: cmake ../ -DDETACH_KERNEL_DRIVER=ON
   args:
     chdir: /tmp/rtl-sdr/build
     creates: /tmp/rtl-sdr/build/Makefile
