@@ -44,7 +44,7 @@
   when: rtlsdr.changed
 
 - name: generate build system for RTL-SDR software
-  command: cmake ../ -DINSTALL_UDEV_RULES=ON -DDETACH_KERNEL_DRIVER=ON
+  command: cmake ../ -DDETACH_KERNEL_DRIVER=ON
   args:
     chdir: /tmp/rtl-sdr/build
     creates: /tmp/rtl-sdr/build/Makefile
@@ -75,16 +75,16 @@
   command: modprobe -r msi2500 msi001
   ignore_errors: yes  # Ignore errors if the modules are not loaded
 
-#- name: copy RTL-SDR udev rules
-#  become: yes
-#  copy:
-#    src: /tmp/rtl-sdr/rtl-sdr.rules
-#    dest: /etc/udev/rules.d/rtl-sdr.rules
-#    owner: root
-#    group: root
-#    mode: 0644
-#    remote_src: yes
-#  when: rtlsdr.changed
+- name: copy RTL-SDR udev rules
+  become: yes
+  copy:
+    src: /tmp/rtl-sdr/rtl-sdr.rules
+    dest: /etc/udev/rules.d/rtl-sdr.rules
+    owner: root
+    group: root
+    mode: 0644
+    remote_src: yes
+  when: rtlsdr.changed
 
 - name: copy Airspy udev rules
   become: yes
