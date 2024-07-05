@@ -75,16 +75,16 @@
   command: modprobe -r msi2500 msi001
   ignore_errors: yes  # Ignore errors if the modules are not loaded
 
-- name: copy RTL-SDR udev rules
-  become: yes
-  copy:
-    src: /tmp/rtl-sdr/rtl-sdr.rules
-    dest: /etc/udev/rules.d/rtl-sdr.rules
-    owner: root
-    group: root
-    mode: 0644
-    remote_src: yes
-  when: rtlsdr.changed
+#- name: copy RTL-SDR udev rules
+#  become: yes
+#  copy:
+#    src: /tmp/rtl-sdr/rtl-sdr.rules
+#    dest: /etc/udev/rules.d/rtl-sdr.rules
+#    owner: root
+#    group: root
+#    mode: 0644
+#    remote_src: yes
+#  when: rtlsdr.changed
 
 - name: copy Airspy udev rules
   become: yes
