@@ -260,7 +260,7 @@
   when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
 
 - name: Make MeteorDemod
-  command: make -j4
+  command: make -j3
   args:
     chdir: /home/{{ target_user }}/MeteorDemod/build
   when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
