@@ -68,7 +68,7 @@ case "$RECEIVER_TYPE" in
          receiver="mirisdr"
          ;;
      *)
-         echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE"
+         log "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE" "INFO"
          exit 1
          ;;
 esac
