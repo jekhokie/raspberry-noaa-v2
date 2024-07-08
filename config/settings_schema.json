@@ -9,9 +9,18 @@
     "test_sdr_device_id":    { "type": "number" },
     "test_enable_bias_tee":  { "type": "boolean" },
     "test_freq_offset":      { "type": "number" },
-    "receiver_type":         { "type": "string" },
-    "noaa_decoder":          { "type": "string" },
-    "meteor_decoder":        { "type": "string" },
+    "receiver_type": {
+      "type": "string",
+      "enum": [ "rtlsdr", "airspy_mini", "airspy_r2", "airspy_hf_plus_discovery", "hackrf", "sdrplay", "mirisdr" ]
+    },
+    "noaa_decoder": {
+      "type": "string",
+      "enum": [ "satdump", "wxtoimg" ]
+    },
+    "meteor_decoder": {
+      "type": "string",
+      "enum": [ "satdump", "meteordemod" ]
+    },
     "select_best_overlapping_passes": { "type": "boolean" },
     "select_meteor_pass_over_noaa":   { "type": "boolean" },
     "noaa_15_schedule":        { "type": "boolean" },
