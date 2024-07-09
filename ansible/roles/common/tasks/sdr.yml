@@ -17,6 +17,12 @@
     group: root
     mode: 0644
 
+- name: blacklist MiriSDR modules
+  become: yes
+  copy:
+    src: blacklist-msi.conf
+    dest: /etc/modprobe.d/blacklist-msi.conf
+
 - name: check if RTL-SDR software is installed
   stat:
     path: /usr/local/bin/rtl_sdr
@@ -38,7 +44,7 @@
   when: rtlsdr.changed
 
 - name: generate build system for RTL-SDR software
-  command: cmake ../ -DINSTALL_UDEV_RULES=ON -DDETACH_KERNEL_DRIVER=ON
+  command: cmake ../ -DDETACH_KERNEL_DRIVER=ON
   args:
     chdir: /tmp/rtl-sdr/build
     creates: /tmp/rtl-sdr/build/Makefile
@@ -63,6 +69,11 @@
   become: yes
   command: ldconfig
   when: rtlsdr.changed
+
+- name: Unload kernel modules (ignore if error, that means the stock driver wasn't present which is good)
+  become: yes
+  command: modprobe -r msi2500 msi001
+  ignore_errors: yes  # Ignore errors if the modules are not loaded
 
 - name: copy RTL-SDR udev rules
   become: yes

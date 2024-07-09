@@ -1,18 +1,19 @@
 [Program]
-AzimuthalEquidistantProjection=true
-MercatorProjection=false
-SpreadImage=true
-AddRainOverlay=true
+AzimuthalEquidistantProjection={{ meteor_create_equidistant_projection|lower }}
+MercatorProjection={{ meteor_create_mercator_projection|lower }}
+SpreadImage={{ meteor_create_spreaded_images_without_overlay|lower }}
+AddRainOverlay={{ meteor_create_rain_probability_overlay|lower }}
 JpgQuality=100
 NightPassTreshold=20.0
 #Scale output image, it helps to reduce memory usage and generates smaller images
 ProjectionScale=1
-CompositeProjectionScale=1
+CompositeProjectionScale=0.5
 CompositeAzimuthalEquidistantProjection=true
 CompositeMercatorProjection=false
 GenerateComposite321=true
 GenerateComposite125=true
 GenerateComposite221=true
+GenerateComposite224=true
 GenerateComposite68=true
 GenerateCompositeThermal=true
 GenerateComposite68Rain=true
@@ -28,16 +29,25 @@ TimeOffset=0
 
 [METEOR-M-2-3]
 SatNameInTLE=METEOR-M2 3
-ScanAngle=110.3
-Roll=0
-Pitch=0
-Yaw=0
+ScanAngle=109.7
+Roll=0.35
+Pitch=0.65
+Yaw=0.0
 # Onboard time offset in seconds
-TimeOffset=0
+TimeOffset=0.0
+
+[METEOR-M-2-4]
+SatNameInTLE=METEOR-M2 4
+ScanAngle=109.6
+Roll=0.35
+Pitch=0.5
+Yaw=-0.2
+# Onboard time offset in seconds
+TimeOffset=0.0
 
 [Demodulator]
 #Increasing bandwidth allow the pll to lock faster on signal, while decreasing it makes the pll lock more stable
-CostasBandwidth=10
+CostasBandwidth=30
 #Increasing RRC filter order makes the filtering more accurate at the expense of speed
 RRCFilterOrder=32
 #Waiting for lock makes smaller .S files and helps to discard the imperfect part of the image at the begining of decoding
@@ -58,7 +68,7 @@ Width=3
 Text=
 
 [ReceiverLocation]
-Draw={{ meteor_map_crosshair_enable }}
+Draw={{ meteor_map_crosshair_enable|lower }}
 Latitude={{ latitude }}
 Longitude={{ longitude }}
 #It was Color=#FFFF00
@@ -74,19 +84,17 @@ Color=#C8C8C8
 Thickness=1
 
 [ShapeFileCoastLines]
-FileName=ShapeFiles/ne_50m_coastline.shp
+FileName=ShapeFiles/ne_10m_coastline.shp
 Color=#AAE0C6
 Thickness=2
 
 [ShapeFileBoundaryLines]
-FileName={% if meteor_draw_map_overlay|lower|bool %}ShapeFiles/ne_50m_admin_0_boundary_lines_land.shp{% else %}''{% endif %}
-
+FileName={{ 'ShapeFiles/ne_10m_admin_0_countries.shp' if meteor_draw_map_overlay else '' }}
 Color={{ meteor_map_country_border_color }}
 Thickness=2
 
-[ShapeFilePopulatedPlaces] 
-FileName={% if meteor_draw_cities|lower|bool %}ShapeFiles/ne_50m_populated_places.shp{% else %}''{% endif %}
-
+[ShapeFilePopulatedPlaces]
+FileName={{ 'ShapeFiles/ne_50m_populated_places.shp' if meteor_draw_cities else '' }}
 Color=#5A42F5
 #Font height in pixels
 Size=40

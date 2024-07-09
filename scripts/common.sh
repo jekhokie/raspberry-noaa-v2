@@ -32,12 +32,11 @@ fi
 # binary helpers
 CONVERT="/usr/bin/convert"
 FFMPEG="/usr/bin/ffmpeg"
+SOX="/usr/bin/sox"
 GMIC="/usr/bin/gmic"
 IDENTIFY="/usr/bin/identify"
-METEOR_DEMOD="/usr/local/bin/meteor_demod"
 PREDICT="/usr/bin/predict"
 RTL_FM="/usr/local/bin/rtl_fm"
-SOX="/usr/bin/sox"
 SQLITE3="/usr/bin/sqlite3"
 WXMAP="/usr/local/bin/wxmap"
 WXTOIMG="/usr/local/bin/wxtoimg"
@@ -53,6 +52,7 @@ PUSH_PROC_DIR="${SCRIPTS_DIR}/push_processors"
 
 # frequency ranges for objects
 METEOR_M2_3_FREQ="137.9000"
+METEOR_M2_4_FREQ="137.9000"
 NOAA15_FREQ="137.6200"
 NOAA18_FREQ="137.9125"
 NOAA19_FREQ="137.1000"

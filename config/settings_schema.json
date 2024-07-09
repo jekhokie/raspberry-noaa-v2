@@ -9,12 +9,17 @@
     "test_sdr_device_id":    { "type": "number" },
     "test_enable_bias_tee":  { "type": "boolean" },
     "test_freq_offset":      { "type": "number" },
-    "receiver_type":         { "type": "string" },
-    "meteor_receiver": {
-      "type": "string"
+    "receiver_type": {
+      "type": "string",
+      "enum": [ "rtlsdr", "airspy_mini", "airspy_r2", "airspy_hf_plus_discovery", "hackrf", "sdrplay", "mirisdr" ]
     },
-    "noaa_receiver": {
-      "type": "string"
+    "noaa_decoder": {
+      "type": "string",
+      "enum": [ "satdump", "wxtoimg" ]
+    },
+    "meteor_decoder": {
+      "type": "string",
+      "enum": [ "satdump", "meteordemod" ]
     },
     "select_best_overlapping_passes": { "type": "boolean" },
     "select_meteor_pass_over_noaa":   { "type": "boolean" },
@@ -83,8 +88,29 @@
       "minimum": 0,
       "maximum": 90
     },
+    "meteor_m2_4_schedule":        { "type": "boolean" },
+    "meteor_m2_4_sdr_device_id":   { "type": "number" },
+    "meteor_m2_4_freq_offset":     { "type": "number" },
+    "meteor_m2_4_enable_bias_tee": { "type": "boolean" },
+    "meteor_m2_4_gain":            { "type": "number" },
+    "meteor_m2_4_sun_min_elevation": {
+      "type": "number",
+      "minimum": -90,
+      "maximum": 90
+    },
+    "meteor_m2_4_schedule_sun_min_elevation": {
+      "type": "number",
+      "minimum": -90,
+      "maximum": 90
+    },
+    "meteor_m2_4_sat_min_elevation": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 90
+    },
     "noaa_memory_threshold":           { "type": "number" },
     "meteor_m2_memory_threshold":      { "type": "number" },
+    "use_device_string":               { "type": "boolean" },
     "meteor_m2_3_80k_interleaving":    { "type": "boolean" },
     "days_to_schedule_passes":         { "type": "number" },
     "delete_noaa_audio":               { "type": "boolean" },
@@ -120,11 +146,6 @@
     "meteor_create_mercator_projection":             { "type": "boolean" },
     "meteor_create_spreaded_images_without_overlay": { "type": "boolean" },
     "meteor_create_rain_probability_overlay":        { "type": "boolean" },
-    "satdump_image_scaling_factor": {
-      "type": "number",
-      "minimum": 0,
-      "maximum": 10
-    },
     "noaa_map_crosshair_enable":                     { "type": "boolean" },
     "meteor_map_crosshair_enable":                   { "type": "boolean" },
     "noaa_map_crosshair_color":                      { "type": "string" },
@@ -138,13 +159,14 @@
     "meteor_map_country_border_color":               { "type": "string" },
     "noaa_map_state_border_enable":                  { "type": "boolean" },
     "noaa_map_state_border_color":                   { "type": "string" },
+    "wxtoimg_map_offset":                            { "type": "number" },
     "noaa_thermal_temp_overlay":                     { "type": "boolean" },
     "noaa_thermal_temp_overlay_location": {
       "type": "string"
     },
     "lang_setting": {
       "type": "string",
-      "enum": [ "ar", "bg", "cn", "de", "en", "es", "fr", "lt", "nl", "pt", "sr", "ru", "it", "hu" ]
+      "enum": [ "ar", "bg", "cn", "de", "en", "es", "fr", "lt", "nl", "pt", "sr", "ru", "it", "hu", "gr", "kr", "ro" ]
     },
     "web_server_name": { "type": "string" },
     "enable_non_tls":  { "type": "boolean" },
@@ -159,7 +181,6 @@
       "minimum": 1,
       "maximum": 65534
     },
-    "cert_valid_days":        { "type": "number" },
     "lock_admin_page":        { "type": "boolean" },
     "admin_username":         { "type": "string" },
     "admin_password":         { "type": "string" },
@@ -180,18 +201,26 @@
       "type": "string",
       "required": "false"
     },
-    "enable_email_schedule_push": { "type": "boolean" },
+    "enable_email_schedule_push":             { "type": "boolean" },
+    "contribute_to_community_composites":     { "type": "boolean" },
+    "contribute_to_community_composites_url": { "type": "string" },
     "enable_discord_push":        { "type": "boolean" },
-    "discord_noaa_webhook_url":        { "type": "string" },
-    "discord_meteor_webhook_url":        { "type": "string" },
+    "discord_noaa_webhook_url":   { "type": "string" },
+    "discord_meteor_webhook_url": { "type": "string" },
     "enable_twitter_push":        { "type": "boolean" },
-    "enable_facebook_push":        { "type": "boolean" },
-    "enable_instagram_push":        { "type": "boolean" },
+    "enable_mastodon_push":       { "type": "boolean" },
+    "enable_facebook_push":       { "type": "boolean" },
+    "enable_instagram_push":      { "type": "boolean" },
     "enable_slack_push":          { "type": "boolean" },
     "slack_push_url":             { "type": "string" },
     "slack_push_to":              { "type": "string" },
     "slack_link":                 { "type": "string" },
-    "enable_matrix_push":         { "type": "boolean" }
+    "enable_matrix_push":         { "type": "boolean" },
+    "enable_pushover_push":       { "type": "boolean" },
+    "pushover_link_url":          { "type": "string" },
+    "pushover_apitoken":          { "type": "string" },
+    "pushover_user":              { "type": "string" },
+    "pushover_prio":              { "type": "number" }
   },
   "required": [
     "latitude",
@@ -202,7 +231,6 @@
     "test_sdr_device_id",
     "test_enable_bias_tee",
     "test_freq_offset",
-    "meteor_receiver",
     "noaa_15_schedule",
     "noaa_15_sdr_device_id",
     "noaa_15_freq_offset",
@@ -231,7 +259,19 @@
     "meteor_m2_3_gain",
     "meteor_m2_3_sun_min_elevation",
     "meteor_m2_3_sat_min_elevation",
+    "meteor_m2_4_schedule",
+    "meteor_m2_4_sdr_device_id",
+    "meteor_m2_4_freq_offset",
+    "meteor_m2_4_enable_bias_tee",
+    "meteor_m2_4_gain",
+    "meteor_m2_4_sun_min_elevation",
+    "meteor_m2_4_sat_min_elevation",
+    "noaa_memory_threshold",
     "meteor_m2_memory_threshold",
+    "use_device_string",
+    "receiver_type",
+    "noaa_decoder",
+    "meteor_decoder",
     "days_to_schedule_passes",
     "delete_noaa_audio",
     "delete_meteor_audio",
@@ -264,6 +304,7 @@
     "noaa_map_country_border_color",
     "noaa_map_state_border_enable",
     "noaa_map_state_border_color",
+    "wxtoimg_map_offset",
     "noaa_thermal_temp_overlay",
     "noaa_thermal_temp_overlay_location",
     "lang_setting",
@@ -272,7 +313,6 @@
     "web_port",
     "enable_tls",
     "web_tls_port",
-    "cert_valid_days",
     "lock_admin_page",
     "admin_username",
     "admin_password",
@@ -288,15 +328,23 @@
     "enable_email_push",
     "email_push_address",
     "enable_email_schedule_push",
+    "contribute_to_community_composites",
+    "contribute_to_community_composites_url",
     "enable_discord_push",
     "discord_noaa_webhook_url",
     "discord_meteor_webhook_url",
     "enable_twitter_push",
+    "enable_mastodon_push",
     "enable_facebook_push",
     "enable_instagram_push",
     "enable_matrix_push",
     "enable_slack_push",
     "slack_push_url",
     "slack_push_to",
-    "slack_link"]
+    "slack_link",
+    "enable_pushover_push",
+    "pushover_link_url",
+    "pushover_apitoken",
+    "pushover_user",
+    "pushover_prio"]
 }

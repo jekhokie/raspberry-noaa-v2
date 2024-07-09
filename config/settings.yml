@@ -8,7 +8,7 @@ altitude: 0.0
 
 #Website language settings
 #   lang_setting: see the 'webpanel/App/Lang' folder for available
-#                 languages (2-letter filename - e.g. ar, bg, de, en, es, nl, sr, ru, it, hu)
+#                 languages (2-letter filename - e.g. ar, bg, de, en, es, nl, sr, ru, it, hu, gr, lt, kr, ro)
 lang_setting: en
 
 # ntp configurations
@@ -17,13 +17,13 @@ lang_setting: en
 ntp_server: ''
 
 # receiver settings
-#   receiver_type - the receiver type which program uses ('rtlsdr', 'airspy_mini', 'airspy_r2' or 'hackrf' or 'sdrplay')
-#   noaa_receiver  - which receiver method to use (either 'rtl_fm' or 'gnuradio' or 'satdump_record' or 'satdump_live')
-#   meteor_receiver - which receiver method to use (either 'rtl_fm' or 'gnuradio' or 'satdump_record' or 'satdump_live')
+#   receiver_type - the receiver type which program uses ('rtlsdr', 'airspy_mini', 'airspy_r2', 'airspy_hf_plus_discovery', 'hackrf', 'sdrplay' or 'mirisdr')
+#   noaa_decoder - which receiver method to use (either 'wxtoimg' or 'satdump')
+#   meteor_decoder - which receiver method to use (either 'meteordemod' or 'satdump')
 receiver_type: 'rtlsdr'
 
-noaa_receiver: 'gnuradio'
-meteor_receiver: 'gnuradio'
+noaa_decoder: 'wxtoimg'
+meteor_decoder: 'meteordemod'
 
 # test settings when running test scripts
 #   test_gain - gain to use for scanner test scripts
@@ -44,12 +44,16 @@ test_freq_offset: 0
 #   <satellite_name>_sun_min_elevation - threshold for sun elevation for specific satellite captures
 #   <satellite_name>_sat_min_elevation - threshold for sat elevation for specific satellite captures
 #   <satellite_name>_memory_threshold - for METEOR satellite, minimum free memory (MB) required to store pass in RAM
+#   select_best_overlapping_passes - whether to select the best overlapping pass when multiple passes are available, or let user manually delete the passes
+#   select_meteor_pass_over_noaa - whether to select Meteor passes over NOAA when both are occuring at the same time
+#   use_device_string - whether to use the device string scheduling passes when you have multiple SDR devices connected of the same type (most users should leave it to "false")
 
-noaa_memory_threshold: 40
-meteor_m2_memory_threshold: 600
+noaa_memory_threshold: 50
+meteor_m2_memory_threshold: 10
 
 select_best_overlapping_passes: true
 select_meteor_pass_over_noaa: true
+use_device_string: false
 
 noaa_15_schedule: true
 noaa_15_sdr_device_id: 0
@@ -85,6 +89,16 @@ meteor_m2_3_sun_min_elevation: 6
 meteor_m2_3_sat_min_elevation: 30
 meteor_m2_3_80k_interleaving: false
 
+meteor_m2_4_schedule: true
+meteor_m2_4_sdr_device_id: 0
+meteor_m2_4_freq_offset: 0
+meteor_m2_4_enable_bias_tee: false
+meteor_m2_4_gain: 29.7
+meteor_m2_4_schedule_sun_min_elevation: -6
+meteor_m2_4_sun_min_elevation: 6
+meteor_m2_4_sat_min_elevation: 30
+meteor_m2_4_80k_interleaving: false
+
 # how many days to schedule passes - note this MUST be an even integer,
 # and the current day counts as "1" - passes will be scheduled until midnight
 # of the `days_to_schedule_passes` final day
@@ -103,8 +117,8 @@ delete_older_than_n: 30
 
 # whether audio files should be deleted after images are created
 # if you choose to keep files, they will be automatically deleted after set number of days in delete_files_older_than_days (default is 3 days)
-delete_noaa_audio: true
-delete_meteor_audio: true
+delete_noaa_audio: false
+delete_meteor_audio: false
 delete_files_older_than_days: 3
 
 # processing settings
@@ -172,7 +186,7 @@ ground_station_location: ''
 antenna_information: ''
 show_sun_elevation: true
 show_pass_direction: true
-produce_spectrogram: true
+produce_spectrogram: false    #NOTE: the spectrogram option here is available for NOAA only, and the spectrogrma produced is from demodulated audio, not IQ baseband file
 
 noaa_crop_telemetry: false
 produce_noaa_pristine_image: false
@@ -192,10 +206,10 @@ noaa_map_country_border_enable: true
 noaa_map_country_border_color: "0xffff00"
 noaa_map_state_border_enable: true
 noaa_map_state_border_color: "0xffff00"
+wxtoimg_map_offset: 10.5                    #Change this value only if you see map offsets from the ground on WXtoImg NOAA images
 
 flip_meteor_image: true
 meteor_jpg_image_quality: 90
-satdump_image_scaling_factor: 1
 meteor_draw_map_overlay: true
 meteor_draw_cities: true
 meteor_map_crosshair_enable: true
@@ -214,8 +228,6 @@ meteor_create_spreaded_images_without_overlay: true
 #   web_port - port to run the web server clear-text (non-encrypted) endpoint on
 #   enable_tls - whether to enable the TLS-encrypted web listener (default port 443)
 #   web_tls_port - port to run the TLS listener on
-#   cert_valid_days - number of days the TLS certificates should be valid for - note that
-#                     you will need to re-install the certificates once this timeline expires
 #   lock_admin_page - whether to require username/password when attempting to access the admin page
 #                     of the webpanel - WARNING: DO NOT SET THIS TO TRUE UNLESS YOU ONLY HAVE A TLS
 #                     ENABLED SITE - SETTING TO TRUE AND RUNNING A CLEARTEXT SITE IS ALMOST CERTAINLY
@@ -232,7 +244,6 @@ enable_non_tls: true
 web_port: 80
 enable_tls: false
 web_tls_port: 443
-cert_valid_days: 365
 lock_admin_page: true
 admin_username: 'admin'
 admin_password: 'admin'
@@ -247,6 +258,12 @@ log_level: DEBUG
 # by default disabled on "extra-small" devices such as phones due to
 # the processing and space requirements
 enable_satvis: true
+
+
+# whether to enable the "Coronal mass ejection activity" display
+# in the passes view - note that the GIFs can be ~70 MiB and not cached
+# thus they slow down the page & can lead to quite big data usage
+enable_coronal: false
 
 # whether to enable the image video in the passes view - note that this
 # is by default disabled on "extra-small" devices such as phones due
@@ -273,13 +290,27 @@ disable_at_mail: false
 #     * see docs/twitter_push.md for instructions
 #   enable_matrix_push - whether to push images to a Matrix room
 #     * see docs/matrix_push.md for instructions
+
+# Whether you want to contribute to creation of community created Meteor and NOAA composites gathered from RN2 stations from all around the world
+# We do not collect any personal data
+# Thank you very much if you choose to contribute :)
+
+contribute_to_community_composites: false
+contribute_to_community_composites_url: 'https://voxgalactica.com/upload'
+
 enable_email_push: false
 email_push_address: test@ifttt.com
 enable_email_schedule_push: false
 enable_discord_push: true
 discord_noaa_webhook_url: 'https://discord.com/api/webhooks/1135901731918717068/ZELG3Sv1fRxQ8KgoYtMMOBYM07az0yIkzeLdad-8WxxhV-F8LhPQdZFFon044awMvLsD'
 discord_meteor_webhook_url: 'https://discord.com/api/webhooks/1135901731918717068/ZELG3Sv1fRxQ8KgoYtMMOBYM07az0yIkzeLdad-8WxxhV-F8LhPQdZFFon044awMvLsD'
+enable_pushover_push: false
+pushover_link_url: 'https://<url-to-webpanel>/captures/listImages'
+pushover_apitoken: ''
+pushover_user: ''
+pushover_prio: 0
 enable_twitter_push: false
+enable_mastodon_push: false
 enable_facebook_push: false
 enable_instagram_push: false
 enable_slack_push: false

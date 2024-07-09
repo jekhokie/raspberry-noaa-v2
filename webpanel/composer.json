@@ -1,6 +1,6 @@
 {
   "require": {
-      "twig/twig": "~3.0",
+      "twig/twig": "~3.9",
       "ext-mbstring": "*",
       "devknown/twig-import-function": "^1.0"
   },
