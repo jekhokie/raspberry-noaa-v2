@@ -259,6 +259,12 @@ log_level: DEBUG
 # the processing and space requirements
 enable_satvis: true
 
+
+# whether to enable the "Coronal mass ejection activity" display
+# in the passes view - note that the GIFs can be ~70 MiB and not cached
+# thus they slow down the page & can lead to quite big data usage
+enable_coronal: false
+
 # whether to enable the image video in the passes view - note that this
 # is by default disabled on "extra-small" devices such as phones due
 # to the processing and space requirements
