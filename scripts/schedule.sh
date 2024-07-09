@@ -21,7 +21,7 @@
 . "$HOME/.noaa-v2.conf"
 . "$NOAA_HOME/scripts/common.sh"
 
-unset `env | egrep "WAYLAND|SESSION|TERM|GIO_|DISPLAY|GPG|QT_|SAL|XDG_" | egrep -o '^[^=]+'`
+unset `env | egrep "WAYLAND|WAYFIRE|SESSION|TERM|GIO_|DISPLAY|GPG|QT_|SAL|XDG_" | egrep -o '^[^=]+'`
 
 # TLE data files
 WEATHER_TXT="${NOAA_HOME}/tmp/weather.txt"
