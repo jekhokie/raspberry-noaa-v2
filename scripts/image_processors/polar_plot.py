@@ -86,7 +86,7 @@ def constructDirectionPlot(pass_start_ms, azimuth_pos, elevation_pos, sat, sat_m
   # TODO: calculate and plot AOS/LOS and location and value of max elevation
   p.plot(aos_az, aos_el, 'g', marker="P", markersize=12, label="AOS")
   p.plot(los_az, los_el, 'r', marker="X", markersize=12, label="LOS")
-  p.plot(az_at_max_elev, max_elev, 'o', marker="*", markersize=12, label="Max El")
+  p.plot(az_at_max_elev, max_elev, 'orange', marker="*", markersize=12, label="Max El")
   p.text(az_at_max_elev, max_elev-7, '{:.0f}°'.format(max_elev), fontweight="bold")
 
   p.legend(loc="lower left", bbox_to_anchor=(-0.38, -0.14))
@@ -124,7 +124,7 @@ def constructAzElPlot(pass_start_ms, azimuth_pos, elevation_pos, sat, direction,
 
   p.plot(start_az, start_el, 'g', marker="P", markersize=12)
   p.plot(end_az, end_el, 'r', marker="X", markersize=12)
-  p.plot(az_at_max_elev, max_elev, 'o', marker="*", markersize=12)
+  p.plot(az_at_max_elev, max_elev, 'orange', marker="*", markersize=12)
   p.text(az_at_max_elev, max_elev-7, '{:.0f}°'.format(max_elev), fontweight="bold")
 
   # save the file
