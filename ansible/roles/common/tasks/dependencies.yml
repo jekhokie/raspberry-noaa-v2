@@ -1,5 +1,5 @@
 ---
-- name: Installing general dependencies
+- name: Installing general dependencies (this task can take a while when installing for the first time, your Raspberry Pi / PC isn't frozen)
   become: yes
   apt:
     update_cache: yes
