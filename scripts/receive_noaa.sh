@@ -265,7 +265,7 @@ if [ "$NOAA_DECODER" == "wxtoimg" ]; then
     fi
 
     if [ -f "${IMAGE_FILE_BASE}-$enhancement.jpg" ]; then
-      ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_FILE_BASE}-$enhancement.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_FILE_BASE}-$enhancement.jpg" $NOAA_IMAGE_QUALITY 2>&1 | grep -Ev "invalid pointer|Aborted" >> $NOAA_LOG
       ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_THUMB_BASE}-$enhancement.jpg" >> $NOAA_LOG 2>&1
       push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-$enhancement.jpg"
     fi
