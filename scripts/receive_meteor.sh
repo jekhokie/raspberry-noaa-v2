@@ -110,7 +110,7 @@ else
   gain_option="--general_gain"
 fi
 
-if [[ "$use_device_string" == "true" ]]; then
+if [[ "$USE_DEVICE_STRING" == "true" ]]; then
   sdr_id_option="--source_id"
 else
   sdr_id_option=""
