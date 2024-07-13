@@ -117,8 +117,8 @@ delete_older_than_n: 30
 
 # whether audio files should be deleted after images are created
 # if you choose to keep files, they will be automatically deleted after set number of days in delete_files_older_than_days (default is 3 days)
-delete_noaa_audio: true
-delete_meteor_audio: true
+delete_noaa_audio: false
+delete_meteor_audio: false
 delete_files_older_than_days: 3
 
 # processing settings
@@ -258,6 +258,12 @@ log_level: DEBUG
 # by default disabled on "extra-small" devices such as phones due to
 # the processing and space requirements
 enable_satvis: true
+
+
+# whether to enable the "Coronal mass ejection activity" display
+# in the passes view - note that the GIFs can be ~70 MiB and not cached
+# thus they slow down the page & can lead to quite big data usage
+enable_coronal: false
 
 # whether to enable the image video in the passes view - note that this
 # is by default disabled on "extra-small" devices such as phones due
