@@ -5,7 +5,7 @@
   gather_facts: no
   pre_tasks:
     - name: get os release
-      shell: lsb_release -c --short
+      shell: grep -E "^deb http://raspbian.raspberry.org/raspbian|^deb http://raspbian.raspberrypi.org/raspbian|^deb http://deb.debian.org/debian|^deb https://deb.debian.org/debian" /etc/apt/sources.list /etc/apt/sources.list.d/official-package-repositories.list 2> /dev/null | head -n 1 | awk '{print $3}'
       register: raspbian_version
       check_mode: no
       changed_when: no
