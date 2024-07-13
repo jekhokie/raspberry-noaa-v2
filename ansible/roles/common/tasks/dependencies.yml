@@ -59,13 +59,20 @@
       - gfortran
       - libopencv-dev
       - python3-opencv
+
+- name: Install required wxtoimg 32-bit dependencies (arm64)
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
       - libc6:armhf
       - libstdc++6:armhf
       - libasound2:armhf
       - libx11-6:armhf
       - libxft-dev:armhf
       - libxft2:armhf
-
+  when: system_architecture == 'arm64'
 
 #This was included because, for a period of time, SatDump didn't have dependencies included in the .deb file
 
