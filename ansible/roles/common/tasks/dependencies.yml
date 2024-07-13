@@ -74,20 +74,6 @@
       - libxft2:armhf
   when: system_architecture == 'arm64'
 
-- name: Install required wxtoimg 32-bit dependencies (amd64)
-  become: yes
-  apt:
-    update_cache: yes
-    state: present
-    name:
-      - libc6:amd64
-      - libstdc++6:amd64
-      - libasound2:amd64
-      - libx11-6:amd64
-      - libxft-dev:amd64
-      - libxft2:amd64
-  when: system_architecture == 'amd64'
-
 #This was included because, for a period of time, SatDump didn't have dependencies included in the .deb file
 
 #- name: Installing SatDump dependencies part 1
