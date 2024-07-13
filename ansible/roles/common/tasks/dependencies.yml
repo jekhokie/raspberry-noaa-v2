@@ -1,5 +1,5 @@
 ---
-- name: Installing general dependencies
+- name: Installing general dependencies (this task can take a while when installing for the first time, your Raspberry Pi / PC isn't frozen)
   become: yes
   apt:
     update_cache: yes
@@ -59,13 +59,34 @@
       - gfortran
       - libopencv-dev
       - python3-opencv
+
+- name: Install required wxtoimg 32-bit dependencies (arm64)
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
       - libc6:armhf
       - libstdc++6:armhf
       - libasound2:armhf
       - libx11-6:armhf
       - libxft-dev:armhf
       - libxft2:armhf
+  when: system_architecture == 'arm64'
 
+- name: Install required wxtoimg 32-bit dependencies (amd64)
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - libc6:amd64
+      - libstdc++6:amd64
+      - libasound2:amd64
+      - libx11-6:amd64
+      - libxft-dev:amd64
+      - libxft2:amd64
+  when: system_architecture == 'amd64'
 
 #This was included because, for a period of time, SatDump didn't have dependencies included in the .deb file
 
@@ -260,7 +281,7 @@
   when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
 
 - name: Make MeteorDemod
-  command: make -j4
+  command: make -j3
   args:
     chdir: /home/{{ target_user }}/MeteorDemod/build
   when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
