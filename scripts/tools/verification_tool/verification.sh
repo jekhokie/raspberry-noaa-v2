@@ -58,6 +58,7 @@ PERMISSIONS_OTHER_LIST=/home/$USER/raspberry-noaa-v2/scripts/tools/verification_
 PACKAGE_LIST=/home/$USER/raspberry-noaa-v2/scripts/tools/verification_tool/config/package.list
 PACKAGE_ARM64_LIST=/home/$USER/raspberry-noaa-v2/scripts/tools/verification_tool/config/package_arm64.list
 TEST_FILES=$HOME/raspberry-noaa-v2/scripts/tools/verification_tool/test_files
+mkdir -p -m 755 ${TEST_FILES}/tmp
 declare -A levels=([PASS]=1 [FAIL]=2 [INFO]=3)
 log_level=${LOG_LEVEL}
 FAILURES=0
