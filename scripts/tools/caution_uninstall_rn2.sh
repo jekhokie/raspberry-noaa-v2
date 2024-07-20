@@ -72,6 +72,8 @@ remove_packages() {
   loggit "INFO" "------------------------------"
   loggit "INFO" "Removing packages"
   loggit "INFO" "------------------------------"
+  
+  sudo systemctl stop nginx
   for pkg in `echo ${PACKAGES}`;
   do
   
