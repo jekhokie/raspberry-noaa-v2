@@ -219,7 +219,7 @@ The verification tool can be used to help identify RN2 installation/configuratio
 
 Execute the verification script by passing the required argument [ quick | full ]
 
-  `$HOME/raspberry-noaa-v2/scripts/tools/verification.sh`
+  `$HOME/raspberry-noaa-v2/scripts/tools/verification.sh quick`
 
   Argument required:  ./verification.sh quick    or    ./verification.sh full
                         (~ 1 minute)                       (~ 5 minutes)
