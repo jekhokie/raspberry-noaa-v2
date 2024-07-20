@@ -113,7 +113,7 @@ case "$RECEIVER_TYPE" in
          receiver="mirisdr"
          ;;
      *)
-         echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE"
+         log "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE" "INFO"
          exit 1
          ;;
 esac
@@ -124,7 +124,7 @@ else
   gain_option="--general_gain"
 fi
 
-if [[ "$use_device_string" == "true" ]]; then
+if [[ "$USE_DEVICE_STRING" == "true" ]]; then
   sdr_id_option="--source_id"
 else
   sdr_id_option=""

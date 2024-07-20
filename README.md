@@ -48,7 +48,7 @@ Here's a quick start - if you have questions, continue reading the rest of this 
 reach out by submitting an issue:
 
 ```bash
-# update os localisation settings like timezone, locale and WiFi country
+# update os localisation settings like timezone, locale and WiFi country, and expand the filesystem
 sudo raspi-config
 
 # install git
