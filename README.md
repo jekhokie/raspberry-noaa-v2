@@ -215,7 +215,7 @@ output file in `/var/log/raspberry-noaa-v2/output.log` to investigate potential 
 
 **Introduction of verification tool**
 
-The verification tool can be used to help identify RN2 installation/configuration issues which may potentially prevent proper functioning f capture/decode/processing of APT telemetry data.
+The verification tool can be used to help identify RN2 installation/configuration issues which may potentially prevent proper functioning of capture/decode/processing of APT telemetry data.
 
 Execute the verification script by passing the required argument [ quick | full ]
 
@@ -224,7 +224,7 @@ Execute the verification script by passing the required argument [ quick | full 
   Argument required:  ./verification.sh quick    or    ./verification.sh full
                         (~ 1 minute)                       (~ 5 minutes)
 
-  # Dryrun of binaries includes executing :
+   Dryrun of binaries includes executing :
 
     nxing web page returned 200 OK status to confirm Web Portal is up.
     satdump live capture for 1 second to ensure it runs without error.
@@ -232,7 +232,7 @@ Execute the verification script by passing the required argument [ quick | full 
     wxtoimg generates MCIR enhanced image which can be founnd     :  $HOME/raspberry-noaa-v2/scripts/tools/verification_tool/test_files/wxtoimg-mcir-output.jpg
     meteordemod -h is executed to ensure it runs without error.
 
-  # When FULL mode is choosen meterdemod fully decodes a staged cadu file :
+   When FULL mode is choosen meterdemod fully decodes a staged cadu file :
 
     meteordemod generates a full set of images which can be found :  $HOME/raspberry-noaa-v2/scripts/tools/verification_tool/test_files/tmp
 
