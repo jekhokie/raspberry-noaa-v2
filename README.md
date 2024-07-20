@@ -212,6 +212,30 @@ If you're running into issues where you're not seeing imagery after passes compl
 out the [troubleshooting](docs/troubleshooting.md) document to try and narrow down the problem. In addition, you can inspect the log
 output file in `/var/log/raspberry-noaa-v2/output.log` to investigate potential errors or issues during capture events.
 
+
+**Introduction of verification tool**
+
+The verification tool can be used to help identify RN2 installation/configuration issues which may potentially prevent proper functioning f capture/decode/processing of APT telemetry data.
+
+Execute the verification script by passing the required argument [ quick | full ]
+
+  `$HOME/raspberry-noaa-v2/scripts/tools/verification.sh`
+
+  Argument required:  ./verification.sh quick    or    ./verification.sh full
+                        (~ 1 minute)                       (~ 5 minutes)
+
+  # Dryrun of binaries includes executing :
+
+    nxing web page returned 200 OK status to confirm Web Portal is up.
+    satdump live capture for 1 second to ensure it runs without error.
+    wxmap generates an overlay map image which can be found       : $HOME/raspberry-noaa-v2/scripts/tools/verification_tool/test_files/wxtoimg-map-output.png
+    wxtoimg generates MCIR enhanced image which can be founnd     :  $HOME/raspberry-noaa-v2/scripts/tools/verification_tool/test_files/wxtoimg-mcir-output.jpg
+    meteordemod -h is executed to ensure it runs without error.
+
+  # When FULL mode is choosen meterdemod fully decodes a staged cadu file :
+
+    meteordemod generates a full set of images which can be found :  $HOME/raspberry-noaa-v2/scripts/tools/verification_tool/test_files/tmp
+
 Still having problems? You can email MihajloPi at mihajlo.raspberrypi@gmail.com and be sure to send him the log so he can debug the errors!
 
 ## Additional Feature Information
