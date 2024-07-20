@@ -1,0 +1,17 @@
+directory 755 $USER $USER /home/$USER
+file 644 root root /usr/share/satdump/satdump_cfg.json
+file 644 root root /etc/logrotate.d/raspberry-noaa-v2
+file 644 root root /etc/ntp.conf
+file 644 root root /etc/modprobe.d/rtlsdr.conf
+file 644 root root /etc/modprobe.d/airspy-blacklist.conf
+file 644 root root /etc/modprobe.d/blacklist-msi.conf
+file 644 root root /etc/udev/rules.d/rtl-sdr.rules
+file 644 root root /etc/udev/rules.d/52-airspy.rules
+file 755 root root /usr/local/bin/rtl_sdr
+file 755 root root /usr/local/bin/meteordemod
+directory 755 $USER www-data /srv
+directory 775 $USER www-data /srv/images
+directory 775 $USER www-data /srv/images/thumb
+directory 775 $USER $USER /srv/audio
+directory 775 $USER $USER /srv/audio/meteor
+directory 775 $USER $USER /srv/audio/noaa

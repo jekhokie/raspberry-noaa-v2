@@ -1,0 +1,6 @@
+libc6:armhf
+libstdc++6:armhf
+libasound2:armhf
+libx11-6:armhf
+libxft-dev:armhf
+libxft2:armhf
