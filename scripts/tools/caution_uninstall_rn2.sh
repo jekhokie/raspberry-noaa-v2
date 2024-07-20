@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 #
 # Purpose: The purpose of this uninstall script is to remove the RN2 environment 
 #          and key packages like satdump, meteordemod, , predict, wxtoimg, and nginx. As well
@@ -11,8 +11,20 @@
 start=$(date +%s)
 
 UNINSTALL_LOG=/tmp/uninstall.log
-PACKAGES="satdump wxtoimg nginx predict"
-PATHS="/srv/audio /srv/videos /srv/images $HOME/.config/composer $HOME/.config/gmic $HOME/.config/matplotlib $HOME/.config/meteordemod $HOME/.config/composer $HOME/.config/satdump $HOME/raspberry-noaa-v2 $HOME/.predict $HOME/.noaa-v2.conf $HOME/.wxtoimglic $HOME/.wxtoimgrc /usr/local/bin/rtl_* /var/log/raspberry-noaa-v2" 
+PACKAGES_BULLSEYE="satdump wxtoimg nginx predict php7.4-intl php8.0-sqlite3 php8.0-mbstring php8.0-fpm"
+PACKAGES_BOOKWORM="satdump wxtoimg nginx predict php8.2-intl php8.2-sqlite3 php8.2-mbstring php8.0-fpm"
+PATHS="/srv/audio /srv/videos /srv/images $HOME/.config/composer $HOME/.config/gmic $HOME/.config/matplotlib $HOME/.config/meteordemod $HOME/.config/composer $HOME/.config/satdump $HOME/raspberry-noaa-v2 $HOME/.predict $HOME/.noaa-v2.conf $HOME/.wxtoimglic $HOME/.wxtoimgrc /usr/local/bin/rtl_* /var/log/raspberry-noaa-v2 /etc/sudoers.d/020_www-data-atrm-nopasswd /var/www/wx-new /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default"
+SERVICES="phpsessionclean.service phpsessionclean.timer nginx.service"
+OS=$(grep -E "^deb http://raspbian.raspberry.org/raspbian|^deb http://raspbian.raspberrypi.org/raspbian|^deb http://deb.debian.org/debian|^deb https://deb.debian.org/debian" /etc/apt/sources.list /etc/apt/sources.list.d/official-package-repositories.list 2> /dev/null | head -n 1 | awk '{print $3}')
+
+if [[ ${OS} == "bookworm" ]]; then
+  PACKAGES=${PACKAGES_BOOKWORM}
+elif [[ ${OS} == "bullseye" ]]; then
+  PACKAGES=${PACKAGES_BULLSEYE}
+else
+  echo "Aborting, unsupported Operating System ${OS}"
+  exit 1
+fi 
 
 secs_to_human() {
     if [[ -z ${1} || ${1} -lt 60 ]] ;then
@@ -65,6 +77,22 @@ package_statuses() {
   fi
 }
 
+remove_services() {
+
+  loggit "INFO" ""
+  loggit "INFO" "------------------------------"
+  loggit "INFO" "Remove RN2 Services"
+  loggit "INFO" "------------------------------"
+  for svc in `echo ${SERVICES}`;
+  do
+ 
+    sudo sudo systemctl stop ${svc}
+    sudo sudo systemctl disable ${svc}
+     
+  done
+
+}
+
 # Remove software packages
 remove_packages() {
 
@@ -73,8 +101,6 @@ remove_packages() {
   loggit "INFO" "Removing packages"
   loggit "INFO" "------------------------------"
   
-  sudo systemctl stop nginx
-  sudo systemctl stop php8.0-fpm.service
   for pkg in `echo ${PACKAGES}`;
   do
   
@@ -119,6 +145,7 @@ remove_paths() {
 }
 
 package_statuses
+remove_services
 remove_packages
 remove_paths
 
