@@ -22,6 +22,7 @@
 . "$NOAA_HOME/scripts/common.sh"
 
 unset `env | egrep "WAYLAND|WAYFIRE|SESSION|TERM|GIO_|DISPLAY|GPG|QT_|SAL|XDG_" | egrep -o '^[^=]+'`
+export XDG_RUNTIME_DIR=/tmp/runtime-${USER};mkdir -p -m 700 $XDG_RUNTIME_DIR
 
 # TLE data files
 WEATHER_TXT="${NOAA_HOME}/tmp/weather.txt"
