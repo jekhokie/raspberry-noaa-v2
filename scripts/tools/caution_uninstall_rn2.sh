@@ -74,7 +74,7 @@ remove_packages() {
   loggit "INFO" "------------------------------"
   
   sudo systemctl stop nginx
-  sudo systemctl stop php-fpm
+  sudo systemctl stop php8.0-fpm.service
   for pkg in `echo ${PACKAGES}`;
   do
   
