@@ -166,6 +166,8 @@ else
   loggit "FAIL" "RN2 cronjobs were NOT removed"
 fi
 
+# Let's make sure to clean up the library cache so any dangling items are cleared
+sudo ldconfig
 
 loggit "INFO" ""
 loggit "INFO" "Log of results --> ${UNINSTALL_LOG}"
