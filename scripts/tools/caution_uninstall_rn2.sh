@@ -65,7 +65,7 @@ package_statuses() {
     if [[ ${PkgInstalled} -eq 1 ]]; then
       loggit "INFO" "${package} is installed"
     else
-      loggit "INFO" "${package} is NOT installed"
+      loggit "INFO" "${package} is no longer installed"
     fi
  
   done
@@ -85,7 +85,8 @@ remove_services() {
   loggit "INFO" "------------------------------"
   for svc in `echo ${SERVICES}`;
   do
- 
+   
+    loggit "INFO" "Stopping and removing ${svc} service"
     sudo sudo systemctl stop ${svc}
     sudo sudo systemctl disable ${svc}
      
@@ -111,7 +112,7 @@ remove_packages() {
     if [[ ${PkgInstalled} -eq 1 ]]; then
       loggit "INFO" "${pkg} is installed"
     else
-      loggit "INFO" "${pkg} is NOT installed"
+      loggit "INFO" "${pkg} is no longer installed"
     fi
   
   done
@@ -120,7 +121,7 @@ remove_packages() {
   if [[ -f /usr/local/bin/meteordemod ]]; then
     loggit "INFO" "meteordemod is installed"
   else
-    loggit "INFO" "meteordemod is NOT installed"
+    loggit "INFO" "meteordemod is no longer installed"
   fi
 }
 
@@ -159,10 +160,10 @@ crontab < $HOME/crontab.stripped
 CronQty=$(crontab -l  | grep -Ev "schedule.sh|scratch_perms.sh|Ansible" | wc -l)
 
 if [[ ${CronQty} -eq 0 ]]; then
-  loggit "PASS" "RN2 cronjobs are removed"
+  loggit "PASS" "RN2 cronjobs no longer exist"
   \rm -rf $HOME/crontab.stripped
 else
-  loggit "FAIL" "RN2 cronjobs are NOT removed"
+  loggit "FAIL" "RN2 cronjobs were NOT removed"
 fi
 
 
