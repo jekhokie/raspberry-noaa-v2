@@ -36,6 +36,30 @@
     group: "{{ target_user }}"
     mode: 0755
 
+- name: Set permissions on verification.sh
+  file:
+    path: "/home/{{ target_user }}/raspberry-noaa-v2/scripts/tools/verification_tool/verification.sh"
+    state: file
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0755
+
+- name: Set permissions on build_permissions_list.sh
+  file:
+    path: "/home/{{ target_user }}/raspberry-noaa-v2/scripts/tools/verification_tool/config/build_permissions_list.sh"
+    state: file
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0755
+
+- name: Set permissions on caution_uninstall_rn2.sh
+  file:
+    path: "/home/{{ target_user }}/raspberry-noaa-v2/scripts/tools/caution_uninstall_rn2.sh"
+    state: file
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0755
+
 - name: Set kernel to kernel8.img
   become: yes
   command: "/home/{{ target_user }}/raspberry-noaa-v2/scripts/tools/set_os_config_kernel8.sh"
