@@ -81,6 +81,7 @@ RN2_UTILS="${HOME}/.rn2_utils"
 # Define log file for backup/restore activity
 LOG="${RN2_UTILS}/rn2_upgrade.log"
 
+{
 echo "#####################################################"
 echo "# Perform RN2 Key file backup/stage"
 echo "#####################################################"
@@ -119,3 +120,4 @@ else
 fi
 
 secs_to_human "$(($(date +%s) - ${start}))"
+} | tee -a ${LOG}
