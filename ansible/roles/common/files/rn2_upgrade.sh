@@ -82,6 +82,19 @@ RN2_UTILS="${HOME}/.rn2_utils"
 LOG="${RN2_UTILS}/rn2_upgrade.log"
 
 {
+
+echo "##########################################################################"
+echo "# Testing git clone arguments passed before destructive tasks are performed"
+echo "##########################################################################"
+cd /tmp
+echo "git clone --depth 1 ${REPO}  ${BARG}  ${BRANCH}"
+git clone --depth 1 ${REPO} ${BARG} ${BRANCH}
+
+if [[ $? != 0 ]]; then
+  echo "FAILED to git clone repo/branch passed, please check and try again"
+  exit 1
+fi
+
 echo "#####################################################"
 echo "# Perform RN2 Key file backup/stage"
 echo "#####################################################"
@@ -96,8 +109,7 @@ echo "#####################################################"
 echo "# git clone new repository"
 echo "#####################################################"
 cd ${HOME}
-echo "git clone --depth 1 ${REPO}  ${BARG}  ${BRANCH}"
-git clone --depth 1 ${REPO} ${BARG} ${BRANCH}
+mv /tmp/raspberry-noaa-v2 $HOME
 
 echo "#####################################################"
 echo "# Restore/UnStage RN2 key directories"
