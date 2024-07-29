@@ -145,6 +145,10 @@ remove_paths() {
   done  
 }
 
+# kill any RN2 AT processes as part of clean up, otherwise danglers 
+# may have the RTL-SDR open and verification dryrun test will fail
+
+ps aux | grep -E "receive_|satdump" | grep -v grep | awk -F" " '{print $2}' | xargs kill -9 2>/dev/null
 package_statuses
 remove_services
 remove_packages
