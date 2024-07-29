@@ -230,7 +230,8 @@ restore() {
         # Ensure previously installed environment has correct ownership/permissions
         sudo chown ${USER}:${USER} /srv/audio
         sudo chown ${USER}:www-data /srv /srv/images /srv/images/thumb /srv/videos
-        sudo chmod 755 /srv /srv/audio /srv/images /srv/images/thumb /srv/videos
+        sudo chmod 755 /srv
+        sudo chmod 775 /srv/audio /srv/images /srv/images/thumb /srv/videos
 
       else
         loggit "FAIL" "Required space for restore is ${RequiredSpace} MB and Free space is only ${FreeSpace} MB, aborting..."
@@ -252,7 +253,8 @@ restore() {
       # Ensure previously installed environment has correct ownership/permissions
       sudo chown ${USER}:${USER} /srv/audio
       sudo chown ${USER}:www-data /srv /srv/images /srv/images/thumb /srv/videos
-      sudo chmod 755 /srv /srv/audio /srv/images /srv/images/thumb /srv/videos
+      sudo chmod 755 /srv
+      sudo chmod 775 /srv/audio /srv/images /srv/images/thumb /srv/videos
     else
       loggit "FAIL" "/srv_staged does not exist, aborting..."
       exit 1
