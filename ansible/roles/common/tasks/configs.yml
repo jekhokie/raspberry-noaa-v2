@@ -129,4 +129,36 @@
     owner: "{{ target_user }}"
     group: "{{ target_user }}"
     mode: 0600
+
+- name: rn2_utils directory
+  file:
+    path: /home/{{ target_user }}/.rn2_utils
+    state: directory
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0755
+
+- name: rn2_backup_restore script
+  copy:
+    src: rn2_backup_restore.sh
+    dest: /home/{{ target_user }}/.rn2_utils
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0755
+
+- name: rn2_uninstall script
+  copy:
+    src: rn2_uninstall.sh
+    dest: /home/{{ target_user }}/.rn2_utils
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0755
+
+- name: rn2_upgrade script
+  copy:
+    src: rn2_upgrade.sh
+    dest: /home/{{ target_user }}/.rn2_utils
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0755
 ...
