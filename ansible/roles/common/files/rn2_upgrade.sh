@@ -106,10 +106,17 @@ echo "#####################################################"
 ${RN2_UTILS}/rn2_uninstall.sh
 
 echo "#####################################################"
-echo "# git clone new repository"
+echo "# Swap in git cloned repository into users home"
 echo "#####################################################"
 cd ${HOME}
-mv /tmp/raspberry-noaa-v2 $HOME
+mv /tmp/raspberry-noaa-v2 ${HOME}
+
+if [[ $? == 0 ]]; then
+  echo "Succcessfully moved RN2 tree from /tmp to home directory"
+else
+  echo "FAILED to move RN2 tree from /tmp to home directory, aborting..."
+  exit 1
+fi
 
 echo "#####################################################"
 echo "# Restore/UnStage RN2 key directories"
