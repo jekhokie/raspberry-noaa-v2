@@ -129,11 +129,16 @@ echo "#####################################################"
 cd ${HOME}/raspberry-noaa-v2
 ./install_and_upgrade.sh
 
-echo "#####################################################"
-echo "# Execute Verification Tool"
-echo "#####################################################"
+# Determine if verification tool was in the repo cloned 
 if [[ -f ${HOME}/raspberry-noaa-v2/scripts/tools/verification_tool/verification.sh ]]; then
-  ${HOME}/raspberry-noaa-v2/scripts/tools/verification_tool/verification.sh quick
+  # Confirm if install_and_upgrade.sh script code already executed it or not
+  vFound=$(cat ${HOME}/raspberry-noaa-v2/install_and_upgrade.sh | grep verification.sh | wc -l)
+  if [[ ${vFOUND} -eq 0 ]]; then
+    echo "#####################################################"
+    echo "# Execute Verification Tool"
+    echo "#####################################################"
+    ${HOME}/raspberry-noaa-v2/scripts/tools/verification_tool/verification.sh quick
+  fi
 else
   echo "The installed GitHub REPO has not been updated with the Verification Tool, skipping..."
 fi
