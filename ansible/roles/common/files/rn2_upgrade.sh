@@ -133,7 +133,7 @@ cd ${HOME}/raspberry-noaa-v2
 if [[ -f ${HOME}/raspberry-noaa-v2/scripts/tools/verification_tool/verification.sh ]]; then
   # Confirm if install_and_upgrade.sh script code already executed it or not
   vFound=$(cat ${HOME}/raspberry-noaa-v2/install_and_upgrade.sh | grep verification.sh | wc -l)
-  if [[ ${vFOUND} -eq 0 ]]; then
+  if [[ ${vFound} -eq 0 ]]; then
     echo "#####################################################"
     echo "# Execute Verification Tool"
     echo "#####################################################"
