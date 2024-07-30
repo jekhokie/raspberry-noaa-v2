@@ -24,6 +24,9 @@ for singlefile in $FILELIST; do
  if [[ $singlefile == *"MCIR"* ]]; then
    push_attachment_file=$singlefile
  fi
+ if [[ $singlefile == *"msu_gs_rgb_Natural_Color"* ]]; then
+   push_attachment_file=$singlefile
+ fi
 done
 
 push_attachment=""

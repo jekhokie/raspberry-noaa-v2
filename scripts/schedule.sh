@@ -159,6 +159,10 @@ if [ "$METEOR_M2_4_SCHEDULE" == "true" ]; then
   log "Scheduling Meteor-M2 4 captures..." "INFO"
   $NOAA_HOME/scripts/schedule_captures.sh "METEOR-M2 4" "receive_meteor.sh" $TLE_OUTPUT $start_time_ms $end_time_ms >> $NOAA_LOG 2>&1
 fi
+if [ "$ELEKTRO_L3_SCHEDULE" == "true" ]; then
+  log "Scheduling ELEKTRO-L3 captures..." "INFO"
+  $NOAA_HOME/scripts/schedule_captures.sh "ELEKTRO-L3" "receive_elektro.sh" >> $NOAA_LOG 2>&1
+fi
 log "Done scheduling jobs!" "INFO"
 
 # Check if the variable is set and true
