@@ -53,13 +53,13 @@ if [ "$OBJ_NAME" == "ELEKTRO-L3" ]; then
       file_date_ext="$(date --date="TZ=\"UTC\" ${date_pref} ${hour}:42:00" +"%Y%m%d-%H%M")"
       start_epoch_time="$(date --date="TZ=\"UTC\" ${date_pref} ${hour}:42:00" +"%s")"
       end_epoch_time=$(expr "${start_epoch_time}" + "${TIMER}")
-      schedule_log "Checking for existing at job for : ${OBJ_NAME} ${at_date} " "INFO"
+      log "Checking for existing at job for : ${OBJ_NAME} ${at_date} " "INFO"
       jobexists=false
       for scheduled_job_id in $(atq | awk '{print $1}'); do
         grepresult=`at -c $scheduled_job_id|grep ${OBJ_NAME}-${file_date_ext}00`
         grepstatus=$?
         if [ $grepstatus -eq 0 ]; then
-          schedule_log "Job already exists with ID $scheduled_job_id. Skipping" "INFO"
+          log "Job already exists with ID $scheduled_job_id. Skipping" "INFO"
           jobexists=true
           break;
         fi
@@ -67,7 +67,7 @@ if [ "$OBJ_NAME" == "ELEKTRO-L3" ]; then
       if [ $jobexists == "true" ]; then
         continue
       fi
-      schedule_log "Scheduling capture for: ${OBJ_NAME} ${at_date}" "INFO"
+      log "Scheduling capture for: ${OBJ_NAME} ${at_date}" "INFO"
   
       # should at send mail ?
       mail_arg=""
@@ -80,9 +80,9 @@ if [ "$OBJ_NAME" == "ELEKTRO-L3" ]; then
       # attempt to capture the job id if job scheduling succeeded
       at_job_id=$(echo $job_output | sed -n 's/.*job \([0-9]\+\) at.*/\1/p')
       if [ -z "${at_job_id}" ]; then
-        schedule_log "Issue scheduling job: ${job_output}" "WARN"
+        log "Issue scheduling job: ${job_output}" "WARN"
       else
-        schedule_log "Scheduled capture with job id: ${at_job_id}" "INFO"
+        log "Scheduled capture with job id: ${at_job_id}" "INFO"
   
         # update database with scheduled pass
         $SQLITE3 $DB_FILE "INSERT OR REPLACE INTO predict_passes (sat_name,pass_start,pass_end,max_elev,is_active,pass_start_azimuth,azimuth_at_max,direction,at_job_id) VALUES (\"${OBJ_NAME}\",$start_epoch_time,$end_epoch_time,7,1,15,15,'-',$at_job_id);"
