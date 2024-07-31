@@ -113,7 +113,7 @@ case "$RECEIVER_TYPE" in
          receiver="mirisdr"
          ;;
      *)
-         echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE"
+         log "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE" "INFO"
          exit 1
          ;;
 esac
@@ -124,7 +124,7 @@ else
   gain_option="--general_gain"
 fi
 
-if [[ "$use_device_string" == "true" ]]; then
+if [[ "$USE_DEVICE_STRING" == "true" ]]; then
   sdr_id_option="--source_id"
 else
   sdr_id_option=""
@@ -196,7 +196,7 @@ if [ "$NOAA_DECODER" == "wxtoimg" ]; then
   if [[ "${PRODUCE_NOAA_PRISTINE}" == "true" ]]; then
     log "Producing pristine image" "INFO"
     pristine=1
-    ${IMAGE_PROC_DIR}/noaa_pristine.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.png" >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/noaa_pristine.sh "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-pristine.png" 2>&1 | grep -Ev "invalid pointer|Aborted" >> $NOAA_LOG
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-pristine.png" "${IMAGE_THUMB_BASE}-pristine.png" >> $NOAA_LOG 2>&1
     push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-pristine.png"
   fi
@@ -208,7 +208,7 @@ if [ "$NOAA_DECODER" == "wxtoimg" ]; then
     histogram_text="${capture_start} @ ${SAT_MAX_ELEVATION}° Gain: ${GAIN}"
 
     log "Generating Data for Histogram" "INFO"
-    ${IMAGE_PROC_DIR}/noaa_histogram_data.sh "${RAMFS_AUDIO_BASE}.wav" "${tmp_dir}/${FILENAME_BASE}-a.png" "${tmp_dir}/${FILENAME_BASE}-b.png" >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/noaa_histogram_data.sh "${RAMFS_AUDIO_BASE}.wav" "${tmp_dir}/${FILENAME_BASE}-a.png" "${tmp_dir}/${FILENAME_BASE}-b.png"  2>&1 | grep -Ev "invalid pointer|Aborted" >> $NOAA_LOG
 
     # Define channel names
     channels=("a" "b")
@@ -244,7 +244,7 @@ if [ "$NOAA_DECODER" == "wxtoimg" ]; then
   [[ "${NOAA_MAP_STATE_BORDER_ENABLE}" == "true" ]] && extra_map_opts+=" -S 1 -c S:${NOAA_MAP_STATE_BORDER_COLOR}" || extra_map_opts+=" -S 0"
 
   map_overlay="${NOAA_HOME}/tmp/map/${FILENAME_BASE}-map.png"
-  $WXMAP -T "${SAT_NAME}" -H "${TLE_FILE}" -p 0 ${extra_map_opts} -o "${epoch_adjusted}" "$map_overlay" >> "$NOAA_LOG" 2>&1
+  $WXMAP -T "${SAT_NAME}" -H "${TLE_FILE}" -p 0 ${extra_map_opts} -o "${epoch_adjusted}" "$map_overlay" 2>&1 | grep -Ev "invalid pointer|Aborted" >> "$NOAA_LOG"
 
   if [ "$daylight" -eq 1 ]; then
     ENHANCEMENTS="${NOAA_DAY_ENHANCEMENTS}"
@@ -259,13 +259,13 @@ if [ "$NOAA_DECODER" == "wxtoimg" ]; then
     log "Decoding image" "INFO"
 
     if [ $enhancement == "avi" ]; then
-      ${IMAGE_PROC_DIR}/noaa_avi.sh $map_overlay "${RAMFS_AUDIO_BASE}.wav" >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/noaa_avi.sh $map_overlay "${RAMFS_AUDIO_BASE}.wav" 2>&1 | grep -Ev "invalid pointer|Aborted" >> $NOAA_LOG
     else
-      ${IMAGE_PROC_DIR}/noaa_enhancements.sh $map_overlay "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" $enhancement >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/noaa_enhancements.sh $map_overlay "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" $enhancement 2>&1 | grep -Ev "invalid pointer|Aborted" >> $NOAA_LOG 
     fi
 
     if [ -f "${IMAGE_FILE_BASE}-$enhancement.jpg" ]; then
-      ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_FILE_BASE}-$enhancement.jpg" $NOAA_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+      ${IMAGE_PROC_DIR}/noaa_normalize_annotate.sh "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_FILE_BASE}-$enhancement.jpg" $NOAA_IMAGE_QUALITY 2>&1 | grep -Ev "invalid pointer|Aborted" >> $NOAA_LOG
       ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-$enhancement.jpg" "${IMAGE_THUMB_BASE}-$enhancement.jpg" >> $NOAA_LOG 2>&1
       push_file_list="${push_file_list} ${IMAGE_FILE_BASE}-$enhancement.jpg"
     fi

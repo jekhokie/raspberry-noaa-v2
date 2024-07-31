@@ -173,13 +173,9 @@ echo "--------------------------------------------------------------------------
 echo ""
 
 if [ $install_type == 'install' ]; then
-  log_running "It looks like this is a fresh install of the tooling for captures."
-  log_running "If you've never had the software tools installed previously (e.g. if you've"
-  log_running "not installed the original raspberry-noaa repo content), you likely need to"
-  log_running "restart your device. Please do this to rule out any potential issues in the"
-  log_running "software and libraries that have been installed."
-
-  log_running "Automatically rebooting your device now to finish the new install."
-  echo -e "\n\n\nAutomatically rebooting your device now to finish the new install."
-  sudo reboot
+  log_running "Reloading udev rules and trigger so correct permissions fire for SDR Dongles"
+  sudo udevadm control --reload-rules && sudo udevadm trigger
+  log_running "Running RN2 Verification Tool..."
+  ${HOME}/raspberry-noaa-v2/scripts/tools/verification_tool/verification.sh quick
+  #sudo reboot
 fi
