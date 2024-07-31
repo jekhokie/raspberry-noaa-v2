@@ -227,7 +227,12 @@ class Capture extends \Lib\Model {
             "-msu_gs_rgb_321_map.png",
             "-msu_gs_rgb_Natural_Color.png",
             "-msu_gs_rgb_Natural_Color_map.png",
-            "-msu_gs_Thermal_Channel.png"
+            "-msu_gs_Thermal_Channel.png",   
+            "-L3_1.png",                     
+            "-L3_2.png",                     
+            "-L3_3.png",                     
+            "-L3_9.png",                     
+            "-L3_10.png"  
          ];
          break;
     }

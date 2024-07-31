@@ -106,6 +106,10 @@ if compgen -G ${decoded_images} > /dev/null; then
   got_an_image=true
   for file in ${decoded_images}; do
      image_filename=$(basename "$file")
+     #remove timestamp from L3_* files
+     if [[ ${image_filename} == "L3_"* ]]; then
+       image_filename=`awk -F_ '{print $1"_"$2".png"}' <<< ${image_filename}`
+     fi
      new_image=${FILENAME_BASE}-${image_filename}
      mv "$file" "${IMAGE_OUTPUT}/${new_image}"
      ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_OUTPUT}/${new_image}" "${IMAGE_OUTPUT}/thumb/${new_image}" >> $NOAA_LOG 2>&1
