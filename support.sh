@@ -16,6 +16,7 @@ RPI_MODEL=$(cat /proc/device-tree/model | tr -d '\0')
 DISK_LAYOUT=$(lsblk)
 DB_TABLES=$(sqlite3 db/panel.db "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';")
 
+{
 echo "============================================="
 echo "Details about environment"
 echo "============================================="
@@ -83,6 +84,11 @@ while IFS= read -r res; do
 done < <(cat /proc/meminfo | grep Mem)
 
 echo "---------------------------------------------"
+echo "Git local config:"
+cat ${HOME}/raspberry-noaa-v2/.git/config
+
+
+echo "---------------------------------------------"
 echo "Git source files changed:"
 if [ -z "${GIT_CHANGES}" ]; then
   echo "  (None)"
@@ -108,3 +114,13 @@ else
     echo ""
   done
 fi
+
+if [[ -f ${HOME}/raspberry-noaa-v2/scripts/tools/verification_tool/verification.sh ]]; then
+  echo "---------------------------------------------"
+  echo "Execute Verification Tool"
+  ${HOME}/raspberry-noaa-v2/scripts/tools/verification_tool/verification.sh quick
+fi
+
+echo "---------------------------------------------"
+echo "Attach support log --> ${HOME}/raspberry-noaa-v2/support.log"
+} | tee ${HOME}/raspberry-noaa-v2/support.log
