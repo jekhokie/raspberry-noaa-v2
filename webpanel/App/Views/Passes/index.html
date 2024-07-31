@@ -65,7 +65,7 @@
           <tr{% if pass.is_active == false or pass_end_ms < now_ms %} class="inactive"{% endif %}>
           
             <td class=
-              {% if prev_pass_end >= pass.pass_start %} 
+              {% if prev_pass_end >= pass.pass_start and now_ms < pass.pass_end %} 
                 "text-center conflict"
               {% elseif now_ms > pass.pass_start and now_ms < pass.pass_end %} 
                 "text-center running" 
