@@ -12,9 +12,11 @@ Wanting to give this version a go but not sure what's involved to get from the o
 out this simple [migration document](docs/migrate_from_raspberry_noaa.md) that explains the few commands you need to run and retain
 your original data!
 
-Finally, if you're looking for one of the cheapest ways to get started from an antenna perspective, check [this](https://jekhokie.github.io/noaa/satellite/rf/antenna/sdr/2019/05/31/noaa-satellite-imagery-sdr.html) out
-, specifically around
-how to use a cheap rabbit ears antenna as a dipole for capturing NOAA and Meteor images!
+Finally, if you're looking for one of the cheapest ways to get started from an antenna perspective, check [this](https://jekhokie.github.io/noaa/satellite/rf/antenna/sdr/2019/05/31/noaa-satellite-imagery-sdr.html) out, specifically around how to use a cheap rabbit ears antenna as a dipole for capturing NOAA and Meteor images!
+
+# Announcements
+
+* 31.7.2024. We are sunsetting the legacy Debian Bullseye support for Raspberry Pi and x64 PCs. We have supported it for some time after the Bookworm support came out in May 2024. Thank you for using the raspberry-noaa-v2 project on these operating systems. New updates for SatDump and other features related to SatDump **will only be available for 64-bit Raspberry OS version Bookworm, and 64-bit Debian Bookworm-based Linux distributions for x64 PCs** as of now. If you'd like to continue receiving the new updates, we highly suggest you perform a full reinstallation of your operating system and conduct a fresh installation of raspberry-noaa-v2. It is possible to save previously received images before reinstalling the operating system by making a copy of `panel.db` file inside `~/raspberry-noaa-v2/db` directory and the whole `/srv` directory; restore these files after your new installation has finished. If you're satisfied with the current features available, you are free to use the system as-is. 
 
 # Raspberry NOAA (...and Meteor) V2
 
