@@ -42,7 +42,7 @@
           <img class="card-img-top" src="{{ image_path }}">
         {% endif %}
       {% elseif capture.sat_type == 2 %}
-        {% set image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ '-0.jpg' %}
+        {% set image_path = constant('Config\\Config::THUMB_PATH') ~ '/' ~ capture.file_path ~ '-msu_gs_Thermal_Channel.png' %}
         <img class="card-img-top" src="{{ image_path }}">
       {% endif %}
     </a>

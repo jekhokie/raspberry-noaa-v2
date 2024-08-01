@@ -76,6 +76,14 @@ METEOR_M2_4_SCHEDULE_SUN_MIN_ELEV={{ meteor_m2_4_schedule_sun_min_elevation }}
 METEOR_M2_4_SAT_MIN_ELEV={{ meteor_m2_4_sat_min_elevation }}
 METEOR_M2_4_80K_INTERLEAVING={{ meteor_m2_4_80k_interleaving|lower }}
 
+# ELEKTRO-L3 Configuration
+ELEKTRO_L3_SCHEDULE={{ elektro_l3_schedule|lower }}
+ELEKTRO_L3_SDR_DEVICE_ID={{ elektro_l3_sdr_device_id }}
+ELEKTRO_L3_FREQ_OFFSET={{ elektro_l3_freq_offset }}
+ELEKTRO_L3_ENABLE_BIAS_TEE="{% if elektro_l3_enable_bias_tee|lower == 'true' %}-T{% endif %}"
+ELEKTRO_L3_GAIN={{ elektro_l3_gain }}
+ELEKTRO_L3_SUN_MIN_ELEV={{ elektro_l3_sun_min_elevation }}
+
 # Memory and Cleanup
 NOAA_MEMORY_THRESHOLD={{ noaa_memory_threshold }}
 METEOR_M2_MEMORY_THRESHOLD={{ meteor_m2_memory_threshold }}

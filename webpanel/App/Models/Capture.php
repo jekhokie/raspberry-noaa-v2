@@ -220,6 +220,21 @@ class Capture extends \Lib\Model {
         ];
         $enhancements = array_merge($enhancements, $satdump_enhancements);
         break;
+      case 2: // ELEKTRO-L3
+        $enhancements = [
+            "-msu_gs_rgb_221.png",
+            "-msu_gs_rgb_321.png",
+            "-msu_gs_rgb_321_map.png",
+            "-msu_gs_rgb_Natural_Color.png",
+            "-msu_gs_rgb_Natural_Color_map.png",
+            "-msu_gs_Thermal_Channel.png",   
+            "-L3_1.png",                     
+            "-L3_2.png",                     
+            "-L3_3.png",                     
+            "-L3_9.png",                     
+            "-L3_10.png"  
+         ];
+         break;
     }
 
     # remove any enhancements that do not actually exist for this capture
