@@ -190,6 +190,16 @@ Then, open the settings file and edit it to match the settings from the previous
 If you have elected to run a TLS-enabled web server, see [THIS LINK](docs/tls_webserver.md) for some additional information
 on how to handle self-signed certificates when attempting to visit your webpanel and enabling auth for the admin pages.
 
+## In-Situ Upgrade
+
+Want to switch your existing RN2 installation to a different Github branch without loosing your settings and images?  
+
+    **Introduction of RN2 Upgrade tool**
+
+       `${HOME}/.rn2_utils/rn2_upgrade.sh https://github.com/jekhokie/raspberry-noaa-v2.git -b aarch64-support`
+
+        Just point to the branch you want to switch to by modifying the above line as needed.     
+
 ## Post Install
 
 There are and will be future "optional" features for this framework. Below is a list of optional capabilities that you may wish
