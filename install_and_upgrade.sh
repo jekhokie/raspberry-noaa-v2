@@ -177,5 +177,5 @@ if [ $install_type == 'install' ]; then
   sudo udevadm control --reload-rules && sudo udevadm trigger
   log_running "Running RN2 Verification Tool..."
   ${HOME}/raspberry-noaa-v2/scripts/tools/verification_tool/verification.sh quick
-  #sudo reboot
+  sudo reboot
 fi
