@@ -198,7 +198,7 @@ Want to switch your existing RN2 installation to a different Github branch witho
 
     **Introduction of RN2 Upgrade tool**
 
-       `${HOME}/.rn2_utils/rn2_upgrade.sh https://github.com/jekhokie/raspberry-noaa-v2.git -b aarch64-support`
+       `${HOME}/.rn2_utils/rn2_upgrade.sh https://github.com/jekhokie/raspberry-noaa-v2.git -b beta-development`
 
         Just point to the branch you want to switch to by modifying the above line as needed.     
 
@@ -231,7 +231,7 @@ The verification tool can be used to help identify RN2 installation/configuratio
 
 Execute the verification script by passing the required argument [ quick | full ]
 
-  `$HOME/raspberry-noaa-v2/scripts/tools/verification.sh quick`
+  `$HOME/raspberry-noaa-v2/scripts/tools/verification_tool/verification.sh quick`
 
   Argument required:  ./verification.sh quick    or    ./verification.sh full
                         (~ 1 minute)                       (~ 5 minutes)
@@ -286,7 +286,7 @@ or form to the success of this repository/framework. Below are some direct contr
 * **[Gary Day](https://www.facebook.com/profile.php?id=100068381156913&mibextid=ZbWKwL)**: Helped by lending his Raspberry Pis virtually over SSH, VNC and TeamViewer to MihajloPi for testing and creating an image.
 * **[Jérôme jp112sdl](https://github.com/jp112sdl)**: Implemented automatic discarding of Meteor M2-3 night passes since they give no visible image when it's in RGB123 mode.
 * **[patrice7560](https://meteo-schaltin.duckdns.org)**: Beta tester, helped in detecting and reporting errors ASAP for debugging.
-* **[Richard AI4Y](https://www.qrz.com/db/AI4Y)**: Provided Debian 12 (Bookworm) support for Raspberry Pi, 64-bit Raspberry OS support, discovered the FFMPEG bug when creating spectrograms, solved `atrm` errors on the website, and several NTP and timezone issues in PHP, general alpha and beta testing.
+* **[Richard AI4Y](https://www.qrz.com/db/AI4Y)**: Provided Debian 12 (Bookworm) support for Raspberry Pi, 64-bit Raspberry OS support, discovered the FFMPEG bug when creating spectrograms, solved atrm errors on the website, and several NTP and timezone issues in PHP, developed Verification Tool, Developed In-Situ Upgrade for switching repo's/branches, developed RN2 Utilities for backup/restore/stage, uninstall and upgrading, general warning cleanup of scripts, Made 32-bit wxtoimg run on 64-bit Debian, creates satdump/predict DEB files for armhf & arm64, general alpha and beta testing.
 ## Contributing
 
 Pull requests are welcome! Simply follow the below pattern:
