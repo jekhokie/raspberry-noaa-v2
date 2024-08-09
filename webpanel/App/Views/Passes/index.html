@@ -9,7 +9,7 @@
   <div id="instruments" class="flex-container">
     {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
       <div id="satvis" class="d-none d-sm-block flex-child">
-        <iframe name="satvis" src="https://satvis.space/?elements=Point,Label,SensorCone&layers=ArcGis&terrain=None&gs={{ constant('Config\\Config::BASE_STATION_LAT') }},{{ constant('Config\\Config::BASE_STATION_LON') }}&tags=Weather"></iframe>
+        <iframe name="satvis" src="https://satvis.space/next/?elements=Point,Label,Orbit,Sensor-cone&layers=ArcGis&terrain=None&gs={{ constant('Config\\Config::BASE_STATION_LAT') }},{{ constant('Config\\Config::BASE_STATION_LON') }}&sats=METEOR-M2%7E4,METEOR-M2%7E3,NOAA%7E19,NOAA%7E18,NOAA%7E15"></iframe>
       </div>
     {% endif %}
 
@@ -88,11 +88,7 @@
               {% endif %}
             </td>
             <td>
-              {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
-                <a href='https://satvis.space/?elements=Point,Label,SensorCone&layers=ArcGis&terrain=None&tags=Weather&sat={{ pass.sat_name }}&gs={{ constant('Config\\Config::BASE_STATION_LAT') }},{{ constant('Config\\Config::BASE_STATION_LON') }}' target='satvis'>{{ pass.sat_name }}</a>
-              {% else %}
-                {{ pass.sat_name }}
-              {% endif %}
+              {{ pass.sat_name }}
             </td>
             <td class="text-center">{{ pass_start }}</td>
             <td class="text-center">{{ pass_end }}</td>
