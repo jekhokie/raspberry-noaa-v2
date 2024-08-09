@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use Lib\View;
 
+#[AllowDynamicProperties]
 class PassesController extends \Lib\Controller {
   public function indexAction($args) {
     $pass = $this->loadModel('Pass');

@@ -21,3 +21,20 @@ header span.navbar-text.timezone {
   text-align: right;
   line-height: 0.95rem;
 }
+
+table#t_header tr td {
+    text-align: center; 
+}
+
+table#t_header i.fa-sun {
+  color: #eded0c;
+  vertical-align: middle;
+  position:relative;
+  left: -28px;
+}
+
+table#t_header i.fa-moon {
+  color: #0049bf;
+  vertical-align: middle;
+  position:relative;
+}

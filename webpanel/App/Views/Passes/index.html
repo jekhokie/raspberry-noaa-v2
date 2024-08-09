@@ -4,6 +4,11 @@
   <link rel="stylesheet" type="text/css" href="/assets/css/pass_list.css">
 {% endblock %}
 
+{% block js_includes %}
+  <script src="/assets/js/tooltips.js"></script>
+  <script src="/assets/js/darkmode.js"></script>
+{% endblock %}
+
 {% block pre_body %}
   <br><center><h1><strong>NOAA APT and Meteor LRPT Satellite Receiver</strong></h1></center><br>
   <div id="instruments" class="flex-container">
@@ -56,7 +61,7 @@
           {% set pass_end_ms = pass.pass_end|date('U') %}
 
           {% if last_date < cur_date %}
-            <tr class="date-separator">
+            <tr class="table-primary date-separator">
               <td colspan="7">{{ cur_date|date(constant('Config\\Config::PASSES_DATE_FORMAT')) }}</td>
             </tr>
             {% set last_date = cur_date %}
@@ -65,10 +70,12 @@
           <tr{% if pass.is_active == false or pass_end_ms < now_ms %} class="inactive"{% endif %}>
           
             <td class=
-              {% if prev_pass_end >= pass.pass_start %} 
+              {% if now_ms > pass.pass_start and now_ms < pass.pass_end %}
+                "text-center running"
+              {% elseif prev_pass_end >= pass.pass_start and now_ms < pass.pass_end %} 
                 "text-center conflict"
-              {% elseif now_ms > pass.pass_start and now_ms < pass.pass_end %} 
-                "text-center running" 
+              {% elseif pass.has_pidfile %}
+                "text-center in_progress"
               {% elseif now_ms < pass.pass_start %}
                 "text-center next" 
               {% else %}
@@ -76,15 +83,17 @@
               {% endif %}
                 >
               {% if pass.id %}
-                <i class="fa fa-check" data-toggle="tooltip" data-placement="right" title="{{ lang['completed_pass'] }}"></i>
+                <a href="captures/listImages?pass_id={{ pass.id }}" class="btn btn-outline-success btn-sm" role="button"><i class="fa fa-check" data-toggle="tooltip" data-placement="right" title="{{ lang['completed_pass'] }}"></i></a>
               {% elseif now_ms > pass.pass_start and now_ms < pass.pass_end %}
-                <i class="fa fa-spinner running-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['running_pass'] }}"></i>
-              {% elseif prev_pass_end >= pass.pass_start %}
+                <i class="fa fa-circle running-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['running_pass'] }}"></i>
+              {% elseif pass.has_pidfile %}
+                <i class="fa fa-spinner fa-spin in_progress-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['in_progress'] }}"></i>
+              {% elseif prev_pass_end >= pass.pass_start and now_ms < pass.pass_end %}
                 <i class="fa fa-exclamation-triangle conflict-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['conflicting_pass'] }}"></i>
               {% elseif now_ms < pass.pass_start %}
                 <i class="fa fa-hourglass-start next-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['next_pass'] }}"></i>
               {% else %}  
-                <i class="fa fa-times no_caption-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['no_capture_pass'] }}"></i>
+                <i class="fa fa-times no_capture-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['no_capture_pass'] }}"></i>
               {% endif %}
             </td>
             <td>
@@ -124,6 +133,3 @@
 
 {% endblock %}
 
-{% block js_includes %}
-  <script src="/assets/js/tooltips.js"></script>
-{% endblock %}
