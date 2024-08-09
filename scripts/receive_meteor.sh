@@ -38,6 +38,11 @@ AUDIO_FILE_BASE="${METEOR_AUDIO_OUTPUT}/${FILENAME_BASE}"
 IMAGE_FILE_BASE="${IMAGE_OUTPUT}/${FILENAME_BASE}"
 IMAGE_THUMB_BASE="${IMAGE_OUTPUT}/thumb/${FILENAME_BASE}"
 
+# create PID file
+PID_FILE=${NOAA_HOME}/tmp/${EPOCH_START}_METEOR-${SAT_NUMBER}.pid
+touch ${PID_FILE}
+log "Created PID file ${PID_FILE}" "INFO"
+
 case "$RECEIVER_TYPE" in
      "rtlsdr")
          samplerate="1.024e6"
@@ -489,4 +494,6 @@ fi
 TIMER_END=$(date '+%s')
 DIFF=$(($TIMER_END - $TIMER_START))
 PROC_TIME=$(date -ud "@$DIFF" +'%H:%M.%S')
+rm ${PID_FILE}
+log "Deleted PID file ${PID_FILE}" "INFO"
 log "Total processing time: ${PROC_TIME}" "INFO"
