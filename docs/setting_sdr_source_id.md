@@ -67,13 +67,13 @@ so remove all but the one of the SDR's whose serial # you want to update before 
 	Please replug the device for changes to take effect.
 	
 
-After removing and reinstalling the SDR Dongel, Confirm the serial #1 written is correct
+After removing and reinstalling the SDR Dongle, Confirm the serial #1 written is correct
 
 	rtl_test
 	Found 1 device(s):
 	  0:  RTLSDRBlog, Blog V4, SN: 1
 
-Now remove that SDR Dongle and insert the second SDR which we will assign serial #2 
+Now remove that SDR Dongle and insert the second SDR Dongle which we will assign serial #2 
 
 	rtl_eeprom -s 2
 	Found 1 device(s):
@@ -112,7 +112,7 @@ Now remove that SDR Dongle and insert the second SDR which we will assign serial
 	Please replug the device for changes to take effect.
 
 
-After removing and reinstalling the second SDR Dongel, Confirm the serial #2 written is correct
+After removing and reinstalling the second SDR Dongle, Confirm the serial #2 written is correct
 
 	rtl_test
 	Found 1 device(s):
