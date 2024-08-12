@@ -15,8 +15,10 @@ Good news - If you are using more than 1 SDR Dongle in your RN2 configuration an
 
   Step #1 - Assign a unique serial # to each RTL-SDR Dongle
 
-    NOTE - RTL Serial# programmed into the SDR and the sdr_device_id in settings.yml must not have any leading ZERO's or it will not work.  
-           The serial number must be no more than 8 characters or less and it must be an integer and must not have any leading ZERO characters.
+     RTL Serial# programmed into the SDR and the sdr_device_id in settings.yml must not have any leading ZERO's.  
+     The serial number must be no more than 8 characters and it must be an integer and must not have any leading ZERO's.
+     
+For example it can be **0** or it can be set as high as **99999999**     It cannot have leading ZERO's **00007777**
 
 
 Check currect serial# of installed SDR Dongle's
@@ -27,7 +29,7 @@ Check currect serial# of installed SDR Dongle's
   	1:  RTLSDRBlog, Blog V4, SN: 00000001
 
 Change the SDR serial #, when prompted, select 'y' to change
-Since our SDR Device ID's must fall between 1-9, we will update both SDR Dongles with serial #'s 1 & 2,
+Since our SDR Device ID's must fall between 0-99999999  For this example we will update both SDR Dongles with serial #'s 1 & 2,
 so remove all but the one of the SDR's whose serial # you want to update before running rtl_eeprom utility.
 
 	rtl_eeprom -s 1
