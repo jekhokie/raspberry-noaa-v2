@@ -68,7 +68,7 @@ case "$RECEIVER_TYPE" in
          receiver="mirisdr"
          ;;
      *)
-         echo "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE"
+         log "Invalid RECEIVER_TYPE value: $RECEIVER_TYPE" "INFO"
          exit 1
          ;;
 esac
@@ -110,7 +110,7 @@ else
   gain_option="--general_gain"
 fi
 
-if [[ "$use_device_string" == "true" ]]; then
+if [[ "$USE_DEVICE_STRING" == "true" ]]; then
   sdr_id_option="--source_id"
 else
   sdr_id_option=""
@@ -169,7 +169,7 @@ polar_direction=0
 
 log "Recording ${NOAA_HOME} via $receiver at ${METEOR_FREQUENCY} MHz using SatDump record " "INFO"
 audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
-$SATDUMP live meteor_m2-x_lrpt${mode} "$audio_temporary_storage_directory" --source $receiver --samplerate $samplerate --frequency "${METEOR_FREQUENCY}e6" $sdr_id_option $SDR_DEVICE_ID $gain_option $GAIN $bias_tee_option $finish_processing --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+$SATDUMP live meteor_m2-x_lrpt${mode} "$audio_temporary_storage_directory" --source $receiver --samplerate $samplerate --ppm_correction ${FREQ_OFFSET} --frequency "${METEOR_FREQUENCY}e6" $sdr_id_option $SDR_DEVICE_ID $gain_option $GAIN $bias_tee_option $finish_processing --fill_missing --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
 mv "$audio_temporary_storage_directory/meteor_m2-x_lrpt${mode}.cadu" "${RAMFS_AUDIO_BASE}.cadu"
 
 log "Removing old bmp, gcp, and dat files" "INFO"
@@ -226,13 +226,10 @@ if [[ "$METEOR_DECODER" == "meteordemod" ]]; then
     fi
   fi
 elif [[ "$METEOR_DECODER" == "satdump" ]]; then
-  #log "Running SatDump to demodulate OQPSK file, rectify (spread) images, create heat map and composites and convert them to JPG" "INFO"
-  #$SATDUMP meteor_m2-x_lrpt${mode} cadu "${RAMFS_AUDIO_BASE}.cadu" . -fill_missing >> $NOAA_LOG 2>&1
-
-  find MSU-MR/ -type f ! -name "*projected*" ! -name "*corrected*" -delete
+  find "MSU-MR (Filled)/" -type f ! -name "*projected*" ! -name "*corrected*" -delete
 
   log "Deleting SatDump projected composites which have been generated, but the channels aren't broadcast" "INFO"
-  for projected_file in MSU-MR/rgb_msu_mr_rgb_*_projected.png; do
+  for projected_file in MSU-MR\ \(Filled\)/rgb_msu_mr_rgb_*_projected.png; do
       # Extract the corresponding corrected.png filename
       corrected_file="${projected_file/rgb_msu_mr_rgb_/msu_mr_rgb_}"
       corrected_file="${corrected_file/_projected.png/_corrected.png}"
@@ -245,18 +242,17 @@ elif [[ "$METEOR_DECODER" == "satdump" ]]; then
   done
 
   log "Removing images without a map if they exist" "INFO"
-  for file in MSU-MR/*map.png; do
+  for file in MSU-MR\ \(Filled\)/*map.png; do
     mv "$file" "${file/_map.png/.png}"
   done
 
   log "Flipping Meteor night passes decoded with SatDump" "INFO"
-  for i in MSU-MR/*_corrected.png
-  do
+  for i in MSU-MR\ \(Filled\)/*_corrected.png; do
     $CONVERT "$i" $FLIP "$i" >> $NOAA_LOG 2>&1
   done
 
     # Renaming files, annotating images, and creating thumbnails
-  for i in MSU-MR/*.png; do
+  for i in MSU-MR\ \(Filled\)/*.png; do
     path="$(pwd)"
     image_filename=$(basename "$i")
     new_name="$image_filename"
@@ -269,15 +265,16 @@ elif [[ "$METEOR_DECODER" == "satdump" ]]; then
     new_name="${new_name#msu_mr_}"
 
     # Rename the file with the new name
-    mv "$i" "$path/MSU-MR/$new_name" >> $NOAA_LOG 2>&1
+    mv "$i" "$path/MSU-MR (Filled)/$new_name" >> $NOAA_LOG 2>&1
 
     log "Annotating images and creating thumbnails" "INFO"
-    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$path/MSU-MR/$new_name" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
+    ${IMAGE_PROC_DIR}/meteor_normalize_annotate.sh "$path/MSU-MR (Filled)/$new_name" "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" $METEOR_IMAGE_QUALITY >> $NOAA_LOG 2>&1
     ${IMAGE_PROC_DIR}/thumbnail.sh 300 "${IMAGE_FILE_BASE}-${new_name%.png}.jpg" "${IMAGE_THUMB_BASE}-${new_name%.png}.jpg" >> $NOAA_LOG 2>&1
-    rm "$path/MSU-MR/$new_name" >> $NOAA_LOG 2>&1
+    rm "$path/MSU-MR (Filled)/$new_name" >> $NOAA_LOG 2>&1
     push_file_list="$push_file_list ${IMAGE_FILE_BASE}-${new_name%.png}.jpg"
   done
-  rm -r MSU-MR >> $NOAA_LOG 2>&1
+  rm -r "MSU-MR (Filled)" >> $NOAA_LOG 2>&1
+  rm -r "MSU-MR" >> $NOAA_LOG 2>&1
 
   if [ "${CONTRIBUTE_TO_COMMUNITY_COMPOSITES}" == "true" ]; then
     log "Contributing images for creating community composites" "INFO"
