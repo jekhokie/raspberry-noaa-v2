@@ -2,7 +2,7 @@
 
 # Setting SDR Device ID
 
-Good news - If you are using more than 1 SDR Dongle in your RN2 configuration and you wish to assign a particular SDR Dongle/Antenna pair to a sattelite, you can!
+Good news - If you are using more than 1 SDR Dongle in your RN2 configuration and you wish to assign a particular SDR Dongle/Antenna pair to a satellite, you can!
 
   Work flow:
 
