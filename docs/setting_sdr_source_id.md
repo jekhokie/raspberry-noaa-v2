@@ -19,7 +19,7 @@ Good news - If you are using more than 1 SDR Dongle in your RN2 configuration an
            The serial number must be no more than 8 characters or less and it must be an integer and must not have any leading ZERO characters.
 
 
-    Check currect serial# of installed SDR Dongle's
+Check currect serial# of installed SDR Dongle's
 
 	rtl_test -t
 	Found 2 device(s):
@@ -150,7 +150,7 @@ For each satellite that you want to assign a specific device id for, you must up
 
   Step #3 - Execute install_and_upgrade.sh
 
-	${HOME}/raspberry-noaa-v2
+	cd ${HOME}/raspberry-noaa-v2
 	./install_and_upgrade.sh
 
   Step #4 - After the scheduled job executes for the satellite you assigned a unique device id to, confirm that the correct device ID was used.
