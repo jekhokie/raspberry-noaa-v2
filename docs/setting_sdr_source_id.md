@@ -9,7 +9,7 @@ Good news - If you are using more than 1 SDR Dongle in your RN2 configuration an
     #1 - Assign a unique serial # to each RTL-SDR Dongle that you wish to specitically assign to a satellite  
     #2 - Update settings.yml 
     #3 - Execute install_and_upgrade.sh
-    #4 - After the scheduled job executes for the satellite you assigned a unique device id to, confirm that the correct device ID was used.
+    #4 - After the scheduled job executes for the satellite you assigned a unique device id to, confirm correct device ID was used.
 
   These example instructions are for RTL-SDR Dongles. 
 
@@ -21,17 +21,17 @@ Good news - If you are using more than 1 SDR Dongle in your RN2 configuration an
 
     # Check currect serial# of installed SDR Dongle's
 
-	```rtl_test -t
+	`rtl_test -t
 	Found 2 device(s):
   	0:  RTLSDRBlog, Blog V4, SN: 00000001
-  	1:  RTLSDRBlog, Blog V4, SN: 00000001```
+  	1:  RTLSDRBlog, Blog V4, SN: 00000001`
 
 
 	# Change the SDR serial #, when prompted, select 'y' to change
         # Since our SDR Device ID's must fall between 1-9, we will update both SDR Dongles with serial #'s 1 & 2
 	# Remove all but the one SDR whose serial # you want to update before running rtl_eeprom 
 
-	```rtl_eeprom -s 1```
+	`rtl_eeprom -s 1`
 
 	rtl_eeprom -s 1
 	Found 1 device(s):
