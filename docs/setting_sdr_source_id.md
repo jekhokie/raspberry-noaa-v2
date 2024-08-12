@@ -112,7 +112,7 @@ Now remove that SDR Dongle and insert the second SDR which we will assign serial
 	Please replug the device for changes to take effect.
 
 
-After removing and reinstalling the second SDR Dognel, Confirm the serial #2 written is correct
+After removing and reinstalling the second SDR Dongel, Confirm the serial #2 written is correct
 
 	rtl_test
 	Found 1 device(s):
