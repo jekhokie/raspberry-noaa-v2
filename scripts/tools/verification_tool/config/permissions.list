@@ -2,8 +2,6 @@ directory 700 $USER $USER /home/$USER/.ansible/tmp
 directory 700 $USER $USER /home/$USER/.config
 directory 755 $USER $USER /home/$USER
 directory 755 $USER $USER /home/$USER/.ansible
-directory 755 $USER $USER /home/$USER/config
-directory 755 $USER $USER /home/$USER/config/annotation
 directory 755 $USER $USER /home/$USER/.config/meteordemod
 directory 755 $USER $USER /home/$USER/.config/meteordemod/kernels
 directory 755 $USER $USER /home/$USER/.config/meteordemod/ShapeFiles
