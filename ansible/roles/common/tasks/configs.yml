@@ -104,13 +104,6 @@
     enabled: yes
   when: (wifi_powermgmt_script.changed or wifi_powermgmt_service.changed) and (disable_wifi_power_mgmt|bool)
 
-- name: annotation directory
-  file:
-    path: /home/{{ target_user }}/config/annotation
-    state: directory
-    owner: "{{ target_user }}"
-    group: "{{ target_user }}"
-    mode: 0755
 
 - name: annotation file (sample for modification)
   copy:

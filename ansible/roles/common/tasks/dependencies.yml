@@ -228,6 +228,19 @@
 #    state: present
 #    update_cache: no
 
+# OS Lite versions do not have .config, but when its created as as part of the .config/meteordemod task below 
+# The .config ownership of top directory is root:root 755 when this happens and it needs to be target_user:target_user 700
+#
+# This problem does not occur on OS Full installations
+
+- name: .config directory ownership
+  file:
+    path: /home/{{ target_user }}/.config
+    state: directory
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0700
+
 - name: Check if MeteorDemod is installed
   stat:
     path: /usr/local/bin/meteordemod
