@@ -120,6 +120,7 @@ esac
 
 if [[ "$receiver" == "rtlsdr" ]]; then
   gain_option="--gain"
+  ppm_correction="--ppm_correction"
 else
   gain_option="--general_gain"
 fi
@@ -167,7 +168,7 @@ daylight=$((SUN_ELEV > SUN_MIN_ELEV ? 1 : 0))
 #start capture
 log "Recording ${NOAA_HOME} via ${RECEIVER_TYPE} at ${freq} MHz via SatDump live pipeline" "INFO"
 audio_temporary_storage_directory="$(dirname "${RAMFS_FILE_BASE}")"
-$SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate --ppm_correction ${FREQ_OFFSET} --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} --sdrpp_noise_reduction $sdr_id_option $SDR_DEVICE_ID $gain_option $GAIN $bias_tee_option $crop_topbottom --start_timestamp $PASS_START --save_wav $finish_processing --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
+$SATDUMP live noaa_apt $audio_temporary_storage_directory --source $receiver --samplerate $samplerate $ppm_correction ${FREQ_OFFSET} --frequency "${NOAA_FREQUENCY}e6" --satellite_number ${SAT_NUMBER} --sdrpp_noise_reduction $sdr_id_option $SDR_DEVICE_ID $gain_option $GAIN $bias_tee_option $crop_topbottom --start_timestamp $PASS_START --save_wav $finish_processing --timeout $CAPTURE_TIME >> $NOAA_LOG 2>&1
 rm "$audio_temporary_storage_directory/dataset.json" "$audio_temporary_storage_directory/product.cbor" >> $NOAA_LOG 2>&1
 log "Files recorded" "INFO"
 
