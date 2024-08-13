@@ -87,8 +87,12 @@ remove_services() {
   do
    
     loggit "INFO" "Stopping and removing ${svc} service"
-    sudo sudo systemctl stop ${svc}
-    sudo sudo systemctl disable ${svc}
+    sudo systemctl stop ${svc}
+	  # Disable causes it to remain disabled even after the service is removed and reinstalled by Ansible 
+	  # this is because disable removes /etc/systemd/system/multi-user.target.wants/nginx.service and is not added back when Ansible installs it. 
+	  # If Ansible had issued an systemctl enable nsinx enable it would worked. 
+	  # Commenting out the disable command because disabling the service is no impact since it will be removed when removing packages 
+    # sudo systemctl disable ${svc}
      
   done
 
