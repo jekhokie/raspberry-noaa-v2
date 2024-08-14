@@ -228,38 +228,6 @@
 #    state: present
 #    update_cache: no
 
-- name: receive_noaa.sh ownership permissions
-  file:
-    path: /home/{{ target_user }}/raspberry-noaa-v2/scripts/receive_noaa.sh
-    state: file
-    owner: "{{ target_user }}"
-    group: "{{ target_user }}"
-    mode: 0755
-
-- name: receive_meteor.sh ownership permissions
-  file:
-    path: /home/{{ target_user }}/raspberry-noaa-v2/scripts/receive_meteor.sh
-    state: file
-    owner: "{{ target_user }}"
-    group: "{{ target_user }}"
-    mode: 0755
-
-- name: schedule.sh ownership permissions
-  file:
-    path: /home/{{ target_user }}/raspberry-noaa-v2/scripts/schedule.sh
-    state: file
-    owner: "{{ target_user }}"
-    group: "{{ target_user }}"
-    mode: 0755
-
-- name: common.sh ownership permissions
-  file:
-    path: /home/{{ target_user }}/raspberry-noaa-v2/scripts/common.sh
-    state: file
-    owner: "{{ target_user }}"
-    group: "{{ target_user }}"
-    mode: 0755
-
 # OS Lite versions do not have .config, but when its created as as part of the .config/meteordemod task below 
 # The .config ownership of top directory is root:root 755 when this happens and it needs to be target_user:target_user 700
 #
