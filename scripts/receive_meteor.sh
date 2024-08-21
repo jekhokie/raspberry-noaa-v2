@@ -109,7 +109,7 @@ if [[ "$receiver" == "rtlsdr" ]]; then
   ppm_correction="--ppm_correction"
 else
   gain_option="--general_gain"
-fii
+fi
 
 if [[ "$USE_DEVICE_STRING" == "true" ]]; then
   sdr_id_option="--source_id"
