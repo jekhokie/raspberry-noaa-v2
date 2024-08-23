@@ -14,7 +14,7 @@ config_file = os.path.expanduser('~/.noaa-v2.conf')
 load_envbash(config_file)
 
 # Use subprocess to get the local time offset from UTC
-timezone = int(subprocess.check_output('echo $(date "+%:::z") | sed "s/\\([+-]\\)0\\?/\\1/"', shell=True, text=True))
+timezone = float(subprocess.check_output('echo $(date "+%:::z") | sed "s/\\([+-]\\)0\\?/\\1/" | sed "s/:30/.5/"', shell=True, text=True))
 
 date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(sys.argv[1]) - (timezone * 60 * 60)))
 
