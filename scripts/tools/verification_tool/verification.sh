@@ -241,9 +241,9 @@ loggit "INFO" "*************************************************"
 loggit "INFO" "*** Checking RN2 crontab jobs ***"
 loggit "INFO" "*************************************************"
 
-cronjob1="1 0 * * * /home/richard/raspberry-noaa-v2/scripts/schedule.sh -t"
-cronjob2="@reboot /home/richard/raspberry-noaa-v2/scripts/schedule.sh"
-cronjob3="@reboot /home/richard/raspberry-noaa-v2/scripts/tools/scratch_perms.sh"
+cronjob1="1 0 * * * ${HOME}/raspberry-noaa-v2/scripts/schedule.sh -t"
+cronjob2="@reboot ${HOME}/raspberry-noaa-v2/scripts/schedule.sh"
+cronjob3="@reboot ${HOME}/raspberry-noaa-v2/scripts/tools/scratch_perms.sh"
 cron1=$(crontab -l | grep -v "^#" | grep -F "${cronjob1}" | wc -l)
 cron2=$(crontab -l | grep -v "^#" | grep -F "${cronjob2}" | wc -l)
 cron3=$(crontab -l | grep -v "^#" | grep -F "${cronjob3}" | wc -l)

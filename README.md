@@ -123,6 +123,8 @@ consistent time and language handling.
 4. It's not recommended to use the default user "pi" and the default password "raspberry". While it is not
 recommended that you expose a Pi instance to the public internet for access (unless you have a VERY strict process about security
 patching, and even then it would still be questionable), updating your Pi user password is a decent first step for security.
+5. When you perform the operating system install, please ensure the account name you choose for installing the RN2 software under is 9 characters or less.
+This character limit is due to a known constraint with predict scheduling tool.
 
 ## Install
 
@@ -198,7 +200,7 @@ Want to switch your existing RN2 installation to a different Github branch witho
 
     **Introduction of RN2 Upgrade tool**
 
-       `${HOME}/.rn2_utils/rn2_upgrade.sh https://github.com/jekhokie/raspberry-noaa-v2.git -b beta-development`
+       ${HOME}/.rn2_utils/rn2_upgrade.sh https://github.com/jekhokie/raspberry-noaa-v2.git -b beta-development
 
         Just point to the branch you want to switch to by modifying the above line as needed.     
 
@@ -231,7 +233,7 @@ The verification tool can be used to help identify RN2 installation/configuratio
 
 Execute the verification script by passing the required argument [ quick | full ]
 
-  `$HOME/raspberry-noaa-v2/scripts/tools/verification_tool/verification.sh quick`
+  $HOME/raspberry-noaa-v2/scripts/tools/verification_tool/verification.sh quick
 
   Argument required:  ./verification.sh quick    or    ./verification.sh full
                         (~ 1 minute)                       (~ 5 minutes)
