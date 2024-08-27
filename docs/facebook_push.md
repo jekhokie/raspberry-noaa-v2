@@ -18,16 +18,16 @@ and created a Facebook page, you must then set the application permissions to be
 
 * **API Key**: `FACEBOOK_ACCESS_TOKEN=""`
 
+  The Key you are to enter is your Page Token - [See How to get a Facebook page access token in 2024](https://www.sociablekit.com/how-to-get-a-facebook-page-access-token/)
+
 ## Testing (Optional)
 
 If you want to run a manual test to ensure the Facebook configurations are acceptable, you can run a quick test
 from the command line and pass an actual image file (or many) to the command like so:
 
 ```bash
-./scripts/push_processors/push_facebook.sh "test annotation" \
-                                          "/srv/images/NOAA-18-20210212-091356-MCIR.jpg" \
-                                          "/srv/images/NOAA-19-20210311-060645-ZA.jpg"   \
-                                          "/srv/images/NOAA-19-20210311-060645-spectrogram.png"
+${HOME}/raspberry-noaa-v2/scripts/push_processors/push_facebook.py  "test annotation" \
+        "/srv/images/NOAA-15-20240826-143009-HVCT.jpg /srv/images/NOAA-15-20240826-143009-sea.jpg /srv/images/NOAA-15-20240826-143009-polar-direction.png"
 ```
 
 If all goes well and the image paths passed are files that actually exist, you should see a new post on your
