@@ -234,6 +234,7 @@
 # This problem does not occur on OS Full installations
 
 - name: .config directory ownership
+  become: yes
   file:
     path: /home/{{ target_user }}/.config
     state: directory
