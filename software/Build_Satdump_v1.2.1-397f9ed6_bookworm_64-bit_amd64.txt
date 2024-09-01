@@ -1,0 +1,98 @@
+# Check Satdump version
+sudo dpkg -s satdump | grep '^Version:'
+
+#############################################
+# Ensure required libraries are installed
+#############################################
+
+sudo apt install git build-essential cmake g++ pkgconf libfftw3-dev libpng-dev libtiff-dev libjemalloc-dev  			  	# Core dependencies
+sudo apt install libvolk2-dev libcurl4-openssl-dev                                                           				# If this package is not found, use libvolk-dev or
+sudo apt install libnng-dev                                                                                  				# If this package is not found, follow build instructions below for NNG
+sudo apt install librtlsdr-dev libhackrf-dev libairspy-dev libairspyhf-dev                                   				# All libraries required for live processing (optional)
+sudo apt install libglfw3-dev zenity                                                                         				# Only if you want to build the GUI Version (optional)
+sudo apt install libzstd-dev                                                                                 				# Only if you want to build with ZIQ Recording compression
+# (optional)
+sudo apt install libomp-dev                                                                                  				# Shouldn't be required in general, but in case you have errors with OMP
+sudo apt install ocl-icd-opencl-dev                                                                          				# Optional, but recommended as it drastically increases speed of some # operations. Installs OpenCL.
+# sudo apt install intel-opencl-icd                                                                          				# Optional, enables OpenCL for Intel Integrated Graphics
+
+
+#############################################
+# clone latest satdump
+#############################################
+
+cd $HOME/raspberry-noaa-v2/software
+git clone https://github.com/SatDump/SatDump
+cd SatDump
+mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr ..
+# If you want to build with symbols (much larger deb file, but very helpful if using gdb to get back trace)
+# cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/usr ..
+make -j4
+make package
+
+# Bookworm 64-bit
+cp -p satdump_1.2.1-397f9ed6_amd64.deb ../../satdump_1.2.1-397f9ed6_bookworm_amd64.deb 
+                                            
+
+#############################################
+# Remove existing Satdump version and install the new one manually
+#############################################
+
+cd $HOME/raspberry-noaa-v2/software
+sudo apt remove --purge satdump
+
+# Bookworm 64-bit
+sudo apt install $HOME/raspberry-noaa-v2/software/satdump_1.2.1-397f9ed6_amd64.deb
+
+
+
+#############################################
+# Now test the install script installing it.  
+#############################################
+
+
+cp -p $HOME/raspberry-noaa-v2/ansible/roles/common/tasks/dependencies.yml $HOME/raspberry-noaa-v2/ansible/roles/common/tasks/dependencies.yml.original
+vi $HOME/raspberry-noaa-v2/ansible/roles/common/tasks/dependencies.yml     # Modify satdump version so it will pick up the new DEB file
+
+# deb: "{{ noaa_home }}/software/satdump_1.2.1-397f9ed6_{{ raspbian_version.stdout }}_{{ system_architecture }}.deb"
+
+sudo apt -y remove --purge satdump
+cd $HOME/raspberry-noaa-v2/
+./install_and_upgrade.sh
+
+
+#############################################
+# Check Satdump version & Test it
+#############################################
+
+
+sudo dpkg -s satdump | grep '^Version:'
+
+# Test it
+/usr/bin/satdump live noaa_apt . --source rtlsdr --samplerate 1.024e6 --frequency 137.9125e6 --satellite_number 18 --sdrpp_noise_reduction --gain 49.6 --timeout 1
+
+
+[18:51:36 - 02/07/2024] (I)    _____       __  ____                      
+[18:51:36 - 02/07/2024] (I)   / ___/____ _/ /_/ __ \__  ______ ___  ____ 
+[18:51:36 - 02/07/2024] (I)   \__ \/ __ `/ __/ / / / / / / __ `__ \/ __ \
+[18:51:36 - 02/07/2024] (I)  ___/ / /_/ / /_/ /_/ / /_/ / / / / / / /_/ /
+[18:51:36 - 02/07/2024] (I) /____/\__,_/\__/_____/\__,_/_/ /_/ /_/ .___/ 
+[18:51:36 - 02/07/2024] (I)                                     /_/      
+[18:51:36 - 02/07/2024] (I) Starting SatDump v1.2.1-397f9ed6
+[18:51:36 - 02/07/2024] (I) 
+
+
+#############################################
+# Send DEB files to Mihajlo
+#############################################
+
+# Bookworm
+wormhole send satdump_1.2.1-e84e854_bookworm_amd64.deb
+
+wormhole receive 2-applicant-cowbell
+
+# Bullseye
+wormhole send satdump_1.2.1-e84e854_bullseye_amd64.deb
+
+wormhole receive 5-inventive-aztec
