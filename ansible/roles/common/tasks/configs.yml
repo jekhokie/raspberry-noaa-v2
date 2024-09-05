@@ -186,12 +186,4 @@
     owner: "{{ target_user }}"
     group: "{{ target_user }}"
     mode: 0755
-    
-- name: receive_elektro.sh ownership permissions
-  file:
-    path: /home/{{ target_user }}/raspberry-noaa-v2/scripts/receive_elektro.sh
-    state: file
-    owner: "{{ target_user }}"
-    group: "{{ target_user }}"
-    mode: 0755
 ...
