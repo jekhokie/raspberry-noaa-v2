@@ -15,7 +15,7 @@ PACKAGES_BULLSEYE="satdump wxtoimg nginx predict php7.4-intl php8.0-sqlite3 php8
 PACKAGES_BOOKWORM="satdump wxtoimg nginx predict php8.2-intl php8.2-sqlite3 php8.2-mbstring php8.2-fpm"
 PATHS="/srv/audio /srv/videos /srv/images $HOME/.config/composer $HOME/.config/gmic $HOME/.config/matplotlib $HOME/.config/meteordemod $HOME/.config/composer $HOME/.config/satdump $HOME/raspberry-noaa-v2 $HOME/.predict $HOME/.noaa-v2.conf $HOME/.wxtoimglic $HOME/.wxtoimgrc /usr/local/bin/rtl_* /var/log/raspberry-noaa-v2 /etc/sudoers.d/020_www-data-atrm-nopasswd /var/www/wx-new /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default /tmp/rtl-sdr /etc/modprobe.d/rtlsdr.conf"
 SERVICES="phpsessionclean.service phpsessionclean.timer nginx.service"
-OS=$(grep -E "^deb http://raspbian.raspberry.org/raspbian|^deb http://raspbian.raspberrypi.org/raspbian|^deb http://deb.debian.org/debian|^deb https://deb.debian.org/debian" /etc/apt/sources.list /etc/apt/sources.list.d/official-package-repositories.list 2> /dev/null | head -n 1 | awk '{print $3}')
+OS=$(cat /etc/os-release | grep -E "^DEBIAN_CODENAME|^VERSION_CODENAME" | awk -F"=" '{print $NF}' | sort | head -1)
 
 if [[ ${OS} == "bookworm" ]]; then
   PACKAGES=${PACKAGES_BOOKWORM}
