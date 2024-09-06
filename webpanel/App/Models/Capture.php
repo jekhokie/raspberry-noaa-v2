@@ -70,7 +70,8 @@ class Capture extends \Lib\Model {
     switch($pass['sat_type']) {
       case 0: // Meteor
         if ($pass['daylight_pass'] == 1) {
-          $enhancements = [
+          $enhancements = array_map(function($x) { return "-" . $x . ".jpg"; }, explode(' ', Config::METEOR_DAY_ENHANCEMENTS));
+          $additional_enhancements = [
               '-MSA_corrected.jpg',
               '-MSA_projected.jpg',
               '-MCIR_corrected.jpg',
@@ -143,7 +144,8 @@ class Capture extends \Lib\Model {
               '-mercator_rain_68_composite.jpg'
           ];
         } else {
-          $enhancements = [
+          $enhancements = array_map(function($x) { return "-" . $x . ".jpg"; }, explode(' ', Config::METEOR_NIGHT_ENHANCEMENTS));
+          $additional_enhancements = [
               '-MCIR_corrected.jpg',
               '-MCIR_projected.jpg',
               '-654_corrected.jpg',
@@ -190,6 +192,7 @@ class Capture extends \Lib\Model {
               '-mercator_rain_68_composite.jpg'
           ];
         }
+        $enhancements = array_merge($enhancements, $additional_enhancements);
         break;
       case 1: // NOAA
         if ($pass['daylight_pass'] == 1) {
