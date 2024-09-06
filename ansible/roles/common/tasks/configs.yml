@@ -154,4 +154,36 @@
     owner: "{{ target_user }}"
     group: "{{ target_user }}"
     mode: 0755
+
+- name: receive_noaa.sh ownership permissions
+  file:
+    path: /home/{{ target_user }}/raspberry-noaa-v2/scripts/receive_noaa.sh
+    state: file
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0755
+
+- name: receive_meteor.sh ownership permissions
+  file:
+    path: /home/{{ target_user }}/raspberry-noaa-v2/scripts/receive_meteor.sh
+    state: file
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0755
+
+- name: schedule.sh ownership permissions
+  file:
+    path: /home/{{ target_user }}/raspberry-noaa-v2/scripts/schedule.sh
+    state: file
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0755
+
+- name: common.sh ownership permissions
+  file:
+    path: /home/{{ target_user }}/raspberry-noaa-v2/scripts/common.sh
+    state: file
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0755
 ...
