@@ -142,7 +142,7 @@
     "noaa_map_state_border_color":                   { "type": "string" },
     "wxtoimg_map_offset":                            { "type": "number" },
     "noaa_thermal_temp_overlay":                     { "type": "boolean" },
-    "noaa_thermal_temp_overlay_location":            { "type": "boolean" },
+    "noaa_thermal_temp_overlay_location":            { "type": "string" },
     "noaa_jpg_image_quality": {
       "type": "number",
       "minimum": 0,
