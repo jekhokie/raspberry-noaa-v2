@@ -44,6 +44,7 @@
   template:
     src: satdump_cfg.json.j2
     dest: /usr/share/satdump/satdump_cfg.json
+    force: yes
     owner: root
     group: root
     mode: 0644
