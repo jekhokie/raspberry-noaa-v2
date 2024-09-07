@@ -180,11 +180,11 @@ file 644 $USER $USER /home/$USER/raspberry-noaa-v2/software/anydesk_6.3.0-1_armh
 file 644 $USER $USER /home/$USER/raspberry-noaa-v2/software/predict_2.2.3-4-b2_amd64.deb
 file 644 $USER $USER /home/$USER/raspberry-noaa-v2/software/predict_2.2.5+dfsg.1-1_arm64.deb
 file 644 $USER $USER /home/$USER/raspberry-noaa-v2/software/predict_2.2.5+dfsg.1-1_armhf.deb
-file 644 $USER $USER /home/$USER/raspberry-noaa-v2/software/satdump_1.2.1-d5fd2f41_bookworm_amd64.deb
-file 644 $USER $USER /home/$USER/raspberry-noaa-v2/software/satdump_1.2.1-d5fd2f41_bookworm_arm64.deb
-file 644 $USER $USER /home/$USER/raspberry-noaa-v2/software/satdump_1.2.1-d5fd2f41_bookworm_armhf.deb
-file 644 $USER $USER /home/$USER/raspberry-noaa-v2/software/satdump_1.2.1-d5fd2f41_bullseye_amd64.deb
-file 644 $USER $USER /home/$USER/raspberry-noaa-v2/software/satdump_1.2.1-d5fd2f41_bullseye_armhf.deb
+file 644 $USER $USER /home/$USER/raspberry-noaa-v2/software/satdump_1.2.1-397f9ed6_bookworm_amd64.deb
+file 644 $USER $USER /home/$USER/raspberry-noaa-v2/software/satdump_1.2.1-397f9ed6_bookworm_arm64.deb
+file 644 $USER $USER /home/$USER/raspberry-noaa-v2/software/satdump_1.2.1-397f9ed6_bookworm_armhf.deb
+file 644 $USER $USER /home/$USER/raspberry-noaa-v2/software/satdump_1.2.1-397f9ed6_bullseye_amd64.deb
+file 644 $USER $USER /home/$USER/raspberry-noaa-v2/software/satdump_1.2.1-397f9ed6_bullseye_armhf.deb
 file 644 $USER $USER /home/$USER/raspberry-noaa-v2/software/wxtoimg-amd64-2.11.2-beta.deb
 file 644 $USER $USER /home/$USER/raspberry-noaa-v2/software/wxtoimg-armhf-2.11.2-beta.deb
 file 644 $USER $USER /home/$USER/raspberry-noaa-v2/templates/fstab
