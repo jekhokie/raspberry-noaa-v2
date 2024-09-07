@@ -47,7 +47,7 @@
     owner: root
     group: root
     mode: 0644
-    
+
 - name: wxtoimg license terms acceptance file
   copy:
     src: wxtoimglic

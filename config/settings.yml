@@ -191,8 +191,8 @@ produce_spectrogram: false    #NOTE: the spectrogram option here is available fo
 noaa_crop_telemetry: false
 produce_noaa_pristine_image: false
 produce_noaa_pristine_histogram: false
-noaa_daytime_enhancements: 'MSA MSA-precip MCIR MCIR-precip HVC-precip HVCT-precip HVC HVCT ZA therm sea CC HE HF MD BD MB JF JJ LC TA WV NO histeq'
-noaa_nighttime_enhancements: 'MCIR MCIR-precip HVCT ZA therm NO TA sea histeq'
+noaa_daytime_enhancements: 'MSA MSA-precip MCIR MCIR-precip HVC-precip HVCT-precip HVC HVCT ZA therm sea CC HE HF MD BD MB JF JJ LC TA WV NO histeq enhancd-IR'
+noaa_nighttime_enhancements: 'MCIR MCIR-precip HVCT ZA therm NO TA sea histeq enhancd-IR'
 noaa_crop_toptobottom: false
 noaa_interpolate: false
 noaa_jpg_image_quality: 90
@@ -208,6 +208,8 @@ noaa_map_state_border_enable: true
 noaa_map_state_border_color: "0xffff00"
 wxtoimg_map_offset: 10.5                    #Change this value only if you see map offsets from the ground on WXtoImg NOAA images
 
+meteor_daytime_enhancements: '221 321 124 MSA MCIR MCIR-precip HVC HVCT ZA therm sea CC HE HF MD BD MB JF JJ LC TA WV NO enhanced-IR'
+meteor_nighttime_enhancements: '654 456 MCIR MCIR-precip HVC HVCT ZA therm sea CC HE HF MD BD MB JF JJ LC TA WV NO enhanced-IR'
 flip_meteor_image: true
 meteor_jpg_image_quality: 90
 meteor_draw_map_overlay: true
