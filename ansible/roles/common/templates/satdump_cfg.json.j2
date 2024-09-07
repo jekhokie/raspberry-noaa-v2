@@ -4,17 +4,10 @@
         // Parameters shown in the default UI table, for everything
         "default_offline_parameters": {
             "baseband_format": {
-                "type": "options",
+                "type": "baseband_type",
                 "value": "cs8",
                 "name": "Baseband Format",
-                "options": [
-                    "cs8",
-                    "cu8",
-                    "cs16",
-                    "cf32",
-                    "ziq"
-                ],
-                "description": "The sample format of the recorded baseband.\nThis depends on the settings of your recording software,\nbut some common formats are s16 (SDR#, etc),\nf32 (GQRX), u8 (HDSDR), etc",
+                "description": "The sample format of the recorded baseband.\nThis depends on the settings of your recording software,\nbut some common formats are cs16 (SDR#, etc),\ncf32 (GQRX), cu8 (HDSDR), etc",
                 "no_live": true
             },
             "samplerate": {
@@ -103,6 +96,12 @@
             "value": false,
             "name": "Remember Window Size and Position",
             "description": "Remeber size and position of the window when closing SatDump. It will open in the same configuration on next launch"
+        },
+        "advanced_mode": {
+            "type": "bool",
+            "value": false,
+            "name": "Advanced Mode",
+            "description": "Allows full editing of all SatDump options. Be warned: invalid configurations\nmay result in crashes, corruption of data, and more. Use at your own risk!"
         }
     },
     // More generic SatDump settings
@@ -168,21 +167,21 @@
         },
         "qth_lat": {
             "type": "float",
-            "value": {{ latitude }},
+            "value": 0.0,
             "name": "QTH Latitude",
             "description": "Latitude of your station's QTH (North is positive; South is negative)"
         },
         "qth_lon": {
             "type": "float",
-            "value": {{ longitude }},
+            "value": 0.0,
             "name": "QTH Longitude",
             "description": "Longitude of your station's QTH (East is positive; West is negative)"
         },
         "qth_alt": {
             "type": "float",
-            "value": {{ altitude }},
+            "value": 0.0,
             "name": "QTH Altitude",
-            "description": "Altitude (meters) of your station's QTH"
+            "description": "Altitude (meters above sea level) of your station's QTH"
         },
         "default_qth_label": {
             "type": "string",
@@ -247,7 +246,7 @@
         },
         "tle_update_interval": {
             "type": "options",
-            "value": "Never",
+            "value": "1 day",
             "name": "TLE Auto Update Interval",
             "options": [
                 "4 hours",
@@ -383,7 +382,7 @@
             // 41882, // FENGYUN-4A
             // 48808, // FENGYUN-4B
             // 43823, // GK-2A
-            31304, // AIM
+            // 31304, // AIM
             // 53807, // BlueWalker-3
             // 53323, // COSMOS-2558
             // 42719, // COSMOS-2518
@@ -505,7 +504,7 @@
                         "white_balance": true,
                         "individual_equalize": true
                     },
-                    "AVHRR 543b False Color": {
+                    "AVHRR 543b IR False Color": {
                         "equation": "ch10 == 0 ? 0 : 1-ch10, ch9 == 0 ? 0 : 1-ch9, ch4 == 0 ? 0 : 1-ch4",
                         "white_balance": true,
                         "individual_equalize": true
@@ -576,13 +575,13 @@
                         "description": "descriptions/NatColor.md",
                         "geo_correct": true
                     },
-                    "543b": {
+                    "AVHRR 543b IR False Color": {
                         "equation": "ch5, ch4, ch3b",
                         "individual_equalize": true,
                         "description": "descriptions/543b.md",
                         "geo_correct": true
                     },
-                    "3b45": {
+                    "AVHRR 3b45 IR False Color": {
                         "equation": "ch3b, ch4, ch5",
                         "individual_equalize": true,
                         "description": "descriptions/3b45.md",
@@ -610,34 +609,7 @@
                         "equation": "cch4",
                         "apply_lut": true,
                         "description": "descriptions/ThermalCal.md",
-                        "geo_correct": true,
-                        "autogen": {{ "true" if "therm" in noaa_nighttime_enhancements.split(' ') else "false" }},
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "geo_correct": true
                     },
                     "Night Microphysics": {
                         "equation": "cch5-cch4,cch4-cch3b,cch4",
@@ -672,9 +644,9 @@
                         "cpp": "underlay_with_clouds",
                         "description": "descriptions/CloudUnderlay.md",
                         "vars": {
-                            "minoffset": 0,
+                            "minoffset": 0.0,
                             "scalar": 1.5,
-                            "thresold": 0,
+                            "thresold": 0.0,
                             "blend": false,
                             "invert": false
                         },
@@ -685,7 +657,7 @@
                         "cpp": "underlay_with_clouds",
                         "description": "descriptions/CloudUnderlay.md",
                         "vars": {
-                            "minoffset": 0,
+                            "minoffset": 0.0,
                             "scalar": 1.5,
                             "thresold": 0.15,
                             "blend": false,
@@ -698,17 +670,17 @@
                         "cpp": "underlay_with_clouds",
                         "description": "descriptions/MCIR.md",
                         "vars": {
-                            "minoffset": 0,
-                            "scalar": 1,
-                            "thresold": 0,
+                            "minoffset": 0.0,
+                            "scalar": 1.0,
+                            "thresold": 0.0,
                             "blend": true,
                             "invert": true
                         },
                         "draw_map_overlay": true,
                         "borders_color": [
-                            1,
-                            1,
-                            0
+                            1.0,
+                            1.0,
+                            0.0
                         ]
                     },
                     "MSA (channel 1)": {
@@ -716,80 +688,38 @@
                         "cpp": "underlay_with_clouds",
                         "description": "descriptions/MSA.md",
                         "geo_correct": true,
-                        "autogen": {{ "true" if "MSA" in noaa_daytime_enhancements.split(' ') else "false" }},
                         "vars": {
-                            "minoffset": 0,
+                            "minoffset": 0.0,
                             "scalar": 0.95,
-                            "thresold": 0,
+                            "thresold": 0.0,
                             "blend": true,
                             "invert": false
                         },
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
+                        "draw_map_overlay": true,
                         "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                            1.0,
+                            1.0,
+                            0.0
+                        ]
                     },
                     "MSA (channel 2)": {
                         "channels": "cch2",
                         "cpp": "underlay_with_clouds",
                         "description": "descriptions/MSA.md",
                         "geo_correct": true,
-                        "autogen": {{ "true" if "MSA" in noaa_daytime_enhancements.split(' ') else "false" }},
                         "vars": {
-                            "minoffset": 0,
+                            "minoffset": 0.0,
                             "scalar": 0.95,
-                            "thresold": 0,
+                            "thresold": 0.0,
                             "blend": true,
                             "invert": false
                         },
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
+                        "draw_map_overlay": true,
                         "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                            1.0,
+                            1.0,
+                            0.0
+                        ]
                     },
                     "Snow enhancement": {
                         "equation": "((3*ch1-ch4)/2)^1.7, ((3*ch1+ch4)/4)^1.7, (ch1-ch3a)^1.7",
@@ -865,7 +795,6 @@
                         "channels": "cch4",
                         "description": "descriptions/SST.md",
                         "lua": "scripted_compos/sst_landmask.lua",
-                        "autogen": {{ "true" if "sea" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "vars": {
                             "minval": 0,
                             "maxval": 1
@@ -877,32 +806,7 @@
                                 "max": 307.15
                             }
                         },
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false
                     },
                     "Night Time Fire Detection (transparent)": {
                         "channels": "cch3b, cch4",
@@ -920,81 +824,17 @@
                                 "max": 1000
                             }
                         },
-                        "autogen": {{ "true" if "fire" in noaa_nighttime_enhancements.split(' ') else "false" }},
-                        "vars": {
-                            "minval": 0,
-                            "maxval": 1
-                        },
-                        "calib_cfg": {
-                            "cch4": {
-                                "type": "temperature",
-                                "min": 270.65,
-                                "max": 307.15
-                            }
-                        },
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false
                     },
                     "NO enhancement": {
                         "lut": "lut/cal/WXtoImg-NO.png",
                         "description": "descriptions/NO.md",
                         "channels": "cch4",
-                        "autogen": {{ "true" if "NO" in noaa_daytime_enhancements.split(' ') else "false" }},
                         "calib_cfg": {
                             "cch4": {
                                 "type": "radiance",
                                 "min": 4.261272967687783,
                                 "max": 155.2782819316993
-                            }
-                        },
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
                             }
                         }
                     },
@@ -1009,34 +849,8 @@
                         },
                         "lut": "lut/cal/WXtoImg-ZA.png",
                         "description": "descriptions/ZA.md",
-                        "autogen": {{ "true" if "ZA" in noaa_daytime_enhancements.split(' ') else "false" }},
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "MB enhancement": {
                         "lut": "lut/cal/WXtoImg-MB.png",
@@ -1049,34 +863,8 @@
                                 "max": 155.2782819316993
                             }
                         },
-                        "autogen": {{ "true" if "MB" in noaa_daytime_enhancements.split(' ') else "false" }},
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "MD enhancement": {
                         "lut": "lut/cal/WXtoImg-MD.png",
@@ -1089,34 +877,8 @@
                                 "max": 155.2782819316993
                             }
                         },
-                        "autogen": {{ "true" if "MD" in noaa_daytime_enhancements.split(' ') else "false" }},
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "BD enhancement": {
                         "channels": "cch4",
@@ -1129,34 +891,8 @@
                         },
                         "description": "descriptions/BD.md",
                         "lut": "lut/cal/WXtoImg-BD.png",
-                        "autogen": {{ "true" if "BD" in noaa_daytime_enhancements.split(' ') else "false" }},
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "CC enhancement": {
                         "channels": "cch4",
@@ -1169,34 +905,8 @@
                         },
                         "description": "descriptions/CC.md",
                         "lut": "lut/cal/WXtoImg-CC.png",
-                        "autogen": {{ "true" if "CC" in noaa_daytime_enhancements.split(' ') else "false" }},
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "EC enhancement": {
                         "channels": "cch4",
@@ -1209,34 +919,8 @@
                         },
                         "description": "descriptions/EC.md",
                         "lut": "lut/cal/WXtoImg-EC.png",
-                        "autogen": {{ "true" if "EC" in noaa_daytime_enhancements.split(' ') else "false" }},
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "HE enhancement": {
                         "channels": "cch4",
@@ -1249,35 +933,8 @@
                         },
                         "description": "descriptions/HE.md",
                         "lut": "lut/cal/WXtoImg-HE.png",
-                        "autogen": {{ "true" if "HE" in noaa_daytime_enhancements.split(' ') else "false" }},
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
-
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "HF enhancement": {
                         "channels": "cch4",
@@ -1290,35 +947,8 @@
                         },
                         "description": "descriptions/HF.md",
                         "lut": "lut/cal/WXtoImg-HF.png",
-                        "autogen": {{ "true" if "HF" in noaa_daytime_enhancements.split(' ') else "false" }},
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
-
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "JF enhancement": {
                         "channels": "cch4",
@@ -1331,35 +961,8 @@
                         },
                         "description": "descriptions/JF.md",
                         "lut": "lut/cal/WXtoImg-JF.png",
-                        "autogen": {{ "true" if "JF" in noaa_daytime_enhancements.split(' ') else "false" }},
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
-
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "JJ enhancement": {
                         "channels": "cch4",
@@ -1372,35 +975,8 @@
                         },
                         "description": "descriptions/JJ.md",
                         "lut": "lut/cal/WXtoImg-JJ.png",
-                        "autogen": {{ "true" if "JJ" in noaa_daytime_enhancements.split(' ') else "false" }},
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
-
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "TA enhancement": {
                         "channels": "cch4",
@@ -1413,73 +989,49 @@
                         },
                         "description": "descriptions/TA.md",
                         "lut": "lut/cal/WXtoImg-TA.png",
-                        "autogen": {{ "true" if "TA" in noaa_daytime_enhancements.split(' ') else "false" }},
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
-
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "Enhanced IR": {
                         "channels": "cch4",
                         "description": "descriptions/EnhancedIR.md",
                         "lut": "lut/cal/EnhancedIR.png",
-                        "autogen": {{ "true" if "enhanced-IR" in noaa_nighttime_enhancements.split(' ') else "false" }},
+                        "autogen": false,
                         "geo_correct": true,
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        },
                         "calib_cfg": {
                             "cch4": {
                                 "type": "temperature",
                                 "min": 200,
                                 "max": 300
+                            }
+                        }
+                    },
+                    "Cloud Top IR": {
+                        "channels": "cch4",
+                        "description": "descriptions/CloudTopIR.md",
+                        "lut": "lut/cal/CloudTopIR.png",
+                        "autogen": true,
+                        "geo_correct": true,
+                        "calib_cfg": {
+                            "cch4": {
+                                "type": "temperature",
+                                "min": 183.15,
+                                "max": 323.15
+                            }
+                        }
+                    },
+                    "Enhanced IR (Transparent)": {
+                        "equation": "cch4, 0, 0, cch4 > 0.99 ? 1 : 0",
+                        "description": "descriptions/EnhancedIR.md",
+                        "autogen": false,
+                        "geo_correct": true,
+                        "apply_lut": true,
+                        "invert": true,
+                        "calib_cfg": {
+                            "cch4": {
+                                "type": "temperature",
+                                "min": 200,
+                                "max": 241
                             }
                         }
                     },
@@ -1525,191 +1077,94 @@
                         "channels": "chb",
                         "cpp": "underlay_with_clouds",
                         "description": "descriptions/MCIR.md",
-                        "autogen": {{ "true" if "MCIR" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "vars": {
-                            "minoffset": 0,
-                            "scalar": 1,
-                            "thresold": 0,
+                            "minoffset": 0.0,
+                            "scalar": 1.0,
+                            "thresold": 0.0,
                             "blend": true,
                             "invert": false
                         },
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
+                        "draw_map_overlay": true,
                         "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
-
+                            1.0,
+                            1.0,
+                            0.0
+                        ]
                     },
                     "MSA (Uncalibrated)": {
                         "channels": "cha",
                         "cpp": "underlay_with_clouds",
                         "description": "descriptions/MSA.md",
-                        "autogen": {{ "true" if "MSA" in noaa_daytime_enhancements.split(' ') else "false" }},
                         "vars": {
-                            "minoffset": 0,
+                            "minoffset": 0.0,
                             "scalar": 0.95,
-                            "thresold": 0,
+                            "thresold": 0.0,
                             "blend": true,
                             "invert": false
                         },
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
+                        "draw_map_overlay": true,
                         "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
-
+                            1.0,
+                            1.0,
+                            0.0
+                        ]
                     },
                     "MCIR Rain (Uncalibrated)": {
                         "channels": "cha, chb",
                         "lua": "scripted_compos/underlay_with_clouds_lut.lua",
                         "description": "descriptions/MCIR_precip.md",
-                        "autogen": {{ "true" if "MCIR-precip" in noaa_nighttime_enhancements.split(' ') else "false" }},
                         "vars": {
                             "minoffset": 0.21,
-                            "scalar": 1,
+                            "scalar": 1.0,
                             "thresold": 0.8,
                             "lut": "lut/WXtoImg-NO_mod_APT.png"
                         },
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
+                        "draw_map_overlay": true,
                         "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
-
+                            1.0,
+                            1.0,
+                            0.0
+                        ]
                     },
                     "HVC (channel 1)": {
                         "lut": "lut/WXtoImg-HVC-1.png",
                         "description": "descriptions/HVC.md",
                         "channels": "ch1, ch4",
-                        "autogen": {{ "true" if "HVC" in noaa_nighttime_enhancements.split(' ') else "false" }},
+                        "autogen": false,
                         "geo_correct": true,
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
+                        "draw_map_overlay": true,
                         "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
-
+                            1.0,
+                            1.0,
+                            0.0
+                        ]
                     },
                     "HVC (channel 2)": {
                         "lut": "lut/WXtoImg-HVC-2.png",
                         "description": "descriptions/HVC.md",
                         "channels": "ch2, ch4",
-                        "autogen": {{ "true" if "HVC" in noaa_nighttime_enhancements.split(' ') else "false" }},
+                        "autogen": false,
                         "geo_correct": true,
-                        "draw_map_overlay": {{ noaa_map_country_border_enable|lower }},
+                        "draw_map_overlay": true,
                         "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ noaa_map_country_border_enable|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
-
+                            1.0,
+                            1.0,
+                            0.0
+                        ]
+                    }
+                },
+                "project_channels": {
+                    "channels": "4",
+                    "width": 4096,
+                    "height": 2048,
+                    "individual_equalize": true,
+                    "draw_map_overlay": true,
+                    "config": {
+                        "type": "equirec",
+                        "offset_x": -180,
+                        "offset_y": 90,
+                        "scalar_x": 0.087890625,
+                        "scalar_y": -0.087890625
                     }
                 }
             },
@@ -1825,229 +1280,58 @@
                 "rgb_composites": {
                     "221": {
                         "equation": "ch2, ch2, ch1",
-                        "white_balance": true,
-                        "description": "descriptions/221.md",
-                        "autogen": true,
                         "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "white_balance": true,
+                        "description": "descriptions/221.md"
                     },
                     "321": {
                         "equation": "ch3, ch2, ch1",
                         "description": "descriptions/321.md",
+                        "geo_correct": true,
                         "white_balance": true,
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
                         "project": {
-                            "width": 2048,
+                            "width": 4096,
                             "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
+                            "draw_map_overlay": true,
+                            "individual_equalize": true,
                             "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
-                    },
-                    "negative224": {
-                        "equation": "ch2, ch2, 1-ch4",
-                        "geo_correct": true,
-                        "individual_equalize": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "map_overlay_colors": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
-                    },
-                    "4": {
-                        "equation": "ch4, ch4, ch4",
-                        "geo_correct": true,
-                        "individual_equalize": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "map_overlay_colors": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
+                                "type": "equirec",
+                                "offset_x": -180,
+                                "offset_y": 90,
+                                "scalar_x": 0.087890625,
+                                "scalar_y": -0.087890625
                             }
                         }
                     },
                     "124": {
                         "equation": "ch1, ch2, 1-ch4",
                         "description": "descriptions/124.md",
-                        "white_balance": true,
-                        "individual_equalize": true,
-                        "autogen": true,
                         "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "white_balance": true,
+                        "individual_equalize": true
                     },
                     "Natural Color": {
                         "equation": "((0.5*max(ch4,min(ch2,ch1)) + 0.5*ch2)+0.3*ch3)*0.85, ch2, ch1",
                         "description": "descriptions/NatColor.md",
-                        "white_balance": true,
-                        "autogen": true,
                         "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "white_balance": true
                     },
                     "Thermal Channel": {
                         "equation": "1 - ch5",
                         "description": "descriptions/ThermalUncal.md",
                         "individual_equalize": true,
-                        "autogen": true,
                         "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
                         "project": {
-                            "width": 2048,
+                            "width": 4096,
                             "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
+                            "draw_map_overlay": true,
+                            "individual_equalize": true,
                             "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
+                                "type": "equirec",
+                                "offset_x": -180,
+                                "offset_y": 90,
+                                "scalar_x": 0.087890625,
+                                "scalar_y": -0.087890625
                             }
                         }
                     },
@@ -2055,133 +1339,27 @@
                         "equation": "ch1, ch4^2.5, ch5",
                         "description": "descriptions/DayMicro.md",
                         "individual_equalize": true,
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "geo_correct": true
                     },
                     "Night Microphysics": {
                         "equation": "ch6-ch5, ch5-ch4, ch5",
                         "description": "descriptions/NightMicro.md",
                         "individual_equalize": true,
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "geo_correct": true
                     },
                     "654": {
                         "equation": "1 - ch6, 1 - ch5, 1 - ch4",
                         "description": "descriptions/543b.md",
                         "individual_equalize": true,
-                        "autogen": true,
                         "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": true
                     },
                     "456": {
                         "equation": "1 - ch4, 1 - ch5, 1 - ch6",
                         "description": "descriptions/3b45.md",
                         "individual_equalize": true,
-                        "autogen": true,
                         "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": true
                     },
                     "Sea Surface Temperature": {
                         "channels": "cch5",
@@ -2198,34 +1376,7 @@
                                 "max": 307.15
                             }
                         },
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false
                     },
                     "Night Time Fire Detection (transparent)": {
                         "channels": "cch4, cch5",
@@ -2243,34 +1394,7 @@
                                 "max": 1000
                             }
                         },
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false
                     },
                     "NO enhancement": {
                         "lut": "lut/cal/WXtoImg-NO.png",
@@ -2281,34 +1405,6 @@
                                 "type": "radiance",
                                 "min": 4.261272967687783,
                                 "max": 155.2782819316993
-                            }
-                        },
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
                             }
                         }
                     },
@@ -2323,34 +1419,8 @@
                         },
                         "lut": "lut/cal/WXtoImg-ZA.png",
                         "description": "descriptions/ZA.md",
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "MB enhancement": {
                         "lut": "lut/cal/WXtoImg-MB.png",
@@ -2363,34 +1433,8 @@
                                 "max": 155.2782819316993
                             }
                         },
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "MD enhancement": {
                         "lut": "lut/cal/WXtoImg-MD.png",
@@ -2403,34 +1447,8 @@
                                 "max": 155.2782819316993
                             }
                         },
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "BD enhancement": {
                         "channels": "cch5",
@@ -2443,34 +1461,8 @@
                         },
                         "description": "descriptions/BD.md",
                         "lut": "lut/cal/WXtoImg-BD.png",
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "CC enhancement": {
                         "channels": "cch5",
@@ -2483,34 +1475,8 @@
                         },
                         "description": "descriptions/CC.md",
                         "lut": "lut/cal/WXtoImg-CC.png",
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "EC enhancement": {
                         "channels": "cch5",
@@ -2523,34 +1489,8 @@
                         },
                         "description": "descriptions/EC.md",
                         "lut": "lut/cal/WXtoImg-EC.png",
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "HE enhancement": {
                         "channels": "cch5",
@@ -2563,34 +1503,8 @@
                         },
                         "description": "descriptions/HE.md",
                         "lut": "lut/cal/WXtoImg-HE.png",
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "HF enhancement": {
                         "channels": "cch5",
@@ -2603,34 +1517,8 @@
                         },
                         "description": "descriptions/HF.md",
                         "lut": "lut/cal/WXtoImg-HF.png",
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "JF enhancement": {
                         "channels": "cch5",
@@ -2643,34 +1531,8 @@
                         },
                         "description": "descriptions/JF.md",
                         "lut": "lut/cal/WXtoImg-JF.png",
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "JJ enhancement": {
                         "channels": "cch5",
@@ -2683,34 +1545,8 @@
                         },
                         "description": "descriptions/JJ.md",
                         "lut": "lut/cal/WXtoImg-JJ.png",
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "autogen": false,
+                        "geo_correct": true
                     },
                     "TA enhancement": {
                         "channels": "cch5",
@@ -2723,32 +1559,20 @@
                         },
                         "description": "descriptions/TA.md",
                         "lut": "lut/cal/WXtoImg-TA.png",
+                        "autogen": false,
+                        "geo_correct": true
+                    },
+                    "Cloud Top IR": {
+                        "channels": "cch5",
+                        "description": "descriptions/CloudTopIR.md",
+                        "lut": "lut/cal/CloudTopIR.png",
                         "autogen": true,
                         "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
+                        "calib_cfg": {
+                            "cch4": {
+                                "type": "temperature",
+                                "min": 183.15,
+                                "max": 323.15
                             }
                         }
                     },
@@ -2756,34 +1580,8 @@
                         "channels": "cch5",
                         "description": "descriptions/EnhancedIR.md",
                         "lut": "lut/cal/EnhancedIR.png",
-                        "autogen": true,
+                        "autogen": false,
                         "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        },
                         "calib_cfg": {
                             "cch5": {
                                 "type": "temperature",
@@ -2792,38 +1590,27 @@
                             }
                         }
                     },
+                    "Enhanced IR (Transparent)": {
+                        "equation": "cch5, 0, 0, cch5 > 0.99 ? 1 : 0",
+                        "description": "descriptions/EnhancedIR.md",
+                        "autogen": false,
+                        "geo_correct": true,
+                        "apply_lut": true,
+                        "invert": true,
+                        "calib_cfg": {
+                            "cch5": {
+                                "type": "temperature",
+                                "min": 200,
+                                "max": 241
+                            }
+                        }
+                    },
                     "Color general cloud IR": {
                         "channels": "cch5",
                         "description": "descriptions/ColorGeneralIR.md",
                         "lut": "lut/cal/Multispectral.png",
-                        "autogen": true,
+                        "autogen": false,
                         "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        },
                         "calib_cfg": {
                             "cch5": {
                                 "type": "temperature",
@@ -2836,34 +1623,8 @@
                         "channels": "cch5",
                         "description": "descriptions/ConvectionLWIR.md",
                         "lut": "lut/cal/ConvectionLWIR.png",
-                        "autogen": true,
+                        "autogen": false,
                         "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        },
                         "calib_cfg": {
                             "cch5": {
                                 "type": "temperature",
@@ -2876,113 +1637,44 @@
                         "channels": "ch4",
                         "cpp": "underlay_with_clouds",
                         "description": "descriptions/MCIR.md",
+                        "geo_correct": true,
                         "vars": {
-                            "minoffset": 0,
-                            "scalar": 1,
-                            "thresold": 0,
+                            "minoffset": 0.0,
+                            "scalar": 1.0,
+                            "thresold": 0.0,
                             "blend": true,
                             "invert": true
                         },
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "draw_map_overlay": true,
                         "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                            1.0,
+                            1.0,
+                            0.0
+                        ]
                     },
                     "MSA": {
                         "channels": "ch1",
                         "cpp": "underlay_with_clouds",
                         "description": "descriptions/MSA.md",
+                        "geo_correct": true,
                         "vars": {
-                            "minoffset": 0,
-                            "scalar": 1,
-                            "thresold": 0,
+                            "minoffset": 0.0,
+                            "scalar": 1.0,
+                            "thresold": 0.0,
                             "blend": true,
                             "invert": false
                         },
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
+                        "draw_map_overlay": true,
                         "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                            1.0,
+                            1.0,
+                            0.0
+                        ]
                     },
                     "Channel 4 Equalized": {
                         "equation": "1 - ch4",
                         "individual_equalize": true,
-                        "autogen": true,
-                        "geo_correct": true,
-                        "draw_map_overlay": {{ meteor_draw_map_overlay|lower }},
-                        "borders_color": [
-                            1,
-                            1,
-                            0
-                        ],
-                        "project": {
-                            "width": 2048,
-                            "height": 2048,
-                            "draw_map": {{ meteor_draw_map_overlay|lower }},
-                            "map_overlay_colors": [
-                                1,
-                                1,
-                                0
-                            ],
-                            "individual_equalize": false,
-                            "config": {
-                                "type": "stereo",
-                                "lat0": {{ latitude }},
-                                "lon0": {{ longitude }},
-                                "scalar_x": 2000,
-                                "scalar_y": -2000,
-                                "offset_x": -2048000,
-                                "offset_y": 2048000
-                            }
-                        }
+                        "geo_correct": true
                     }
                 }
             },
@@ -3053,9 +1745,9 @@
                         },
                         "draw_map_overlay": true,
                         "borders_color": [
-                            1,
-                            1,
-                            1
+                            1.0,
+                            1.0,
+                            1.0
                         ],
                         "autogen": true
                     },
@@ -3067,9 +1759,9 @@
                             "lut": "goes/abi/usradioguycustomlut.png"
                         },
                         "borders_color": [
-                            1,
-                            1,
-                            1
+                            1.0,
+                            1.0,
+                            1.0
                         ],
                         "autogen": false // Needs to be optimized...
                     },
@@ -3097,9 +1789,9 @@
                         },
                         "lua": "scripted_compos/split_difference.lua",
                         "borders_color": [
-                            1,
-                            1,
-                            1
+                            1.0,
+                            1.0,
+                            1.0
                         ],
                         "autogen": false
                     },
@@ -3141,9 +1833,9 @@
                         },
                         "lut": "lut/cal/abi_ir_11-15.png",
                         "borders_color": [
-                            1,
-                            1,
-                            1
+                            1.0,
+                            1.0,
+                            1.0
                         ],
                         "autogen": true
                     },
@@ -3161,9 +1853,9 @@
                         },
                         "lut": "lut/cal/abi_ir_11-15.png",
                         "borders_color": [
-                            1,
-                            1,
-                            1
+                            1.0,
+                            1.0,
+                            1.0
                         ],
                         "autogen": true
                     },
@@ -3181,9 +1873,9 @@
                         },
                         "lut": "lut/cal/abi_ir_11-15.png",
                         "borders_color": [
-                            1,
-                            1,
-                            1
+                            1.0,
+                            1.0,
+                            1.0
                         ],
                         "autogen": true
                     },
@@ -3200,9 +1892,9 @@
                         },
                         "lut": "lut/cal/Dirty_IR_CIRA.png",
                         "borders_color": [
-                            1,
-                            1,
-                            1
+                            1.0,
+                            1.0,
+                            1.0
                         ],
                         "autogen": true
                     },
@@ -3220,9 +1912,9 @@
                         },
                         "lut": "lut/cal/abi_wv_8-10.png",
                         "borders_color": [
-                            1,
-                            0,
-                            0
+                            1.0,
+                            0.0,
+                            0.0
                         ],
                         "autogen": true
                     },
@@ -3240,9 +1932,9 @@
                         },
                         "lut": "lut/cal/abi_wv_8-10.png",
                         "borders_color": [
-                            1,
-                            0,
-                            0
+                            1.0,
+                            0.0,
+                            0.0
                         ],
                         "autogen": true
                     },
@@ -3259,9 +1951,9 @@
                         },
                         "lut": "lut/cal/abi_ir_7.png",
                         "borders_color": [
-                            0,
-                            0,
-                            0
+                            0.0,
+                            0.0,
+                            0.0
                         ],
                         "autogen": true
                     },
@@ -3270,9 +1962,9 @@
                         "draw_map_overlay": true,
                         "remove_background": true,
                         "borders_color": [
-                            1,
-                            1,
-                            1
+                            1.0,
+                            1.0,
+                            1.0
                         ],
                         "calib_cfg": {
                             "cch2": {
@@ -3293,9 +1985,9 @@
                         "remove_background": true,
                         "draw_map_overlay": true,
                         "borders_color": [
-                            0,
-                            0,
-                            0
+                            0.0,
+                            0.0,
+                            0.0
                         ],
                         "calib_cfg": {
                             "cch7": {
@@ -3321,9 +2013,9 @@
                         "draw_map_overlay": true,
                         "remove_background": true,
                         "borders_color": [
-                            1,
-                            1,
-                            1
+                            1.0,
+                            1.0,
+                            1.0
                         ],
                         "calib_cfg": {
                             "cch2": {
@@ -3371,9 +2063,9 @@
                         "cpp": "goes_abi_false_color",
                         "draw_map_overlay": true,
                         "borders_color": [
-                            1,
-                            1,
-                            1
+                            1.0,
+                            1.0,
+                            1.0
                         ]
                     },
                     "Day Cloud Convection": {
@@ -3381,9 +2073,9 @@
                         "draw_map_overlay": true,
                         "remove_background": true,
                         "borders_color": [
-                            1,
-                            1,
-                            1
+                            1.0,
+                            1.0,
+                            1.0
                         ],
                         "calib_cfg": {
                             "cch3": {
@@ -3413,9 +2105,9 @@
                         },
                         "lut": "lut/cal/abi_wv_8-10.png",
                         "borders_color": [
-                            1,
-                            0,
-                            0
+                            1.0,
+                            0.0,
+                            0.0
                         ]
                     },
                     "Clean Longwave IR Window Band": {
@@ -3432,9 +2124,9 @@
                         },
                         "lut": "lut/cal/abi_ir_11-15.png",
                         "borders_color": [
-                            1,
-                            1,
-                            1
+                            1.0,
+                            1.0,
+                            1.0
                         ]
                     }
                 }
@@ -3450,15 +2142,15 @@
                         "vars": {
                             "minoffset": 0.3,
                             "scalar": 1.2,
-                            "thresold": 0,
+                            "thresold": 0.0,
                             "blend": true,
                             "invert": true
                         },
                         "draw_map_overlay": true,
                         "borders_color": [
-                            1,
-                            1,
-                            0
+                            1.0,
+                            1.0,
+                            0.0
                         ],
                         "autogen": false
                     },
@@ -3476,9 +2168,9 @@
                         },
                         "lut": "lut/cal/abi_ir_11-15.png",
                         "borders_color": [
-                            1,
-                            1,
-                            1
+                            1.0,
+                            1.0,
+                            1.0
                         ],
                         "autogen": true
                     },
@@ -3496,9 +2188,9 @@
                         },
                         "lut": "lut/cal/abi_ir_11-15.png",
                         "borders_color": [
-                            1,
-                            1,
-                            1
+                            1.0,
+                            1.0,
+                            1.0
                         ],
                         "autogen": true
                     },
@@ -3515,9 +2207,9 @@
                         },
                         "lut": "lut/cal/Dirty_IR_CIRA.png",
                         "borders_color": [
-                            1,
-                            1,
-                            1
+                            1.0,
+                            1.0,
+                            1.0
                         ],
                         "autogen": true
                     },
@@ -3535,9 +2227,9 @@
                         },
                         "lut": "lut/cal/abi_wv_8-10.png",
                         "borders_color": [
-                            1,
-                            0,
-                            0
+                            1.0,
+                            0.0,
+                            0.0
                         ],
                         "autogen": true
                     },
@@ -3637,6 +2329,115 @@
                     "321": {
                         "equation": "ch3,ch2,ch1",
                         "equalize": true
+                    }
+                }
+            },
+            "airs": {
+                "handler": "image_handler",
+                "name": "AIRS",
+                "rgb_composites": {
+                    "λ=4.3µm (CO2 absorption 1a)": {
+                        "equation": "ch366",
+                        "individual_equalize": true
+                    },
+                    "λ=4.4µm (CO2 absorption 1b + H2O line)": {
+                        "equation": "ch420",
+                        "individual_equalize": true
+                    },
+                    "λ=7.7µm (Methane absorption)": {
+                        "equation": "ch980",
+                        "individual_equalize": true
+                    },
+                    "λ=14.9µm (CO2 absorption 2)": {
+                        "equation": "ch2292",
+                        "individual_equalize": true
+                    },
+                    "λ=10.8µm (Window)": {
+                        "equation": "ch1821",
+                        "individual_equalize": true
+                    },
+                    "AVHRR 3b45 IR False Color": {
+                        "equation": "ch4, ch1569, ch1821",
+                        "individual_equalize": true,
+                        "invert": true
+                    },
+                    "AVHRR 543b IR False Color": {
+                        "equation": "ch1821, ch1569, ch4",
+                        "individual_equalize": true,
+                        "invert": true
+                    },
+                    "HIRS False Color": {
+                        "equation": "ch2148, ch2193, ch2239",
+                        "description": "descriptions/sounders/HIRSFalseColor.md",
+                        "individual_equalize": true,
+                        "invert": true
+                    },
+                    "6.2µm Water Vapor RGB": {
+                        "equation": "ch517, ch521, ch527",
+                        "individual_equalize": true,
+                        "invert": true
+                    },
+                    "7.35 µm Water Vapor RGB": {
+                        "equation": "ch845, ch857, ch863",
+                        "individual_equalize": true,
+                        "invert": true
+                    },
+                    "Airmass RGB": {
+                        "equation": "(1-ch515)-(1-ch857),  (1-ch1310)-(1-ch1569), (1-ch515)",
+                        "individual_equalize": true
+                    },
+                    "Clouds Only (N2O Sounding)": {
+                        "equation": "1-ch481, 1-ch570, 1",
+                        "description": "descriptions/sounders/CloudOnlyN2O.md",
+                        "individual_equalize": true
+                    },
+                    "Mid Level Water Vapor": {
+                        "equation": "1-ch868",
+                        "description": "descriptions/sounders/MLWV.md",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "Mid Stratosphere CO2 Temperature": {
+                        "equation": "ch2256",
+                        "description": "descriptions/sounders/MidStratoCO2T.md",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "Low Stratosphere CO2 Temperature": {
+                        "equation": "ch2239",
+                        "description": "descriptions/sounders/LowStratoCO2T.md",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "Top Troposphere CO2 Temperature": {
+                        "equation": "ch2193",
+                        "description": "descriptions/sounders/TopTropoCO2T.md",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "High Troposphere CO2 Temperature": {
+                        "equation": "ch2148",
+                        "description": "descriptions/sounders/HighTropoCO2T.md",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "Mid Troposphere CO2/H2O Temperature": {
+                        "equation": "ch2088",
+                        "description": "descriptions/sounders/MidTropoCO2H2OT.md",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "Low Troposphere CO2/H2O Temperature": {
+                        "equation": "ch2038",
+                        "description": "descriptions/sounders/LowTropoCO2H2OT.md",
+                        "individual_equalize": true,
+                        "apply_lut": true
+                    },
+                    "Cloud Detection Channel": {
+                        "equation": "1-ch236",
+                        "description": "descriptions/sounders/CloudDetection.md",
+                        "individual_equalize": true,
+                        "apply_lut": true
                     }
                 }
             },
@@ -3881,6 +2682,20 @@
                         "autogen": false,
                         "geo_correct": true
                     },
+                    "Cloud Top IR": {
+                        "channels": "cch31",
+                        "description": "descriptions/CloudTopIR.md",
+                        "lut": "lut/cal/CloudTopIR.png",
+                        "autogen": true,
+                        "geo_correct": true,
+                        "calib_cfg": {
+                            "cch4": {
+                                "type": "temperature",
+                                "min": 183.15,
+                                "max": 323.15
+                            }
+                        }
+                    },
                     "Enhanced IR": {
                         "channels": "cch31",
                         "description": "descriptions/EnhancedIR.md",
@@ -3979,9 +2794,9 @@
                         "individual_equalize": true,
                         "draw_map_overlay": true,
                         "borders_color": [
-                            1,
-                            1,
-                            0
+                            1.0,
+                            1.0,
+                            0.0
                         ]
                     }
                 }
@@ -4082,9 +2897,9 @@
                         "individual_equalize": true,
                         "draw_map_overlay": true,
                         "borders_color": [
-                            1,
-                            1,
-                            0
+                            1.0,
+                            1.0,
+                            0.0
                         ]
                     },
                     "AVHRR 543b IR False Color": {
@@ -4253,7 +3068,8 @@
                     },
                     "Microwave Airmass": {
                         "equation": "ch11,ch12,ch13",
-                        "individual_equalize": true
+                        "individual_equalize": true,
+                        "description": "descriptions/sounders/MicrowaveAirmass.md"
                     }
                 },
                 "project_channels": {
@@ -4408,15 +3224,18 @@
                     },
                     "MHS 221": {
                         "equation": "ch17,ch17,ch16",
-                        "individual_equalize": true
+                        "individual_equalize": true,
+                        "description": "descriptions/sounders/MHS221.md"
                     },
                     "MHS 421": {
                         "equation": "ch20,ch17,ch16",
-                        "individual_equalize": true
+                        "individual_equalize": true,
+                        "description": "descriptions/sounders/MHS221.md"
                     },
                     "Microwave Airmass": {
                         "equation": "ch18,ch19,ch20",
-                        "individual_equalize": true
+                        "individual_equalize": true,
+                        "description": "descriptions/sounders/MicrowaveAirmass.md"
                     },
                     "AMSU Surface Relative Temperature": {
                         "equation": "cos(ln(ch1) + ln(ch2)+0.8)",
@@ -4455,6 +3274,12 @@
                         "equation": "cch3^0.3, 0, 0, cch2 > 0.57 ? (cch3 < 0.5 ? 1 : 0) : 0",
                         "apply_lut": true,
                         "autogen": false
+                    },
+                    "Rainfall (Transparent, MHS-like)": {
+                        "equation": "(((1-cch22-cch20))-0.95)^0.25, 0, 0, (((1-cch22-cch20))-0.95)^0.25 > 0.01 ? 1 : 0",
+                        "apply_lut": true,
+                        "autogen": false,
+                        "description": "descriptions/sounders/RainfallTransparent.md"
                     }
                 }
             },
