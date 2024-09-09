@@ -191,8 +191,8 @@ produce_spectrogram: false    #NOTE: the spectrogram option here is available fo
 noaa_crop_telemetry: false
 produce_noaa_pristine_image: false
 produce_noaa_pristine_histogram: false
-noaa_daytime_enhancements: 'MSA MSA-precip MCIR MCIR-precip HVC-precip HVCT-precip HVC HVCT ZA therm sea CC HE HF MD BD MB JF JJ LC TA WV NO histeq enhancd-IR'
-noaa_nighttime_enhancements: 'MCIR MCIR-precip HVCT ZA therm NO TA sea histeq enhancd-IR'
+noaa_daytime_enhancements: 'MSA MSA-precip MCIR MCIR-precip HVC-precip HVCT-precip HVC HVCT ZA therm sea CC HE HF MD BD MB JF JJ LC TA WV NO histeq enhanced-IR'
+noaa_nighttime_enhancements: 'MCIR MCIR-precip HVCT ZA therm NO TA sea histeq enhanced-IR'
 noaa_crop_toptobottom: false
 noaa_interpolate: false
 noaa_jpg_image_quality: 90
