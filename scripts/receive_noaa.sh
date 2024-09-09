@@ -261,7 +261,9 @@ if [ "$NOAA_DECODER" == "wxtoimg" ]; then
     export ENHANCEMENT=$enhancement
     log "Decoding image" "INFO"
 
-    if [ $enhancement == "avi" ]; then
+    if [ $enhancement == "enhanced-IR" ]; then
+      continue
+    elif [ $enhancement == "avi" ]; then
       ${IMAGE_PROC_DIR}/noaa_avi.sh $map_overlay "${RAMFS_AUDIO_BASE}.wav" 2>&1 | grep -Ev "invalid pointer|Aborted" >> $NOAA_LOG
     else
       ${IMAGE_PROC_DIR}/noaa_enhancements.sh $map_overlay "${RAMFS_AUDIO_BASE}.wav" "${IMAGE_FILE_BASE}-$enhancement.jpg" $enhancement 2>&1 | grep -Ev "invalid pointer|Aborted" >> $NOAA_LOG 
