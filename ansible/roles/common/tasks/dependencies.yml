@@ -1,5 +1,5 @@
 ---
-- name: Installing general dependencies
+- name: Installing general dependencies (this task can take a while when installing for the first time, your Raspberry Pi / PC isn't frozen)
   become: yes
   apt:
     update_cache: yes
@@ -60,6 +60,19 @@
       - libopencv-dev
       - python3-opencv
 
+- name: Install required wxtoimg 32-bit dependencies (arm64)
+  become: yes
+  apt:
+    update_cache: yes
+    state: present
+    name:
+      - libc6:armhf
+      - libstdc++6:armhf
+      - libasound2:armhf
+      - libx11-6:armhf
+      - libxft-dev:armhf
+      - libxft2:armhf
+  when: system_architecture == 'arm64'
 
 #This was included because, for a period of time, SatDump didn't have dependencies included in the .deb file
 
@@ -163,7 +176,7 @@
     executable: pip3
   when: raspbian_version.stdout == 'bullseye'
 
-- name: Installing predict on PCs
+- name: Installing predict on PCs (amd64)
   become: yes
   apt:
     deb: "{{ noaa_home }}/software/predict_2.2.3-4-b2_amd64.deb"
@@ -171,7 +184,7 @@
     update_cache: no
   when: system_architecture == 'amd64'
 
-- name: Installing predict on Raspberry Pi
+- name: Installing predict on Raspberry Pi (armhf)
   become: yes
   apt:
     deb: "{{ noaa_home }}/software/predict_2.2.5+dfsg.1-1_armhf.deb"
@@ -179,12 +192,27 @@
     update_cache: no
   when: system_architecture == 'armhf'
   
+- name: Installing predict on Raspberry Pi (arm64)
+  become: yes
+  apt:
+    deb: "{{ noaa_home }}/software/predict_2.2.5+dfsg.1-1_arm64.deb"
+    state: present
+    update_cache: no
+  when: system_architecture == 'arm64'
+  
 - name: Installing SatDump
   become: yes
   apt:
-    deb: "{{ noaa_home }}/software/satdump_1.2.1-1021e84b_{{ raspbian_version.stdout }}_{{ system_architecture }}.deb"
+    deb: "{{ noaa_home }}/software/satdump_1.2.1-397f9ed6_{{ raspbian_version.stdout }}_{{ system_architecture }}.deb"
     state: present
     update_cache: no
+
+- name: Create WXtoImg symbolic link for ARM64 architecture
+  file:
+    src: "/home/{{ target_user }}/raspberry-noaa-v2/software/wxtoimg-armhf-2.11.2-beta.deb"
+    dest: "/home/{{ target_user }}/raspberry-noaa-v2/software/wxtoimg-arm64-2.11.2-beta.deb"
+    state: link
+  when: system_architecture == 'arm64'
 
 - name: Installing WXtoImg
   become: yes
@@ -199,6 +227,20 @@
 #    deb: "https://github.com/Digitelektro/MeteorDemod/releases/download/2.5.6-beta/meteordemod_2.5.6_{{ system_architecture }}.deb"
 #    state: present
 #    update_cache: no
+
+# OS Lite versions do not have .config, but when its created as as part of the .config/meteordemod task below 
+# The .config ownership of top directory is root:root 755 when this happens and it needs to be target_user:target_user 700
+#
+# This problem does not occur on OS Full installations
+
+- name: .config directory ownership
+  become: yes
+  file:
+    path: /home/{{ target_user }}/.config
+    state: directory
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0700
 
 - name: Check if MeteorDemod is installed
   stat:
@@ -239,7 +281,7 @@
   when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False
 
 - name: Make MeteorDemod
-  command: make -j4
+  command: make -j3
   args:
     chdir: /home/{{ target_user }}/MeteorDemod/build
   when: meteor_demod_installed.stat.exists is not defined or meteor_demod_installed.stat.exists == False

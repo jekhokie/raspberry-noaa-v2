@@ -1,22 +1,22 @@
 ---
 # dependent packages and libs to be installed
-- include: dependencies.yml
+- include_tasks: dependencies.yml
 
 # environment configuration files
-- include: configs.yml
+- include_tasks: configs.yml
 
 # ntp configurations
-- include: ntp.yml
+- include_tasks: ntp.yml
 
 # core software modules
-- include: sdr.yml
+- include_tasks: sdr.yml
 
 # tools and utilities
-- include: tools.yml
+- include_tasks: tools.yml
 
 # ramfs setup
-- include: ramfs.yml
+- include_tasks: ramfs.yml
 
 #social media and email
-- include: social_media.yml
+- include_tasks: social_media.yml
 ...

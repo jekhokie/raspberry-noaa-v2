@@ -12,9 +12,11 @@ Wanting to give this version a go but not sure what's involved to get from the o
 out this simple [migration document](docs/migrate_from_raspberry_noaa.md) that explains the few commands you need to run and retain
 your original data!
 
-Finally, if you're looking for one of the cheapest ways to get started from an antenna perspective, check [this](https://jekhokie.github.io/noaa/satellite/rf/antenna/sdr/2019/05/31/noaa-satellite-imagery-sdr.html) out
-, specifically around
-how to use a cheap rabbit ears antenna as a dipole for capturing NOAA and Meteor images!
+Finally, if you're looking for one of the cheapest ways to get started from an antenna perspective, check [this](https://jekhokie.github.io/noaa/satellite/rf/antenna/sdr/2019/05/31/noaa-satellite-imagery-sdr.html) out, specifically around how to use a cheap rabbit ears antenna as a dipole for capturing NOAA and Meteor images!
+
+# Announcements
+
+* 31.7.2024. We are sunsetting the legacy Debian Bullseye support for Raspberry Pi and x64 PCs. We have supported it for some time after the Bookworm support came out in May 2024. Thank you for using the raspberry-noaa-v2 project on these operating systems. New updates for SatDump and other features related to SatDump **will only be available for 64-bit Raspberry OS version Bookworm, and 64-bit Debian Bookworm-based Linux distributions for x64 PCs** as of now. If you'd like to continue receiving the new updates, we highly suggest you perform a full reinstallation of your operating system and conduct a fresh installation of raspberry-noaa-v2. It is possible to save previously received images before reinstalling the operating system by making a copy of `panel.db` file inside `~/raspberry-noaa-v2/db` directory and the whole `/srv` directory; restore these files after your new installation has finished. If you're satisfied with the current features available, you are free to use the system as-is. 
 
 # Raspberry NOAA (...and Meteor) V2
 
@@ -48,7 +50,7 @@ Here's a quick start - if you have questions, continue reading the rest of this 
 reach out by submitting an issue:
 
 ```bash
-# update os localisation settings like timezone, locale and WiFi country
+# update os localisation settings like timezone, locale and WiFi country, and expand the filesystem
 sudo raspi-config
 
 # install git
@@ -92,9 +94,9 @@ Also, check out [THIS LINK](docs/webpanel_screenshots.md) for some screen shots 
 
 The original raspberry-noaa was tested on Raspberry Pi 2 and up. However, while this compatibility may have been maintained
 with raspberry-noaa-v2, ~~this version was developed and tested on a Raspberry Pi 4 - it has not been exhaustively tested on other variants
-of Raspberry Pi (but if you get it working on a version, please do submit a PR and mention it so this document can be updated!).~~, this version works on Pi 3, Pi 4 and Pi 5, and the variants of these models. If you can install Debian Bookworm or Bullseye, it will probably work. 
+of Raspberry Pi (but if you get it working on a version, please do submit a PR and mention it so this document can be updated!).~~, this version works on Pi 3, Pi 4 and Pi 5, and the variants of these models. If you can install 64 bit Debian Bookworm or Bullseye, it will probably work.
 
-As of September 2023, raspberry-noaa-v2 can also be installed on regular 64-bit computers running any Debian Bookworm-based distro. ~~It has been developed and tested on LMDE 6 "Faye" which I also recommend for users coming from Windows, as it has many similarities. It can be downloaded here: [https://mirrors.layeronline.com/linuxmint/debian/lmde-6-cinnamon-64bit.iso](https://mirrors.layeronline.com/linuxmint/debian/lmde-6-cinnamon-64bit.iso)~~ After providing Bookworm support, the recommended version for PCs running RN2 is plain old Debian Bookworm. Desktop environment (like Gnome, KDE, Cinammon, XFCE...) doesn't matter, it only has to be 64-bit Debian.
+As of September 2023, raspberry-noaa-v2 can also be installed on regular 64-bit computers running **ANY** Debian Bookworm-based distro. ~~It has been developed and tested on LMDE 6 "Faye" which I also recommend for users coming from Windows, as it has many similarities. It can be downloaded here: [https://mirrors.layeronline.com/linuxmint/debian/lmde-6-cinnamon-64bit.iso](https://mirrors.layeronline.com/linuxmint/debian/lmde-6-cinnamon-64bit.iso)~~ After providing Bookworm support, the recommended version for PCs running RN2 is plain old Debian Bookworm. Desktop environment (like Gnome, KDE, Cinammon, XFCE...) doesn't matter, it only has to be 64-bit Debian.
 
 If you test with another OS - again, please submit a PR and let us know how it works out!
 
@@ -192,6 +194,16 @@ Then, open the settings file and edit it to match the settings from the previous
 If you have elected to run a TLS-enabled web server, see [THIS LINK](docs/tls_webserver.md) for some additional information
 on how to handle self-signed certificates when attempting to visit your webpanel and enabling auth for the admin pages.
 
+## In-Situ Upgrade
+
+Want to switch your existing RN2 installation to a different Github branch without loosing your settings and images?  
+
+    **Introduction of RN2 Upgrade tool**
+
+       ${HOME}/.rn2_utils/rn2_upgrade.sh https://github.com/jekhokie/raspberry-noaa-v2.git -b beta-development
+
+        Just point to the branch you want to switch to by modifying the above line as needed.     
+
 ## Post Install
 
 There are and will be future "optional" features for this framework. Below is a list of optional capabilities that you may wish
@@ -213,6 +225,30 @@ and re-run `./install_and_upgrade.sh` - the script will take care of the rest of
 If you're running into issues where you're not seeing imagery after passes complete or getting blank/strange images, you can check
 out the [troubleshooting](docs/troubleshooting.md) document to try and narrow down the problem. In addition, you can inspect the log
 output file in `/var/log/raspberry-noaa-v2/output.log` to investigate potential errors or issues during capture events.
+
+
+**Introduction of verification tool**
+
+The verification tool can be used to help identify RN2 installation/configuration issues which may potentially prevent proper functioning of capture/decode/processing of APT telemetry data.
+
+Execute the verification script by passing the required argument [ quick | full ]
+
+  $HOME/raspberry-noaa-v2/scripts/tools/verification_tool/verification.sh quick
+
+  Argument required:  ./verification.sh quick    or    ./verification.sh full
+                        (~ 1 minute)                       (~ 5 minutes)
+
+   Dryrun of binaries includes executing :
+
+    nxing web page returned 200 OK status to confirm Web Portal is up.
+    satdump live capture for 1 second to ensure it runs without error.
+    wxmap generates an overlay map image which can be found       : $HOME/raspberry-noaa-v2/scripts/tools/verification_tool/test_files/wxtoimg-map-output.png
+    wxtoimg generates MCIR enhanced image which can be founnd     :  $HOME/raspberry-noaa-v2/scripts/tools/verification_tool/test_files/wxtoimg-mcir-output.jpg
+    meteordemod -h is executed to ensure it runs without error.
+
+   When FULL mode is choosen meterdemod fully decodes a staged cadu file :
+
+    meteordemod generates a full set of images which can be found :  $HOME/raspberry-noaa-v2/scripts/tools/verification_tool/test_files/tmp
 
 Still having problems? You can email MihajloPi at mihajlo.raspberrypi@gmail.com and be sure to send him the log so he can debug the errors!
 
@@ -252,7 +288,7 @@ or form to the success of this repository/framework. Below are some direct contr
 * **[Gary Day](https://www.facebook.com/profile.php?id=100068381156913&mibextid=ZbWKwL)**: Helped by lending his Raspberry Pis virtually over SSH, VNC and TeamViewer to MihajloPi for testing and creating an image.
 * **[Jérôme jp112sdl](https://github.com/jp112sdl)**: Implemented automatic discarding of Meteor M2-3 night passes since they give no visible image when it's in RGB123 mode.
 * **[patrice7560](https://meteo-schaltin.duckdns.org)**: Beta tester, helped in detecting and reporting errors ASAP for debugging.
-* **[Richard AI4Y](https://www.qrz.com/db/AI4Y)**: Provided Debian 12 (Bookworm) support for Raspberry Pi, discovered the FFMPEG bud when creating spectrograms, solved `atrm` errors on the website, and several NTP and timezone issues in PHP, general alpha and beta testing.
+* **[Richard AI4Y](https://www.qrz.com/db/AI4Y)**: Provided Debian 12 (Bookworm) support for Raspberry Pi, 64-bit Raspberry OS support, discovered the FFMPEG bug when creating spectrograms, solved atrm errors on the website, and several NTP and timezone issues in PHP, developed Verification Tool, Developed In-Situ Upgrade for switching repo's/branches, developed RN2 Utilities for backup/restore/stage, uninstall and upgrading, general warning cleanup of scripts, Made 32-bit wxtoimg run on 64-bit Debian, creates satdump/predict DEB files for armhf & arm64, general alpha and beta testing.
 ## Contributing
 
 Pull requests are welcome! Simply follow the below pattern:

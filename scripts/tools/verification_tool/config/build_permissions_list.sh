@@ -1,0 +1,4 @@
+for path in `find $HOME | grep -Ev ".cache|.git|.local|qt5ct|wayfire|.Xauthority|.xsession-errors|.config/wf-panel|.config/gmic|.config/lxpanel|.config/lxterminal|.config/composer|.config/pulse|.log|pipewire-media-session|matplotlib|user-dirs|annotation.html.j2.2|.original|.sudo|AVHRR-|APT-|.rc|/tmp/|.ssh|raw_unsync.png|raw_sync.png|.work|dataset.json|product.cbor|Bookshelf|Desktop|Documents|Downloads|Music|Pictures|Public|Templates|Videos|.linuxmint|thunderbird|.bash|.mozilla|vboxclient|.old"`; do   
+  status=$(stat -c "%F %a %U %G %n" $path)  
+  echo $status | sed -e 's/^regular //' | sed -e 's/^symbolic link /symbolic /' | sed -e 's/^empty file /file /' | sed -e 's/ richard / $USER /' | sed -e 's/ richard / $USER /' | sed -e 's/richard/$USER/'
+done | sort -k6 > $HOME/raspberry-noaa-v2/scripts/tools/verification_tool/config/permissions.list

@@ -33,6 +33,10 @@ class Config {
   # whether to enable satvis visualization
   const ENABLE_SATVIS = '{{ enable_satvis|lower }}';
 
+  # whether to enable coronal mass ejetion GIFs from nasa
+  # warning: high data usage!
+  const ENABLE_CORONAL_GIF = '{{ enable_coronal|lower }}';
+
   # whether to enable image video
   const ENABLE_ANIMATION = '{{ enable_animation|lower }}';
   const ANIMATION_VIDEO_FILE = '{{ noaa_animation_output }}';
@@ -47,6 +51,8 @@ class Config {
   # which enhancements to display for day/night
   const NOAA_DAY_ENHANCEMENTS = '{{ noaa_daytime_enhancements }}';
   const NOAA_NIGHT_ENHANCEMENTS = '{{ noaa_nighttime_enhancements }}';
+  const METEOR_DAY_ENHANCEMENTS = '{{ meteor_daytime_enhancements }}';
+  const METEOR_NIGHT_ENHANCEMENTS = '{{ meteor_nighttime_enhancements }}';
 
   # admin endpoint auth
   const LOCK_ADMIN = '{{ lock_admin_page|lower }}';
