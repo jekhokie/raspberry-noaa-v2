@@ -95,6 +95,25 @@ if [[ $? != 0 ]]; then
   exit 1
 fi
 
+echo "###################################################################"
+echo "# Check existing settings.yml meets requirements for new repository"
+echo "###################################################################"
+
+python3 /tmp/raspberry-noaa-v2/scripts/tools/validate_yaml.py ${HOME}/raspberry-noaa-v2/config/settings.yml /tmp/raspberry-noaa-v2/config/settings_schema.json
+v_result=$?
+
+if [[ ${v_result} -ne 0 ]]; then
+  cp -p /tmp/raspberry-noaa-v2/config/settings.yml /tmp/settings.yml
+  echo ""
+  echo "Your existing ${HOME}/raspberry-noaa-v2/config/settings.yml is missing one or more new parameters, which are required by the repository you are trying to upgraded to."
+  echo ""
+  echo "Please see the above \"required property\"'s reported and add to your settings.yml before trying to upgrade again."
+  echo ""
+  echo "Please look at /tmp/settings.yml for example of the missing parameter"
+  \rm -rf /tmp/raspberry-noaa-v2
+  exit 1
+fi
+
 echo "#####################################################"
 echo "# Perform RN2 Key file backup/stage"
 echo "#####################################################"
