@@ -20,7 +20,7 @@ Finally, if you're looking for one of the cheapest ways to get started from an a
 
 # Raspberry NOAA (...and Meteor) V2
 
-NOAA and Meteor-M 2 satellite imagery capture setup for the regular 64-bit Debian Bookworm & Bullseye computers and 32-bit Raspberry Pi!
+NOAA and Meteor-M 2 satellite imagery capture setup for the regular 64-bit Debian Bookworm & Bullseye computers and 64-bit Raspberry OS version Bookworm!
 
 As of September 2023, raspberry-noaa-v2 officially works on any Debian-based distro! This project has been developed and tested on LMDE 6 "Faye" which is similar to the original Linux Mint, although the regular Mint is based on Ubuntu, while LMDE is based directly on Debian (Linux Mint Debian Edition). It can be downloaded from here: [https://mirrors.layeronline.com/linuxmint/debian/lmde-6-cinnamon-64bit.iso](https://mirrors.layeronline.com/linuxmint/debian/lmde-6-cinnamon-64bit.iso)
 

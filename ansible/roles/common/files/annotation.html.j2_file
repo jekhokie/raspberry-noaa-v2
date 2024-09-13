@@ -28,7 +28,7 @@
         <center>
           <img height="72" src="raspberry-noaa-v2-logo.png" alt="RaspbiNOAA v2 Logo">
           <br>
-          <font color="black">RaspiNOAA V2 | v3.0 | Bullseye<br>https://{{ web_server_name }}</font>
+          <font color="black">RaspiNOAA V2 | v4.0 | Bookworm 64-bit<br>https://{{ web_server_name }}</font>
         </center>
       </td>
       <td style="width: 1313.13px;">
