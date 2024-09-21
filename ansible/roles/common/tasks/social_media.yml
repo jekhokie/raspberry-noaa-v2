@@ -92,7 +92,7 @@
       - facebook-sdk
     state: present
     executable: pip3
-  when: enable_twitter_push | bool and raspbian_version.stdout == 'bullseye'
+  when: enable_facebook_push | bool and raspbian_version.stdout == 'bullseye'
 
 - name: drop template Facebook config file
   copy:
@@ -118,7 +118,7 @@
       - facebook-sdk
     state: present
     executable: pip3
-  when: enable_twitter_push | bool and raspbian_version.stdout == 'bullseye'
+  when: enable_instagram_push | bool and raspbian_version.stdout == 'bullseye'
 
 - name: drop template Instagram config file
   copy:
@@ -144,7 +144,7 @@
       - Mastodon.py
     state: present
     executable: pip3
-  when: enable_twitter_push | bool and raspbian_version.stdout == 'bullseye'
+  when: enable_mastodon_push | bool and raspbian_version.stdout == 'bullseye'
 
 - name: drop template Mastodon config file
   copy:
@@ -155,6 +155,32 @@
     group: "{{ target_user }}"
     mode: 0600
   when: enable_mastodon_push | bool
+
+########################################################################################################
+
+#Bluesky
+
+- name: install atproto if Bluesky push is enabled (bookworm)
+  command: pip3 install atproto --break-system-packages
+  when: enable_bluesky_push | bool and raspbian_version.stdout == 'bookworm'
+
+- name: install atproto if Mastodon push is enabled (bullseye)
+  pip:
+    name:
+      - atproto
+    state: present
+    executable: pip3
+  when: enable_bluesky_push | bool and raspbian_version.stdout == 'bullseye'
+
+- name: drop template Bluesky config file
+  copy:
+    src: bluesky.conf
+    dest: /home/{{ target_user }}/.bluesky.conf
+    force: no
+    owner: "{{ target_user }}"
+    group: "{{ target_user }}"
+    mode: 0600
+  when: enable_bluesky_push | bool
 
 ########################################################################################################
 ...
