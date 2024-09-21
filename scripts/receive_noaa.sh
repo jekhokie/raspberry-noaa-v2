@@ -456,21 +456,31 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     pass_id=$($SQLITE3 $DB_FILE "SELECT id FROM decoded_passes ORDER BY id DESC LIMIT 1;")
     ${PUSH_PROC_DIR}/push_slack.sh "${push_annotation} <${SLACK_LINK}?pass_id=${pass_id}>\n" $push_file_list >> $NOAA_LOG 2>&1
   fi
+
   # handle Twitter pushing if enabled
   if [ "${ENABLE_TWITTER_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Twitter" "INFO"
     ${PUSH_PROC_DIR}/push_twitter.sh "${push_annotation}" $push_file_list >> $NOAA_LOG 2>&1
   fi
+
+  # handle Bluesky pushing if enabled
+  if [ "${ENABLE_BLUESKY_PUSH}" == "true" ]; then
+    log "Pushing image enhancements to Bluesky" "INFO"
+    python3 ${PUSH_PROC_DIR}/push_bluesky.py "${push_annotation}" ${push_file_list} >> $NOAA_LOG 2>&1
+  fi
+
   # handle Mastodon pushing if enabled
   if [ "${ENABLE_MASTODON_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Mastodon" "INFO"
     python3 ${PUSH_PROC_DIR}/push_mastodon.py "${push_annotation}" ${push_file_list} >> $NOAA_LOG 2>&1
   fi
+
   # handle Facebook pushing if enabled
   if [ "${ENABLE_FACEBOOK_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Facebook" "INFO"
     python3 ${PUSH_PROC_DIR}/push_facebook.py "${push_annotation}" "${push_file_list}" >> $NOAA_LOG 2>&1
   fi
+
   # handle Instagram pushing if enabled
   if [ "${ENABLE_INSTAGRAM_PUSH}" == "true" ]; then
     if [[ "$daylight" -eq 1 ]]; then
@@ -482,11 +492,13 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     python3 ${PUSH_PROC_DIR}/push_instagram.py "${push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME} >> $NOAA_LOG 2>&1
     rm "${IMAGE_FILE_BASE}-instagram.jpg"
   fi
+
   # handle Matrix pushing if enabled
   if [ "${ENABLE_MATRIX_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Matrix" "INFO"
     ${PUSH_PROC_DIR}/push_matrix.sh "${push_annotation}" $push_file_list >> $NOAA_LOG 2>&1
   fi
+
   if [ "${ENABLE_EMAIL_PUSH}" == "true" ]; then
     IFS=' ' read -ra image_file_array <<< "$push_file_list"
     for i in "${image_file_array[@]}"; do
@@ -494,6 +506,7 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
       ${PUSH_PROC_DIR}/push_email.sh "${EMAIL_PUSH_ADDRESS}" "$i" "${push_annotation}" >> $NOAA_LOG 2>&1
     done
   fi
+
   if [ "${ENABLE_DISCORD_PUSH}" == "true" ]; then
     IFS=' ' read -ra image_file_array <<< "$push_file_list"
     for i in "${image_file_array[@]}"; do

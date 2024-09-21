@@ -312,6 +312,7 @@ pushover_apitoken: ''
 pushover_user: ''
 pushover_prio: 0
 enable_twitter_push: false
+enable_bluesky_push: false
 enable_mastodon_push: false
 enable_facebook_push: false
 enable_instagram_push: false
