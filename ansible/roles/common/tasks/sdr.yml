@@ -23,6 +23,54 @@
     src: blacklist-msi.conf
     dest: /etc/modprobe.d/blacklist-msi.conf
 
+# Due to the RTL drivers presently available to Debian 12 not supporting
+# RTL-SDR V4 receivers properly, we must ensure they are deleted prior to
+# OSMOCOM drivers being installed.
+#
+# The original librtlsdr package will remain installed, but the removal of the library
+# will allow satdump to use the correct OSMOCOM driver for capturing telemtry
+#
+# Note - LMDE Bookworm 64-bit does not have this problem
+#
+# librtlsdr-dev/stable 0.6.0-4 arm64
+# librtlsdr-dev/stable 0.6.0-4 armhf
+# librtlsdr0/stable 0.6.0-4 arm64
+# librtlsdr0/stable 0.6.0-4 armhf 
+
+- name: Find librtlsdr* files to remove from Bookworm (RTL-SDR V4 resolution)
+  find:
+    paths: /usr/lib/aarch64-linux-gnu/
+    patterns: "librtlsdr.so*"
+    use_regex: true
+    file_type: file
+  register: libraries_to_delete
+  when: raspbian_version.stdout == 'bookworm' and system_architecture == 'arm64' 
+
+- name: Remove librtlsdr.so* from Bookworm (RTL-SDR V4 resolution)
+  become: yes
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ libraries_to_delete.files }}"
+  when: raspbian_version.stdout == 'bookworm' and system_architecture == 'arm64' 
+
+- name: Find librtlsdr* files to remove from Bookworm (RTL-SDR V4 resolution)
+  find:
+    paths: /lib/arm-linux-gnueabihf/
+    patterns: "librtlsdr.so*"
+    use_regex: true
+    file_type: file
+  register: libraries_to_delete
+  when: raspbian_version.stdout == 'bookworm' and system_architecture == 'armhf'
+
+- name: Remove librtlsdr.so* from Bookworm (RTL-SDR V4 resolution)
+  become: yes
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ libraries_to_delete.files }}"
+  when: raspbian_version.stdout == 'bookworm' and system_architecture == 'armhf'
+
 - name: check if RTL-SDR software is installed
   stat:
     path: /usr/local/bin/rtl_sdr

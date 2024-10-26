@@ -453,6 +453,12 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     python3 $PUSH_PROC_DIR}/push_mastodon.py "${push_annotation}" ${push_file_list} >> $NOAA_LOG 2>&1
   fi
 
+  # handle Bluesky pushing if enabled
+  if [ "${ENABLE_BLUESKY_PUSH}" == "true" ]; then
+    log "Pushing image enhancements to Bluesky" "INFO"
+    python3 ${PUSH_PROC_DIR}/push_bluesky.py "${push_annotation}" ${push_file_list} >> $NOAA_LOG 2>&1
+  fi
+
   # handle Instagram pushing if enabled
   if [ "${ENABLE_INSTAGRAM_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Instagram" "INFO"
