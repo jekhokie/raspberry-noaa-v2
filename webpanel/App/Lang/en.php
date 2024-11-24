@@ -2,7 +2,10 @@
 return array(
   "admin" => "Admin",
   "admin_delete_confirm_header" => "Confirm Deletion",
-  "admin_capture_delete_warning" => "Click the dust bin next to the captures you want to delete to have both the pass/capture removed from the database and all associated images deleted. **WARNING**: This is irreversible, so please ensure this is what you want!",
+  "admin_delete_confirm_multiple_header" => "Confirm Multiple Deletion",
+  "admin_delete_multiple" => "Deletion Multiple",
+  "admin_select_deselect" => "Toggle Selection",
+  "admin_capture_delete_warning" => "Click the dust bin next to the captures you want to delete to have both the pass/capture removed from the database and all associated images deleted. To perform multiple delete, select the checkbox beside all captures you want to delete and click the 'Delete Multiple' button at bottom of page. **WARNING**: This is irreversible, so please ensure this is what you want!",
   "admin_pass_delete_warning" => "Click the dust bin next to the passes you want to delete to have the pass unscheduled and removed from the database. **WARNING**: This is irreversible, so please ensure this is what you want!",
   "cancel" => "Cancel",
   "captures" => "Captures",
@@ -29,7 +32,7 @@ return array(
   "prev" => "Prev",
   "running_pass" => "Capture in progress...",
   "satellite" => "Satellite",
-  "successful_delete_capture" => "Successfully deleted capture",
+  "successful_delete_capture" => "Successfully deleted capture(s)",
   "successful_delete_pass" => "Successfully deleted pass",
   "travel_direction" => "Direction",
 );
