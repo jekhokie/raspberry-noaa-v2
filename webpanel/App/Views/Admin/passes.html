@@ -5,21 +5,21 @@
   <link rel="stylesheet" type="text/css" href="/assets/css/admin.css">
 {% endblock %}
 
+{% block js_includes %}
+  <script src="/assets/js/darkmode.js"></script>
+  <script src="/assets/js/admin.js"></script>
+{% endblock %}
 {% block body %}
   {% if status_msg is defined %}
     {% if status_msg == 'Success' %}
       <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ lang['successful_delete_pass'] }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" />
       </div>
     {% else %}
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
         {{ status_msg }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"/>
       </div>
     {% endif %}
   {% endif %}
@@ -55,26 +55,26 @@
         {% for pass in pass.list %}
           {% set pass_start = pass.pass_start|date('H:i:s') %}
           {% set pass_end = pass.pass_end|date('H:i:s') %}
-          {% set cur_date = pass.pass_start|date(constant('Config\\Config::PASSES_DATE_FORMAT')) %}
+          {% set cur_date = pass.pass_start|date('m/d/y') %}
 
           {% if last_date < cur_date %}
-            <tr class="date-separator">
-              <td colspan="7">{{ cur_date }}</td>
+            <tr class="table-primary date-separator">
+              <td colspan="7">{{ cur_date|date(constant('Config\\Config::PASSES_DATE_FORMAT')) }}</td>
             </tr>
             {% set last_date = cur_date %}
           {% endif %}
 
           <tr{% if pass.is_active == false or pass_end < now %} class="inactive"{% endif %}>
             <td class="capture-select text-center align-middle">
-              <button type="button" class="btn btn-sm btn-danger delete-capture" data-toggle="modal"
+              <button type="button" class="btn btn-sm btn-outline-danger delete-capture" data-bs-toggle="modal"
                                    data-pass-start-id="{{ pass.pass_start }}"
                                    data-sat-name="{{ pass.sat_name }}"
                                    data-pass-start="{{ pass.pass_start|date(constant('Config\\Config::DATETIME_FORMAT')) }}"
                                    data-pass-end="{{ pass.pass_end|date(constant('Config\\Config::DATETIME_FORMAT')) }}"
-                                   data-target="#confirmDeletePass"><i class="fa fa-trash"></i></button>
+                                   data-bs-target="#confirmDeletePass"><i class="fa fa-trash"></i></button>
             </td>
             <td{% if prev_pass_end >= pass.pass_start %} class="conflict"{% endif %}>
-              {% if prev_pass_end >= pass.pass_start %}<i class="fa fa-exclamation-triangle conflict-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['conflicting_pass'] }}"></i>{% endif %}
+              {% if prev_pass_end >= pass.pass_start %}<i class="fa fa-exclamation-triangle conflict-icon" data-bs-toggle="tooltip" data-bs-placement="right" title="{{ lang['conflicting_pass'] }}"></i>{% endif %}
               {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
                 <a href='https://satvis.space/?elements=Point,Label,Orbit%20track,Sensor%20cone&layers=OfflineHighres&tags=Weather&sat={{ pass.sat_name }}&gs={{ constant('Config\\Config::BASE_STATION_LAT') }},{{ constant('Config\\Config::BASE_STATION_LON') }}' target='satvis'>{{ pass.sat_name }}</a>
               {% else %}
@@ -105,9 +105,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="confirmDeleteLabel">{{ lang['admin_delete_confirm_header'] }}</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
         </div>
         <div class="modal-body">
           <p id="contents">
@@ -117,7 +115,7 @@
           </p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ lang['cancel'] }}</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ lang['cancel'] }}</button>
           <a href="" id="confirmDeletion" type="button" class="btn btn-danger">{{ lang['confirm'] }}</a>
         </div>
       </div>
@@ -126,6 +124,3 @@
 
 {% endblock %}
 
-{% block js_includes %}
-  <script src="/assets/js/admin.js"></script>
-{% endblock %}

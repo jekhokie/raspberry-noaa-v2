@@ -5,6 +5,10 @@
 <link rel="stylesheet" type="text/css" href="/assets/css/captures.css">
 {% endblock %}
 
+{% block js_includes %}
+  <script src="/assets/js/darkmode.js"></script>
+{% endblock %} 
+
 {% block body %}
 <nav aria-label="page" id="pagination" class="mb-0">
   {% include('Captures/pagination.html') %}
@@ -23,7 +27,7 @@
     <div class="card-group capture-image-cards">
   {% endif %}
 
-  <div class="card bg-light m-2 p-2 image-card">
+  <div class="card m-2 p-2 image-card">
     <a href="/captures/listImages?pass_id={{ capture.id }}">
       {% if capture.sat_type == 0 %}
         {% if capture.daylight_pass == 1 %}
@@ -81,7 +85,8 @@
     </div>
   {% endif %}
 {% endfor %}
-  <link rel="stylesheet" type="text/css" href="/assets/css/pagination.css">
-  <nav aria-label="page" id="pagination" class="mb-0">
-    {% include('Captures/pagination.html') %}
+   <link rel="stylesheet" type="text/css" href="/assets/css/pagination.css">
+ <nav aria-label="page" id="pagination" class="mb-0">
+   {% include('Captures/pagination.html') %}
+ </nav>
 {% endblock %}

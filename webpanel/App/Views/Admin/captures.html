@@ -5,21 +5,21 @@
   <link rel="stylesheet" type="text/css" href="/assets/css/admin.css">
 {% endblock %}
 
+{% block js_includes %}
+  <script src="/assets/js/darkmode.js"></script>
+  <script src="/assets/js/admin.js"></script>
+{% endblock %}
 {% block body %}
   {% if status_msg is defined %}
     {% if status_msg == 'Success' %}
       <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ lang['successful_delete_capture'] }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" />
       </div>
     {% else %}
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
         {{ status_msg }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" />
       </div>
     {% endif %}
   {% endif %}
@@ -51,12 +51,12 @@
       {% for capture in capture.list %}
         <tr scope="row">
           <td class="capture-select text-center align-middle">
-            <button type="button" class="btn btn-sm btn-danger delete-capture" data-toggle="modal"
+            <button type="button" class="btn btn-sm btn-outline-danger delete-capture" data-bs-toggle="modal"
                                  data-capture-id="{{ capture.id }}"
                                  data-sat-name="{{ capture.sat_name }}"
                                  data-elevation="{{ capture.max_elev }}"
                                  data-pass-start="{{ capture.pass_start|date(constant('Config\\Config::DATETIME_FORMAT')) }}"
-                                 data-target="#confirmDeleteCapture"><i class="fa fa-trash"></i></button>
+                                 data-bs-target="#confirmDeleteCapture"><i class="fa fa-trash"></i></button>
           </td>
           <td class="capture-sat-name text-center align-middle">{{ capture.sat_name }}</td>
           <td class="capture-pass-start-elev text-center align-middle">
@@ -78,7 +78,7 @@
                  <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-MCIR.jpg">
                {% endif %}
                {% elseif capture.sat_type == 2 %}
-                 <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-0.jpg">
+                 <img class="card-img-top" src="{{ constant('Config\\Config::THUMB_PATH') }}/{{ capture.file_path }}-msu_gs_Thermal_Channel.png">
               {% endif %}
             </a>
           </td>
@@ -96,9 +96,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="confirmDeleteLabel">{{ lang['admin_delete_confirm_header'] }}</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
         </div>
         <div class="modal-body">
           <p id="contents">
@@ -108,7 +106,7 @@
           </p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ lang['cancel'] }}</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ lang['cancel'] }}</button>
           <a href="" id="confirmDeletion" type="button" class="btn btn-danger">{{ lang['confirm'] }}</a>
         </div>
       </div>
@@ -117,6 +115,3 @@
 
 {% endblock %}
 
-{% block js_includes %}
-  <script src="/assets/js/admin.js"></script>
-{% endblock %}
