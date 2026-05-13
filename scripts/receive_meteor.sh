@@ -452,7 +452,7 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
   # handle Mastodon pushing if enabled
   if [ "${ENABLE_MASTODON_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Mastodon" "INFO"
-    python3 $PUSH_PROC_DIR}/push_mastodon.py "${push_annotation}" ${push_file_list} >> $NOAA_LOG 2>&1
+    python3 ${PUSH_PROC_DIR}/push_mastodon.py "${push_annotation}" ${push_file_list} >> $NOAA_LOG 2>&1
   fi
 
   # handle Bluesky pushing if enabled
@@ -464,9 +464,9 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
   # handle Instagram pushing if enabled
   if [ "${ENABLE_INSTAGRAM_PUSH}" == "true" ]; then
     log "Pushing image enhancements to Instagram" "INFO"
-    $CONVERT "${IMAGE_FILE_BASE}${suffix}" -resize "1080x1350>" -gravity center -background black -extent 1080x1350 "${IMAGE_FILE_BASE}-instagram.jpg"
+    $CONVERT "${IMAGE_FILE_BASE}${suffix}" -resize "1080x1350>" -gravity center -background black -extent 1080x1350 "${IMAGE_FILE_BASE}-instagram.jpg" >> $NOAA_LOG 2>&1
     python3 ${PUSH_PROC_DIR}/push_instagram.py "${push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME} >> $NOAA_LOG 2>&1
-    rm "${IMAGE_FILE_BASE}-instagram.jpg"
+    rm "${IMAGE_FILE_BASE}-instagram.jpg" >> $NOAA_LOG 2>&1
   fi
 
   # handle Matrix pushing if enabled

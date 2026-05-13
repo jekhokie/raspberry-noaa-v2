@@ -1,79 +1,128 @@
 #!/usr/bin/env python3
+"""Publish a single image to an Instagram Business account via the Graph API.
+
+Usage:
+    push_instagram.py "<annotation>" "<image_filename>" "<website>"
+
+The image must already be reachable at https://<website>/images/<image_filename>,
+must be a JPEG (Instagram does not accept PNG via the API), and the account
+must be an Instagram Business or Creator account linked to a Facebook Page.
+Reads ~/.instagram.conf for INSTAGRAM_ACCESS_TOKEN and INSTAGRAM_ACCOUNT_ID.
+"""
 
 import os
 import sys
+import time
+
 import requests
-import json
+
+GRAPH_API_VERSION = "v25.0"
+GRAPH_URL = f"https://graph.facebook.com/{GRAPH_API_VERSION}"
+
 
 def parse_instagram_config(file_path):
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
-
-    # Initialize variables to store the values
     access_token = None
     account_id = None
-
-    # Process each line in the file
-    for line in lines:
-        # Remove leading and trailing whitespaces from the line
-        line = line.strip()
-
-        # Skip empty lines or lines starting with a '#' (comments)
-        if not line or line.startswith('#'):
-            continue
-
-        # Split the line into key and value using the '=' separator
-        key, value = line.split('=', 1)
-
-        # Remove leading and trailing whitespaces from the key and value
-        key = key.strip()
-        value = value.strip()
-
-        # Check if the key is 'INSTAGRAM_ACCESS_TOKEN' or 'INSTAGRAM_ACCOUNT_ID'
-        if key == 'INSTAGRAM_ACCESS_TOKEN':
-            access_token = value.strip('\'"')
-        elif key == 'INSTAGRAM_ACCOUNT_ID':
-            account_id = value.strip('\'"')
-
+    with open(file_path, "r") as fh:
+        for line in fh:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, _, value = line.partition("=")
+            key = key.strip()
+            value = value.strip().strip("'\"")
+            if key == "INSTAGRAM_ACCESS_TOKEN":
+                access_token = value
+            elif key == "INSTAGRAM_ACCOUNT_ID":
+                account_id = value
     return access_token, account_id
 
-config_path = os.path.expanduser("~/.instagram.conf")
 
-ACCESS_TOKEN, ACCOUNT_ID = parse_instagram_config(config_path)
+def create_container(account_id, access_token, image_url, caption):
+    url = f"{GRAPH_URL}/{account_id}/media"
+    payload = {
+        "image_url": image_url,
+        "caption": caption,
+        "access_token": access_token,
+    }
+    r = requests.post(url, data=payload, timeout=60)
+    try:
+        result = r.json()
+    except ValueError:
+        r.raise_for_status()
+        raise
+    if "id" not in result:
+        raise RuntimeError(f"Container creation failed: {result}")
+    return result["id"]
 
-graph_url = 'https://graph.facebook.com/v22.0'
 
-annotation = sys.argv[1]
-image = sys.argv[2]
-website = sys.argv[3]
+def wait_for_container(container_id, access_token, max_wait=180, interval=3):
+    """Poll /{container_id}?fields=status_code until FINISHED, ERROR, or EXPIRED."""
+    url = f"{GRAPH_URL}/{container_id}"
+    params = {"fields": "status_code,status", "access_token": access_token}
+    waited = 0
+    while waited < max_wait:
+        r = requests.get(url, params=params, timeout=30)
+        r.raise_for_status()
+        result = r.json()
+        status = result.get("status_code")
+        if status == "FINISHED":
+            return
+        if status in ("ERROR", "EXPIRED"):
+            raise RuntimeError(f"Container {container_id} failed: {result}")
+        time.sleep(interval)
+        waited += interval
+    raise TimeoutError(
+        f"Container {container_id} did not reach FINISHED within {max_wait}s"
+    )
 
-def publish_image():
-  post_url = f'{graph_url}/{ACCOUNT_ID}/media'
-  image_url = f'https://{website}/images/{image}'
 
-  payload = {
-             'image_url': image_url,
-             'caption': annotation + '\n\n#NOAA #NOAA15 #NOAA19 #MeteorM2_3 #MeteorM2_4 #weather #weathersats #APT #LRPT #wxtoimg #MeteorDemod #rtlsdr #gpredict #raspberrypi #RN2 #ISS',
-             'access_token': ACCESS_TOKEN,
-            }
-  r = requests.post(post_url, data = payload)
-#  print(r.text)
-#  print("Media uploaded successfully!")
+def publish_container(account_id, access_token, container_id):
+    url = f"{GRAPH_URL}/{account_id}/media_publish"
+    payload = {"creation_id": container_id, "access_token": access_token}
+    r = requests.post(url, data=payload, timeout=60)
+    try:
+        result = r.json()
+    except ValueError:
+        r.raise_for_status()
+        raise
+    if "id" not in result:
+        raise RuntimeError(f"Publish failed: {result}")
+    return result
 
-  results = json.loads(r.text)
-  print(r.text)
 
-  if 'id' in results:
-    creation_id=results['id']
-    second_url = f'{graph_url}/{ACCOUNT_ID}/media_publish'
-    second_payload = {
-                      'creation_id': creation_id,
-                      'access_token': ACCESS_TOKEN,
-                     }
-    r = requests.post(second_url, data = second_payload)
-    print(r.text)
-    print("Image published to Instagram")
-  else:
-    print("Error while publishing image to Instagram!")
+def main():
+    if len(sys.argv) < 4:
+        sys.exit("Usage: push_instagram.py <annotation> <image_filename> <website>")
 
-publish_image()
+    annotation = sys.argv[1]
+    image = sys.argv[2]
+    website = sys.argv[3]
+
+    config_path = os.path.expanduser("~/.instagram.conf")
+    access_token, account_id = parse_instagram_config(config_path)
+    if not access_token or not account_id:
+        sys.exit(
+            "Missing INSTAGRAM_ACCESS_TOKEN or INSTAGRAM_ACCOUNT_ID in ~/.instagram.conf"
+        )
+
+    image_url = f"https://{website}/images/{image}"
+    hashtags = (
+        "#NOAA #NOAA15 #NOAA18 #NOAA19 #MeteorM2_3 #MeteorM2_4 #weather "
+        "#weathersats #APT #LRPT #wxtoimg #MeteorDemod #rtlsdr "
+        "#gpredict #raspberrypi #RN2 #ISS"
+    )
+    caption = f"{annotation}\n\n{hashtags}"
+
+    container_id = create_container(account_id, access_token, image_url, caption)
+    print(f"Container created: {container_id}")
+
+    wait_for_container(container_id, access_token)
+    print("Container FINISHED, publishing...")
+
+    result = publish_container(account_id, access_token, container_id)
+    print(f"Published. Media id: {result.get('id', '?')}")
+
+
+if __name__ == "__main__":
+    main()

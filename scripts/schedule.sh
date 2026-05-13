@@ -71,9 +71,9 @@ if [ "${update_tle}" == "1" ]; then
 
   # get the txt files for orbit information
   log "Downloading new TLE files from source" "INFO"
-  wget -r "http://${tle_addr}/NORAD/elements/gp.php?GROUP=weather&amp;FORMAT=tle" --no-check-certificate -O "${WEATHER_TXT}" >> $NOAA_LOG 2>&1
-  wget -r "http://${tle_addr}/NORAD/elements/gp.php?GROUP=amateur&amp;FORMAT=tle" --no-check-certificate -O "${AMATEUR_TXT}" >> $NOAA_LOG 2>&1
-  wget -r "http://${tle_addr}/NORAD/elements/gp.php?GROUP=active&amp;FORMAT=tle" --no-check-certificate -O "${ACTIVE_TXT}" >> $NOAA_LOG 2>&1
+  wget -r "http://${tle_addr}/NORAD/elements/gp.php?GROUP=weather&FORMAT=tle" --no-check-certificate -O "${WEATHER_TXT}" >> $NOAA_LOG 2>&1
+  wget -r "http://${tle_addr}/NORAD/elements/gp.php?GROUP=amateur&FORMAT=tle" --no-check-certificate -O "${AMATEUR_TXT}" >> $NOAA_LOG 2>&1
+  wget -r "http://${tle_addr}/NORAD/elements/gp.php?GROUP=active&FORMAT=tle" --no-check-certificate -O "${ACTIVE_TXT}" >> $NOAA_LOG 2>&1
 
   log "Copying TLEs for SatDump" "INFO"
   cp "${WEATHER_TXT}" "/home/$TARGET_USER/.config/satdump/satdump_tles.txt" >> $NOAA_LOG 2>&1

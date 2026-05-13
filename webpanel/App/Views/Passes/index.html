@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block pre_body %}
-  <br><center><h1><strong>NOAA APT and Meteor LRPT Satellite Receiver</strong></h1></center><br>
+  <br><center><h1><strong>YT1GS - Mihajlo's Weather Satellite Receiver</strong></h1></center><br>
 
   <div id="instruments" class="flex-container">
     {% if constant('Config\\Config::ENABLE_SATVIS') == 'true' %}
@@ -20,15 +20,18 @@
       </div>
     {% endif %}
   </div>
+<!--  <br><br><center><h1><strong>Artemis 1 Livestream from the Moon</strong></h1></center><br>  -->
+<!--  <center><div style="position: relative; width: 100%; padding-bottom: 56.25%;"><iframe src="https://www.youtube.com/embed/GFbVREEtc1Y?autoplay=1&mute=1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div></center>  -->
+  <br><br><center><h1><strong>Satellite Analysis & Lightning Strikes For Balkans</strong></h1></center><br>
+  <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+  <img src="https://hidmet.gov.rs/data/analiza/SATREP/satrep-evropa.png?timestamp=<%= new Date().getTime() %>" style="width: 555px; max-width: 100%; aspect-ratio: 1/1; display: inline; float: left;"></img>
+  <!-- <iframe src="https://map.blitzortung.org/index.php?interactive=1&NavigationControl=1&FullScreenControl=1&Cookies=0&InfoDiv=1&MenuButtonDiv=1&ScaleControl=0&LinksCheckboxChecked=0&LinksRangeValue=10&MapStyle=3&MapStyleRangeValue=4&Advertisment=0#6/44.065/20.8" style="width: 555px; max-width: 100%; aspect-ratio: 1/1; display: inline; float: left;"></iframe> -->
+  <iframe src="https://embed.windy.com/embed2.html?lat=44.065&lon=20.800&detailLat=44.065&detailLon=20.800&width=555&height=555&zoom=7&level=surface&overlay=radar&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1" frameborder="0" style="width: 555px; max-width: 100%; aspect-ratio: 1/1; float: left;" class="old_phones"></iframe>
+  </div>
 {% endblock %}
 
 {% block body %}
-<center>
-      <meta http-equiv="refresh" content="300" url="https://www.timeanddate.com/scripts/sunmap.php">
-      <img src="https://www.timeanddate.com/scripts/sunmap.php?iso=&amp;earth=1" width="100%" height="100%">
-      <meta img="sunmap.php" src-equiv="refresh" content="300">
-    </center>
-  <table class="table table-bordered table-sm table-striped" id="passes">
+<table class="table table-bordered table-sm table-striped" id="passes">
     <thead class="thead-dark">
       <tr class="text-center">
         <th scope="col">{{ lang['reception_status'] }}</th>
@@ -64,14 +67,14 @@
           {% endif %}
 
           <tr{% if pass.is_active == false or pass_end_ms < now_ms %} class="inactive"{% endif %}>
-          
+
             <td class=
-              {% if prev_pass_end >= pass.pass_start %} 
+              {% if prev_pass_end >= pass.pass_start %}
                 "text-center conflict"
-              {% elseif now_ms > pass.pass_start and now_ms < pass.pass_end %} 
-                "text-center running" 
+              {% elseif now_ms > pass.pass_start and now_ms < pass.pass_end %}
+                "text-center running"
               {% elseif now_ms < pass.pass_start %}
-                "text-center next" 
+                "text-center next"
               {% else %}
                 "text-center no_capture"
               {% endif %}
@@ -84,7 +87,7 @@
                 <i class="fa fa-exclamation-triangle conflict-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['conflicting_pass'] }}"></i>
               {% elseif now_ms < pass.pass_start %}
                 <i class="fa fa-hourglass-start next-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['next_pass'] }}"></i>
-              {% else %}  
+              {% else %}
                 <i class="fa fa-times no_caption-icon" data-toggle="tooltip" data-placement="right" title="{{ lang['no_capture_pass'] }}"></i>
               {% endif %}
             </td>
@@ -114,14 +117,26 @@
   </table>
   {% if constant('Config\\Config::ENABLE_CORONAL_GIF') == 'true' %}
   <br>
-  <center>
-  <h1>Coronal Mass Ejection Activity</h1>
+  <center><h1><strong>Live ISS View</strong></h1></center>
   <br>
-  <img src="https://sohowww.nascom.nasa.gov/data/LATEST/current_c2.gif" height=300 style="margin-right=2em; margin-bottom:2em;">
-  <img src="https://sohowww.nascom.nasa.gov/data/LATEST/current_c3.gif" height=300 style="margin-right=2em; margin-bottom:2em;">
-  <img src="https://stereo.gsfc.nasa.gov/beacon/latest_512/ahead_cor2_latest.jpg" height=300 style="margin-right=2em; margin-bottom:2em;">
-  </center>
-  {% endif %}
+<!--  <center><div style="position: relative; width: 100%; padding-bottom: 56.25%;"><iframe src="https://ustream.tv/embed/17074538" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-color: transparent; border: none; object-fit: cover; overflow: hidden" allowfullscreen="" title="Live Stream Feed"></iframe></center>  -->
+ <!-- <center><div style="position: relative; width: 100%; padding-bottom: 56.25%;"><iframe src="https://www.youtube.com/embed/jPTD2gnZFUw?si=68ag8lwe13IcXU1l?autoplay=1&mute=1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div></center>
+  <br>
+  <br> -->
+  <center><div style="position: relative; width: 100%; padding-bottom: 56.25%;"><iframe src="https://www.youtube.com/embed/H999s0P1Er0?si=VEuZPlliBeEn4S_U&autoplay=1&mute=1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div></center>
+  <br>
+  <center><div style="position: relative; width: 100%; padding-bottom: 56.25%;"><iframe src="https://www.youtube.com/embed/DIgkvm2nmHc?si=ErMbDGKZYoLiaQch&autoplay=1&mute=1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div></center>
+  <br>
+  <br>
+  <br>
+
+  <center><h1><strong>Coronal Mass Ejection Activity & Sunspots</strong></h1>
+  <br>
+<!--   <img src="https://sohowww.nascom.nasa.gov/data/LATEST/current_c2.gif" height=350 style="margin-right=2em; margin-bottom:2em;">  -->
+<!--   <img src="https://sohowww.nascom.nasa.gov/data/LATEST/current_c3.gif" height=350 style="margin-right=2em; margin-bottom:2em;">  -->
+<!--   <img src="https://stereo.gsfc.nasa.gov/beacon/latest_512/ahead_cor2_latest.jpg" height=350 style="margin-right=2em; margin-bottom:2em;">  -->
+  <img src="https://soho.nascom.nasa.gov/data/synoptic/sunspots_earth/mdi_sunspots_1024.jpg" style="margin-right: 2em; margin-bottom: 2em; max-width: 100%; height: auto;"></center>
+{% endif %}
 
 {% endblock %}
 
