@@ -1,7 +1,7 @@
 server {
   listen {{ web_tls_port }};
-  # Enabling IPv6 support making the server accessible from the internet
-  listen [::]:{{ web_tls_port }};
+  # Uncomment to enable IPv6 support so the server is reachable over IPv6
+  # listen [::]:{{ web_tls_port }};
 
   ssl on;
   ssl_certificate {{ tls_cert }};
@@ -27,8 +27,8 @@ server {
   gzip_types text/plain text/css text/xml text/javascript application/x-javascript application/xml;
   gzip_disable "MSIE [1-6]\.";
 
-  # Onion-Location header
-  add_header Onion-Location http://hjr5ihmxwfei3wxks4nbyjvshy5cip6fik6hpndgeyi7y2qwmiib3lid.onion$request_uri;
+  # Optional Tor hidden service redirect header (in case you run the website over Tor as well)
+  # add_header Onion-Location http://VALID_ONION_ADDRESS.onion$request_uri;
 
   location ~ /images/(.*) {
     alias /srv/images/$1;
