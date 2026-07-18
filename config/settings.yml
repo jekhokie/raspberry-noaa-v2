@@ -253,6 +253,17 @@ log_level: DEBUG
 # the processing and space requirements
 enable_satvis: true
 
+<<<<<<< ours
+=======
+# [Claude AI edit] START - experimental webpanel features flag
+#   experimental_features - whether to enable webpanel features that are still under
+#                           evaluation. Currently this gates the "Satellite view" tab
+#                           (Orbital Command real-time satellite tracking console).
+#                           Safe to leave 'false'; nothing else changes when disabled.
+experimental_features: false
+# [Claude AI edit] END
+
+>>>>>>> theirs
 
 # whether to enable the "Coronal mass ejection activity" display
 # in the passes view - note that the GIFs can be ~70 MiB and not cached

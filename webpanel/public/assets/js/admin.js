@@ -31,3 +31,26 @@ $('#confirmDeleteCapture').on('show.bs.modal', function (event) {
   modal.find('.modal-body p#contents span#capture-elevation').html(elevation);
   modal.find('.modal-footer a#confirmDeletion').attr('href', '/admin/deleteCapture?id=' + capture_id);
 });
+
+// [Claude AI edit] START - bulk selection handling for the "Delete selected" button:
+// master checkbox toggles all rows, and the submit button stays disabled until
+// at least one row is selected (prevents accidental empty submissions)
+$(function() {
+  function refreshBulkState() {
+    var any = $('.bulk-select-item:checked').length > 0;
+    $('#bulk-delete-btn').prop('disabled', !any);
+  }
+
+  $('#bulk-select-all').on('change', function() {
+    $('.bulk-select-item').prop('checked', this.checked);
+    refreshBulkState();
+  });
+
+  $(document).on('change', '.bulk-select-item', function() {
+    if (!this.checked) $('#bulk-select-all').prop('checked', false);
+    refreshBulkState();
+  });
+
+  refreshBulkState();
+});
+// [Claude AI edit] END

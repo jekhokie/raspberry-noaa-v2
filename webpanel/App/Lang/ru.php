@@ -32,5 +32,14 @@ return array(
   "successful_delete_capture" => "Снимок успешно удален",
   "successful_delete_pass" => "Пролет успешно удален",
   "travel_direction" => "Направление",
+  # [Claude AI edit] START - keys for the experimental Satellite view tab
+  # and the admin bulk "Delete selected" feature
+  "satellite_view" => "Вид спутников",
+  "delete_selected" => "Удалить выбранное",
+  "select_all" => "Выбрать все",
+  "admin_bulk_delete_confirm" => "Вы уверены, что хотите удалить все выбранные элементы? Это действие необратимо!",
+  "successful_delete_selected" => "Выбранные элементы успешно удалены",
+  "fail_delete_none_selected" => "Ничего не выбрано",
+  # [Claude AI edit] END
 );
 ?>
