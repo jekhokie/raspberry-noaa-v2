@@ -1,13 +1,23 @@
 server {
-  listen {{ web_port }};
-  # Disabling IPv6 support making the server accessible from the internet
-  #listen [::]:{{ web_port }};
-  
+  listen {{ web_tls_port }} http2;
+  listen [::]:{{ web_tls_port }} http2;
+
+  ssl on;
+  ssl_certificate {{ www_tls_cert }};
+  ssl_certificate_key {{ www_tls_cert_key }};
+  ssl_trusted_certificate {{ www_tls_trusted_certificate }};
+
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+
+  ssl_stapling on;
+  ssl_stapling_verify on;
+
   root {{ web_home }}/public/;
   index index.php index.html index.htm index.nginx-debian.html;
   autoindex on;
 
-  server_name {{ web_server_name }};
+  server_name www.{{ web_server_name }};
 
   gzip on;
   gzip_vary on;
@@ -47,35 +57,5 @@ server {
   }
 
   # Rewrite the old path yyyy/mm/dd/ to /images/
-  rewrite "^/image/\d{4}/\d{2}/\d{2}/(.+)$" /images/$1 permanent;
-}
-
-# Server block for the Unix socket
-server {
-  listen unix:/var/run/tor-website.sock;  # Use your preferred socket path
-
-   # Your existing configurations for this server block
-  root /var/www/wx-new/public/;
-  index index.php index.html index.htm index.nginx-debian.html;
-  autoindex on;
-  server_name localhost;  # You can use localhost as the server_name for the Unix socket
-
-  location ~ /images/(.*) {
-      alias /srv/images/$1;
-  }
-
-  location ~ /videos/(.*) {
-      alias /srv/videos/$1;
-  }
-
-  location / {
-      try_files $uri $uri/ /index.php;
-  }
-
-  location ~ \.php$ {
-      include snippets/fastcgi-php.conf;
-      fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
-  }
-
   rewrite "^/image/\d{4}/\d{2}/\d{2}/(.+)$" /images/$1 permanent;
 }
