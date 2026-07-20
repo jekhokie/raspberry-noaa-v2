@@ -1,13 +1,21 @@
+#server {
+#    listen 80;
+#    listen [::]:80;
+#
+#    server_name voxgalactica.com;
+#    return 301 https://voxgalactica.com$request_uri;
+#}
+
 server {
   listen {{ web_port }};
-  # Disabling IPv6 support making the server accessible from the internet
-  #listen [::]:{{ web_port }};
-  
+# Neću da mi radi HTTP server preko IPv6 tako da je sa interneta moguće pristupiti samo HTTPS serveru
+  listen [::]:{{ web_port }};
+
   root {{ web_home }}/public/;
   index index.php index.html index.htm index.nginx-debian.html;
   autoindex on;
 
-  server_name {{ web_server_name }};
+  server_name www.{{ web_server_name }};
 
   gzip on;
   gzip_vary on;
@@ -18,7 +26,7 @@ server {
 
   # Onion-Location header
   add_header Onion-Location http://hjr5ihmxwfei3wxks4nbyjvshy5cip6fik6hpndgeyi7y2qwmiib3lid.onion$request_uri;
-
+  
   location ~ /images/(.*) {
     alias /srv/images/$1;
   }
