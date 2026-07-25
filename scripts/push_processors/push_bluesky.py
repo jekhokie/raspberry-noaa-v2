@@ -40,8 +40,6 @@ config_path = os.path.expanduser("~/.bluesky.conf")
 
 bluesky_username_and_server_instance_url, BLUESKY_APP_PASSWORD = parse_bluesky_config(config_path)
 
-SerbianFlag = u'\U0001F1F7' + u'\U0001F1F8'
-
 annotation = sys.argv[1]
 images = []
 for file in sys.argv[2:]:
@@ -56,9 +54,7 @@ else:
 client = Client()
 client.login(bluesky_username_and_server_instance_url, BLUESKY_APP_PASSWORD)
 
-
-post_text = SerbianFlag + annotation + '\n\n#NOAA #NOAA15 #NOAA18 #NOAA19 #MeteorM2_3 #MeteorM2_4 #weather #weathersats #APT #LRPT #wxtoimg #MeteorDemod #rtlsdr #gpredict #raspberrypi #RN2 #ISS'
-
+post_text = annotation + '\n\n#NOAA #NOAA15 #NOAA19 #MeteorM2_3 #MeteorM2_4 #weather #weathersats #APT #LRPT #wxtoimg #MeteorDemod #rtlsdr #gpredict #raspberrypi #RN2 #ISS'
 
 image_data = []
 for image_path in images:

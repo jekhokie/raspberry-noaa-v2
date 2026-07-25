@@ -107,14 +107,12 @@ def main():
         )
 
     image_url = f"https://{website}/images/{image}"
-    serbian_flag = "\U0001F1F7\U0001F1F8"
     hashtags = (
         "#NOAA #NOAA15 #NOAA18 #NOAA19 #MeteorM2_3 #MeteorM2_4 #weather "
         "#weathersats #APT #LRPT #wxtoimg #MeteorDemod #rtlsdr "
         "#gpredict #raspberrypi #RN2 #ISS"
     )
-    caption = f"{serbian_flag} {annotation}\n\n{hashtags}"
-
+    caption = f"{annotation}\n\n{hashtags}"
 
     container_id = create_container(account_id, access_token, image_url, caption)
     print(f"Container created: {container_id}")

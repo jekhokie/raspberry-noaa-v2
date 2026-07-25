@@ -40,8 +40,6 @@ config_path = os.path.expanduser("~/.mastodon.conf")
 
 ACCESS_TOKEN, MASTODON_SERVER = parse_mastodon_config(config_path)
 
-SerbianFlag = u'\U0001F1F7' + u'\U0001F1F8'
-
 annotation = sys.argv[1]
 images = []
 for file in sys.argv[2:]:
@@ -67,4 +65,4 @@ for image_group in images:
     image_links.append(res)
 
   # create post
-  mastodon.status_post(SerbianFlag + annotation + '\n\n#NOAA #NOAA15 #NOAA18 #NOAA19 #MeteorM2_3 #MeteorM2_4 #weather #weathersats #APT #LRPT #wxtoimg #MeteorDemod #rtlsdr #gpredict #raspberrypi #RN2 #ISS', media_ids=image_links)
+  mastodon.status_post(annotation + '\n\n#NOAA #NOAA15 #NOAA19 #MeteorM2_3 #MeteorM2_4 #weather #weathersats #APT #LRPT #wxtoimg #MeteorDemod #rtlsdr #gpredict #raspberrypi #RN2 #ISS', media_ids=image_links)

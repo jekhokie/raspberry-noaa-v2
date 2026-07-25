@@ -24,26 +24,12 @@
     <header class="mb-3">
       <div class="navbar navbar-expand navbar-dark bg-dark">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="https://blog.voxgalactica.com">Blog</a>
-          </li>
           <li class="nav-item {% if page == 'passes' %} active {% endif %}">
             <a class="nav-link" href="/passes">{{ lang['passes'] }}</a>
           </li>
           <li class="nav-item {% if page == 'captures' or page == 'capture'  %} active {% endif %}">
             <a class="nav-link" href="/captures?page_no=1">{{ lang['captures'] }}</a>
           </li>
-          {# [Claude AI edit] START - "Satellite view" tab, only rendered when
-             experimental_features: true is set in config/settings.yml (the
-             'is defined' guard tolerates a Config.php generated before the
-             constant existed) #}
-          {% if constant('Config\\Config::ENABLE_EXPERIMENTAL_FEATURES') is defined
-                and constant('Config\\Config::ENABLE_EXPERIMENTAL_FEATURES') == 'true' %}
-            <li class="nav-item {% if page == 'satellite' %} active {% endif %}">
-              <a class="nav-link" href="/satellite">{{ lang['satellite_view']|default('Satellite view') }}</a>
-            </li>
-          {% endif %}
-          {# [Claude AI edit] END #}
           <li class="nav-item {% if page == 'admin' %} active {% endif %}">
             <a class="nav-link" href="/admin/passes">{{ lang['admin'] }}</a>
           </li>
