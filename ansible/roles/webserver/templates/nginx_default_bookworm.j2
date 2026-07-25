@@ -1,6 +1,6 @@
 server {
   listen {{ web_port }};
-  # Disabling IPv6 support making the server accessible from the internet
+  # Disabling IPv6 support
   #listen [::]:{{ web_port }};
   
   root {{ web_home }}/public/;
@@ -15,9 +15,6 @@ server {
   gzip_proxied expired no-cache no-store private auth;
   gzip_types text/plain text/css text/xml text/javascript application/x-javascript application/xml;
   gzip_disable "MSIE [1-6]\.";
-
-  # Onion-Location header
-  add_header Onion-Location http://hjr5ihmxwfei3wxks4nbyjvshy5cip6fik6hpndgeyi7y2qwmiib3lid.onion$request_uri;
 
   location ~ /images/(.*) {
     alias /srv/images/$1;
@@ -47,35 +44,5 @@ server {
   }
 
   # Rewrite the old path yyyy/mm/dd/ to /images/
-  rewrite "^/image/\d{4}/\d{2}/\d{2}/(.+)$" /images/$1 permanent;
-}
-
-# Server block for the Unix socket
-server {
-  listen unix:/var/run/tor-website.sock;  # Use your preferred socket path
-
-   # Your existing configurations for this server block
-  root /var/www/wx-new/public/;
-  index index.php index.html index.htm index.nginx-debian.html;
-  autoindex on;
-  server_name localhost;  # You can use localhost as the server_name for the Unix socket
-
-  location ~ /images/(.*) {
-      alias /srv/images/$1;
-  }
-
-  location ~ /videos/(.*) {
-      alias /srv/videos/$1;
-  }
-
-  location / {
-      try_files $uri $uri/ /index.php;
-  }
-
-  location ~ \.php$ {
-      include snippets/fastcgi-php.conf;
-      fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
-  }
-
   rewrite "^/image/\d{4}/\d{2}/\d{2}/(.+)$" /images/$1 permanent;
 }

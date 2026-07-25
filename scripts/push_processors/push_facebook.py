@@ -86,14 +86,12 @@ def main():
     if not access_token or not page_id:
         sys.exit("Missing FACEBOOK_ACCESS_TOKEN or FACEBOOK_PAGE_ID in ~/.facebook.conf")
 
-    serbian_flag = "\U0001F1F7\U0001F1F8"
     hashtags = (
         "#NOAA #NOAA15 #NOAA19 #MeteorM2_3 #MeteorM2_4 #weather "
         "#weathersats #APT #LRPT #wxtoimg #MeteorDemod #rtlsdr "
         "#gpredict #raspberrypi #RN2 #ISS"
     )
-    message = f"{serbian_flag} {annotation}\n\n{hashtags}"
-
+    message = f"{annotation}\n\n{hashtags}"
 
     media_ids = []
     for img in img_list:
