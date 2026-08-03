@@ -33,6 +33,12 @@ class Config {
   # whether to enable satvis visualization
   const ENABLE_SATVIS = '{{ enable_satvis|lower }}';
 
+  # [Claude AI edit] START - whether experimental webpanel features are enabled
+  # (currently gates the "Satellite view" orbital tracking console);
+  # |default(false) keeps a Config.php rendering from an older settings.yml safe
+  const ENABLE_EXPERIMENTAL_FEATURES = '{{ experimental_features|default(false)|lower }}';
+  # [Claude AI edit] END
+
   # whether to enable coronal mass ejetion GIFs from nasa
   # warning: high data usage!
   const ENABLE_CORONAL_GIF = '{{ enable_coronal|lower }}';

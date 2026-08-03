@@ -32,5 +32,14 @@ return array(
   "successful_delete_capture" => "캡처 이미지 삭제 성공",
   "successful_delete_pass" => "패스 삭제 성공",
   "travel_direction" => "이동 방향",
+  # [Claude AI edit] START - keys for the experimental Satellite view tab
+  # and the admin bulk "Delete selected" feature
+  "satellite_view" => "위성 보기",
+  "delete_selected" => "선택 항목 삭제",
+  "select_all" => "전체 선택",
+  "admin_bulk_delete_confirm" => "선택한 모든 항목을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다!",
+  "successful_delete_selected" => "선택한 항목이 삭제되었습니다",
+  "fail_delete_none_selected" => "선택된 항목이 없습니다",
+  # [Claude AI edit] END
 );
 ?>
