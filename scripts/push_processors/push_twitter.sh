@@ -44,6 +44,10 @@ if [ -z "${send_images}" ]; then
 else
   log "Posting images to Twitter feed:" "INFO"
   log "  ${send_images}" "INFO"
-  post_resp=$(python3 "${PUSH_PROC_DIR}/post_to_twitter.py" "${MESSAGE}" ${send_images} 2>&1)
-  log "${post_resp}" "INFO"
+  if post_resp=$(python3 "${PUSH_PROC_DIR}/post_to_twitter.py" "${MESSAGE}" ${send_images} 2>&1); then
+    log "${post_resp}" "INFO"
+  else
+    log "${post_resp}" "ERROR"
+    exit 1
+  fi
 fi

@@ -32,5 +32,14 @@ return array(
   "successful_delete_capture" => "Captura a fost stearsa",
   "successful_delete_pass" => "Trecerea a fost stearsa",
   "travel_direction" => "Directie",
+  # [Claude AI edit] START - keys for the experimental Satellite view tab
+  # and the admin bulk "Delete selected" feature
+  "satellite_view" => "Vizualizare sateliți",
+  "delete_selected" => "Șterge selectate",
+  "select_all" => "Selectează tot",
+  "admin_bulk_delete_confirm" => "Sigur doriți să ștergeți toate elementele selectate? Această acțiune este ireversibilă!",
+  "successful_delete_selected" => "Elementele selectate au fost șterse cu succes",
+  "fail_delete_none_selected" => "Niciun element selectat",
+  # [Claude AI edit] END
 );
 ?>

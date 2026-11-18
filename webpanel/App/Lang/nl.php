@@ -32,5 +32,14 @@ return array(
   "successful_delete_capture" => "Opname successvol verwijderd",
   "successful_delete_pass" => "Pas succesvol verwijderd",
   "travel_direction" => "Richting",
+  # [Claude AI edit] START - keys for the experimental Satellite view tab
+  # and the admin bulk "Delete selected" feature
+  "satellite_view" => "Satellietweergave",
+  "delete_selected" => "Geselecteerde verwijderen",
+  "select_all" => "Alles selecteren",
+  "admin_bulk_delete_confirm" => "Weet u zeker dat u alle geselecteerde items wilt verwijderen? Deze actie is onomkeerbaar!",
+  "successful_delete_selected" => "Geselecteerde items succesvol verwijderd",
+  "fail_delete_none_selected" => "Geen items geselecteerd",
+  # [Claude AI edit] END
 );
 ?>

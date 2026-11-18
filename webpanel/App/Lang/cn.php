@@ -32,5 +32,14 @@ return array(
   "successful_delete_capture" => "成功删除图片",
   "successful_delete_pass" => "成功去除解析过境卫星解码任务",
   "travel_direction" => "方向",
+  # [Claude AI edit] START - keys for the experimental Satellite view tab
+  # and the admin bulk "Delete selected" feature
+  "satellite_view" => "卫星视图",
+  "delete_selected" => "删除所选",
+  "select_all" => "全选",
+  "admin_bulk_delete_confirm" => "确定要删除所有选中的项目吗？此操作不可撤销！",
+  "successful_delete_selected" => "已成功删除所选项目",
+  "fail_delete_none_selected" => "未选择任何项目",
+  # [Claude AI edit] END
 );
 ?>

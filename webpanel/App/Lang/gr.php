@@ -31,5 +31,14 @@ return array(
   "successful_delete_capture" => "Επιτυχής διαγραφή λήψης",
   "successful_delete_pass" => "Επιτυχής διαγραφή περάσματος",
   "travel_direction" => "Κατεύθυνση",
+  # [Claude AI edit] START - keys for the experimental Satellite view tab
+  # and the admin bulk "Delete selected" feature
+  "satellite_view" => "Προβολή δορυφόρων",
+  "delete_selected" => "Διαγραφή επιλεγμένων",
+  "select_all" => "Επιλογή όλων",
+  "admin_bulk_delete_confirm" => "Σίγουρα θέλετε να διαγράψετε όλα τα επιλεγμένα στοιχεία; Αυτή η ενέργεια είναι μη αναστρέψιμη!",
+  "successful_delete_selected" => "Τα επιλεγμένα στοιχεία διαγράφηκαν με επιτυχία",
+  "fail_delete_none_selected" => "Δεν επιλέχθηκαν στοιχεία",
+  # [Claude AI edit] END
 );
 ?>

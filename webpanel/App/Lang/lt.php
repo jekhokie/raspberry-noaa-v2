@@ -32,5 +32,14 @@ return array(
   "successful_delete_capture" => "Istrinta",
   "successful_delete_pass" => "Istrinta",
   "travel_direction" => "Kryptis",
+  # [Claude AI edit] START - keys for the experimental Satellite view tab
+  # and the admin bulk "Delete selected" feature
+  "satellite_view" => "Palydovų vaizdas",
+  "delete_selected" => "Ištrinti pasirinktus",
+  "select_all" => "Pažymėti viską",
+  "admin_bulk_delete_confirm" => "Ar tikrai norite ištrinti visus pasirinktus elementus? Šis veiksmas negrįžtamas!",
+  "successful_delete_selected" => "Pasirinkti elementai sėkmingai ištrinti",
+  "fail_delete_none_selected" => "Nepasirinktas nė vienas elementas",
+  # [Claude AI edit] END
 );
 ?>

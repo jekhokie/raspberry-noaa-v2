@@ -32,5 +32,14 @@ return array(
   "successful_delete_capture" => "Felvétel sikeresen törölve",
   "successful_delete_pass" => "Felvétel sikeresen törölve",
   "travel_direction" => "Irány",
+  # [Claude AI edit] START - keys for the experimental Satellite view tab
+  # and the admin bulk "Delete selected" feature
+  "satellite_view" => "Műholdnézet",
+  "delete_selected" => "Kijelöltek törlése",
+  "select_all" => "Összes kijelölése",
+  "admin_bulk_delete_confirm" => "Biztosan törli az összes kijelölt elemet? Ez a művelet visszafordíthatatlan!",
+  "successful_delete_selected" => "A kijelölt elemek sikeresen törölve",
+  "fail_delete_none_selected" => "Nincs kijelölt elem",
+  # [Claude AI edit] END
 );
 ?>

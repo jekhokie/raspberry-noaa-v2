@@ -32,5 +32,14 @@ return array(
   "successful_delete_capture" => "Successfully deleted capture",
   "successful_delete_pass" => "Successfully deleted pass",
   "travel_direction" => "Direction",
+  # [Claude AI edit] START - keys for the experimental Satellite view tab
+  # and the admin bulk "Delete selected" feature
+  "satellite_view" => "Satellite view",
+  "delete_selected" => "Delete selected",
+  "select_all" => "Select all",
+  "admin_bulk_delete_confirm" => "Are you sure you want to delete all selected items? This action is irreversible!",
+  "successful_delete_selected" => "Successfully deleted selected items",
+  "fail_delete_none_selected" => "No items selected",
+  # [Claude AI edit] END
 );
 ?>

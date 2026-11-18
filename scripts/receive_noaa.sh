@@ -491,8 +491,10 @@ if [ -n "$(find /srv/images -maxdepth 1 -type f -name "$(basename "$IMAGE_FILE_B
     else
       $CONVERT +append "${IMAGE_FILE_BASE}-MCIR.jpg" "${IMAGE_FILE_BASE}-MCIR-precip.jpg" "${IMAGE_FILE_BASE}-instagram.jpg"
     fi
+    # fit into the largest frame the Instagram API publishes (1440x1800, 4:5) so the aspect ratio is always valid
+    $CONVERT "${IMAGE_FILE_BASE}-instagram.jpg" -colorspace sRGB -resize "1440x1800" -gravity center -background black -extent 1440x1800 -quality 92 "${IMAGE_FILE_BASE}-instagram.jpg"
     log "Pushing image enhancements to Instagram" "INFO"
-    python3 ${PUSH_PROC_DIR}/push_instagram.py "${push_annotation}" $(sed 's|/srv/images/||' <<< "${IMAGE_FILE_BASE}-instagram.jpg") ${WEB_SERVER_NAME} >> $NOAA_LOG 2>&1
+    python3 ${PUSH_PROC_DIR}/push_instagram.py "${push_annotation}" "${WEB_SERVER_NAME}" $(basename "${IMAGE_FILE_BASE}-instagram.jpg") >> $NOAA_LOG 2>&1
     rm "${IMAGE_FILE_BASE}-instagram.jpg"
   fi
 

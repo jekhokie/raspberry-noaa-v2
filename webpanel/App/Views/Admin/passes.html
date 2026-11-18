@@ -14,6 +14,15 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+    {% elseif status_msg == 'SuccessBulk' %}
+      {# [Claude AI edit] START - success message for the bulk "Delete selected" action #}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ lang['successful_delete_selected']|default('Successfully deleted selected items') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {# [Claude AI edit] END #}
     {% else %}
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
         {{ status_msg }}
@@ -30,9 +39,24 @@
     {{ lang['admin_pass_delete_warning'] }}
   </p>
 
+  {# [Claude AI edit] START - bulk selection form: wraps the table so the row
+     checkboxes below submit to the new bulk delete endpoint #}
+  <form method="post" action="/admin/deleteSelectedPasses"
+        onsubmit="return confirm('{{ lang['admin_bulk_delete_confirm']|default('Are you sure you want to delete all selected items? This action is irreversible!')|e('js') }}');">
+    <div class="mb-2 text-right">
+      <button type="submit" id="bulk-delete-btn" class="btn btn-danger" disabled>
+        <i class="fa fa-trash"></i> {{ lang['delete_selected']|default('Delete selected') }}
+      </button>
+    </div>
+  {# [Claude AI edit] END #}
+
   <table class="table table-bordered table-sm" id="admin-pass-list">
     <thead class="thead-light">
       <tr class="text-center">
+        {# [Claude AI edit] master checkbox column for bulk selection #}
+        <th scope="col" class="text-center">
+          <input type="checkbox" id="bulk-select-all" title="{{ lang['select_all']|default('Select all') }}">
+        </th>
         <th scope="col" class="text-center"></th>
         <th scope="col">{{ lang['satellite'] }}</th>
         <th scope="col">{{ lang['pass_start'] }}</th>
@@ -49,7 +73,8 @@
 
       {% if pass.list|length <= 0 %}
         <tr>
-          <td colspan="7" class="no-passes">0 {{ lang['passes'] }}</td>
+          {# [Claude AI edit] colspan 7 -> 8 for the new checkbox column #}
+          <td colspan="8" class="no-passes">0 {{ lang['passes'] }}</td>
         </tr>
       {% else %}
         {% for pass in pass.list %}
@@ -59,12 +84,18 @@
 
           {% if last_date < cur_date %}
             <tr class="date-separator">
-              <td colspan="7">{{ cur_date }}</td>
+              {# [Claude AI edit] colspan 7 -> 8 for the new checkbox column #}
+              <td colspan="8">{{ cur_date }}</td>
             </tr>
             {% set last_date = cur_date %}
           {% endif %}
 
           <tr{% if pass.is_active == false or pass_end < now %} class="inactive"{% endif %}>
+            {# [Claude AI edit] START - per-row selection checkbox for bulk delete #}
+            <td class="text-center align-middle">
+              <input type="checkbox" class="bulk-select-item" name="pass_start_ids[]" value="{{ pass.pass_start }}">
+            </td>
+            {# [Claude AI edit] END #}
             <td class="capture-select text-center align-middle">
               <button type="button" class="btn btn-sm btn-danger delete-capture" data-toggle="modal"
                                    data-pass-start-id="{{ pass.pass_start }}"
@@ -98,6 +129,8 @@
       {% endif %}
     </tbody>
   </table>
+  {# [Claude AI edit] close of the bulk selection form opened above the table #}
+  </form>
 
 
   <div class="modal fade" id="confirmDeletePass" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">

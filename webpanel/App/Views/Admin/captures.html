@@ -14,6 +14,15 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+    {% elseif status_msg == 'SuccessBulk' %}
+      {# [Claude AI edit] START - success message for the bulk "Delete selected" action #}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ lang['successful_delete_selected']|default('Successfully deleted selected items') }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {# [Claude AI edit] END #}
     {% else %}
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
         {{ status_msg }}
@@ -38,9 +47,25 @@
     {{ "#{lang['page']} #{cur_page} #{lang['of']} #{page_count}" }}
   </div>
 
+  {# [Claude AI edit] START - bulk selection form: wraps the table so the row
+     checkboxes below submit to the new bulk delete endpoint; page_no keeps the
+     admin on the same pagination page after deleting #}
+  <form method="post" action="/admin/deleteSelectedCaptures"
+        onsubmit="return confirm('{{ lang['admin_bulk_delete_confirm']|default('Are you sure you want to delete all selected items? This action is irreversible!')|e('js') }}');">
+    <input type="hidden" name="page_no" value="{{ cur_page }}">
+    <div class="mb-2 text-right">
+      <button type="submit" id="bulk-delete-btn" class="btn btn-danger" disabled>
+        <i class="fa fa-trash"></i> {{ lang['delete_selected']|default('Delete selected') }}
+      </button>
+    </div>
+  {# [Claude AI edit] END #}
   <table class="table table-bordered" id="admin-capture-list">
     <thead class="thead-light">
       <tr>
+        {# [Claude AI edit] master checkbox column for bulk selection #}
+        <th scope="col" class="text-center align-middle">
+          <input type="checkbox" id="bulk-select-all" title="{{ lang['select_all']|default('Select all') }}">
+        </th>
         <th scope="col" class="text-center"></th>
         <th scope="col" class="text-center align-middle">{{ lang['satellite'] }}</th>
         <th scope="col" class="text-center align-middle">{{ lang['pass_start'] }} / {{ lang['max_elev'] }}</th>
@@ -50,6 +75,11 @@
     <tbody>
       {% for capture in capture.list %}
         <tr scope="row">
+          {# [Claude AI edit] START - per-row selection checkbox for bulk delete #}
+          <td class="text-center align-middle">
+            <input type="checkbox" class="bulk-select-item" name="capture_ids[]" value="{{ capture.id }}">
+          </td>
+          {# [Claude AI edit] END #}
           <td class="capture-select text-center align-middle">
             <button type="button" class="btn btn-sm btn-danger delete-capture" data-toggle="modal"
                                  data-capture-id="{{ capture.id }}"
@@ -86,6 +116,8 @@
       {% endfor %}
     </tbody>
   </table>
+  {# [Claude AI edit] close of the bulk selection form opened above the table #}
+  </form>
 
   <nav aria-label="page" id="pagination" class="d-md-none mb-0">
     {% include('Captures/pagination.html') %}

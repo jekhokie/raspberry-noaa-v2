@@ -32,5 +32,14 @@ return array(
   "successful_delete_capture" => "Snimanje je uspešno izbrisano",
   "successful_delete_pass" => "Propusnica je uspešno izbrisana",
   "travel_direction" => "Pravac",
+  # [Claude AI edit] START - keys for the experimental Satellite view tab
+  # and the admin bulk "Delete selected" feature
+  "satellite_view" => "Satelitski prikaz",
+  "delete_selected" => "Obriši izabrano",
+  "select_all" => "Izaberi sve",
+  "admin_bulk_delete_confirm" => "Da li ste sigurni da želite da obrišete sve izabrane stavke? Ova radnja je nepovratna!",
+  "successful_delete_selected" => "Izabrane stavke su uspešno obrisane",
+  "fail_delete_none_selected" => "Nijedna stavka nije izabrana",
+  # [Claude AI edit] END
 );
 ?>
