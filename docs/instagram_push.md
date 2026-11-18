@@ -26,12 +26,12 @@ If you want to run a manual test to ensure the Instagram configurations are acce
 from the command line and pass an actual image file to the command like so:
 
 ```bash
-./scripts/push_processors/push_instagram.sh "test annotation" "test_image.jpg"
+python3 ./scripts/push_processors/push_instagram.py "test annotation" "<web_server_name>" "test_image.jpg" ["test_image2.jpg" ...]
 ```
 
 Note that the test image needs to be of appropriate dimensions for Instagram post, as they only allow specific aspect ratios and resolutions. This is taken care of automatically in the receive scripts by the RN2, but for testing, I'd suggest you use some stock square image from the internet.
 If all goes well and the image paths passed are files that actually exist, you should see a new post on your
-Instagram page! Currently we support only one image per post, which is actually MSA and MSA-precip during the day, or MCIR and MCIR-precip during the night stitched together for NOAA, while for Meteor the first available image (321, 221 or thermal). Carousel is to be implemented!
+Instagram page! The image files must be in `/srv/images` and reachable from the internet at `https://<web_server_name>/images/<file>`, because Instagram downloads them from your server. One image is posted as a single post, 2-10 images as a carousel, and more than 10 are split into several evenly sized carousels. For Meteor, all images of the pass are posted as carousels, each fitted (not cropped) into 1440x1800, the largest size the Instagram API publishes. For NOAA, MSA and MSA-precip during the day, or MCIR and MCIR-precip during the night, are stitched together into one image.
 
 ## Profit
 
